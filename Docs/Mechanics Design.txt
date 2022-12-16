@@ -1,0 +1,155 @@
+Stats:
+- Strength: physical prowess
+	modifier for meelee damage
+	+ max HP
+	+ melee accuracy
+	
+- Finesse:
+	- turn delay
+	++ accuracy
+	++ dodge
+	
+- Will:  
+	++ magic damage
+	+ energy max
+	+ energy regen
+
+Races:
+
+-Human 
+	Stats:
+		- Health: 105%
+		- Energy: 105%
+		- Strength: 105%
+		- Finesse: 105%
+		- Will: 105%
+		- Movement: 3
+	Trait: 
+		Adrenaline: When at critical health, halve delay before the upcoming turn
+
+- Poxt
+	Stats: 
+		- Health: 125%
+		- Energy: 100%
+		- Strength: 70%
+		- Finesse: 110%
+		- Will: 115%
+		- Movement: 2
+	Trait:
+		Resilient: Negative status effects decay 20% faster		
+		Flight: Ignore terrain movement costs, move over most unpassable terrain.
+		
+Weapons:
+- Ranged:
+	- Light guns (pistols, muskets): damage fall off
+	- Heavy guns (cannons, mortars): ALL two handed, lower movement, powerful
+
+	- Light bows (shortbows, light crossbows): fast
+	- Heavy bows (longbows, heavy crossbows): long ranged, accurate
+
+	- Thrown(javelins, shurikens): one handed, fast, decent damage
+
+- Melee
+	- Gauntlets: fast, ignores 50% of all damage reductions (including armor), low attack bonus
+
+	- Light blades (daggers, short blades): fastest, better scaling with stat 2, ineffective against armor
+	- Long blades (long swords, bastard swords): ALL two handed, defensive
+	- Heavy blades (great swords, axes, claymores): high damage, lower defense, bonus scaling with stat 1
+	
+	- Light piercers (light spears, rapiers): bonus against low armor
+	- Heavy piercers (halberds, heavy spears): defensive, 10% armor penetration
+	
+	- Light hammers (maces, war picks): relatively quick, ignores 15% of armor
+	- Heavy hammers (war hammers, morningstars): slow, ignores 25% of armor, strong
+
+Magic:
+	- Staffs(bos, staves, wiZARD staffs) :usable damage, energy discount
+	- Rods :includes castable spell, higher energy capacity
+	- Focus (wands, crystals, relics): better accuracy, no damage bonus
+
+- Arathi
+	Stats: 
+		- Health: 115%
+		- Energy: 95%
+		- Strength: 110%
+		- Finesse: 90%%
+		- Will: 100%
+		- Movement: 3
+	Trait:
+		Stone: Physical incoming damage decreased by 5%
+		
+- Vivistar
+	Stats: 
+		- Health: 95%
+		- Energy: 110%
+		- Strength: 105%
+		- Finesse: 105%%
+		- Will: 110%
+		- Movement: 3
+	Trait:
+		Bright Burn: Accuracy from incoming attacks has a base of 40%. Energy regeneration increased.
+		
+- Mantada
+	Stats: 
+		- Health: 110%
+		- Energy: 100%
+		- Strength: 100%
+		- Finesse: 90%%
+		- Will: 120%
+		- Movement: 3
+	Trait:
+		Natural Regeneration: Recover 5% HP per turn.
+		
+
+- Arathi
+Damage types:
+- Melee: boosted by stats, higher potential
+- Ranged: weapon dependant, good base damage, stunted by high defense and with lower accuracy at longer ranges
+- Magic: ignores defense and accuracy (most of the time), typically low but reliable damage
+
+Accuracy:
+- Directly modifies the power of the effect (damage, healing, debuffs, etc)
+
+Buffs/Debuffs:
+- They come in tiers, abilities that affect status effects can only target specific tiers. The tier depends on how impactful the effect is
+- Sources apply a certain power of the effect. If the applied power is lower than 1 (like 0.8) nothing happens, but the stack remains and adds up to the next attempt.
+- Attempting to remove an status effect that's below 0 will reduce the stack by half but won't remove it
+
+Enemy Types:
+- Fire: strong single targets with powerful AoE, may merge to become stronger
+- Ice/water: split into more units as the fight goes on, one shot protection
+- Earth: strong attacks and resilient but slow, less numbers
+- Undead: healing significantly reduced, more tools for revival
+- Wind: weak but unusally defensive by having means to deal with different damage sources and with plenty of AoE. Felling them requires persistence and long term strategies
+- Light: attacks ignore defenses and reduce health by set amounts
+
+Maps and Terrain:
+- Field wide effects affect all units and may change the way an engagement must be aproached
+
+Status effects:  
+Tier 1:
+- Negative:
+	- Poison: reduces health of the target by 8%/power of the target's max health 
+	- Bleeding: lowers max health of the target by 5%/power per turn, max health lost this way recovers at a rate of 2.5% per turn once the status has been cured
+	- Blinded: accuracy becomes capped at a percentage equal to: 80 - (power * 10). e.x. a power of 2 would cap the target's accuracy to 60%
+	- Staggered: delays the next turn by 33%/power 
+	- Weaken: lowers all of the user's main stats by 10%/power
+- Positive:
+	
+
+Tier 2:
+- Negative:
+	- Stunned: can't perform actions, movement halved. Duration is equal to power
+	- Pinned: Can't move but can act. Duration is equal to power
+	- Blank: abilities disabled. Duration is equal to power
+	- Sluggish: energy regeneration reduced by 33%/power
+	- Anti-life: prevents healing, un-dead felled under this effect can't be raised again
+
+Tier 3:
+- Negative:
+	- Withering: reduce max health and energy of the target by 8%/power until the victim is felled
+	- Death: after 5 - power turns, the target is felled (bosses take twice as long for the effect to happen)
+	
+	
+	
+	

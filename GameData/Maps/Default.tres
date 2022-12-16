@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Resources/Maps/Map.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Tiles2D/Terrain/DefaultTileMap.tres" type="TileSet" id=2]
+
+[resource]
+script = ExtResource( 1 )
+displayName = "Default"
+description = ""
+height = 5
+tileSet = ExtResource( 2 )
+terrainTiles = [ {
+"elevation": 0,
+"tileID": 0,
+"tilePos": Vector2( 0, 2 )
+} ]
+unitsToGenerate = [ {
+"className": "CIVILIAN",
+"factionName": "ENEMY",
+"positionInGrid": Vector2( 5, 3 ),
+"raceName": "HUMAN",
+"unitName": "Cagalindo"
+} ]
+unitsToLoad = [  ]
+extraLayers = [  ]

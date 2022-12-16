@@ -1,0 +1,26 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Resources/Items/Weapon.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+internalName = "punch"
+resCategory = ""
+displayName = "WEAPON_PUNCH"
+equipmentType = 0
+compatibleSlots = [ 1, 2 ]
+statBonuses = {
+"energyMax": 0,
+"healthMax": 0,
+"statAgility": 0,
+"statDefense": 0,
+"statMind": 0,
+"statSpecial": 0,
+"statStrength": 0
+}
+abilityList = [  ]
+weaponType = 0
+twoHanded = false
+damage = 5
+weaponRange = 1
+attackFlagList = [  ]

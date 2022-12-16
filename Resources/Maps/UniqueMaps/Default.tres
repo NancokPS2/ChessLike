@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Resources/Maps/Map.gd" type="Script" id=2]
+
+[resource]
+script = ExtResource( 2 )
+displayName = "Default"
+description = ""
+height = 5
+terrainTiles = [ {
+"elevation": 0,
+"tileID": 0,
+"tilePos": Vector2( 0, 2 )
+} ]
+participantUnits = [ "GenericEnemy" ]
+extraLayers = [  ]

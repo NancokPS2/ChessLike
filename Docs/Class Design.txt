@@ -1,0 +1,58 @@
+- Paladin -
+Tank with some support abilities 
+Abilities: buffs and weak AoE healing
+	- Holy Radiance: heal allies in a small radius, short range
+	- Healing Hands: heal 1 adjacent ally for 50% of their max health
+	- Soothing Pulse: remove poison
+
+- Ranger -
+Standard ranged attacker
+Abilities: centered on causing reliable damage
+
+- Thief -
+Slippery support combatant
+Abilities: disables enemy equipment
+
+- Juggernaut -
+Tank with decent speed
+Abilities: survival focused buffs for self
+
+- Artillerist -
+Ranged unit based around self buffs to offense
+Abilities: build up power by stacking semi-exclusive buffs or deploy simple AoE explosive shots in a hurry
+
+- Gladiator -
+Fighter with a combination of attacks and debuffs
+Abilities: attacks that apply stat debuffs or displacement on the target
+
+- Elementalist -
+Versatile mage that can fit any role adequately
+Abilities: offense, healing, buffs and debuffs each based on a certain element
+
+- Necromancer -
+Alternative to healers that allow allies to keep fighting regardless of health
+Abilities: buffs that allow allies to keep fighting with negative HP or the ability to raise an ally as a weaker version of it's original self until the end of combat
+	- Bind Wounds: instantly heal the target but lower their maximum health
+	- Reconstitute: imbue a fallen ally with necromantic energy and allow them to keep fighting, their stats are halved in this state. Using this ability before the ally fall will cause it to automatically raise after being felled  
+
+- Physician -
+Healer that uses minimal amounts of energy and has less focused but more varied healing
+- Abilities:
+	- Miracle cure: remove all tier 1 debuffs
+	- Revival maneuver: revives a fallen ally back to 1 HP
+	- Check up: remove all stat reductions
+	- Regenerative medication: grants regeneration  
+	- Strong concoction: raises all stats by 40% but damages the target's health and energy by 25%
+
+- Terraformer -
+Special mage that alters the terrain
+- Abilities:
+	- Ignis Fatua: a tile reduces the health of whoever steps on it by 25% 
+	- Terra Firma: removes any special modifiers from the chosen tile
+	- Aqua Tempesta: floods a tile, it costs 2 movement points to traverse this
+	- Lux Solaris: a tile becomes brighter and reduces the accuracy of whoever steps on it while increasing accuracy against them
+
+- Bard -
+Support caster with auras
+- Abilities:  
+	- March

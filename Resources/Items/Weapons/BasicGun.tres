@@ -1,0 +1,26 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Resources/Items/WeaponTypes/Gun.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+internalName = "pocketpistol"
+resCategory = ""
+displayName = "Pocket Pistol"
+equipmentType = 0
+compatibleSlots = [  ]
+statBonuses = {
+"energyMax": 0,
+"healthMax": 0,
+"statAgility": 0,
+"statDefense": 0,
+"statMind": 0,
+"statSpecial": 0,
+"statStrength": 0
+}
+abilityList = [  ]
+weaponType = 0
+twoHanded = false
+damage = 8
+weaponRange = 6
+attackFlagList = [  ]

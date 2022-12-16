@@ -1,0 +1,28 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Resources/Items/WeaponTypes/Dagger.gd" type="Script" id=1]
+[ext_resource path="res://Assets/CellMesh/Weapons/Dagger/Dagger.tscn" type="PackedScene" id=2]
+
+[resource]
+script = ExtResource( 1 )
+internalName = "dagger"
+resCategory = ""
+displayName = ""
+model = ExtResource( 2 )
+equipmentType = 0
+compatibleSlots = [  ]
+statBonuses = {
+"agility": 0,
+"defense": 0,
+"energyMax": 0,
+"healthMax": 0,
+"mind": 0,
+"special": 0,
+"strength": 0
+}
+abilityList = [  ]
+weaponType = 5
+twoHanded = false
+damage = 1
+weaponRange = 1
+attackFlagList = [  ]

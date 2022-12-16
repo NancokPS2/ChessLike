@@ -1,0 +1,431 @@
+{{Topic: Characters
+- var character = Unit.new(attributesResource)
+- Unit contains a Generator class to create units
+- When moving, performs an animation and calls $Grid.place_object(self, destination:Vector2, Grid.ObjectTypes.UNIT) when it finishes
+
+{{Topic: Stats
+Strenghth: modifier for melee damage | max HP 
+Agility: turn delay | accuracy ++ | dodge ++
+Mind: magic damage flat bonus | energy max | energy regen
+
+Defense: flat reduction to damage
+
+Dodge: modifier for incoming damage, countered by accuracy
+
+Accuracy: modifier to outgoing damage, every point above 100% counters Dodge
+
+Special: luck?
+
+Movement: tiles that can travel
+
+Movement type: any of the following
+	-Walking: normal movement, obstructed by ground obstacles
+	-Hover: ignores tile effects, obstructed by obstacles
+	-Flying: looses half health if movement reaches 0, ignores most obstacles
+	
+Maximum HP: average of race and class HP multiplied by strength
+
+}}
+
+
+{{Topic: Classes
+- Paladin -
+Tank with some support abilities 
+Abilities: buffs and weak AoE healing
+	- Holy Radiance: heal allies in a small radius, short range
+	- Healing Hands: heal 1 adjacent ally for 50% of their max health
+	- Soothing Pulse: remove poison
+
+- Ranger -
+Standard ranged attacker
+Abilities: centered on causing reliable damage
+
+- Thief -
+Slippery support combatant
+Abilities: disables enemy equipment
+
+- Juggernaut -
+Tank with decent speed
+Abilities: survival focused buffs for self
+
+- Artillerist -
+Ranged unit based around self buffs to offense
+Abilities: build up power by stacking semi-exclusive buffs or deploy simple AoE explosive shots in a hurry
+
+- Gladiator -
+Fighter with a combination of attacks and debuffs
+Abilities: attacks that apply stat debuffs or displacement on the target
+
+- Elementalist -
+Versatile mage that can fit any role adequately
+Abilities: offense, healing, buffs and debuffs each based on a certain element
+
+- Necromancer -
+Alternative to healers that allow allies to keep fighting regardless of health
+Abilities: buffs that allow allies to keep fighting with negative HP or the ability to raise an ally as a weaker version of it's original self until the end of combat
+	- Bind Wounds: instantly heal the target but lower their maximum health
+	- Reconstitute: imbue a fallen ally with necromantic energy and allow them to keep fighting, their stats are halved in this state. Using this ability before the ally fall will cause it to automatically raise after being felled  
+
+- Physician -
+Healer that uses minimal amounts of energy and has less focused but more varied healing
+- Abilities:
+	- Miracle cure: remove all tier 1 debuffs
+	- Revival maneuver: revives a fallen ally back to 1 HP
+	- Check up: remove all stat reductions
+	- Regenerative medication: grants regeneration  
+	- Strong concoction: raises all stats by 40% but damages the target's health and energy by 25%
+
+- Terraformer -
+Special mage that alters the terrain
+- Abilities:
+	- Ignis Fatua: a tile reduces the health of whoever steps on it by 25% 
+	- Terra Firma: removes any special modifiers from the chosen tile
+	- Aqua Tempesta: floods a tile, it costs 2 movement points to traverse this
+	- Lux Solaris: a tile becomes brighter and reduces the accuracy of whoever steps on it while increasing accuracy against them
+
+- Bard -
+Support caster with auras
+- Abilities:  
+	- March
+}}
+
+{{Topic: Models
+-Models are imported from .dea (collada) files as scenes with a Spatial node and all meshes as children of said node
+-Models start with the race's model, which contains the body parts that other stuff attaches to
+
+-Models from the class or equipment have each of it's meshes attached to body parts of the same name when loaded
+
+-TODO: weapons should be interchangeable between hands
+
+-When a non-race model needs to be loaded, the name of each mesh is checked and said mesh is put in a body part of the same name
+-See Const.bodyParts for all valid part names
+}}
+
+{{Topic: Loading
+-Start by loading stats from attributes
+-Equip the items depicted in attributes.equipment into var equipment:Dictionary
+-Set visuals according to class and faction
+
+}}
+
+{{Topic: Flow control
+{{Topic: Rollbacks
+-Triggered when the cancel key is pressed, affects current Refs.activeUnit
+-When completing a movement, save the original position to an Array
+-If cancel is pressed and there is an original position, return to it and refund 1 move attempt
+-Actions CANNOT be refunded
+}}
+}}
+{{Topic: Signals
+-Turn started
+-Turn ended 
+-Taking damage
+}}
+}}
+
+{{Topic: Abilities
+{{Topic: Flags
+-INDIRECT: should not trigger responses that target the user
+}}
+{{Topic: Parameters
+-TARGET_UNIT: passes the tiles it can hit and type of targeting to an object then yields to it
+}}
+{{Topic: Actives
+}}
+
+{{Topic: Passives
+-Finesse: accuracy values above 100% boost damage
+}}
+{{Topic: Reactions
+-Counter attack: performs a basic attack on an attacker
+	-Requires knowing the attacker and the flags
+}}
+}}
+
+{{Topic: Combat flow
+
+{{Topic: Main structure (ran by the main controller, probably a Singleton)
+{{Topic: States
+- uses change_state() to run a short setup of the state and emit the corresponding Events.emit_signal()
+
+	{{Topic: Setup(unit placement and free scouting)
+	-You can use $UI/UnitList to select a unit
+	-If a tile is clicked, attempt to place Ref.selectedUnit using $Grid.place_object()
+	-Once the setup state ends, $UI/UnitList is freed from the scene
+	}}
+	{{Topic: Combat (units are taking turns)
+	-Progress timers of all units until one's reaches 0
+	-That 0 timer unit starts it's turn and it's reference saved in Refs.actingUnit
+	---------------------Substates can be changed here
+	-Right click will back out of most substates
+	-Update UI to receive player orders
+	-Create an ability selection button for each of the unit's abilities
+	-The UI should automatically update from Refs.actingUnit constantly
+	
+	-Await substate change
+	---------------------
+	-When the current unit sends it's Turn_ended signal, progress
+	-MAYBE Signal the UI to ignore the current unit and avoid null references
+	-Repeat the cycle
+	
+		{{Topic: Substates 
+		-Moving: current unit is trying to move, light up valid cells and await a location, then move there when the player clicks
+		-Ability use: light up all valid tiles for the currently selected ability
+		-Facing selection: light up adjacent tiles to the unit as to decide where to face
+		-Targeting: ?
+		}}
+	}}
+	{{Topic: Pause (mostly used for dialogues and cutscenes)
+	-Pause the combat UI
+	}}
+	{{Topic: End(no longer start new turns)
+	-Remove the combat UI
+	}}
+}}
+
+
+{{Topic: Unit actions
+-If moving, store the current position 
+}}
+
+}}
+
+{{Topic: Menus
+-Use Events signals to hide or show themselves and can also be toggled manually with expand(bool)
+-ActionsMenu should list abilities, it's ButtonAction nodes will trigger Events.emit_signal(COMBAT_ACTING_abilitychosen)
+-$ActionsMenu.populate_with_actions() takes an array of abilities the Unit can perform
+}}
+
+{{Topic: Delay
+-Is handled globally, when delay is advanced, it does so for everyone equally
+-Characters have a "frozenDelay" bool that prevents their delay from being affected
+-Delay advances for all units at the same time, except for the above exception
+}}
+}}
+
+{{Topic: Status effects
+{{Topic: Properties and methods
+-signals:Array of all the signals that will trigger this status
+-durationRounds:int how many turns it lasts (negative for endless)
+-durationDelay:int how many delay points it lasts for (negative for endless)
+
+-The effect ends when both durationRounds and durationDelay end
+
+-intensity:int affects how strong the effect is
+-stackable:bool true by default, when a status with the same name is added, it is combined with this one using add_stacks()
+
+- _ready(): connects to the unit's "delay_progress" signal
+-add(intensity):
+-remove(intensity):
+-set_power(): changes the intensity of the effect
+-cleanse(): deletes all stacks
+
+}}
+{{Topic: Debuffs
+-Drain: reduces intensity% of energy per 100 delay based on energyMax
+	-If energy goes below 0, energyMax is lowered instead
+	
+-Bleed: reduces intensity amount of healthMax every round
+	-Bleeding stops when the duration ends
+	-Even if stopped, healthMax is not recovered
+	-Overhealing recovers the missing healthMax
+	
+-Toxin: reduces intensity of health per 100 delay
+
+-Poison: reduces intensity% of health based on maxHealth
+	-Does not go away on it's own
+	
+-Plague: reduces intensity% of health and energy every round based on their max
+	-Whenever the afflicted unit starts their turn, it spreads to adjacent units
+	-The timer starts at it's maximum for each new afflicted unit
+	-Each new plague status node has an identifier, all spread instances of it share the same identifier
+	-Once this effect ends in a unit, it becomes immune to all instances with the same identifier
+
+-Weakened: non-mind based damage is reduced by intensity%
+	
+-Stun: instantly adds durationDelay to the delay of the unit
+	- The unit cannot react until it's next turn
+	
+-Seal: cannot use magic abilities
+
+-Distraction: reduces intensity of accuracy
+
+-Curse: target cannot regain health
+}}
+{{Topic: Semi-buffs
+-Anti life shell: Adjacent units loose intensity of health if they end their turn
+	-Halves healing received
+}}
+{{Topic: Buffs
+-Focus: increases accuracy by intensity
+
+}}
+}}
+
+{{Topic: Equipment
+{{Topic: Weapons
+{{Topic: Types
+-Ranged (flat, decent damage, suffers against armor)
+	-Gun(Crossbows too) 
+			>Damage fall off
+			>Reduces evasion
+		
+	-Cannon
+		>Accuracy scales with strength
+		>Lower movement after firing
+		
+	-Bow
+		>Good range
+		>Strong
+		>Slow
+
+	-Throw
+	-Throw
+		>Strong
+		>Short range
+
+-Meelee (scales with strength)
+	-Dagger(Small blades)
+		>Damage is partly boosted by strength and agility
+		>More damage
+		>Very ineffective against armor
+		
+	-Sword
+		>All rounder
+		
+	-Hammer (Morning stars, maces, blunt weapons)
+		>Slows target and user
+		>Below average damage
+		>Ignores armor
+		
+	-Heavy blade (Axes, broad swords)
+		>Highest damage
+		>Reduces defense of user
+
+	-Spear
+		>Reaches 2 tiles
+		>Boosts defense
+
+	-Gauntlet
+		>Fast
+		>Deals percentage damage	
+	
+ -Magic (boosts energy?)
+	-Staff(Bo,quarterstaff)
+		>Decent melee damage
+		>Energy usage reduction
+		
+	-Rod(wands)
+		>Can fire magic projectiles
+
+	-Focus(Crystals, relics)
+		>No damage
+		>Boosts accuracy
+	}}
+{{Topic: Unique weapons
+-Throw
+	
+	-Log: A pine log, to be specific.
+	>Concept:Terrible accuracy and delay, massive damage
+	
+	-Flying Star: Thrown with a flick of the wrist, rather harmless but quick to use.
+	>Concept: refunds the attack action, pitifull damage.
+	
+	-Harpoon: Capable of toppling whales, a truly deadly weapon.
+	>Concept: slow, powerful
+
+-Bow
+	-Giant Sling: Jokingly dubbed the bane of giants for the fate that one would usually have using this weapon.
+	>Concept: higher damage at higher elevations, mediocre range, delays next turn
+
+	-Artwind: It's arrows are shot with a spinning motion that makes them curve in the air. Can get the enemies in your ally's backs.
+	>Concept: shots ignore obstacles and creatures in the way
+	
+	-Darkening Coal: Partly made out of charcoal and prone to staining clothes. Somehow functional.
+	>Concept: lowers accuracy of targets until the end of their turn
+
+-Gun
+	-Northern Star: Made out of cobalt with a small star-shaped carving. Doesn't seem to need ammo.
+	>Concept: starts poorly, killing an enemy with this weapon grants a stat boost this combat
+	
+	-Hyper: As it warms up, the barrel stiffens and the frame relaxes.
+	>Concept: consecutive shots have extra accuracy
+	
+	-Fanny: The air bends and explodes around this gun's barrel but the ammo is too heavy
+	>Concept: low range, bonus damage at point blank range
+	
+-Cannon
+	-Hand Cannon: A ship's cannon refitted for a footsoldier's use. Awfully unwieldy.
+	>Concept: Pushes the user and the target backwards
+	
+	-Celebratory Dragon: The beautifully adorned barrel fires canisters of gunpowder that explode in colors.
+	>Concept: lacking damage, explosive radius
+	
+	-Fire-mancer: When it was first invented, this piece of work was marketed as magical.
+	>Concept: ignites targets, minimal damage, big radius
+	
+-Daggers
+	-Mog Ex-Staff: The upper half of a horned staff, seems it's previous owner was too fond of wrestling.
+	>Concept:???
+	
+	-Shank: A small and handy knife that can be easily carried with a single finger. 
+	
+-Gauntlets
+	-Fetid Claws: Surprisingly light claws that where torn off from some unholy creature. Some fleshy parts remain but they appear to be mummified. Disgusting
+	>Concept: inflicts Plague, the user starts with Plague
+	
+	-Hidden Blade: Bracelet that hides a small knife-sized blade. Pretty bulky, actually.
+	>Concept: bonus flanking damage
+	
+-Sword
+	-Knighthood: A sword that's more worthy for the status it emanates than it's unwieldy combat viability.
+	>Concept: Status effect accuracy increased
+	
+-Spear 
+	-Sentinel: The hooked end of this weapon gets stuck on enemy's clothes and armor.
+	
+-Heavy Blade
+	-Tomachi: A katana that nearly doubles the size of the average human. It's difficult to just imagine how it looks when swung.
+	>Concept: 2 range, high damage, very slow
+	
+-Hammer
+	-Stick: It would be unfortunate to be forced to wield this as a weapon, effective against the attention span of dogs.
+	>Concept: comically low damage, very fast, less damage taken
+}}
+}}
+{{Topic: Armor and accessories(equipables)
+{{Topic: Unique equipables
+-Armors
+	-TBA: Bulky piece of armor with spiked shoulder guards
+	>Concept: extra damage when pushing the target
+}}
+}}
+}}
+
+{{Topic: Grid
+	-Can return different Arrays of tile coordinates to form shapes
+		-Shapes:
+		>STAR: all tiles that are within a tiled distance
+		>SQUARE: all tiles within a horizontal and vertical boundary
+		>ALL: all targetable tiles
+
+	{{Topic: Map (resource)
+	-Stores tile set, tile location, elevation and properties in an array
+	-Stores characters to generate
+	-Stores characters to load
+	}}
+
+	{{Topic: Terrain (class)
+	-Places down tile graphics
+	-Creates an extra TileMap per height to simulate different heights
+	}}
+	
+	{{Topic: Targeting (class)
+	-TODO
+	}}
+}}
+
+{{Topic: TODO
+-Change the last value of Resource Map.terrainTiles:Array to be a bit flag system
+-Create the targeting class for Grid
+}}

@@ -1,0 +1,205 @@
+{
+  "categories": [
+    {
+      "title": "Task",
+      "color": "6394ed"
+    },
+    {
+      "title": "Concept",
+      "color": "bec9c6"
+    },
+    {
+      "title": "Bug",
+      "color": "e14e31"
+    },
+    {
+      "title": "Fixed Bug",
+      "color": "3ac40e"
+    }
+  ],
+  "columns": [
+    {
+      "stages": [
+        0
+      ]
+    },
+    {
+      "stages": [
+        1
+      ]
+    },
+    {
+      "stages": [
+        2
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "title": "Todo",
+      "tasks": [
+        0,
+        1,
+        5,
+        10,
+        8,
+        12,
+        3,
+        18,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "title": "Doing",
+      "tasks": [
+        9
+      ]
+    },
+    {
+      "title": "Done",
+      "tasks": [
+        4,
+        7,
+        17,
+        2,
+        19,
+        11,
+        13,
+        15,
+        16,
+        14,
+        20
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "category": 1,
+      "title": "Weapon Types",
+      "details": "\t<Ranged>\nFlat, decent damage. Suffers against armor\n\n\t<Melee>\nScales with strength.\n\n\t<Magic>\nBoost energy.\n\n[Ranged]\n*Gun(Crossbows) \n\t>Damage fall off\n\t>Reduces evasion\n\t\n*Cannon\n\t>Accuracy scales with strength\n\t>Lower movement after firing\n\t\n*Bow\n\t>Good range\n\t>Strong\n\t>Slow\n\n*Throw\n\t>Strong\n\t>Short range\n\t\n[Meelee]\n*Dagger\n\t>Damage is partly boosted by strength and agility\n\t>More damage\n\t>Very ineffective against armor\n\t\n*Sword\n\t>All rounder\n\t\n*Hammer\n\t>Slows target and user\n\t>Below average damage\n\t>Ignores armor\n\t\n*Axe\n\t>Highest damage\n\t>Reduces defense of user\n\n*Spear\n\t>Reaches 2 tiles\n\t>Boosts defense\n\n*Gauntlet\n\t>Fast\n\t>Deals percentage damage\t\n\t\n[Magic]\n*Staff(Bo,quarterstaff)\n\t>Decent melee damage\n\t>Energy usage reduction\n\t\n*Rod(wands)\n\t>Can fire magic projectiles\n\n*Focus(Crystals, relics)\n\t>No damage\n\t>Boosts accuracy"
+    },
+    {
+      "category": 1,
+      "title": "Abilities",
+      "details": "ATTACK: Deals damage\nHEAL: Restores health\nDEBUFF: Weakens target\nINNATE: Harder to disable"
+    },
+    {
+      "category": 0,
+      "title": "Finish use_ability() on RPGCharacter Class",
+      "details": "Progress is stuck at UI"
+    },
+    {
+      "category": 0,
+      "title": "$UI/ActionsMenu.ButtonAction class needs a way to pass it's ability",
+      "details": "When pressed it should switch $Main to targeting_mode and activate the stored Ability and use it on whatever is the target."
+    },
+    {
+      "category": 3,
+      "title": "Unit Movement seems to move an orphaned node",
+      "details": ""
+    },
+    {
+      "category": 1,
+      "title": "Ability Parameters",
+      "details": ">CHOOSE_WEAPON(\"weaponUsed\"): Let's the player choose a weapon from the Control element"
+    },
+    {
+      "category": 0,
+      "title": "Implement security measures for loaded resources",
+      "details": "check the methods within it before loading it"
+    },
+    {
+      "category": 3,
+      "title": "equip_item is not working",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Create map objects which can be targeted",
+      "details": "Objects could go in the UNITs layer"
+    },
+    {
+      "category": 0,
+      "title": "Get the combat scene to load the current save file",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Finish map editor",
+      "details": ""
+    },
+    {
+      "category": 3,
+      "title": "unhandled_input is not firing",
+      "details": "An visible=0 part of the UI was in the way"
+    },
+    {
+      "category": 0,
+      "title": "$ActingMenu should deactivate buttons that cannot be used",
+      "details": "Buttons already change states which are handled by $Main, however they should not be usable in some cases, like when the Unit is out of moves"
+    },
+    {
+      "category": 0,
+      "title": "Finish unit load system. Must keep a prepped node of each unit ready to add to scene.",
+      "details": "Units from the map are kept in CVars.participantsHolder, players in CVars.playerUnitHolder\nSpawned units go in $Grid/MapObjs"
+    },
+    {
+      "category": 0,
+      "title": "Finish SaveFiles, they must store the resources of player units.",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Finish Start button in UI scene",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Item class unequip() is unfinished",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Make movement a method of the Unit class",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "$UnitTemplate should be able to hold a weapon in it's person",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Refactor GridData to use Vectors as Dictionary keys",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "$UI/Controller needs a rework",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "$StatusHint needs more signal connections",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Models should have small models inside that mark offsets and the like",
+      "details": ""
+    },
+    {
+      "category": 2,
+      "title": "Equipment may be being attached duplicated",
+      "details": ""
+    },
+    {
+      "category": 2,
+      "title": "Debugger complains about not being capable of getting the origin of the node when attaching stuff",
+      "details": "$Unit can't attach anything to limbs "
+    }
+  ]
+}

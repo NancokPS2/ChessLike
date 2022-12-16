@@ -1,0 +1,64 @@
+# load and instantiate a scene on a variable
+var new_node = load("path/to/node.tscn").instance()
+desired_parent.add_child(new_node)
+(saved into the GlobalFunctions.spawn_enemy() function)
+
+- Using it alongside print() also executes it and generates an enemy
+- Can also be stored in a variable (var enemy = GlobalFunctions.spawn_enemy() )
+-- ASK IN DISCORD HOW TO INTERACT WITH SCENES INSTANCED DURING RUNTIME
+
+-- LOOK INTO GROUPS
+
+-- Ask for a better alternative to Item Lists
+
+
+# use mapped input
+func _input(event):
+	if event.is_action_pressed("camera_up"): #set in Input Map in project settings
+		position.y += 5
+
+func _physics_process(delta):	
+	if Input.is_action_pressed("camera_up"):
+		position.y += 5
+		
+# create copies of a node
+extends Node
+export(PackedScene) var mob_scene
+
+#Click the Main node and you will see the Mob Scene property in the Inspector under "Script Variables".
+#You can assign this property's value in two ways:
+#    Drag Mob.tscn from the "FileSystem" panel and drop it in the Mob property OR click the down arrow next to "[empty]" and choose "Load". Select Mob.tscn.
+
+
+func whatever():
+    # Create a new instance of the Mob scene.
+    var mob = mob_scene.instance()
+
+    mob.rotation = 5
+
+
+    # Spawn the mob by adding it to the Main scene.
+    add_child(mob)
+	
+#loop trough an array (x is turned into the element currently being sifted trough)
+	for x in tempUnitArray:
+	
+#load sprites from file
+var loadedSprite = preload("res://thingy.tex")
+texture(loadedSprite)
+
+#check if mouse is on top
+var mousePos = get_viewport().get_mouse_position()
+for node in nodes:
+	if node.get_global_rect().has_point(mousePos):
+		#do the thing
+		break
+		
+		
+#set a variable type or function's returning class
+
+var playerHealth: int = 100
+var playerSpeed: float = 5.0
+
+func getPlayerHealth() -> int:
+    return playerHealth
