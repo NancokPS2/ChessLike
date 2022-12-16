@@ -1,0 +1,103 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Objects/UI/CombatConfirmation.gd" type="Script" id=1]
+[ext_resource path="res://Classes/TurnManager.gd" type="Script" id=2]
+[ext_resource path="res://Classes/VBoxControllerHideable.gd" type="Script" id=3]
+[ext_resource path="res://Objects/UI/UI.gd" type="Script" id=4]
+[ext_resource path="res://Objects/UI/TurnDisplay/PerUnitDisplay.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/UI/UnitList/UnitList.gd" type="Script" id=6]
+[ext_resource path="res://Objects/UI/UnitList/List.gd" type="Script" id=7]
+[ext_resource path="res://Classes/ButtonStateChange.gd" type="Script" id=8]
+[ext_resource path="res://Assets/MainTheme.tres" type="Theme" id=9]
+
+[node name="UI" type="CanvasLayer"]
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_vertical_guides_": [ 512.0 ]
+}
+
+[node name="Controller" type="VBoxContainer" parent="."]
+anchor_top = 0.16
+anchor_right = 0.16
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+
+[node name="TurnManager" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 0.155
+script = ExtResource( 2 )
+unitDisplay = ExtResource( 5 )
+
+[node name="UnitList" type="Control" parent="." groups=["PREP ONLY"]]
+anchor_top = 0.16
+anchor_right = 0.4
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 9 )
+script = ExtResource( 6 )
+
+[node name="List" type="ItemList" parent="UnitList"]
+anchor_right = 0.4
+anchor_bottom = 1.0
+items = [ "Item 0", null, false ]
+allow_reselect = true
+script = ExtResource( 7 )
+
+[node name="UnitDisplay" parent="UnitList" instance=ExtResource( 5 )]
+anchor_left = 0.4
+anchor_top = 0.544
+
+[node name="StartCombatButton" type="Button" parent="." groups=["PREP ONLY"]]
+anchor_left = 0.9
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 9 )
+text = "UI_START"
+script = ExtResource( 8 )
+internalName = "StartCombat"
+
+[node name="Popup" type="Popup" parent="."]
+anchor_left = 0.2
+anchor_top = 0.2
+anchor_right = 0.8
+anchor_bottom = 0.7
+margin_left = 34.224
+margin_top = 69.2
+margin_right = 0.231934
+margin_bottom = -0.200012
+mouse_filter = 1
+popup_exclusive = true
+script = ExtResource( 1 )
+
+[node name="Background" type="Panel" parent="Popup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Accept" type="Button" parent="Popup"]
+anchor_left = 0.5
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "UI_ACCEPT"
+script = ExtResource( 8 )
+internalName = "Accept"
+
+[node name="Cancel" type="Button" parent="Popup"]
+anchor_top = 0.75
+anchor_right = 0.5
+anchor_bottom = 1.0
+text = "UI_CANCEL"
+script = ExtResource( 8 )
+internalName = "Cancel"
+
+[node name="Message" type="Label" parent="Popup"]
+anchor_left = 0.02
+anchor_top = 0.02
+anchor_right = 0.98
+anchor_bottom = 0.7
+
+[connection signal="item_selected" from="UnitList/List" to="UnitList" method="_on_List_item_selected"]
+[connection signal="button_up" from="StartCombatButton" to="StartCombatButton" method="_on_Control_button_up"]
+[connection signal="button_up" from="Popup/Accept" to="Popup/Accept" method="_on_Control_button_up"]
+[connection signal="button_up" from="Popup/Cancel" to="Popup/Cancel" method="_on_Control_button_up"]

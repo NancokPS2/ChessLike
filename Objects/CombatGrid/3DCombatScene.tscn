@@ -1,0 +1,171 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Assets/MainTheme.tres" type="Theme" id=1]
+[ext_resource path="res://Objects/UI/PlayerPanel/UnitPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/CellMesh/Base/DefaultTiles.tres" type="MeshLibrary" id=3]
+[ext_resource path="res://Assets/WIPs/templates&placeholders/simple_character.bmp" type="Texture" id=4]
+[ext_resource path="res://Objects/CombatGrid/CombatStartButton.gd" type="Script" id=5]
+[ext_resource path="res://Classes/VBoxControllerHideable.gd" type="Script" id=6]
+[ext_resource path="res://Classes/ButtonStateChange.gd" type="Script" id=7]
+[ext_resource path="res://Classes/TurnManager.gd" type="Script" id=8]
+[ext_resource path="res://Objects/CombatGrid/ActionsMenu.gd" type="Script" id=9]
+[ext_resource path="res://Objects/CombatGrid/StatusHint.gd" type="Script" id=10]
+[ext_resource path="res://Objects/CombatGrid/Grid.gd" type="Script" id=13]
+[ext_resource path="res://Objects/UI/MainCamera.gd" type="Script" id=16]
+[ext_resource path="res://Objects/UI/UI.gd" type="Script" id=17]
+[ext_resource path="res://Objects/CombatGrid/Main.gd" type="Script" id=18]
+[ext_resource path="res://Objects/UI/UnitList/UnitList.gd" type="Script" id=19]
+
+[sub_resource type="SphereMesh" id=1]
+
+[sub_resource type="PlaneMesh" id=2]
+
+[node name="Main" type="Spatial"]
+script = ExtResource( 18 )
+
+[node name="DebugMesh" type="MeshInstance" parent="."]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0 )
+visible = false
+mesh = SubResource( 1 )
+
+[node name="DebugLabel" type="Label3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4834, 0 )
+pixel_size = 0.03
+text = "TEST"
+
+[node name="Grid" type="GridMap" parent="."]
+mesh_library = ExtResource( 3 )
+cell_size = Vector3( 0.32, 0.16, 0.32 )
+navigation_layers = 0
+script = ExtResource( 13 )
+__meta__ = {
+"_editor_clip_": 0,
+"_editor_floor_": Vector3( 0, 1, 0 )
+}
+
+[node name="DebugHoveredTile" type="Label3D" parent="Grid"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07888, 0 )
+billboard = 2
+text = "ASS"
+
+[node name="MapObjs" type="Spatial" parent="Grid"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.228094, 0 )
+
+[node name="Camera" type="Camera" parent="Grid"]
+transform = Transform( 1, 0, 0, 0, 0.815421, 0.578869, 0, -0.578869, 0.815421, 0.114, 2.44982, 2.19134 )
+current = true
+script = ExtResource( 16 )
+
+[node name="Sprite3D" type="Sprite3D" parent="Grid"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.398513, 0 )
+visible = false
+texture = ExtResource( 4 )
+
+[node name="ChosenCellVisual" type="MeshInstance" parent="Grid"]
+transform = Transform( 0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.715041, 0 )
+mesh = SubResource( 2 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource( 17 )
+__meta__ = {
+"_edit_vertical_guides_": [ 512.0 ]
+}
+
+[node name="ActionsMenu" type="VBoxContainer" parent="UI"]
+margin_top = 96.0
+margin_right = 40.0
+margin_bottom = 136.0
+script = ExtResource( 9 )
+
+[node name="ActingMenu" type="VBoxContainer" parent="UI"]
+visible = false
+anchor_top = 0.16
+anchor_right = 0.16
+anchor_bottom = 1.0
+script = ExtResource( 6 )
+expandSignal = "COMBAT_enter"
+collapseSignal = "COMBAT_exit"
+
+[node name="Move" type="Button" parent="UI/ActingMenu"]
+margin_right = 163.0
+margin_bottom = 20.0
+text = "UI_COMBAT_MOVE"
+script = ExtResource( 7 )
+stateToAffect = 1
+combatState = 1
+
+[node name="Act" type="Button" parent="UI/ActingMenu"]
+margin_top = 24.0
+margin_right = 163.0
+margin_bottom = 44.0
+text = "UI_COMBAT_ACT"
+script = ExtResource( 7 )
+stateToAffect = 1
+combatState = 2
+
+[node name="EndTurn" type="Button" parent="UI/ActingMenu"]
+margin_top = 48.0
+margin_right = 163.0
+margin_bottom = 68.0
+text = "UI_COMBAT_ENDTURN"
+script = ExtResource( 7 )
+stateToAffect = 1
+combatState = 3
+
+[node name="TurnManager" type="HBoxContainer" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 0.155
+script = ExtResource( 8 )
+
+[node name="UnitList" type="Panel" parent="UI"]
+anchor_top = 0.16
+anchor_right = 0.2
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 19 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/UnitList"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+scroll_horizontal_enabled = false
+
+[node name="List" type="GridContainer" parent="UI/UnitList/ScrollContainer"]
+margin_right = 204.8
+margin_bottom = 504.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StartCombatButton" type="Button" parent="UI"]
+anchor_left = 0.9
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.59998
+margin_top = -119.0
+margin_right = -1.59998
+margin_bottom = -119.0
+theme = ExtResource( 1 )
+text = "UI_START"
+script = ExtResource( 5 )
+mainState = 1
+freeOnSignal = "SETUP_exit"
+
+[node name="InfoDisplay" parent="UI" instance=ExtResource( 2 )]
+anchor_left = 0.2
+anchor_top = 0.8
+
+[node name="StatusHint" type="Label" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 0.07
+text = "ASS"
+align = 1
+script = ExtResource( 10 )
+
+[node name="LowPriorityTimer" type="Timer" parent="."]
+wait_time = 0.08
+autostart = true
+
+[node name="Button" type="Button" parent="."]
+margin_right = 12.0
+margin_bottom = 20.0

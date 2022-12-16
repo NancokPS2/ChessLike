@@ -1,0 +1,201 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://Objects/CombatGrid/Main.gd" type="Script" id=1]
+[ext_resource path="res://Objects/UI/UnitList/UnitList.gd" type="Script" id=2]
+[ext_resource path="res://Classes/ButtonStateChange.gd" type="Script" id=3]
+[ext_resource path="res://Objects/UI/UI.gd" type="Script" id=4]
+[ext_resource path="res://Assets/MainTheme.tres" type="Theme" id=5]
+[ext_resource path="res://Objects/CombatGrid/Grid.gd" type="Script" id=6]
+[ext_resource path="res://Objects/CombatGrid/MapObjHandler.gd" type="Script" id=7]
+[ext_resource path="res://Objects/CombatGrid/TargetingAssistant.gd" type="Script" id=8]
+[ext_resource path="res://Objects/UI/MainCamera.gd" type="Script" id=9]
+[ext_resource path="res://Objects/CombatGrid/Terrain.gd" type="Script" id=10]
+[ext_resource path="res://Assets/Tiles2D/MovementMark.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Tiles2D/PlaceHolderTile.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Tiles2D/HoverGlow.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Tiles2D/TargetingMark.png" type="Texture" id=14]
+[ext_resource path="res://Classes/VBoxControllerHideable.gd" type="Script" id=15]
+[ext_resource path="res://Classes/TurnManager.gd" type="Script" id=16]
+[ext_resource path="res://Assets/Tiles2D/Terrain/DefaultTileMap.tres" type="TileSet" id=17]
+[ext_resource path="res://Objects/UI/PlayerPanel/UnitPanel.tscn" type="PackedScene" id=18]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends TileSet
+
+func _ready():
+	for x in get_tiles_ids():
+		var textureToAdapat:Texture = tile_get_texture(x)
+		textureToAdapat
+		pass
+"
+
+[sub_resource type="TileSet" id=1]
+0/name = "PlaceHolderTile.png 0"
+0/texture = ExtResource( 12 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 64, 32 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
+0/z_index = 0
+1/name = "TargetingMark.png 1"
+1/texture = ExtResource( 14 )
+1/tex_offset = Vector2( 0, 0 )
+1/modulate = Color( 1, 1, 1, 1 )
+1/region = Rect2( 0, 0, 64, 32 )
+1/tile_mode = 0
+1/occluder_offset = Vector2( 0, 0 )
+1/navigation_offset = Vector2( 0, 0 )
+1/shape_offset = Vector2( 0, 0 )
+1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+1/shape_one_way = false
+1/shape_one_way_margin = 0.0
+1/shapes = [  ]
+1/z_index = 0
+2/name = "MovementMark.png 2"
+2/texture = ExtResource( 11 )
+2/tex_offset = Vector2( 0, 0 )
+2/modulate = Color( 1, 1, 1, 1 )
+2/region = Rect2( 0, 0, 64, 32 )
+2/tile_mode = 0
+2/occluder_offset = Vector2( 0, 0 )
+2/navigation_offset = Vector2( 0, 0 )
+2/shape_offset = Vector2( 0, 0 )
+2/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+2/shape_one_way = false
+2/shape_one_way_margin = 0.0
+2/shapes = [  ]
+2/z_index = 0
+script = SubResource( 2 )
+
+[sub_resource type="TileSet" id=3]
+0/name = "HoverGlow.png 0"
+0/texture = ExtResource( 13 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 64, 32 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
+0/z_index = 0
+
+[node name="Main" type="Node2D" groups=["SETUP"]]
+position = Vector2( 0, -2 )
+script = ExtResource( 1 )
+
+[node name="Grid" type="TileMap" parent="." groups=["SETUP"]]
+mode = 1
+tile_set = SubResource( 1 )
+cell_size = Vector2( 64, 32 )
+cell_quadrant_size = 64
+cell_custom_transform = Transform2D( 64, -32, 64, 32, 0, 0 )
+cell_tile_origin = 1
+centered_textures = true
+format = 1
+script = ExtResource( 6 )
+
+[node name="TargetingAssistant" type="Node2D" parent="Grid"]
+script = ExtResource( 8 )
+
+[node name="Terrain" type="TileMap" parent="Grid"]
+mode = 1
+tile_set = ExtResource( 17 )
+cell_size = Vector2( 64, 32 )
+cell_quadrant_size = 64
+cell_custom_transform = Transform2D( 64, -32, 64, 32, 0, 0 )
+cell_tile_origin = 1
+cell_y_sort = true
+centered_textures = true
+collision_layer = 0
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( -327680, 1, 131075, -327679, 1, 6, -327678, 1, 6, -327677, 1, 131076, -262144, 1, 196609, -262143, 2, 0, -262142, 2, 2, -262141, 1, 196608, -196608, 1, 196608, -196607, 2, 65536, -196606, 2, 65540, -196605, 2, 2, -196603, 2, 65543, -65538, 1, 65543, -131071, 2, 65536, -131070, 2, 65537, -131069, 2, 65540, -131068, 2, 2, -131066, 2, 65543, -1, 1, 0, -65536, 1, 2, -65535, 2, 131072, -65534, 2, 10, -65533, 2, 131073, -65532, 2, 196618, 65535, 1, 131079, 0, 1, 131074, 2, 2, 196609, 4, 2, 196611, 5, 2, 131078, 6, 2, 7, 131071, 1, 196608, 65538, 2, 196608, 65541, 2, 196608, 131072, 1, 65543, 131075, 1, 65543 )
+script = ExtResource( 10 )
+
+[node name="EffectsLayer" type="TileMap" parent="Grid"]
+mode = 1
+tile_set = SubResource( 3 )
+cell_size = Vector2( 64, 32 )
+cell_quadrant_size = 64
+cell_custom_transform = Transform2D( 64, -32, 64, 32, 0, 0 )
+cell_tile_origin = 1
+cell_y_sort = true
+centered_textures = true
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="FieldCamera" type="Camera2D" parent="Grid"]
+current = true
+script = ExtResource( 9 )
+
+[node name="MapObjs" type="Node2D" parent="Grid"]
+script = ExtResource( 7 )
+
+[node name="UI" type="CanvasLayer" parent="." groups=["SETUP"]]
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_vertical_guides_": [ 512.0 ]
+}
+
+[node name="Controller" type="VBoxContainer" parent="UI" groups=["SETUP"]]
+anchor_top = 0.16
+anchor_right = 0.16
+anchor_bottom = 1.0
+script = ExtResource( 15 )
+
+[node name="TurnManager" type="HBoxContainer" parent="UI" groups=["SETUP"]]
+anchor_right = 1.0
+anchor_bottom = 0.155
+script = ExtResource( 16 )
+
+[node name="UnitList" type="Panel" parent="UI" groups=["SETUP"]]
+anchor_top = 0.16
+anchor_right = 0.2
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 2 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/UnitList" groups=["SETUP"]]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 5 )
+scroll_horizontal_enabled = false
+
+[node name="List" type="GridContainer" parent="UI/UnitList/ScrollContainer" groups=["SETUP"]]
+margin_right = 204.8
+margin_bottom = 504.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StartCombatButton" type="Button" parent="UI" groups=["SETUP"]]
+anchor_left = 0.9
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 5 )
+text = "UI_START"
+script = ExtResource( 3 )
+internalName = "StartCombat"
+
+[node name="InfoDisplay" parent="UI" groups=["SETUP"] instance=ExtResource( 18 )]
+anchor_left = 0.2
+anchor_top = 0.8
+
+[node name="LowPriorityTimer" type="Timer" parent="." groups=["SETUP"]]
+wait_time = 0.08
+autostart = true
+
+[connection signal="settings_changed" from="Grid" to="Grid" method="_settings_updated"]
+[connection signal="button_up" from="UI/StartCombatButton" to="UI/StartCombatButton" method="_on_Control_button_up"]
