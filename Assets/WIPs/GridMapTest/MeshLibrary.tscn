@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Assets/UI/ButtonUI.png" type="Texture" id=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_texture = ExtResource( 2 )
+
+[sub_resource type="CubeMesh" id=6]
+material = SubResource( 1 )
+size = Vector3( 0.32, 0.16, 0.32 )
+
+[sub_resource type="ConvexPolygonShape" id=7]
+points = PoolVector3Array( 0.16, 0.0787302, 0.16, -0.15746, -0.08, -0.15746, -0.15746, -0.08, 0.15746, -0.16, 0.0787302, -0.16, 0.15746, -0.08, -0.15746, -0.16, 0.0787302, 0.16, 0.16, 0.0787302, -0.16, 0.15746, -0.08, 0.15746 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+mesh = SubResource( 6 )
+
+[node name="StaticBody" type="StaticBody" parent="MeshInstance"]
+
+[node name="CollisionShape" type="CollisionShape" parent="MeshInstance/StaticBody"]
+shape = SubResource( 7 )

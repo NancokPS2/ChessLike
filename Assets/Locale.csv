@@ -1,0 +1,13 @@
+keys;en;es
+UNIT_RACE_HUMAN;Human;Humano
+UNIT_RACE_HUMAN_DESC;Human;Humano
+UNIT_RACE_POXT;Poxt;Poxt
+UNIT_RACE_POXT_DESC;Poxt;Poxt
+UNIT_RACE_MANTADA;Mantada;Mantada
+UNIT_RACE_MANTADA_DESC;Mantada;Mantada
+UNIT_RACE_VIVISTAR;Vivistar;Vivistar
+UNIT_RACE_VIVISTAR_DESC;Vivistar;Vivistar
+UNIT_GENDER_MALE;Male;Hombre
+UNIT_GENDER_FEMALE;Female;Mujer
+UNIT_GENDER_OTHER;Other;Otro
+UNIT_GENDER_UNKNOWN;Unknown;Desconocido
