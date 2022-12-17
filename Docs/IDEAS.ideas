@@ -428,4 +428,5 @@ Support caster with auras
 {{Topic: TODO
 -Change the last value of Resource Map.terrainTiles:Array to be a bit flag system
 -Create the targeting class for Grid
+-Abilities must be able to populate menus on their own
 }}
