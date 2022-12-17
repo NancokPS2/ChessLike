@@ -10,8 +10,11 @@ Standard ranged attacker
 Abilities: centered on causing reliable damage
 
 - Thief -
-Slippery support combatant
-Abilities: disables enemy equipment
+Slippery support combatant. 
+Focuses on dodge stacking and has accurate yet single target debuffs 
+very flimsy if dodge is removed
+Abilities: 
+Remove: disables enemy equipment
 
 - Juggernaut -
 Tank with decent speed
