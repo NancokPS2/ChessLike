@@ -31,10 +31,10 @@ Maximum HP: average of race and class HP multiplied by strength
 {{Topic: Classes
 - Paladin -
 Tank with some support abilities 
+Slow with auras that grant passive effects
 Abilities: buffs and weak AoE healing
-	- Holy Radiance: heal allies in a small radius, short range
-	- Healing Hands: heal 1 adjacent ally for 50% of their max health
-	- Soothing Pulse: remove poison
+	- Cure Hand: Spend half of current Energy to heal twice that amount
+	- Soothing Pulse: remove 1 severity from all conditions on the target
 
 - Ranger -
 Standard ranged attacker
@@ -42,7 +42,9 @@ Abilities: centered on causing reliable damage
 
 - Thief -
 Slippery support combatant
-Abilities: disables enemy equipment
+Relies on dodge to survive and posseses reliable but single target debuffs
+Abilities: 
+Take: disables enemy equipment(can choose which piece)  
 
 - Juggernaut -
 Tank with decent speed
