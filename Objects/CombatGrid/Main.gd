@@ -10,18 +10,9 @@ var combatState:int
 func _ready() -> void:
 	Ref.mainNode = self
 	change_state(states.SETUP)
-	
+
+	CVars.saveFile.setup()
 	$UI/UnitList.populate_list(CVars.saveFile.playerUnits)#Put player units in the list
-
-	var playerNode = Unit.Generator.build_from_attributes(load("res://Resources/Characters/UniqueCharacters/Cisko.tres"))#TEMP 
-	var unitArray = [playerNode]#TEMP
-	$UI/UnitList.populate_list(unitArray)#TEMP
-	pass
-
-func _init() -> void:
-	#CVars.saveFile = load("res://GameData/Saves/Default.tres")#TEMP
-	#CVars.currentMap = load("res://GameData/Maps/Default.tres")#TEMP
-	pass
 
 
 func _input(event: InputEvent) -> void:#Update hovered cell position	
@@ -42,10 +33,6 @@ func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or n
 		
 		typesOfInfo.POSITION:
 			return selection.get("position",Vector3.ZERO)-Vector3(0,0.1,0)
-
-
-	
-
 
 
 #State handling

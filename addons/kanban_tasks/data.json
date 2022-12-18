@@ -55,13 +55,14 @@
     {
       "title": "Doing",
       "tasks": [
-        9
+
       ]
     },
     {
       "title": "Done",
       "tasks": [
         4,
+        9,
         7,
         17,
         2,
@@ -124,7 +125,7 @@
     {
       "category": 0,
       "title": "Get the combat scene to load the current save file",
-      "details": ""
+      "details": "Main.gd:12"
     },
     {
       "category": 0,

@@ -45,19 +45,22 @@ func load_from_folder(folderPath:String,type:String):
 				
 		file_name = loadingDir.get_next()#Get next file
 	pass
+	
 func get_resource(identifier:String,type:String,useCategory:bool = false):#If useCategory is true
 	if identifier == "":
-		return
+		push_error("No identifier given for " + type + " returnal.")
 	elif type == "":
-		push_error("Tried to retrieve resource but a type was not specified.")
+		push_error("Tried to retrieve resource but a type was not specified for identifier: " + identifier)
 		return
 	if not useCategory:#If NOT USING a category
 		for resource in resources[type]:
 			if resource.internalName == identifier:
+				assert(resource != null)
 				return resource
 	else:#If USING a category
 		for resource in resources[type]:
 			if resources.get("resCategory") != null and resource.get("resCategory") == identifier:
+				assert(resource != null)
 				return resource
 	push_error("Resource not found. Name: "+identifier+" | Type: " + type)
 	

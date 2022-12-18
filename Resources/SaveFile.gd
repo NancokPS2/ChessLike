@@ -6,12 +6,12 @@ class SaveFile extends ConfigFile:
 	
 	const SaveName = "New Game"
 	const Flags = 0
-	const PlayerUnitsIN = ["res://Resources/Characters/UniqueCharacters/Misha.tres"]
+	const PlayerUnitsIN = ["Misha"]
 	const PlayerFactionIN = "PLAYER"
 	const ProgressFlags = {"storyStart":false}
 	
-	var playerUnits
-	var playerFaction
+	var playerUnits:Array
+	var playerFaction:Faction
 	
 	func _init() -> void:
 		if not get_value("misc","initiated"):
@@ -28,20 +28,23 @@ class SaveFile extends ConfigFile:
 	var currentStatus
 	func setup():#Must be ran after being loaded
 		load_resources()
-		print("Setup of save finished with status: " + str( validation_messages() ) )
+		push_warning("Setup of save finished with status: " + str( validation_messages() ) )
 			
 
 	func load_resources():#Initial loading of resources
 		
 		var unitsIN = get_value("main","playerUnitsIN")
 		var factionIN = get_value("main","playerFactionIN")
-		assert(unitsIN != null and factionIN != null)
+		assert(unitsIN is Array and factionIN is String)
 		
 		for unitIN in unitsIN:#Load units
-			var loadedUnit = ResList.get_resouce(unitIN,"characters")
-			playerUnits.append(loadedUnit)
+			var loadedUnit = ResList.get_resource(unitIN,"characters")
+			assert(loadedUnit is Resource)
+			var unitNode = Unit.Generator.build_from_attributes(loadedUnit)
+			playerUnits.append(unitNode)
 		
 		playerFaction = ResList.get_resource(factionIN,"factions")
+		assert(playerFaction is Faction)
 
 	func validation_messages():
 		var messages:Array
@@ -51,8 +54,11 @@ class SaveFile extends ConfigFile:
 			
 		if playerUnits.empty():
 			messages.append("No playable units could be loaded /")
+			
+		if messages.empty():
+			messages.append("OK")
 		
-		push_error( str(messages) )
+		return( str(messages) )
 
 
 class Manager extends Node:

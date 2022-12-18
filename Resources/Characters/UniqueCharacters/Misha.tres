@@ -4,26 +4,59 @@
 
 [resource]
 script = ExtResource( 1 )
+internalName = "Misha"
+displayName = "ERR_NONAME"
+stats = {
+"accuracy": 0,
+"actions": 1,
+"actionsMax": 1,
+"agility": 0,
+"defense": 0,
+"delay": 0,
+"dodge": 0,
+"energy": 30,
+"energyMax": 30,
+"health": 100,
+"healthMax": 100,
+"maxTurnDelay": 100,
+"mind": 0,
+"moveDistance": 0,
+"movementType": 0,
+"moves": 1,
+"movesMax": 1,
+"special": 0,
+"strength": 0,
+"turnDelay": 0
+}
+statModifiers = {
+"accuracy": 1.0,
+"agility": 1.0,
+"defense": 1.0,
+"dodge": 1.0,
+"maxEnergy": 1.0,
+"maxHealth": 1.0,
+"mind": 1.0,
+"moveDistance": 1.0,
+"special": 1.0,
+"strength": 1.0
+}
 unitRace = "HUMAN"
 unitClass = "GRUNT"
 unitFaction = "PLAYER"
-unitName = "Misha"
-unitGender = 3
-firstNames = [  ]
-lastNames = [  ]
-statStrength = 0
-statAgility = 0
-statMind = 0
-statSpecial = 0
-statMove = 0
-statDefense = 0
-statDodge = 0
-statAccuracy = 0
-movementType = 0
-healthMax = 0
-energyMax = 0
-energy = 0
-energyRegenerationRate = 0
-turnDelayBase = 0
-actionsBase = 1
-movesBase = 1
+info = {
+"className": "Unemployed",
+"factionName": "",
+"firstName": "Unnamed",
+"lastName": "",
+"nickName": "Nick",
+"raceName": "no race?",
+"sex": 0
+}
+equipment = {
+"ACC1": "",
+"ACC2": "",
+"ACC3": "",
+"ARMOR": "",
+"L_HAND": "",
+"R_HAND": ""
+}

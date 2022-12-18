@@ -72,5 +72,3 @@ func use(params):
 func _use(params):
 	pass
 
-class AbilityOptionButton extends Button:
-
