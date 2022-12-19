@@ -50,6 +50,8 @@ export (int) var abilityRange#Distance in tiles from the player which it can tar
 signal finalized
 
 
+
+
 func equip(newUser:Node):
 	user = newUser
 	connect_triggers()
@@ -71,4 +73,16 @@ func use(params):
 	
 func _use(params):
 	pass
+	
+enum AvailabilityStatus {OK,CUSTOM_FALSE,NOT_ENOUGH_ENERGY,OTHER}
+func check_availability() -> int:
+	if _check_availability() == false:
+		return AvailabilityStatus.CUSTOM_FALSE
+		
+	if user.stats["energy"] < energyCost:
+		return AvailabilityStatus.NOT_ENOUGH_ENERGY
+		
+	return AvailabilityStatus.OK
 
+func _check_availability() -> bool:#Virtual function, prevents usage if false
+	return true

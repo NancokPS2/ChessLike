@@ -14,8 +14,6 @@ func _ready() -> void:
 	if collapseSignal != "":
 		Events.connect(collapseSignal,self,"expand",[false])
 		
-	var abils = [ResList.get_resource("FUCKOFF","abilities")]
-	populate_with_actions(abils)
 
 func expand(enable:bool, menu:Node = self):
 	if enable:
@@ -24,34 +22,6 @@ func expand(enable:bool, menu:Node = self):
 		mouse_filter = MOUSE_FILTER_IGNORE
 	
 	visible = enable#Show/hide
-		
-func populate_with_actions(abilities:Array):
-	for i in get_children():
-		i.queue_free()
-	if not abilities.empty():#Ensure it isn't empty
-		assert(abilities[0] is Ability)
-		pass
-	
-	ButtonAction.add_action_buttons(self,abilities)
-		
-class ButtonAction extends Button:
-	
-	var abilityStored:Ability
-		
-	func _init(abilityPassed) -> void:
-		abilityStored = abilityPassed
-	
-	func _ready() -> void:
-		connect("button_up",Events,"emit_signal",["COMBAT_ACTING_abilitychosen"])
-		var ass
-		
-	static func add_action_buttons(control:Node,abilities:Array):
-		for ability in abilities:
-			assert(ability is Ability)
-			var button = ButtonAction.new(ability)
-			button.text = ability.displayedName
-			control.add_child(button)
-	
 	
 
 #func add_button(buttonName,buttonText,variant = null,enabled:bool = true):#variant can be returned as a value
