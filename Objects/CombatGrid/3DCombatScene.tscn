@@ -109,7 +109,7 @@ margin_bottom = 68.0
 text = "UI_COMBAT_ENDTURN"
 script = ExtResource( 7 )
 stateToAffect = 1
-combatState = 3
+combatState = 4
 
 [node name="TurnManager" type="HBoxContainer" parent="UI"]
 anchor_right = 1.0
@@ -164,7 +164,3 @@ script = ExtResource( 10 )
 [node name="LowPriorityTimer" type="Timer" parent="."]
 wait_time = 0.08
 autostart = true
-
-[node name="Button" type="Button" parent="."]
-margin_right = 12.0
-margin_bottom = 20.0
