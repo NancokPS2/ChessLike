@@ -67,6 +67,8 @@ func change_stat(stat:String,amount:int,flags:int):
 				get_node("VFX").play("Took Damage")
 				if stats.health <= 0:
 					emit_signal("health_depleted")
+		_:
+				stats[stat] += amount
 
 	
 #Possible parameters user, flags
