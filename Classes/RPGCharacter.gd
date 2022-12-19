@@ -139,7 +139,7 @@ func start_turn():
 	stats.moves = stats.movesMax
 	
 func end_turn():
-	var UI = CVars.refUITree
+	var UI = Ref.UITree
 	emit_signal("turn_ended")
 	
 	for x in CVars.unitsInPlay:#Adjust delays

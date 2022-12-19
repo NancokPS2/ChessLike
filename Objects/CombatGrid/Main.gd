@@ -8,11 +8,19 @@ enum combatStates {IDLE,MOVING,ACTING,TARGETING,FACING}
 var combatState:int
 
 func _ready() -> void:
+	Events.connect( "COMBAT_enter", $UI/TurnManager,"reorder_array_by_turn_delay",[], CONNECT_ONESHOT )#Reorders unit turns
+	Events.connect( "COMBAT_enter", $UI/TurnManager,"populate_list",[], CONNECT_ONESHOT )#Update units shown above
+
+	
+	
 	Ref.mainNode = self
 	change_state(states.SETUP)
 
 	CVars.saveFile.setup()
 	$UI/UnitList.populate_list(CVars.saveFile.playerUnits)#Put player units in the list
+	
+	
+	
 
 
 func _input(event: InputEvent) -> void:#Update hovered cell position	

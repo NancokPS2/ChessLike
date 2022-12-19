@@ -13,7 +13,7 @@ func _ready() -> void:
 	._ready()
 	expand(false)
 
-func add_misc_option(buttonName:String="UnassignedName",returnValue=null):#Adds a button that can return any value trough button_press()
+func add_option(buttonName:String="UnassignedName",returnValue=null):#Adds a button that can return any value trough button_press()
 	currentState = State.OPTIONS
 	var newButton = ActionMenuButton.new(buttonName,returnValue)
 	add_child(newButton)
@@ -24,15 +24,17 @@ func clear_menu():
 	for child in get_children():
 		child.queue_free()
 		
-func fill_abilities(unit:Unit):#Fills it with abilities from a unit, they return the ability in question
+func fill_abilities(unit:Node):#Fills it with abilities from a unit, they return the ability in question
 	currentState = State.ABILITIES
 	for abil in unit.abilities:
-		assert(abil is Ability)
-		
-		var button:ActionMenuButton = add_misc_option(abil.displayedName,abil)#Create the button and keep a reference to it
-		
-		if not abil.check_availability() == Ability.AvailabilityStatus.OK:#Disable it if it should not be selectable
-			button.disabled = true
+		if not abil.get_class() != "Ability":
+			push_error("Tried to add non-Ability to " + get_class())
+			
+		else:
+			var button:ActionMenuButton = add_option(abil.displayedName,abil)#Create the button and keep a reference to it
+			
+			if not abil.check_availability() == Ability.AvailabilityStatus.OK:#Disable it if it should not be selectable
+				button.disabled = true
 
 func button_press(btn:ActionMenuButton):#Called when a button is pressed
 	emit_signal("button_pressed",btn.returnValue)#Important when someone yields to this

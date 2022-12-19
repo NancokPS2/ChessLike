@@ -46,6 +46,8 @@ export (int) var turnDelayCost
 
 export (int) var abilityRange#Distance in tiles from the player which it can target
 
+export (Dictionary) var miscOptions#Used to get extra parameters from the player
+#Example: {"Head":Const.bodyParts.HEAD}
 
 signal finalized
 
@@ -68,6 +70,16 @@ func connect_triggers():
 		assert(errorCode == OK, str(errorCode))
 	
 func use(params):
+	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
+	if yieldMenu.get_class() == "YieldMenu":
+		
+		for option in miscOptions:#Populate with options
+			yieldMenu.add_option(option, miscOptions[option])
+		
+	else:
+		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
+		
+	
 	_use(params)
 	pass
 	
@@ -87,11 +99,4 @@ func check_availability() -> int:
 func _check_availability() -> bool:#Virtual function, prevents usage if false
 	return true
 
-func misc_option(optName:String, value):
-	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
-	if yieldMenu is YieldMenu:  
-		yieldMenu.add_misc
-		
-	else:
-		push_error("CombatScene is lacking ActionsMenu node")
 	
