@@ -89,3 +89,5 @@ func _check_availability() -> bool:#Virtual function, prevents usage if false
 
 func misc_option():
 	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
+	if not yieldMenu is YieldMenu:  
+		push_error("CombatScene is lacking ActionsMenu node")
