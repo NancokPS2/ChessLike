@@ -86,3 +86,6 @@ func check_availability() -> int:
 
 func _check_availability() -> bool:#Virtual function, prevents usage if false
 	return true
+
+func misc_option():
+	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
