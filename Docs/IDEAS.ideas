@@ -37,8 +37,11 @@ Abilities: buffs and weak AoE healing
 	- Soothing Pulse: remove poison
 
 - Ranger -
-Standard ranged attacker
-Abilities: centered on causing reliable damage
+Standard ranged attacker, versatile
+Abilities: centered on being a skirmisher that can deal reliable damage  
+	-   
+	- Retreat: move 1 extra tile and reduce damage taken and dealt until the end of the next turn  
+
 
 - Thief -
 Slippery support combatant
@@ -46,7 +49,10 @@ Abilities: disables enemy equipment
 
 - Juggernaut -
 Tank with decent speed
-Abilities: survival focused buffs for self
+Abilities: survival focused buffs for self, high Hp poil  
+	- Unstoppable(passive): ignores movement debuffs or effects  
+	- Relentless advance: Pushes the enemy back and follows onto their tile 
+	- Leap: moves to a nearby tile ignoring terrain
 
 - Artillerist -
 Ranged unit based around self buffs to offense
