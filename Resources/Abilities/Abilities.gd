@@ -51,9 +51,6 @@ export (Dictionary) var miscOptions#Used to get extra parameters from the player
 
 signal finalized
 
-
-
-
 func equip(newUser:Node):
 	user = newUser
 	connect_triggers()

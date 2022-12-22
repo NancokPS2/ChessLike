@@ -14,6 +14,7 @@ func _ready() -> void:
 	expand(false)
 	Events.connect("COMBAT_ACTING_listabilities",self,"expand",[true])
 	Events.connect("COMBAT_ACTING_listabilities",self,"fill_abilities")
+	
 
 func add_option(buttonName:String="UnassignedName",returnValue=null):#Adds a button that can return any value trough button_press()
 	currentState = State.OPTIONS
@@ -29,8 +30,11 @@ func clear_menu():
 func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a unit, they return the ability in question
 	currentState = State.ABILITIES
 	for abil in unit.abilities:
-		if not abil.get_class() != "Ability":
+		if not abil.get_class() != "Ability":#Do not show it if not an a
 			push_error("Tried to add non-Ability to " + get_class())
+			
+		elif abil.abilityFlags && Ability.AbilityFlags.PASSIVE:#Do not show passives
+			return
 			
 		else:
 			var button:ActionMenuButton = add_option(abil.displayedName,abil)#Create the button and keep a reference to it
@@ -58,10 +62,10 @@ class ActionMenuButton extends Button:
 		returnValue = returnVal
 			
 	func _ready() -> void:
-		if get_parent().get_class() == "YieldMenu":
+		if get_parent().get_class() == "VBoxContainer":
 			connect("button_up",get_parent(),"button_press",[self])#Causes the parent to send a signal
 		else:
-			push_error("Placed " + get_class() + " under NON YieldMenu parent, freeing self...")
+			push_error("Placed " + get_class() + " under " + get_parent().get_class() + " parent, freeing self...")
 			queue_free()
 
 	func _pressed():

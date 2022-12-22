@@ -60,6 +60,18 @@ func place_object(object:Node,location:Vector3,type:int=objectTypes.UNITS,forceP
 	
 	object.set_meta("mapPos",location)#Store a reference to a new position on the object
 
+func remove_object(object:Node,type:int=objectTypes.UNITS):
+	assert(object is Node and type is int)
+	var objPos = object.get_meta("mapPos",null)
+	
+	assert(objPos is Vector3)
+	
+	cellDict[type].erase(objPos)#Remove it from the dict
+	object.set_meta("mapPos",null)
+	object.get_parent().remove_child(object)#Remove it from the scene
+
+#func position_verification(object:Node,location:Vector3,type:int):
+
 func _input(event: InputEvent) -> void:
 	if not CVars.settingUsingController:#While not using a controller, keep tabs on the current mouse hovered tile
 		hoveredCell = world_to_map( Ref.mainNode.get_hovered(Ref.mainNode.typesOfInfo.POSITION) )#Keep track of the currently hovered tile

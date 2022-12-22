@@ -8,10 +8,6 @@ enum combatStates {IDLE,MOVING,ACTING,TARGETING,FACING}
 var combatState:int
 
 func _ready() -> void:
-	Events.connect( "COMBAT_enter", $UI/TurnManager,"reorder_array_by_turn_delay",[], CONNECT_ONESHOT )#Reorders unit turns
-	Events.connect( "COMBAT_enter", $UI/TurnManager,"populate_list",[], CONNECT_ONESHOT )#Update units shown above
-
-	
 	
 	Ref.mainNode = self
 	change_state(states.SETUP)
@@ -24,7 +20,8 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:#Update hovered cell position	
-	$DebugLabel.text = str( get_hovered(typesOfInfo.POSITION) )#TEMP
+	#$DebugLabel.text = str( get_hovered(typesOfInfo.POSITION) )#TEMP
+	$DebugLabel.text = str(Ref.unitsInBattle)
 	$DebugMesh.translation = get_hovered(typesOfInfo.POSITION)#TEMP
 
 enum typesOfInfo {POSITION,OBJECT}
@@ -57,7 +54,6 @@ func change_state(newState:int):
 				Events.emit_signal("SETUP_exit")
 			states.COMBAT:
 				Events.emit_signal("COMBAT_exit")
-				change_combat_state(combatStates.IDLE)
 			states.PAUSE:
 				Events.emit_signal("PAUSE_exit")
 			states.END:
@@ -137,10 +133,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			if event.is_action_released("primary_click"):#Unit placement
 				if Ref.unitSelected is Unit:#If a unit has been selected
 					$Grid.place_object(Ref.unitSelected,$Grid.hoveredCell,MovementGrid.objectTypes.UNITS)#Add unit to map in the highlighted cell in the UNITs section
+					if Ref.unitsInBattle.find(Ref.unitSelected ) == -1 : #If the unit is not in battle...
+						Ref.unitsInBattle.append(Ref.unitSelected )#Add it to the list
+						
 				else:#If not, select any clicked units
 					Ref.unitSelected = $Grid.get_cell_occupant($Grid.hoveredCell)
 			
 			elif event.is_action_released("secondary_click"):
+				var thingHovered = $Grid.get_cell_occupant($Grid.hoveredCell)
+				if thingHovered is Unit:#If a unit was clicked
+					$Grid.remove_object(thingHovered, $Grid.objectTypes.UNITS)#Remove it from the field
+					Ref.unitsInBattle.remove( Ref.unitsInBattle.find(thingHovered) )#Remove it from the unit list
+					
 				Ref.unitSelected = null#Deselect the current unit
 				$UI/InfoDisplay.clear_unit()
 					

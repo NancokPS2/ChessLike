@@ -14,7 +14,7 @@ class SaveFile extends ConfigFile:
 	var playerFaction:Faction
 	
 	func _init() -> void:
-		if not get_value("misc","initiated"):
+		if not get_value("misc","initiated",false):
 			set_value("main","saveName",SaveName)
 			set_value("main","flags",Flags)
 			set_value("main","progressFlags",ProgressFlags)
