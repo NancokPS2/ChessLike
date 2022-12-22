@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_transparent = true
+albedo_color = Color( 1, 0.478431, 0.101961, 0.313726 )
+
+[sub_resource type="PlaneMesh" id=2]
+material = SubResource( 3 )
+
+[node name="TargetingCellVisual" type="MeshInstance"]
+transform = Transform( 0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.715041, 0 )
+mesh = SubResource( 2 )

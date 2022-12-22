@@ -3,7 +3,9 @@ class_name Ability
 
 signal ability_finalized
 
-var displayedName
+export (String) var displayedName
+
+export (String) var description
 
 var user:Node
 

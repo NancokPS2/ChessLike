@@ -12,11 +12,14 @@ var hoveredCell:Vector3#Stores the currently hovered cell
 
 onready var terrain = Terrain.new(currentMap)
 onready var targeting = Targeting.new()
+
+var abilityHolder
 func _ready() -> void:
 	cell_size = defaultCellSize
 	
 	register_tiles(currentMap)#Store each tile in cellDict, WIP
 	add_child(terrain)#Adds the terrain so it can generate itself
+	
 
 func register_tiles(map:Map):#WIP?
 	for tile in currentMap.terrainTiles:#Place all tiles in the map
@@ -144,6 +147,7 @@ class Terrain extends GridMap:
 
 
 class Targeting extends GridMap:
+	const targetingCell = preload("res://Objects/CombatGrid/ChosenCellMesh.tscn")
 	
 	func _ready() -> void:
 		mesh_library #TODO

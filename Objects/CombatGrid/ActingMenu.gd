@@ -12,6 +12,7 @@ func move_button():
 
 func act_button():
 	assert(Ref.unitInAction is Unit)
+	Events.emit_signal("COMBAT_ACTING_enter")
 	Events.emit_signal("COMBAT_ACTING_listabilities")
 	expand(false)#Hide
 	
