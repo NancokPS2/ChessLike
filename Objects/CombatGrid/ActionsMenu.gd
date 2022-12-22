@@ -12,6 +12,8 @@ var currentState = State.EMPTY
 func _ready() -> void:
 	._ready()
 	expand(false)
+	Events.connect("COMBAT_ACTING_listabilities",self,"expand",[true])
+	Events.connect("COMBAT_ACTING_listabilities",self,"fill_abilities")
 
 func add_option(buttonName:String="UnassignedName",returnValue=null):#Adds a button that can return any value trough button_press()
 	currentState = State.OPTIONS
@@ -24,7 +26,7 @@ func clear_menu():
 	for child in get_children():
 		child.queue_free()
 		
-func fill_abilities(unit:Node):#Fills it with abilities from a unit, they return the ability in question
+func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a unit, they return the ability in question
 	currentState = State.ABILITIES
 	for abil in unit.abilities:
 		if not abil.get_class() != "Ability":
@@ -32,12 +34,15 @@ func fill_abilities(unit:Node):#Fills it with abilities from a unit, they return
 			
 		else:
 			var button:ActionMenuButton = add_option(abil.displayedName,abil)#Create the button and keep a reference to it
+			button.set_meta("isAbility",true)
 			
 			if not abil.check_availability() == Ability.AvailabilityStatus.OK:#Disable it if it should not be selectable
 				button.disabled = true
 
 func button_press(btn:ActionMenuButton):#Called when a button is pressed
 	emit_signal("button_pressed",btn.returnValue)#Important when someone yields to this
+	if btn.get_meta("isAbility"):
+		Events.emit_signal("COMBAT_ACTING_abilitychosen",btn.returnValue)
 
 
 class ActionMenuButton extends Button:

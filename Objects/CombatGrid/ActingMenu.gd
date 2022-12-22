@@ -12,15 +12,9 @@ func move_button():
 
 func act_button():
 	assert(Ref.unitInAction is Unit)
-	var yieldMenu:YieldMenu = Ref.UITree.get_node("ActionsMenu")
+	Events.emit_signal("COMBAT_ACTING_listabilities")
 	expand(false)#Hide
-	yieldMenu.expand(true)#Show the ActionsMenu
 	
-	yieldMenu.fill_abilities(Ref.unitInAction)
-	
-	
-	
-	pass
 	
 func end_turn_button():
 	pass

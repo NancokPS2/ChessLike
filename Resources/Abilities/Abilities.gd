@@ -88,7 +88,7 @@ func _use(params):
 	
 enum AvailabilityStatus {OK,CUSTOM_FALSE,NOT_ENOUGH_ENERGY,OTHER}
 func check_availability() -> int:  
-        var errorCode:int = 0
+	var errorCode:int = 0
 	if _check_availability() == false:  
 		errorCode += AvailabilityStatus.CUSTOM_FALSE
 		
