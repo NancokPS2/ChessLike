@@ -87,14 +87,15 @@ func _use(params):
 	pass
 	
 enum AvailabilityStatus {OK,CUSTOM_FALSE,NOT_ENOUGH_ENERGY,OTHER}
-func check_availability() -> int:
-	if _check_availability() == false:
-		return AvailabilityStatus.CUSTOM_FALSE
+func check_availability() -> int:  
+        var errorCode:int = 0
+	if _check_availability() == false:  
+		errorCode += AvailabilityStatus.CUSTOM_FALSE
 		
 	if user.stats["energy"] < energyCost:
-		return AvailabilityStatus.NOT_ENOUGH_ENERGY
+		errorCode += AvailabilityStatus.NOT_ENOUGH_ENERGY
 		
-	return AvailabilityStatus.OK
+	return errorCode
 
 func _check_availability() -> bool:#Virtual function, prevents usage if false
 	return true
