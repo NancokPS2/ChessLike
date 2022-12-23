@@ -121,8 +121,21 @@ func get_targets_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int)->
 			if cellDict[objectTypes.UNITS].has(tile):#If the dict has a unit in the tile
 				targetedUnits.append( cellDict[objectTypes.UNITS][tile] )#Add the unit to the list
 		return targetedUnits
-		
-		
+	
+	
+	
+func ability_targeting(ability:Ability,origin:Vector3):
+	if not Ref.unitInAction is Unit or Ref.unitInAction.get_meta("mapPos") == null:
+		push_error( str(Ref.unitInAction) + " does not have mapPos metadata." )
+
+	var origin = Ref.unitInAction.get_meta("mapPos")
+	
+	var tilesTargeted = get_tiles_in_shape(get_used_cells(),origin,ability.areaSize,ability.targetingShape) 
+	
+	targeting.highlight_tiles(tilesTargeted) 
+	
+	var validTargets = get_targets_in_area(Ref.unitInAction.get_meta("mapPos"),ability.areaSize,ability.targetingShape,ability.abilityFlags)
+	
 class Terrain extends GridMap:
 	var map:Map
 
@@ -165,3 +178,6 @@ class Targeting extends GridMap:
 	
 	func clear_highlights():
 		$Targeting.clear()
+	
+	
+		

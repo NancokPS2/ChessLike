@@ -8,6 +8,7 @@ enum combatStates {IDLE,MOVING,ACTING,TARGETING,FACING}
 var combatState:int
 
 func _ready() -> void:
+	Events.connect("COMBAT_ACTING_abilitychosen",self,"change_combat_state",[combatStates.TARGETING])
 	
 	Ref.mainNode = self
 	change_state(states.SETUP)
