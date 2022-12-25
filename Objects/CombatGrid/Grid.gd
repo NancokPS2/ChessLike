@@ -128,7 +128,7 @@ func ability_targeting(ability:Ability,origin:Vector3):
 	if not Ref.unitInAction is Unit or Ref.unitInAction.get_meta("mapPos") == null:
 		push_error( str(Ref.unitInAction) + " does not have mapPos metadata." )
 
-	var origin = Ref.unitInAction.get_meta("mapPos")
+	origin = Ref.unitInAction.get_meta("mapPos")
 	
 	var tilesTargeted = get_tiles_in_shape(get_used_cells(),origin,ability.areaSize,ability.targetingShape) 
 	

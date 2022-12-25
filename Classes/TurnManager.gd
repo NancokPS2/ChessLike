@@ -11,8 +11,9 @@ var unitDisplay = preload("res://Objects/UI/TurnDisplay/PerUnitDisplay.tscn")
 var unitsInOrder:Array
 
 func _ready() -> void:
-	Events.connect( "COMBAT_enter", self,"choose_new_acting_unit",[], CONNECT_ONESHOT )
-	Events.connect( "COMBAT_enter", self,"populate_list",[], CONNECT_ONESHOT )#Update units shown above
+	Events.connect( "SETUP_exit", self,"choose_new_acting_unit" )
+	Events.connect( "SETUP_exit", self,"populate_list")#Update units shown above
+	Events.connect( "COMBAT_FACING_exit", self, "end_turn" )
 
 
 func choose_new_acting_unit(unitList:Array = Ref.unitsInBattle):

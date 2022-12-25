@@ -8,7 +8,7 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func move_button():
-	pass
+	Ref.mainNode.change_combat_state(GameBoard.combatStates.MOVING)
 
 func act_button():
 	assert(Ref.unitInAction is Unit)
@@ -18,4 +18,4 @@ func act_button():
 	
 	
 func end_turn_button():
-	pass
+	Ref.mainNode.change_combat_state(GameBoard.combatStates.FACING)

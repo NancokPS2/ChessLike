@@ -57,6 +57,7 @@ func change_state(newState:int):
 				Events.emit_signal("COMBAT_exit")
 			states.PAUSE:
 				Events.emit_signal("PAUSE_exit")
+				get_tree().paused = false
 			states.END:
 				Events.emit_signal("END_exit")
 	
@@ -69,7 +70,7 @@ func change_state(newState:int):
 			pass
 		states.PAUSE:
 			Events.emit_signal("PAUSE_enter")
-			pass
+			get_tree().paused = false
 		states.END:
 			Events.emit_signal("END_enter")
 			pass
@@ -177,10 +178,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			match combatState:
 				combatStates.MOVING:
 					
-					if event.is_action_released("primary_click") and Ref.unitInAction.stats.moves>0:
+					if event.is_action_released("primary_click"):
 		
-						if Ref.unitInAction.stats.moves <= 0:
-							Events.emit_signal("UI_HINT_CHARACTER_NO_MOVES")
+						if Ref.unitInAction.stats.moves <= 0:#Not enough moves
+							Events.emit_signal("HINT_UPDATE","UI_NOT_ENOUGH_MOVES") #Anounce it
 						
 						elif $Grid.get_cell_occupant($Grid.hoveredCell) == null:#Check if the cell is empty
 							$Grid.place_object(Ref.unitInAction,$Grid.hoveredCell)#Move the unit there
