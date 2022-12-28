@@ -28,8 +28,8 @@ func _input(event: InputEvent) -> void:#Update hovered cell position
 enum typesOfInfo {POSITION,OBJECT}
 func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or node hovered by the mouse
 	var mousePos = get_viewport().get_mouse_position()
-	var rayFrom = $Grid/Camera.project_ray_origin(mousePos)
-	var rayTo = rayFrom + $Grid/Camera.project_ray_normal(mousePos) * 6000
+	var rayFrom = $Grid/CameraOrigin/Camera.project_ray_origin(mousePos)
+	var rayTo = rayFrom + $Grid/CameraOrigin/Camera.project_ray_normal(mousePos) * 6000
 	var spaceState = get_world().direct_space_state
 	var selection = spaceState.intersect_ray(rayFrom, rayTo)
 	

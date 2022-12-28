@@ -5,7 +5,7 @@ var playerFaction="PLAYER"
 var currentMap:Map = Map.new()
 
 #Settings
-var settingCameraSpeed:int = 20
+var settingCameraSpeed:float = 3
 var settingDebugMode:bool = true
 var settingUsingController:bool = false
 
