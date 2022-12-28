@@ -30,7 +30,7 @@ func clear_menu():
 func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a unit, they return the ability in question
 	currentState = State.ABILITIES
 	for abil in unit.abilities:
-		if not abil.get_class() != "Ability":#Do not show it if not an a
+		if not abil.get_class() != "Ability":#Do not show it if not an ability
 			push_error("Tried to add non-Ability to " + get_class())
 			
 		elif abil.abilityFlags && Ability.AbilityFlags.PASSIVE:#Do not show passives
@@ -38,15 +38,19 @@ func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a 
 			
 		else:
 			var button:ActionMenuButton = add_option(abil.displayedName,abil)#Create the button and keep a reference to it
-			button.set_meta("isAbility",true)
+			button.set_meta("isAbility",true)#Tag it
+			
+			button.connect("button_up",button.returnValue,"use")#Trigger the ability if the button is pressed
 			
 			if not abil.check_availability() == Ability.AvailabilityStatus.OK:#Disable it if it should not be selectable
 				button.disabled = true
 
+
 func button_press(btn:ActionMenuButton):#Called when a button is pressed
 	emit_signal("button_pressed",btn.returnValue)#Important when someone yields to this
 	if btn.get_meta("isAbility"):
-		Events.emit_signal("COMBAT_ACTING_abilitychosen",btn.returnValue)
+		btn.returnValue.use()#TEMP, lacks parameters
+
 
 
 class ActionMenuButton extends Button:

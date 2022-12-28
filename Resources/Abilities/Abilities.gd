@@ -67,8 +67,13 @@ func connect_triggers():
 		
 		var errorCode = user.connect(signa,self,triggerSignals[signa])
 		assert(errorCode == OK, str(errorCode))
+		
+func use( params={} ):
+	Events.emit_signal("COMBAT_ACTING_abilitychosen",self)
 	
-func use(params):
+	if not params.has("flags"):#Ensure they exist
+		params["flags"] = 0
+	
 	#---Populating with optional parameters---
 	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
 	assert(yieldMenu != null)
@@ -85,6 +90,7 @@ func use(params):
 		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
 		return
 		
+	params["optionSelected"] = optionSelected
 	#---------
 	
 	#---Wait for targeting---
@@ -94,6 +100,7 @@ func use(params):
 	grid.mark_cells_for_targeting(user.get_meta("mapPos"),areaSize,targetingShape,abilityFlags)
 	
 	var targetTile = yield(Events,"GRID_TILE_CLICKED") 
+	params["target"] = targetTile
 	#---------
 	
 	_use(params)

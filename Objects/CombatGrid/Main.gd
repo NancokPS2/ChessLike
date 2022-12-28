@@ -8,7 +8,7 @@ enum combatStates {IDLE,MOVING,ACTING,TARGETING,FACING}
 var combatState:int
 
 func _ready() -> void:
-	Events.connect("COMBAT_ACTING_abilitychosen",self,"change_combat_state",[combatStates.TARGETING])
+
 	Events.connect("STATE_CHANGE",self,"change_state")
 	Events.connect("STATE_CHANGE_COMBAT",self,"change_combat_state")
 	
@@ -106,6 +106,7 @@ func change_combat_state(newState:int):
 			pass
 		combatStates.MOVING:
 			Events.emit_signal("COMBAT_MOVING_enter")
+			
 			pass
 		combatStates.ACTING:
 			Events.emit_signal("COMBAT_ACTING_enter")

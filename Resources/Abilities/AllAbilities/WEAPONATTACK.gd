@@ -14,9 +14,20 @@ func _ready():
 	parametersReq = ParametersReq.USED_WEAPON + ParametersReq.TARGET_UNIT
 	
 
-func use(parametersMethod:Dictionary):
-	var weaponHolder = parametersMethod[ParametersReq.USED_WEAPON]
-	var targetHolder = parametersMethod[ParametersReq.TARGET_UNIT]
+func _use(params):
+	var weaponHolder = user.equipment["R_HAND"]
 	
-	targetHolder.attributes.damage_health(weaponHolder.damage,weaponHolder.attackFlagList)
+	params["target"].change_stat("health",weaponHolder.damage)
 	emit_signal("ability_finalized")#Must emit the signal or the game will soft-lock
+	_check_availability()
+
+func _check_availability():
+	if user.equipment["R_HAND"] != null or user.equipment["L_HAND"] != null:
+		return false
+	else:
+		return true
+
+const parameters = {
+	"target":null,
+	"flags":null
+}
