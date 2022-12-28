@@ -21,13 +21,17 @@ signal COMBAT_ACTING_enter
 signal COMBAT_ACTING_listabilities
 signal COMBAT_ACTING_miscoptions #used to select arbitrary options
 signal COMBAT_ACTING_abilitychosen
+signal COMBAT_ACTING_targetingmode
 signal COMBAT_ACTING_exit
 
 signal COMBAT_TARGETING_enter
 signal COMBAT_TARGETING_exit
 
 signal COMBAT_FACING_enter
+signal COMBAT_FACING_turnend
 signal COMBAT_FACING_exit
+
+
 
 signal COMBAT_IDLE_enter
 signal COMBAT_IDLE_exit

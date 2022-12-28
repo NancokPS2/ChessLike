@@ -53,7 +53,8 @@ func end_turn(turnOwner:Node=Ref.unitInAction, unitList:Array=Ref.unitsInBattle)
 	for x in unitList:#Lower the delay of all units, time advance
 		x.stats.turnDelay -= delayFromOwner
 	
-	turnOwner.stats.turnDelay = turnOwner.stats.turnDelayMax#Whoever's turn just ended, reset their delay'
+	turnOwner.stats.turnDelay = turnOwner.stats.turnDelayMax#Whoever's turn just ended, reset their delay
+	
 	reorder_array_by_turn_delay(unitList)#Reorder the list
 	
 	Ref.unitInAction = unitList[0]#Set the new unit as the last 

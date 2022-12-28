@@ -188,9 +188,15 @@ func _unhandled_input(event: InputEvent) -> void:
 							Ref.unitInAction.stats["moves"] -= 1#Reduce the amount of moves remaining
 					
 							
-			match combatState:
+			
 				combatStates.TARGETING:
 					if event.is_action_released("primary_click"): #TODO
+						pass
+						
+				combatStates.FACING:
+					if event.is_action_released("primary_click"):
+						Events.emit_signal("COMBAT_FACING_turnend")
+						change_combat_state(combatStates.IDLE)
 						pass
 
 		states.PAUSE:

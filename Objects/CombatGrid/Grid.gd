@@ -162,6 +162,10 @@ class Terrain extends GridMap:
 class Targeting extends GridMap:
 	const targetingCell = preload("res://Objects/CombatGrid/ChosenCellMesh.tscn")
 	
+	const DataReq = {
+		"origin":null
+	}
+	
 	func _ready() -> void:
 		mesh_library #TODO
 		cell_size = defaultCellSize
@@ -180,4 +184,5 @@ class Targeting extends GridMap:
 		$Targeting.clear()
 	
 	
+		
 		
