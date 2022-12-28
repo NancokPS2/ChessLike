@@ -165,14 +165,6 @@ func end_turn():
 #	else:
 #		push_error(attributes.name + " tried to attack with " + inventory.equipped[hand].get_class())
 	
-	
-#DEBUG
-func _input(event: InputEvent) -> void:
-	if event.is_action_released("debug_1"):
-		inventory.equip_item(load("res://Resources/Items/Weapons/BasicGun.tres"))
-		print("GUN")
-		pass
-	
 
 class Generator:
 
