@@ -48,12 +48,12 @@ static func reorder_array_by_turn_delay(unitList:Array = Ref.unitsInBattle):#Put
 	unitList.sort_custom(TurnDelaySorting,"sort")
 	
 func end_turn(turnOwner:Node=Ref.unitInAction, unitList:Array=Ref.unitsInBattle):#Advances all turn delays and resets the current unit to their base, returns the new turn owner
-	var delayFromOwner = turnOwner.attributes.turnDelayRemaining#Get the delay before it's lowered
+	var delayFromOwner = turnOwner.stats.turnDelay#Get the delay before it's lowered
 	
 	for x in unitList:#Lower the delay of all units, time advance
-		x.attributes.lower_turn_delay_remaining(delayFromOwner)
+		x.stats.turnDelay -= delayFromOwner
 	
-	turnOwner.attributes.reset_turn_delay()#Whoever's turn just ended, reset their delay'
+	turnOwner.stats.turnDelay = turnOwner.stats.turnDelayMax#Whoever's turn just ended, reset their delay'
 	reorder_array_by_turn_delay(unitList)#Reorder the list
 	
 	Ref.unitInAction = unitList[0]#Set the new unit as the last 

@@ -26,7 +26,7 @@ export (Dictionary) var stats ={
 	"dodge":0,
 	"accuracy":0,
 	#Secondary
-	"maxTurnDelay":100,
+	"turnDelayMax":100,
 	"delay":0,
 	"actionsMax":1,
 	"movesMax":1,
