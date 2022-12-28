@@ -14,6 +14,9 @@ signal END_enter
 signal END_exit
 
 #Combat sub states
+signal STATE_CHANGE
+signal STATE_CHANGE_COMBAT
+
 signal COMBAT_MOVING_enter
 signal COMBAT_MOVING_exit
 

@@ -9,12 +9,16 @@ var combatState:int
 
 func _ready() -> void:
 	Events.connect("COMBAT_ACTING_abilitychosen",self,"change_combat_state",[combatStates.TARGETING])
+	Events.connect("STATE_CHANGE",self,"change_state")
+	Events.connect("STATE_CHANGE_COMBAT",self,"change_combat_state")
 	
 	Ref.mainNode = self
 	change_state(states.SETUP)
 
 	CVars.saveFile.setup()
 	$UI/UnitList.populate_list(CVars.saveFile.playerUnits)#Put player units in the list
+	
+
 	
 	
 	
@@ -133,7 +137,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	match state:
 		states.SETUP:
 			if event.is_action_released("primary_click"):#Unit placement
-				if Ref.unitSelected is Unit:#If a unit has been selected
+				if Ref.unitSelected != null:#If a unit has been selected
 					$Grid.place_object(Ref.unitSelected,$Grid.hoveredCell,MovementGrid.objectTypes.UNITS)#Add unit to map in the highlighted cell in the UNITs section
 					if Ref.unitsInBattle.find(Ref.unitSelected ) == -1 : #If the unit is not in battle...
 						Ref.unitsInBattle.append(Ref.unitSelected )#Add it to the list
@@ -143,23 +147,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 			elif event.is_action_released("secondary_click"):
 				var thingHovered = $Grid.get_cell_occupant($Grid.hoveredCell)
-				if thingHovered is Unit:#If a unit was clicked
+				if thingHovered.get("isUnit"):#If a unit was clicked
 					$Grid.remove_object(thingHovered, $Grid.objectTypes.UNITS)#Remove it from the field
 					Ref.unitsInBattle.remove( Ref.unitsInBattle.find(thingHovered) )#Remove it from the unit list
 					
 				Ref.unitSelected = null#Deselect the current unit
 				$UI/InfoDisplay.clear_unit()
 					
-			elif event is InputEventMouseMotion and not Ref.unitSelected is Unit:#If no unit has been selected and one was moused over
+			elif event is InputEventMouseMotion and Ref.unitSelected != null and not Ref.unitSelected.get("isUnit"):#If no unit has been selected and one was moused over
 				var target = $Grid.get_cell_occupant($Grid.hoveredCell)
-				if target is Unit:
+				if target.get("isUnit"):
 					$UI/InfoDisplay.load_unit(target)
 				else:
 					$UI/InfoDisplay.clear_unit()
 					
 		states.COMBAT:
 			if event.is_action_released("primary_click"):#Unit selection
-				if Ref.unitSelected is Unit:#If a unit has been selected
+				if Ref.unitSelected.get("isUnit"):#If a unit has been selected
 					pass#Nothing ATM
 				else:#If not, select any clicked units
 					Ref.unitSelected = $Grid.get_cell_occupant($Grid.hoveredCell)
@@ -168,9 +172,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				Ref.unitSelected = null#Deselect the current unit
 				$UI/InfoDisplay.clear_unit()
 					
-			elif event is InputEventMouseMotion and not Ref.unitSelected is Unit:#If no unit has been selected and one was moused over
+			elif event is InputEventMouseMotion and not Ref.unitSelected.get("isUnit"):#If no unit has been selected and one was moused over
 				var target = $Grid.get_cell_occupant($Grid.hoveredCell)#Get the unit in the cell hovered
-				if target is Unit:#If it is a unit, show their info
+				if target.get("isUnit"):#If it is a unit, show their info
 					$UI/InfoDisplay.load_unit(target)
 				else:#Otherwise clear it
 					$UI/InfoDisplay.clear_unit()

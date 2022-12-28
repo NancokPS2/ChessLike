@@ -9,6 +9,7 @@ var facing:int = 0#Temp value
 #var attributes:UnitAttributes
 var requiredAnimationName:String = "stand"
 
+var isUnit:bool = true
 
 signal moving
 signal moved

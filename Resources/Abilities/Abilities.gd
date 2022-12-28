@@ -72,22 +72,28 @@ func use(params):
 	#---Populating with optional parameters---
 	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
 	assert(yieldMenu != null)
+	var optionSelected #Not necessarily used
 	if yieldMenu.get_class() == "YieldMenu":
 		
 		for option in miscOptions:#Populate with options
 			yieldMenu.add_option(option, miscOptions[option])
 		
+		if not miscOptions.empty():
+			optionSelected = yield(yieldMenu,"button_pressed")
+		
 	else:
 		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
 		return
 		
-	var optionSelected = yield(yieldMenu,"button_pressed")
 	#---------
 	
 	#---Wait for targeting---
 	var grid = Ref.combatGrid
 	assert(grid != null)
+	Events.emit_signal("STATE_CHANGE_COMBAT", GameBoard.combatStates.TARGETING)
+	grid.mark_cells_for_targeting(user.get_meta("mapPos"),areaSize,targetingShape,abilityFlags)
 	
+	var targetTile = yield(Events,"GRID_TILE_CLICKED") 
 	#---------
 	
 	_use(params)

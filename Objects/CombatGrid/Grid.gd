@@ -86,7 +86,7 @@ func _input(event: InputEvent) -> void:
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_released("primary_click"):
-		Events.emit_signal("GRID_TILE_CLICKED")
+		Events.emit_signal("GRID_TILE_CLICKED",hoveredCell)
 		pass
 	
 func get_cell_occupant(cell:Vector3,type:int=objectTypes.UNITS):
@@ -96,7 +96,7 @@ func hover_visual(gridLoc:Vector3):#Called by _input to update the marker's loca
 	if cellDict[objectTypes.TILES].has(gridLoc):#Ensure it is a valid tile
 		$ChosenCellVisual.translation = map_to_world(gridLoc.x,gridLoc.y,gridLoc.z)+Vector3(0,defaultCellSize.y,0) #Relocate the visual
 	
-func get_targets_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int)->Array:#Returns all targets
+func get_cells_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int):#extension of get_tiles_in_shape
 	var validTiles:Array#Which tiles will be considered go here
 	#Start filtering
 	if targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_OBJECT:#Can't target tiles with objects
@@ -112,31 +112,21 @@ func get_targets_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int)->
 	if not (targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_OBJECT and targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_UNIT):
 		validTiles = cellDict[objectTypes.TILES].values() #If no flags impact targeting, just validate all of them
 	#Finish filtering
+	return get_tiles_in_shape(validTiles,origin,size,shape)#Get all tiles targeted
+	
+func mark_cells_for_targeting(origin:Vector3,size:int,shape:int,targetingFlags:int):#Returns all targets
+	var toMarkCells = get_cells_in_area(origin,size,shape,targetingFlags)
+	
+	targeting.highlight_tiles(toMarkCells)#Mark them
 		
-	var targetedTiles = get_tiles_in_shape(validTiles,origin,size,shape)#Get all tiles targeted
-		
-	if targetingFlags && Ability.AbilityFlags.TARGET_TILES:#If it only targets tiles
-		return targetedTiles
-	else:#If it only targets units
-		var targetedUnits:Array
-		for tile in targetedTiles:#Check all targeted tiles
-			if cellDict[objectTypes.UNITS].has(tile):#If the dict has a unit in the tile
-				targetedUnits.append( cellDict[objectTypes.UNITS][tile] )#Add the unit to the list
-		return targetedUnits
-	
-	
-	
-func ability_targeting(ability:Ability,origin:Vector3):
-	if not Ref.unitInAction is Unit or Ref.unitInAction.get_meta("mapPos") == null:
-		push_error( str(Ref.unitInAction) + " does not have mapPos metadata." )
-
-	origin = Ref.unitInAction.get_meta("mapPos")
-	
-	var tilesTargeted = get_tiles_in_shape(get_used_cells(),origin,ability.areaSize,ability.targetingShape) 
-	
-	targeting.highlight_tiles(tilesTargeted) 
-	
-	var validTargets = get_targets_in_area(Ref.unitInAction.get_meta("mapPos"),ability.areaSize,ability.targetingShape,ability.abilityFlags)
+#	if targetingFlags && Ability.AbilityFlags.TARGET_TILES:#If it only targets tiles
+#		return targetedTiles
+#	else:#If it only targets units
+#		var targetedUnits:Array
+#		for tile in targetedTiles:#Check all targeted tiles
+#			if cellDict[objectTypes.UNITS].has(tile):#If the dict has a unit in the tile
+#				targetedUnits.append( cellDict[objectTypes.UNITS][tile] )#Add the unit to the list
+#		return targetedUnits
 	
 class Terrain extends GridMap:
 	var map:Map
@@ -164,6 +154,8 @@ class Terrain extends GridMap:
 class Targeting extends GridMap:
 	const targetingCell = preload("res://Objects/CombatGrid/ChosenCellMesh.tscn")
 	
+	
+	
 	const DataReq = {
 		"origin":null,
 		"shape":null,
@@ -176,6 +168,7 @@ class Targeting extends GridMap:
 		mesh_library #TODO
 		cell_size = defaultCellSize
 		set_name("Targeting")
+		Events.connect("COMBAT_TARGETING_exit",self,"clear")
 		pass
 			
 	func highlight_tiles(tileArray:Array, removeOldTiles:bool = true):
