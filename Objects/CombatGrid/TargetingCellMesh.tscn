@@ -7,6 +7,9 @@ albedo_color = Color( 1, 0.478431, 0.101961, 0.313726 )
 [sub_resource type="PlaneMesh" id=2]
 material = SubResource( 3 )
 
-[node name="TargetingCellVisual" type="MeshInstance"]
-transform = Transform( 0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.715041, 0 )
+[node name="Spatial" type="Spatial"]
+transform = Transform( 0.3, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0, 0, 0 )
+
+[node name="TargetingCellVisual" type="MeshInstance" parent="."]
+transform = Transform( 0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.16, 0 )
 mesh = SubResource( 2 )

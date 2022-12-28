@@ -5,16 +5,18 @@ const defaultMeshLib = preload("res://Assets/CellMesh/Base/DefaultTiles.tres")
 const defaultCellSize = Vector3(0.32,0.16,0.32)
 
 #Vars
-var cursorHoverIconEnabled: bool = true
 var currentMap:Map = Map.new()
 
 var hoveredCell:Vector3#Stores the currently hovered cell
+
+var currentAbility:Ability
 
 onready var terrain = Terrain.new(currentMap)
 onready var targeting = Targeting.new()
 
 var abilityHolder
 func _ready() -> void:
+	
 	cell_size = defaultCellSize
 	
 	register_tiles(currentMap)#Store each tile in cellDict, WIP
@@ -163,8 +165,12 @@ class Targeting extends GridMap:
 	const targetingCell = preload("res://Objects/CombatGrid/ChosenCellMesh.tscn")
 	
 	const DataReq = {
-		"origin":null
-	}
+		"origin":null,
+		"shape":null,
+		"size":null,
+		"validTiles":null,
+		"flags":null 
+		}
 	
 	func _ready() -> void:
 		mesh_library #TODO
@@ -175,13 +181,12 @@ class Targeting extends GridMap:
 	func highlight_tiles(tileArray:Array, removeOldTiles:bool = true):
 		assert(tileArray[0] is Vector3)
 		if removeOldTiles:#Clean before marking again
-			clear_highlights()
+			$Targeting.clear()
 		
 		for tile in tileArray:
 			$Targeting.set_cellv(tile,0)
 	
-	func clear_highlights():
-		$Targeting.clear()
+
 	
 	
 		

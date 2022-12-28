@@ -17,7 +17,7 @@ export (Dictionary) var triggerSignals #Upon equipping, the key will be used as 
 #Example: {"acted":"use"}
 
 export (MovementGrid.mapShapes) var targetingShape
-export (int) var areaSize = 1 #Does nothing if the targetingShape does not support it
+export (int) var areaSize = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
 
 export (int) var abilityFlags = 0
 const AbilityFlags = {
@@ -69,7 +69,9 @@ func connect_triggers():
 		assert(errorCode == OK, str(errorCode))
 	
 func use(params):
+	#---Populating with optional parameters---
 	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
+	assert(yieldMenu != null)
 	if yieldMenu.get_class() == "YieldMenu":
 		
 		for option in miscOptions:#Populate with options
@@ -77,12 +79,22 @@ func use(params):
 		
 	else:
 		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
+		return
 		
+	var optionSelected = yield(yieldMenu,"button_pressed")
+	#---------
+	
+	#---Wait for targeting---
+	var grid = Ref.combatGrid
+	assert(grid != null)
+	
+	#---------
 	
 	_use(params)
 	pass
 	
 func _use(params):
+	print( user.info.nickName + " does jack shit!")
 	pass
 	
 enum AvailabilityStatus {OK,CUSTOM_FALSE,NOT_ENOUGH_ENERGY,OTHER}
