@@ -19,10 +19,9 @@ func _use(params):
 	
 	params["target"].change_stat("health",weaponHolder.damage)
 	emit_signal("ability_finalized")#Must emit the signal or the game will soft-lock
-	_check_availability()
 
 func _check_availability():
-	if user.equipment["R_HAND"] != null or user.equipment["L_HAND"] != null:
+	if user.equipment["R_HAND"] == null or user.equipment["L_HAND"] == null:
 		return false
 	else:
 		return true

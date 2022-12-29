@@ -16,11 +16,13 @@ onready var targeting = Targeting.new()
 
 var abilityHolder
 func _ready() -> void:
+	Ref.combatGrid = self
 	
 	cell_size = defaultCellSize
 	
 	register_tiles(currentMap)#Store each tile in cellDict, WIP
 	add_child(terrain)#Adds the terrain so it can generate itself
+	add_child(targeting)
 	
 
 func register_tiles(map:Map):#WIP?
@@ -100,17 +102,17 @@ func get_cells_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int):#ex
 	var validTiles:Array#Which tiles will be considered go here
 	#Start filtering
 	if targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_OBJECT:#Can't target tiles with objects
-		for tile in cellDict[objectTypes.TILES].values():#Check all valid tiles
+		for tile in cellDict[objectTypes.TILES]:#Check all valid tiles
 			if not cellDict[objectTypes.OBJECTS].has(tile): #If it is NOT occupied by an object, add it
 				validTiles.append(tile)
 				
 	if targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_UNIT:#Can't target tiles with units
-		for tile in cellDict[objectTypes.TILES].values():#Check all valid tiles
+		for tile in cellDict[objectTypes.TILES]:#Check all valid tiles
 			if not cellDict[objectTypes.UNITS].has(tile):#If it is NOT occupied by an Unit, add it
 				validTiles.append(tile)
 					
 	if not (targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_OBJECT and targetingFlags && Ability.AbilityFlags.NO_TILE_WITH_UNIT):
-		validTiles = cellDict[objectTypes.TILES].values() #If no flags impact targeting, just validate all of them
+		validTiles = cellDict[objectTypes.TILES].keys() #If no flags impact targeting, just validate all of them
 	#Finish filtering
 	return get_tiles_in_shape(validTiles,origin,size,shape)#Get all tiles targeted
 	
@@ -174,10 +176,10 @@ class Targeting extends GridMap:
 	func highlight_tiles(tileArray:Array, removeOldTiles:bool = true):
 		assert(tileArray[0] is Vector3)
 		if removeOldTiles:#Clean before marking again
-			$Targeting.clear()
+			clear()
 		
 		for tile in tileArray:
-			$Targeting.set_cellv(tile,0)
+			set_cell_item(tile.x, tile.y, tile.z, 0)
 	
 
 	

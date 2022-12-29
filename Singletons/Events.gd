@@ -23,7 +23,7 @@ signal COMBAT_MOVING_exit
 signal COMBAT_ACTING_enter  
 signal COMBAT_ACTING_listabilities
 signal COMBAT_ACTING_miscoptions #used to select arbitrary options
-signal COMBAT_ACTING_abilitychosen(ability)
+signal COMBAT_ACTING_abilitychosen
 signal COMBAT_ACTING_targetingmode
 signal COMBAT_ACTING_exit
 

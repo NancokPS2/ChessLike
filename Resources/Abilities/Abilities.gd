@@ -78,7 +78,7 @@ func use( params={} ):
 	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
 	assert(yieldMenu != null)
 	var optionSelected #Not necessarily used
-	if yieldMenu.get_class() == "YieldMenu":
+	if yieldMenu != null:
 		
 		for option in miscOptions:#Populate with options
 			yieldMenu.add_option(option, miscOptions[option])
