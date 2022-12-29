@@ -7,7 +7,7 @@
 script = ExtResource( 1 )
 internalName = "dagger"
 resCategory = ""
-displayName = ""
+displayName = "Dagger"
 model = ExtResource( 2 )
 equipmentType = 0
 compatibleSlots = [  ]

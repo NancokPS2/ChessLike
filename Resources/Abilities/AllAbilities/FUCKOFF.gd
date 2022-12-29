@@ -11,7 +11,8 @@ func _ready():
 	abilityFlags.append(AbilityFlags.HOSTILE)
 	parametersReq += ParametersReq.TARGET_UNIT
 
-func _use(parameters:Dictionary):
-	parameters[ParametersReq.TARGET_UNIT].stats.health = 0
+func _use(params:Dictionary):
+	var target = params["target"]
+	target.change_stat("health",-target.stats.health)
 	emit_signal("ability_finalized")
 	return self

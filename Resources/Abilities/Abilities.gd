@@ -51,6 +51,8 @@ export (int) var abilityRange#Distance in tiles from the player which it can tar
 export (Dictionary) var miscOptions#Used to get extra parameters from the player
 #Example: {"Head":Const.bodyParts.HEAD}
 
+var killSwitch:bool = false
+
 signal finalized
 
 func equip(newUser:Node):
@@ -99,8 +101,12 @@ func use( params={} ):
 	Events.emit_signal("STATE_CHANGE_COMBAT", GameBoard.combatStates.TARGETING)
 	grid.mark_cells_for_targeting(user.get_meta("mapPos"),areaSize,targetingShape,abilityFlags)
 	
-	var targetTile = yield(Events,"GRID_TILE_CLICKED") 
-	params["target"] = targetTile
+	var target = null
+	
+	while target == null:
+		target = yield(Events,"UNIT_IN_TILE") 
+		
+	params["target"]
 	#---------
 	
 	_use(params)
@@ -125,3 +131,7 @@ func _check_availability() -> bool:#Virtual function, prevents usage if false
 	return true
 
 	
+func kill_switch_on_check():
+	if killSwitch:
+		killSwitch = false
+		return true

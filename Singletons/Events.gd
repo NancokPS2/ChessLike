@@ -41,4 +41,6 @@ signal COMBAT_IDLE_exit
 
 #Misc
 signal GRID_TILE_CLICKED
+signal UNIT_IN_TILE
+signal OBJECT_IN_TILE
 signal HINT_UPDATE

@@ -1,7 +1,5 @@
 extends Ability
 
-var owner:Unit
-
 func _init():
 	displayedName = "ACTION_WEAPONATTACK_NAME"
 	internalName = "WEAPONATTACK"

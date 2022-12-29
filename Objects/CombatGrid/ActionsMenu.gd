@@ -34,7 +34,7 @@ func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a 
 			push_error("Tried to add non-Ability to " + get_class())
 			
 		elif abil.abilityFlags && Ability.AbilityFlags.PASSIVE:#Do not show passives
-			return
+			var a = 1
 			
 		else:
 			var button:ActionMenuButton = add_option(abil.displayedName,abil)#Create the button and keep a reference to it

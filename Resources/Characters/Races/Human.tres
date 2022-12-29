@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource( 1 )
 internalName = "HUMAN"
+displayName = "ERR_NONAME"
 stats = {
 "accuracy": 0,
 "actions": 1,
@@ -39,7 +40,6 @@ statModifiers = {
 "special": 1.0,
 "strength": 1.0
 }
-name = ""
 description = ""
 spriteFolder = "res://Assets/Units/characters/human/"
 sexWeight = {

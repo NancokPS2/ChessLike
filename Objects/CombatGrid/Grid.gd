@@ -88,7 +88,9 @@ func _input(event: InputEvent) -> void:
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_released("primary_click"):
-		Events.emit_signal("GRID_TILE_CLICKED",hoveredCell)
+		Events.emit_signal("GRID_TILE_CLICKED", hoveredCell)
+		Events.emit_signal("UNIT_IN_TILE", cellDict[objectTypes.UNITS][hoveredCell])
+		Events.emit_signal("OBJECT_IN_TILE", cellDict[objectTypes.OBJECTS][hoveredCell])
 		pass
 	
 func get_cell_occupant(cell:Vector3,type:int=objectTypes.UNITS):

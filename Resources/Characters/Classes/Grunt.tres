@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource( 1 )
 internalName = "GRUNT"
-displayName = "ERR_NONAME"
+displayName = "Grunt"
 stats = {
 "accuracy": 0,
 "actions": 1,
