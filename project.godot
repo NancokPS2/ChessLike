@@ -213,7 +213,7 @@ Ref="*res://Singletons/References.gd"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/blender_importer/plugin.cfg", "res://addons/kanban_tasks/plugin.cfg", "res://addons/metadata_inspector/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/blender_importer/plugin.cfg", "res://addons/godot-git-control.funabab/plugin.cfg", "res://addons/kanban_tasks/plugin.cfg", "res://addons/metadata_inspector/plugin.cfg" )
 
 [global]
 
