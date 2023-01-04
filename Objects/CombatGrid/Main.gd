@@ -128,8 +128,6 @@ func change_combat_state(newState:int):
 			$Grid.mark_cells_for_movement()
 			stateVariants["targetedCells"] = $Grid.targeting.get_used_cells()#Store valid cells for movement or targeting
 			
-
-
 		combatStates.ACTING:
 			Events.emit_signal("COMBAT_ACTING_enter")
 			#ActionsMenu.gd:_ready() takes care of filling the abilities
@@ -137,6 +135,8 @@ func change_combat_state(newState:int):
 		combatStates.TARGETING:#Called by ActionsMenu.gd: press_button()
 			Events.emit_signal("COMBAT_TARGETING_enter")
 			$Grid.mark_cells_for_targeting(stateVariants["abilityChosen"])
+			stateVariants["targetedCells"] = $Grid.targeting.get_used_cells()#Store valid cells for movement or targeting
+			print(stateVariants["targetedCells"])#TEMP
 			
 		combatStates.FACING:
 			Events.emit_signal("COMBAT_FACING_enter")

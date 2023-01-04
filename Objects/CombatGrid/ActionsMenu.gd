@@ -10,7 +10,9 @@ var currentState = State.EMPTY
 func _ready() -> void:
 	._ready()
 	expand(false)
-	Events.connect("COMBAT_ACTING_enter",self,"expand",[true])
+	Events.connect("COMBAT_ACTING_enter",self,"expand",[true])	
+	Events.connect("COMBAT_ACTING_exit",self,"expand",[false])
+	
 	Events.connect("COMBAT_ACTING_enter",self,"fill_abilities")
 	
 

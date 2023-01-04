@@ -17,7 +17,7 @@ var triggerSignals:Dictionary #Upon equipping, the key will be used as the signa
 #Example: {"acted":"use"}
 
 #export (MovementGrid.mapShapes) var targetingShape
-var targetingShape
+var targetingShape:int
 var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
 
 var abilityFlags:int = 0
