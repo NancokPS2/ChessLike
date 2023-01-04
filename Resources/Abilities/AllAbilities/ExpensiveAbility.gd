@@ -7,9 +7,7 @@ func _init():
 	classRestrictions = []
 	turnDelayCost += 0
 	energyCost += 9999
-
-func _ready():
-	abilityFlags.append(AbilityFlags.PASSIVE)
+	abilityFlags = AbilityFlags.PASSIVE
 
 func _use(parameters:Dictionary):
 	print("I'm rich bitch")

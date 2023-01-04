@@ -31,14 +31,13 @@ func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a 
 		if not abil.get_class() != "Ability":#Do not show it if not an ability
 			push_error("Tried to add non-Ability to " + get_class())
 			
-		elif abil.abilityFlags && Ability.AbilityFlags.PASSIVE:#Do not show passives
-			var a = 1
+		elif abil.abilityFlags & abil.AbilityFlags.PASSIVE:#Do not show passives
+			var test = abil.abilityFlags
+			pass
 			
 		else:
 			var button:ActionMenuButton = add_option(abil.displayedName,abil)#Create the button and keep a reference to it
 			button.set_meta("isAbility",true)#Tag it
-			
-			button.connect("button_up",button.returnValue,"use")#Trigger the ability if the button is pressed
 			
 			if not abil.check_availability() == Ability.AvailabilityStatus.OK:#Disable it if it should not be selectable
 				button.disabled = true

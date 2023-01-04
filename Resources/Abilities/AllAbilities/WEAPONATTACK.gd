@@ -6,10 +6,8 @@ func _init():
 	classRestrictions = []
 	turnDelayCost += 0
 	energyCost += 0
-
-func _ready():
-	abilityFlags = AbilityFlags.HOSTILE
-	parametersReq = ParametersReq.USED_WEAPON + ParametersReq.TARGET_UNIT
+	abilityFlags += AbilityFlags.HOSTILE
+	parametersReq += ParametersReq.USED_WEAPON + ParametersReq.TARGET_UNIT
 	
 
 func _use(params):

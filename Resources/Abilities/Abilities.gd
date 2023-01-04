@@ -22,7 +22,7 @@ var areaSize:int = 1 #Does nothing if the targetingShape does not support it, di
 
 var abilityFlags:int = 0
 const AbilityFlags = {
-	"PASSIVE":1<<0,#Ability should not be selectable during combat
+	"PASSIVE":1<<16,#Ability should not be selectable during combat
 	"HOSTILE":1<<1,#Attacks and other ill intended abilities
 	"FRIENDLY":1<<2,#Healing and buffs or otherwise helpful abilities
 	"INDIRECT":1<<3,#Indirect abilities should not trigger reactions that target the user

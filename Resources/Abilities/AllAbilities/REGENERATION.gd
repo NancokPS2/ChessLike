@@ -7,7 +7,7 @@ func _init():
 	turnDelayCost += 0
 	energyCost += 0
 	triggerSignals = {"turn_started":"use"}
-	abilityFlags = AbilityFlags.FRIENDLY + AbilityFlags.HEALING + AbilityFlags.PASSIVE
+	abilityFlags += AbilityFlags.FRIENDLY + AbilityFlags.HEALING + AbilityFlags.PASSIVE
 	
 func _use(params):
 	user.attributes.heal_health(user.attributes.healthMax*0.1)
