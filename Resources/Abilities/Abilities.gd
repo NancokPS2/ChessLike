@@ -3,23 +3,24 @@ class_name Ability
 
 signal ability_finalized
 
-export (String) var displayedName
+var displayedName:String
 
-export (String) var description
+var description:String
 
 var user:Node
 
-export (String) var internalName = ""
+var internalName:String = ""
 
-export (bool) var combatHidden #Whether it should appear in the menus during combat
+var combatHidden:bool #Whether it should appear in the menus during combat
 
-export (Dictionary) var triggerSignals #Upon equipping, the key will be used as the signal to connect from it's owner to a method with the same name as it's value
+var triggerSignals:Dictionary #Upon equipping, the key will be used as the signal to connect from it's owner to a method with the same name as it's value
 #Example: {"acted":"use"}
 
-export (MovementGrid.mapShapes) var targetingShape
-export (int) var areaSize = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
+#export (MovementGrid.mapShapes) var targetingShape
+var targetingShape
+var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
 
-export (int) var abilityFlags = 0
+var abilityFlags:int = 0
 const AbilityFlags = {
 	"PASSIVE":1<<0,#Ability should not be selectable during combat
 	"HOSTILE":1<<1,#Attacks and other ill intended abilities
@@ -34,21 +35,22 @@ const AbilityFlags = {
 	"TARGET_TILES":1<<10,#This ability targets tiles instead of Units or objects
 }
 
-export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
+#export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
+var classRestrictions:Array
 
-export (int) var parametersReq = 0
+var parametersReq:int = 0
 const ParametersReq = {
 	"TARGET_UNIT":1<<0,
 	"USED_WEAPON":1<<1
 }
 
-export (int) var energyCost
+var energyCost:int
 
-export (int) var turnDelayCost
+var turnDelayCost:int
 
-export (int) var abilityRange#Distance in tiles from the player which it can target
+var abilityRange:int#Distance in tiles from the player which it can target
 
-export (Dictionary) var miscOptions#Used to get extra parameters from the player
+var miscOptions:Dictionary#Used to get extra parameters from the player
 #Example: {"Head":Const.bodyParts.HEAD}
 
 var killSwitch:bool = false
