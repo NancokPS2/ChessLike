@@ -4,7 +4,12 @@ class_name GameBoard
 enum states {SETUP,COMBAT,PAUSE,END}
 var state:int
 
-enum combatStates {IDLE,MOVING,ACTING,TARGETING,FACING}
+enum combatStates {
+	IDLE,#Nothing is happening, actions are displayed
+	MOVING,#Awaiting for a cell to be chosen in order to move to it
+	ACTING,
+	TARGETING,
+	FACING}
 var combatState:int
 
 func _ready() -> void:
@@ -51,7 +56,8 @@ func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or n
 
 #State handling
 var stateVariants:Dictionary = {
-	"abilityChosen":null
+	"abilityChosen":null,
+	"targetedCells":[]
 }#Stores variables that can be externally modified which are handled by the states below
 func state_variant_update(variantName:String,value):
 	stateVariants[variantName] = value
@@ -96,6 +102,7 @@ func change_combat_state(newState:int):
 			combatStates.MOVING:
 				Events.emit_signal("COMBAT_MOVING_exit")
 				$Grid.targeting.clear()
+				stateVariants["targetedCells"] = []
 					
 
 			combatStates.ACTING:
@@ -118,9 +125,8 @@ func change_combat_state(newState:int):
 
 		combatStates.MOVING:
 			Events.emit_signal("COMBAT_MOVING_enter")
-			if Ref.unitInAction.stats["moves"] < 1:
-				push_error("Entered COMBAT_MOVING state illegaly!")
 			$Grid.mark_cells_for_movement()
+			stateVariants["targetedCells"] = $Grid.targeting.get_used_cells()#Store valid cells for movement or targeting
 
 
 		combatStates.ACTING:
@@ -137,21 +143,6 @@ func change_combat_state(newState:int):
 	
 	combatState = newState
 	
-				
-func _process(delta: float) -> void:
-	match state:
-		states.SETUP:
-			pass
-			
-		states.COMBAT:
-			pass
-				
-		states.PAUSE:
-			pass
-			
-		states.END:
-			pass
-		
 func _unhandled_input(event: InputEvent) -> void:
 	match state:
 		states.SETUP:
@@ -173,9 +164,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				Ref.unitSelected = null#Deselect the current unit
 				$UI/InfoDisplay.clear_unit()
 					
-			elif event is InputEventMouseMotion and Ref.unitSelected != null and not Ref.unitSelected.get("isUnit"):#If no unit has been selected and one was moused over
+			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
 				var target = $Grid.get_cell_occupant($Grid.hoveredCell)
-				if target.get("isUnit"):
+				if target and target.get("isUnit"):
 					$UI/InfoDisplay.load_unit(target)
 				else:
 					$UI/InfoDisplay.clear_unit()
@@ -191,7 +182,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				Ref.unitSelected = null#Deselect the current unit
 				$UI/InfoDisplay.clear_unit()
 					
-			elif event is InputEventMouseMotion and not Ref.unitSelected.get("isUnit"):#If no unit has been selected and one was moused over
+			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
 				var target = $Grid.get_cell_occupant($Grid.hoveredCell)#Get the unit in the cell hovered
 				if target.get("isUnit"):#If it is a unit, show their info
 					$UI/InfoDisplay.load_unit(target)
@@ -200,7 +191,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 			match combatState:
 				combatStates.MOVING:
-					
 					if event.is_action_released("primary_click"):
 		
 						if Ref.unitInAction.stats.moves <= 0:#Not enough moves
@@ -209,15 +199,18 @@ func _unhandled_input(event: InputEvent) -> void:
 						elif $Grid.get_cell_occupant($Grid.hoveredCell) == null:#Check if the cell is empty
 							$Grid.place_object(Ref.unitInAction,$Grid.hoveredCell)#Move the unit there
 							Ref.unitInAction.stats["moves"] -= 1#Reduce the amount of moves remaining
+							change_combat_state(combatStates.IDLE)#Change to IDLE state
 					
 							
 				combatStates.TARGETING:
-					if event.is_action_released("primary_click"): #TODO
+					assert(stateVariants.abilityChosen != null, "abilityChosen is null!")
+					if event.is_action_released("primary_click"): 
+						stateVariants.abilityChosen
 						pass
 						
 				combatStates.FACING:
 					if event.is_action_released("primary_click"):
-						Events.emit_signal("COMBAT_FACING_turnend")
+						Events.emit_signal("COMBAT_FACING_exit")
 						change_combat_state(combatStates.IDLE)
 						pass
 
@@ -226,7 +219,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		states.END:
 			pass
 	
-
+func _process(delta: float) -> void:
+	match state:
+		states.SETUP:
+			pass
+			
+		states.COMBAT:
+			pass
+				
+		states.PAUSE:
+			pass
+			
+		states.END:
+			pass
 
 #func activate_nodes(group:String,controlVisibility:bool = false):#Only unpauses and shows the required nodes
 #	for child in get_children():#Pause all children

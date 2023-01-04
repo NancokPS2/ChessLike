@@ -10,6 +10,8 @@ var info
 func load_unit(unit:Unit):#Used to load and display a unit simultaneously
 	if unit != unitRef and not ( unit.get("stats") == {} or unit.get("info") == {} ):
 		unitRef = unit
+	else:
+		return
 		
 	assert(unit is Unit)
 		

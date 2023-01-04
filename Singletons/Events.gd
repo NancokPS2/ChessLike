@@ -39,6 +39,10 @@ signal COMBAT_FACING_exit
 signal COMBAT_IDLE_enter
 signal COMBAT_IDLE_exit
 
+#GridMap signals
+signal GRID_UNIT_HOVERED
+signal GRID_UNIT_CLICKED
+
 #Misc
 signal GRID_TILE_CLICKED
 signal UNIT_IN_TILE

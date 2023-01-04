@@ -87,8 +87,14 @@ func _input(event: InputEvent) -> void:
 	hover_visual(hoveredCell)#Relocate the visual
 	
 func _unhandled_input(event: InputEvent) -> void:
+	var occupant = get_cell_occupant(hoveredCell)
+	
 	if event.is_action_released("primary_click"):
 		Events.emit_signal("GRID_TILE_CLICKED", hoveredCell)
+		Events.emit_signal("GRID_UNIT_CLICKED",occupant)
+		
+	elif event is InputEventMouseMotion:
+		Events.emit_signal("GRID_UNIT_HOVERED",occupant)
 	
 	
 	
@@ -141,7 +147,7 @@ func mark_cells_for_targeting(ability:Resource, unit:Spatial=Ref.unitInAction):
 	
 func mark_cells(origin:Vector3,size:int,shape:int,targetingFlags:int):#Returns all targets
 	var toMarkCells = get_cells_in_area(origin,size,shape,targetingFlags)
-	
+	targeting.clear()
 	targeting.highlight_tiles(toMarkCells,Targeting.highlightType.TARGETING)#Mark them
 		
 #	if targetingFlags && Ability.AbilityFlags.TARGET_TILES:#If it only targets tiles
