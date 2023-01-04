@@ -94,20 +94,7 @@ func use( params={} ):
 		
 	params["optionSelected"] = optionSelected
 	#---------
-	
-	#---Wait for targeting---
-	var grid = Ref.combatGrid
-	assert(grid != null)
-	Events.emit_signal("STATE_CHANGE_COMBAT", GameBoard.combatStates.TARGETING)
-	grid.mark_cells_for_targeting(user.get_meta("mapPos"),areaSize,targetingShape,abilityFlags)
-	
-	var target = null
-	
-	while target == null:
-		target = yield(Events,"UNIT_IN_TILE") 
-		
-	params["target"]
-	#---------
+
 	
 	_use(params)
 	pass

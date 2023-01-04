@@ -107,7 +107,7 @@ func change_combat_state(newState:int):
 
 			combatStates.ACTING:
 				Events.emit_signal("COMBAT_ACTING_exit")
-				$Grid.targeting.clear()
+				$Grid.targeting.clear()#Unnecessary?
 
 			combatStates.TARGETING:
 				Events.emit_signal("COMBAT_TARGETING_exit")
@@ -127,13 +127,14 @@ func change_combat_state(newState:int):
 			Events.emit_signal("COMBAT_MOVING_enter")
 			$Grid.mark_cells_for_movement()
 			stateVariants["targetedCells"] = $Grid.targeting.get_used_cells()#Store valid cells for movement or targeting
+			
 
 
 		combatStates.ACTING:
 			Events.emit_signal("COMBAT_ACTING_enter")
-			$UI/ActionsMenu.fill_abilities()
+			#ActionsMenu.gd:_ready() takes care of filling the abilities
 
-		combatStates.TARGETING:
+		combatStates.TARGETING:#Called by ActionsMenu.gd: press_button()
 			Events.emit_signal("COMBAT_TARGETING_enter")
 			$Grid.mark_cells_for_targeting(stateVariants["abilityChosen"])
 			
@@ -205,8 +206,24 @@ func _unhandled_input(event: InputEvent) -> void:
 				combatStates.TARGETING:
 					assert(stateVariants.abilityChosen != null, "abilityChosen is null!")
 					if event.is_action_released("primary_click"): 
-						stateVariants.abilityChosen
+						var parameters:Dictionary
+						var target
+						
+						if stateVariants.targetedCells.has($Grid.hoveredCell):#Check if it is valid	
+							target = $Grid.get_cell_occupant($Grid.hoveredCell,$Grid.objectTypes.UNITS)#Get who is in that cell
+							
+							if target == null:#Get an object if there's no unit
+								target = $Grid.get_cell_occupant($Grid.hoveredCell,$Grid.objectTypes.OBJECTS)#Get who is in that cell
+							
+							if target:#If the target is valid, add it
+								parameters["target"] = target
+								stateVariants["abilityChosen"].use(parameters)
+							
+							
+						else:
+							push_warning( "Tried to target non-highlighted cell " + str($Grid.hoveredCell) )
 						pass
+						
 						
 				combatStates.FACING:
 					if event.is_action_released("primary_click"):

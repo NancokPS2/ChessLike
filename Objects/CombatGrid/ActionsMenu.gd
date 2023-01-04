@@ -7,13 +7,11 @@ signal action_pressed
 enum State {EMPTY,ABILITIES,OPTIONS}
 var currentState = State.EMPTY
 
-
-
 func _ready() -> void:
 	._ready()
 	expand(false)
-	Events.connect("COMBAT_ACTING_listabilities",self,"expand",[true])
-	Events.connect("COMBAT_ACTING_listabilities",self,"fill_abilities")
+	Events.connect("COMBAT_ACTING_enter",self,"expand",[true])
+	Events.connect("COMBAT_ACTING_enter",self,"fill_abilities")
 	
 
 func add_option(buttonName:String="UnassignedName",returnValue=null):#Adds a button that can return any value trough button_press()
@@ -49,11 +47,9 @@ func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a 
 func button_press(btn:ActionMenuButton):#Called when a button is pressed
 	emit_signal("action_pressed",btn.returnValue)#Important when someone yields to this
 	
-	Ref.mainNode.stateVariants["abilityChosen"] = btn.returnValue#Set the ability to use
-	Events.emit_signal("STATE_CHANGE_COMBAT",GameBoard.combatStates.TARGETING)#Start the TARGETING state
-	
-	if btn.get_meta("isAbility"):#Unused
-		pass
+	if btn.get_meta("isAbility"):
+		Ref.mainNode.stateVariants["abilityChosen"] = btn.returnValue#Set the ability to use
+		Events.emit_signal("STATE_CHANGE_COMBAT",GameBoard.combatStates.TARGETING)#Start the TARGETING state
 
 
 

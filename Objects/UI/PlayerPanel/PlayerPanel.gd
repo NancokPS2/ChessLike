@@ -1,9 +1,14 @@
 extends UnitDisplay
 
-func _ready() -> void:
-	#Events.connect("GRID_UNIT_CLICKED",self,"load_unit")
-	#Events.connect("GRID_UNIT_HOVERED",self,"load_unit")
-	pass
+#func _ready() -> void:
+#	Events.connect("GRID_UNIT_HOVERED",self,"hover_load_unit")
+#	Events.connect("GRID_UNIT_CLICKED",self,"load_unit")
+#	pass
+#
+#func hover_load_unit(unit):
+#	if Ref.unitSelected == null:
+#		load_unit(unit)
+	
 
 func refresh_ui():
 	if unitRef != null:
