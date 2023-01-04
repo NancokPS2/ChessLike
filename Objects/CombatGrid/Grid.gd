@@ -32,7 +32,7 @@ func register_tiles(map:Map):#WIP?
 		cellDict[objectTypes.TILES][pos]=ID
 
 
-func place_object(object:Node,location:Vector3,type:int=objectTypes.UNITS,forcePlacement:bool=false):
+func place_object(object:Node,location:Vector3, type:int=objectTypes.UNITS, forcePlacement:bool=false):
 	assert(object is Node)
 	
 	if object.get_parent() != $MapObjs: #If it is not in the map yet, add it
@@ -89,9 +89,8 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_released("primary_click"):
 		Events.emit_signal("GRID_TILE_CLICKED", hoveredCell)
-		Events.emit_signal("UNIT_IN_TILE", cellDict[objectTypes.UNITS][hoveredCell])
-		Events.emit_signal("OBJECT_IN_TILE", cellDict[objectTypes.OBJECTS][hoveredCell])
-		pass
+	
+	
 	
 func get_cell_occupant(cell:Vector3,type:int=objectTypes.UNITS):
 	return cellDict[type].get(cell,null)
@@ -118,10 +117,32 @@ func get_cells_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int):#ex
 	#Finish filtering
 	return get_tiles_in_shape(validTiles,origin,size,shape)#Get all tiles targeted
 	
-func mark_cells_for_targeting(origin:Vector3,size:int,shape:int,targetingFlags:int):#Returns all targets
+	
+#Targeting
+func mark_cells_for_movement(unit:Spatial=Ref.unitInAction):
+	#Setup
+	var origin = unit.get_meta("mapPos")
+	var size = unit.stats["moveDistance"]
+	var flags = Ability.AbilityFlags.NO_TILE_WITH_UNIT + Ability.AbilityFlags.NO_TILE_WITH_OBJECT
+	#Marking
+	mark_cells(origin,size,mapShapes.STAR,flags)#Get all cells
+	#targeting.highlight_tiles(toMarkCells,Targeting.highlightType.MOVEMENT)#Mark them
+	
+func mark_cells_for_targeting(ability:Resource, unit:Spatial=Ref.unitInAction):
+	#Setup
+	var origin = unit.get_meta("mapPos")
+	var size = unit.stats["moveDistance"]
+	var shape = ability.targetingShape
+	var flags = ability.abilityFlags
+	#Marking
+	mark_cells(origin,size,shape,flags)
+	#targeting.highlight_tiles(toMarkCells,Targeting.highlightType.TARGETING)#Mark them
+
+	
+func mark_cells(origin:Vector3,size:int,shape:int,targetingFlags:int):#Returns all targets
 	var toMarkCells = get_cells_in_area(origin,size,shape,targetingFlags)
 	
-	targeting.highlight_tiles(toMarkCells)#Mark them
+	targeting.highlight_tiles(toMarkCells,Targeting.highlightType.TARGETING)#Mark them
 		
 #	if targetingFlags && Ability.AbilityFlags.TARGET_TILES:#If it only targets tiles
 #		return targetedTiles
@@ -156,9 +177,7 @@ class Terrain extends GridMap:
 
 
 class Targeting extends GridMap:
-	const targetingCell = preload("res://Objects/CombatGrid/ChosenCellMesh.tscn")
-	
-	
+	const highlightingCells:MeshLibrary = preload("res://Assets/CellMesh/Base/TargetingMesh.tres")
 	
 	const DataReq = {
 		"origin":null,
@@ -168,20 +187,22 @@ class Targeting extends GridMap:
 		"flags":null 
 		}
 	
+	enum highlightType {MOVEMENT,TARGETING}
+	
 	func _ready() -> void:
-		mesh_library #TODO
+		mesh_library = highlightingCells #TODO
 		cell_size = defaultCellSize
 		set_name("Targeting")
-		Events.connect("COMBAT_TARGETING_exit",self,"clear")
 		pass
 			
-	func highlight_tiles(tileArray:Array, removeOldTiles:bool = true):
+	func highlight_tiles(tileArray:Array, usedMesh:int=highlightType.MOVEMENT, removeOldTiles:bool = true):
 		assert(tileArray[0] is Vector3)
+		
 		if removeOldTiles:#Clean before marking again
 			clear()
-		
+	
 		for tile in tileArray:
-			set_cell_item(tile.x, tile.y, tile.z, 0)
+			set_cell_item(tile.x, tile.y, tile.z, usedMesh)
 	
 
 	

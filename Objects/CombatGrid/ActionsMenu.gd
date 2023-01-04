@@ -2,7 +2,7 @@ extends VBoxContainerCollapsable
 class_name YieldMenu
 #This class can create buttons that store values and emit them trough this node
 
-signal button_pressed
+signal action_pressed
 
 enum State {EMPTY,ABILITIES,OPTIONS}
 var currentState = State.EMPTY
@@ -47,9 +47,13 @@ func fill_abilities(unit:Node=Ref.unitInAction):#Fills it with abilities from a 
 
 
 func button_press(btn:ActionMenuButton):#Called when a button is pressed
-	emit_signal("button_pressed",btn.returnValue)#Important when someone yields to this
-	if btn.get_meta("isAbility"):
-		btn.returnValue.use()#TEMP, lacks parameters
+	emit_signal("action_pressed",btn.returnValue)#Important when someone yields to this
+	
+	Ref.mainNode.stateVariants["abilityChosen"] = btn.returnValue#Set the ability to use
+	Events.emit_signal("STATE_CHANGE_COMBAT",GameBoard.combatStates.TARGETING)#Start the TARGETING state
+	
+	if btn.get_meta("isAbility"):#Unused
+		pass
 
 
 

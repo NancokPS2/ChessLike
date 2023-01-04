@@ -9,20 +9,24 @@ var combatState:int
 
 func _ready() -> void:
 
+	#Setup
+	Ref.mainNode = self
+	change_state(states.SETUP)
+	
+	#Connect main signals
 	Events.connect("STATE_CHANGE",self,"change_state")
 	Events.connect("STATE_CHANGE_COMBAT",self,"change_combat_state")
 	
-	Ref.mainNode = self
-	change_state(states.SETUP)
-
-	CVars.saveFile.setup()
+	#State change buttons
+	$UI/ActingMenu/Move.connect("button_up",self,"change_combat_state",[combatStates.MOVING])
+	$UI/ActingMenu/Act.connect("button_up",self,"change_combat_state",[combatStates.ACTING])
+	$UI/ActingMenu/EndTurn.connect("button_up",self,"change_combat_state",[combatStates.FACING])
+	
+	#State variant intake
+	#UNUSED
+	
+	CVars.saveFile.setup()#Prepare save file
 	$UI/UnitList.populate_list(CVars.saveFile.playerUnits)#Put player units in the list
-	
-
-	
-	
-	
-
 
 func _input(event: InputEvent) -> void:#Update hovered cell position	
 	#$DebugLabel.text = str( get_hovered(typesOfInfo.POSITION) )#TEMP
@@ -46,10 +50,12 @@ func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or n
 
 
 #State handling
-var mainVariants:Dictionary = {}#Stores variables that can be externally modified which are handled by the states below
-var combatVariants:Dictionary = {
-	"ABILITY_CHOSEN":null}
-#Both unused
+var stateVariants:Dictionary = {
+	"abilityChosen":null
+}#Stores variables that can be externally modified which are handled by the states below
+func state_variant_update(variantName:String,value):
+	stateVariants[variantName] = value
+
 
 func change_state(newState:int):
 	
@@ -86,39 +92,51 @@ func change_combat_state(newState:int):
 		match combatState:
 			combatStates.IDLE:
 				Events.emit_signal("COMBAT_IDLE_exit")
-				pass
+
 			combatStates.MOVING:
 				Events.emit_signal("COMBAT_MOVING_exit")
-				pass
+				$Grid.targeting.clear()
+					
+
 			combatStates.ACTING:
 				Events.emit_signal("COMBAT_ACTING_exit")
-				pass
+				$Grid.targeting.clear()
+
 			combatStates.TARGETING:
 				Events.emit_signal("COMBAT_TARGETING_exit")
-				pass
+				$Grid.targeting.clear()
+				stateVariants["abilityChosen"] = null
+
 			combatStates.FACING:
 				Events.emit_signal("COMBAT_FACING_exit")
-				pass
+
 				
 	match newState:#New state initialization
 		combatStates.IDLE:
 			Events.emit_signal("COMBAT_IDLE_enter")
-			pass
+
+
 		combatStates.MOVING:
 			Events.emit_signal("COMBAT_MOVING_enter")
-			
-			pass
+			if Ref.unitInAction.stats["moves"] < 1:
+				push_error("Entered COMBAT_MOVING state illegaly!")
+			$Grid.mark_cells_for_movement()
+
+
 		combatStates.ACTING:
 			Events.emit_signal("COMBAT_ACTING_enter")
-			pass
+			$UI/ActionsMenu.fill_abilities()
+
 		combatStates.TARGETING:
 			Events.emit_signal("COMBAT_TARGETING_enter")
-			pass
+			$Grid.mark_cells_for_targeting(stateVariants["abilityChosen"])
+			
 		combatStates.FACING:
 			Events.emit_signal("COMBAT_FACING_enter")
 			pass
 	
 	combatState = newState
+	
 				
 func _process(delta: float) -> void:
 	match state:
@@ -148,7 +166,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 			elif event.is_action_released("secondary_click"):
 				var thingHovered = $Grid.get_cell_occupant($Grid.hoveredCell)
-				if thingHovered.get("isUnit"):#If a unit was clicked
+				if thingHovered and thingHovered.get("isUnit"):#If a unit was clicked
 					$Grid.remove_object(thingHovered, $Grid.objectTypes.UNITS)#Remove it from the field
 					Ref.unitsInBattle.remove( Ref.unitsInBattle.find(thingHovered) )#Remove it from the unit list
 					
@@ -193,7 +211,6 @@ func _unhandled_input(event: InputEvent) -> void:
 							Ref.unitInAction.stats["moves"] -= 1#Reduce the amount of moves remaining
 					
 							
-			
 				combatStates.TARGETING:
 					if event.is_action_released("primary_click"): #TODO
 						pass
