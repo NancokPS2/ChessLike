@@ -1,8 +1,9 @@
 extends UnitDisplay
 
 func _ready() -> void:
-	Events.connect("GRID_UNIT_CLICKED",self,"load_unit")
-	Events.connect("GRID_UNIT_HOVERED",self,"load_unit")
+	#Events.connect("GRID_UNIT_CLICKED",self,"load_unit")
+	#Events.connect("GRID_UNIT_HOVERED",self,"load_unit")
+	pass
 
 func refresh_ui():
 	if unitRef != null:
