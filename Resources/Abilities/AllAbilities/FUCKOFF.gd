@@ -13,6 +13,6 @@ func _init():
 
 func _use(params:Dictionary):
 	var target = params["target"]
-	target.change_stat("health",-target.stats.health)
+	target.change_stat("health",-target.stats.health,Const.attackFlags.IGNORE_ARMOR)
 	emit_signal("ability_finalized")
 	return self

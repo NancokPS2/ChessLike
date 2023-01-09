@@ -52,7 +52,7 @@ func update_from_attributes():#Retrieves all info from it's attributes
 	for ability in abilities:
 		ability.equip(self)
 	
-func change_stat(stat:String,amount:int,flags:int):
+func change_stat(stat:String,amount:int,flags:int=0):
 	match stat:
 		"health":
 				var defense:int = stats.defense
@@ -63,7 +63,7 @@ func change_stat(stat:String,amount:int,flags:int):
 					defense = defense/2
 				elif flags && Const.attackFlags.IGNORE_ARMOR:
 					defense = 0
-				stats.health -= damage - defense
+				stats.health += damage - defense
 				get_node("StatusNumber").text = str(damage-defense)
 				get_node("VFX").play("Took Damage")
 				if stats.health <= 0:

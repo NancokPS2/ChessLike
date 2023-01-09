@@ -137,7 +137,7 @@ func mark_cells_for_movement(unit:Spatial=Ref.unitInAction):
 func mark_cells_for_targeting(ability:Resource, unit:Spatial=Ref.unitInAction):
 	#Setup
 	var origin = unit.get_meta("mapPos")
-	var size = unit.stats["moveDistance"]
+	var size = ability.areaSize
 	var shape = ability.targetingShape
 	var flags = ability.abilityFlags
 	#Marking
