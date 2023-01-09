@@ -7,10 +7,11 @@ var unitRef:Node
 var stats
 var info
 
-
+func _ready() -> void:
+	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
 
 func load_unit(unit:Unit):#Used to load and display a unit simultaneously
-	if unit != unitRef and not ( unit.get("stats") == {} or unit.get("info") == {} ):
+	if unit != unitRef and not ( unit.get("stats") == {} or unit.get("stats") == null ):
 		unitRef = unit
 	else:
 		return
