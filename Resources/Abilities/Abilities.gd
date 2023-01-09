@@ -99,6 +99,7 @@ func use( params={} ):
 
 	
 	_use(params)
+	Events.emit_signal("UPDATE_UNIT_INFO")
 	pass
 	
 func _use(params):

@@ -43,6 +43,9 @@ signal COMBAT_IDLE_exit
 signal GRID_UNIT_HOVERED
 signal GRID_UNIT_CLICKED
 
+#UI Updates
+signal UPDATE_UNIT_INFO
+
 #Misc
 signal GRID_TILE_CLICKED
 signal UNIT_IN_TILE
