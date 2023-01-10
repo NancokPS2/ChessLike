@@ -7,7 +7,7 @@ class TurnDelaySorting:#A sorting algorithm for turns
 			return true
 		return false
 
-var unitDisplay = preload("res://Objects/UI/TurnDisplay/PerUnitDisplay.tscn")
+const unitDisplay = preload("res://Objects/UI/TurnDisplay/PerUnitDisplay.tscn")
 var unitsInOrder:Array
 
 func _ready() -> void:
@@ -29,8 +29,8 @@ func populate_list(units:Array = Ref.unitsInBattle):#Updates the display to show
 	
 	for unit in units:
 		var display = unitDisplay.instance()
-		display.load_unit(unit)
 		add_child(display)
+		display.load_unit(unit)
 	
 func get_unit_with_lowest_delay(unitList:Array=Ref.unitsInBattle):#Returns the participant with the lowest delay
 	var tempHolder = unitList.duplicate()

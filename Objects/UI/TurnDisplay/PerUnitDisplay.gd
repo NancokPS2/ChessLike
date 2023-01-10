@@ -3,22 +3,25 @@ class_name UnitDisplay
 
 signal clicked_unit
 
-var unitRef:Node
+var unitRef
 var stats
 var info
 
 func _ready() -> void:
-	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
+#	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
+	pass
 
-func load_unit(unit:Unit):#Used to load and display a unit simultaneously
+func load_unit(unit):#Used to load and display a unit simultaneously
 	if unit != unitRef and not ( unit.get("stats") == {} or unit.get("stats") == null ):
 		unitRef = unit
 	else:
+		push_error(str(unit) + " could not be loaded.")
 		return
 		
 	assert(unit is Unit)
+	assert(unit.info is Dictionary)
+	assert(unit.stats is Dictionary)
 		
-	get_unit_data()
 	refresh_ui()
 	
 func clear_unit():
@@ -38,6 +41,7 @@ func get_unit_data():
 	
 func refresh_ui():
 	if unitRef != null:
+		get_unit_data()
 		$Name.text = info["nickName"]
 		$Class.text = info["className"]
 		$Health.text = str(stats["health"]) + " / " + str(stats["healthMax"])

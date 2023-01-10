@@ -31,7 +31,8 @@ func _ready() -> void:
 	#UNUSED
 	
 	CVars.saveFile.setup()#Prepare save file
-	$UI/UnitList.populate_list(CVars.saveFile.playerUnits)#Put player units in the list
+	Ref.unitsBenched = CVars.saveFile.playerUnits
+	$UI/UnitList.populate_list(Ref.unitsBenched)#Put player units in the list
 
 func _input(event: InputEvent) -> void:#Update hovered cell position	
 	#$DebugLabel.text = str( get_hovered(typesOfInfo.POSITION) )#TEMP
