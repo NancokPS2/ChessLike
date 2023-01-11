@@ -8,7 +8,7 @@ var stats
 var info
 
 func _ready() -> void:
-#	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
+	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
 	pass
 
 func load_unit(unit):#Used to load and display a unit simultaneously
