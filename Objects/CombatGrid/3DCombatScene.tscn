@@ -10,7 +10,7 @@
 [ext_resource path="res://Classes/TurnManager.gd" type="Script" id=8]
 [ext_resource path="res://Objects/CombatGrid/ActionsMenu.gd" type="Script" id=9]
 [ext_resource path="res://Objects/CombatGrid/StatusHint.gd" type="Script" id=10]
-[ext_resource path="res://Objects/CombatGrid/PauseMenu.gd" type="Script" id=11]
+[ext_resource path="res://Objects/CombatGrid/PauseMenu/PauseMenu.gd" type="Script" id=11]
 [ext_resource path="res://Objects/CombatGrid/Grid.gd" type="Script" id=13]
 [ext_resource path="res://Objects/UI/MainCamera.gd" type="Script" id=16]
 [ext_resource path="res://Objects/UI/UI.gd" type="Script" id=17]
@@ -172,6 +172,19 @@ script = ExtResource( 11 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.364706 )
+
+[node name="Buttons" type="GridContainer" parent="PauseMenu"]
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+
+[node name="Resume" type="Button" parent="PauseMenu/Buttons"]
+margin_right = 512.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 0, 80 )
+size_flags_horizontal = 3
+text = "Resume"
 
 [node name="LowPriorityTimer" type="Timer" parent="."]
 wait_time = 0.08
