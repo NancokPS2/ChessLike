@@ -166,6 +166,7 @@ script = ExtResource( 10 )
 
 [node name="PauseMenu" type="CanvasLayer" parent="."]
 layer = 2
+visible = false
 script = ExtResource( 11 )
 
 [node name="ColorRect" type="ColorRect" parent="PauseMenu"]

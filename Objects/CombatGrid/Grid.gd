@@ -13,6 +13,7 @@ var currentAbility:Ability
 
 onready var terrain = Terrain.new(currentMap)
 onready var targeting = Targeting.new()
+onready var aoeVisualizer = Targeting.new()
 
 var abilityHolder
 func _ready() -> void:
@@ -23,6 +24,7 @@ func _ready() -> void:
 	register_tiles(currentMap)#Store each tile in cellDict, WIP
 	add_child(terrain)#Adds the terrain so it can generate itself
 	add_child(targeting)
+	add_child(aoeVisualizer)
 	
 
 func register_tiles(map:Map):#WIP?
@@ -137,7 +139,7 @@ func mark_cells_for_movement(unit:Spatial=Ref.unitInAction):
 func mark_cells_for_targeting(ability:Resource, unit:Spatial=Ref.unitInAction):
 	#Setup
 	var origin = unit.get_meta("mapPos")
-	var size = ability.areaSize
+	var size = ability.reach
 	var shape = ability.targetingShape
 	var flags = ability.abilityFlags
 	#Marking
@@ -168,7 +170,9 @@ class Terrain extends GridMap:
 	var hoveredCell:Vector3#TEMP?
 	func _process(delta: float) -> void:#This is already done above, seems redundant
 		hoveredCell = world_to_map( Ref.mainNode.get_hovered(Ref.mainNode.typesOfInfo.POSITION) )
-		
+
+
+
 	func _ready() -> void:
 		mesh_library = map.meshLibrary
 		cell_size = defaultCellSize#Set size
