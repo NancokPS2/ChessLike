@@ -3,6 +3,11 @@
 - Unit contains a Generator class to create units
 - When moving, performs an animation and calls $Grid.place_object(self, destination:Vector2, Grid.ObjectTypes.UNIT) when it finishes
 
+{{Topic: Flavor
+-Characters have 1 forced class that is part of their personality, the other class is customisable
+
+}}
+
 {{Topic: Stats
 Strenghth: modifier for melee damage | max HP 
 Agility: turn delay | accuracy ++ | dodge ++
