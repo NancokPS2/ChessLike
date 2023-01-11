@@ -19,6 +19,7 @@ var triggerSignals:Dictionary #Upon equipping, the key will be used as the signa
 #export (MovementGrid.mapShapes) var targetingShape
 var targetingShape:int
 var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
+var reach:int
 
 var abilityFlags:int = 0
 const AbilityFlags = {

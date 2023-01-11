@@ -6,6 +6,7 @@ func _init():
 	classRestrictions = []
 	turnDelayCost += 0
 	energyCost += 0
+	reach = 4
 	targetingShape = MovementGrid.mapShapes.STAR
 	abilityFlags = AbilityFlags.HOSTILE
 	parametersReq = ParametersReq.TARGET_UNIT
