@@ -5,9 +5,11 @@
 
 [sub_resource type="PlaneMesh" id=1]
 material = ExtResource( 1 )
+size = Vector2( 1, 1 )
 
 [sub_resource type="PlaneMesh" id=2]
 material = ExtResource( 1 )
+size = Vector2( 1, 1 )
 
 [node name="Spatial" type="Spatial"]
 transform = Transform( 0.3, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0, 0, 0 )
