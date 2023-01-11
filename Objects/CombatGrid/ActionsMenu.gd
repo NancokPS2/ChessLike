@@ -7,6 +7,8 @@ signal action_pressed
 enum State {EMPTY,ABILITIES,OPTIONS}
 var currentState = State.EMPTY
 
+var abilityToUse:Resource
+
 func _ready() -> void:
 	._ready()
 	expand(false)
@@ -50,7 +52,13 @@ func button_press(btn:ActionMenuButton):#Called when a button is pressed
 	
 	if btn.get_meta("isAbility"):
 		Ref.mainNode.stateVariants["abilityChosen"] = btn.returnValue#Set the ability to use
-		Events.emit_signal("STATE_CHANGE_COMBAT",GameBoard.combatStates.TARGETING)#Start the TARGETING state
+		#Events.emit_signal("STATE_CHANGE_COMBAT",GameBoard.combatStates.TARGETING)#Start the TARGETING state
+		
+		var actionEvent = InputEventAction.new()#Send an ability chosen input event
+		actionEvent.action = "NOMAP_ability_chosen"
+		actionEvent.pressed = false
+		actionEvent.set_meta("ability",btn.returnValue)
+		Input.parse_input_event(actionEvent)
 
 
 

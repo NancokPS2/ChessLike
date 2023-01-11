@@ -131,7 +131,7 @@ func mark_cells_for_movement(unit:Spatial=Ref.unitInAction):
 	var size = unit.stats["moveDistance"]
 	var flags = Ability.AbilityFlags.NO_TILE_WITH_UNIT + Ability.AbilityFlags.NO_TILE_WITH_OBJECT
 	#Marking
-	mark_cells(origin,size,mapShapes.STAR,flags)#Get all cells
+	mark_cells(origin,size,mapShapes.STAR,flags,Targeting.highlightType.MOVEMENT)#Get all cells
 	#targeting.highlight_tiles(toMarkCells,Targeting.highlightType.MOVEMENT)#Mark them
 	
 func mark_cells_for_targeting(ability:Resource, unit:Spatial=Ref.unitInAction):
@@ -141,11 +141,11 @@ func mark_cells_for_targeting(ability:Resource, unit:Spatial=Ref.unitInAction):
 	var shape = ability.targetingShape
 	var flags = ability.abilityFlags
 	#Marking
-	mark_cells(origin,size,shape,flags)
+	mark_cells(origin,size,shape,flags,Targeting.highlightType.TARGETING)
 	#targeting.highlight_tiles(toMarkCells,Targeting.highlightType.TARGETING)#Mark them
 
 	
-func mark_cells(origin:Vector3,size:int,shape:int,targetingFlags:int):#Returns all targets
+func mark_cells(origin:Vector3,size:int,shape:int,targetingFlags:int,targetingVisual):#Returns all targets
 	var toMarkCells = get_cells_in_area(origin,size,shape,targetingFlags)
 	targeting.clear()
 	targeting.highlight_tiles(toMarkCells,Targeting.highlightType.TARGETING)#Mark them
@@ -172,6 +172,7 @@ class Terrain extends GridMap:
 	func _ready() -> void:
 		mesh_library = map.meshLibrary
 		cell_size = defaultCellSize#Set size
+		cell_center_y = false
 		set_name("Terrain")#Rename itself
 		load_tiles(map)
 	
