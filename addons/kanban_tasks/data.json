@@ -47,7 +47,10 @@
         22,
         24,
         26,
-        27
+        27,
+        28,
+        29,
+        30
       ]
     },
     {
@@ -218,6 +221,21 @@
     {
       "category": 2,
       "title": "TargetingMesh in ability targeting mode spawns incorrectly",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Need a way of visualizing AoE before using an AoE ability",
+      "details": ""
+    },
+    {
+      "category": 2,
+      "title": "$StartButton does not resize properly for full screen",
+      "details": ""
+    },
+    {
+      "category": 0,
+      "title": "Need a button to go back",
       "details": ""
     }
   ]
