@@ -117,11 +117,13 @@ func change_combat_state(newState:int):
 
 			combatStates.FACING:
 				Events.emit_signal("COMBAT_FACING_exit")
+				stateVariants["abilityChosen"] = null
 
 				
 	match newState:#New state initialization
 		combatStates.IDLE:
 			Events.emit_signal("COMBAT_IDLE_enter")
+			stateVariants["abilityChosen"] = null
 
 
 		combatStates.MOVING:
@@ -175,7 +177,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					
 		states.COMBAT:
 			if event.is_action_released("primary_click"):#Unit selection
-				if Ref.unitSelected.get("isUnit"):#If a unit has been selected
+				if Ref.unitSelected and Ref.unitSelected.get("isUnit"):#If a unit has been selected
 					pass#Nothing ATM
 				else:#If not, select any clicked units
 					Ref.unitSelected = $Grid.get_cell_occupant($Grid.hoveredCell)
@@ -186,7 +188,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					
 			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
 				var target = $Grid.get_cell_occupant($Grid.hoveredCell)#Get the unit in the cell hovered
-				if target.get("isUnit"):#If it is a unit, show their info
+				if target and target.get("isUnit"):#If it is a unit, show their info
 					$UI/InfoDisplay.load_unit(target)
 				else:#Otherwise clear it
 					$UI/InfoDisplay.clear_unit()
@@ -202,10 +204,19 @@ func _unhandled_input(event: InputEvent) -> void:
 							$Grid.place_object(Ref.unitInAction,$Grid.hoveredCell)#Move the unit there
 							Ref.unitInAction.stats["moves"] -= 1#Reduce the amount of moves remaining
 							change_combat_state(combatStates.IDLE)#Change to IDLE state
+							
+					if event.is_action_released("go_back"):#Exit targeting mode
+						change_combat_state(combatStates.IDLE)
 					
+				
+				combatStates.ACTING:
+					if event.is_action_released("NOMAP_ability_chosen"):
+						assert(event.get_meta("ability",null) != null)
+						stateVariants["abilityChosen"] = event.get_meta("ability",null)
+						change_combat_state(combatStates.TARGETING)
 							
 				combatStates.TARGETING:
-					assert(stateVariants.abilityChosen != null, "abilityChosen is null!")
+					assert(stateVariants["abilityChosen"] != null, "abilityChosen is null!")
 					if event.is_action_released("primary_click"): 
 						var parameters:Dictionary
 						var target
@@ -224,7 +235,8 @@ func _unhandled_input(event: InputEvent) -> void:
 						else:
 							push_warning( "Tried to target non-highlighted cell " + str($Grid.hoveredCell) )
 						pass
-						
+					if event.is_action_released("go_back"):#Exit targeting mode
+						change_combat_state(combatStates.ACTING)
 						
 				combatStates.FACING:
 					if event.is_action_released("primary_click"):
