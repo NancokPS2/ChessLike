@@ -12,7 +12,7 @@ func _ready() -> void:
 	pass
 
 func load_unit(unit):#Used to load and display a unit simultaneously
-	if unit != unitRef and not ( unit.get("stats") == {} or unit.get("stats") == null ):
+	if unit and unit != unitRef and not ( unit.get("stats") == {} or unit.get("stats") == null ):
 		unitRef = unit
 	else:
 		push_error(str(unit) + " could not be loaded.")
