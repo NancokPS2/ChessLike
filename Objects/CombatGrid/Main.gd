@@ -216,11 +216,14 @@ func _unhandled_input(event: InputEvent) -> void:
 						change_combat_state(combatStates.TARGETING)
 							
 				combatStates.TARGETING:
-					assert(stateVariants["abilityChosen"] != null, "abilityChosen is null!")
+					assert(stateVariants["abilityChosen"] != null, "abilityChosen is null!")  
+					$Grid
+
 					if event.is_action_released("primary_click"): 
 						var parameters:Dictionary
 						var target
 						
+
 						if stateVariants.targetedCells.has($Grid.hoveredCell):#Check if it is valid	
 							target = $Grid.get_cell_occupant($Grid.hoveredCell,$Grid.objectTypes.UNITS)#Get who is in that cell
 							
