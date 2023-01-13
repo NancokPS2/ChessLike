@@ -72,11 +72,30 @@ func connect_triggers():
 		
 		var errorCode = user.connect(signa,self,triggerSignals[signa])
 		assert(errorCode == OK, str(errorCode))
-		
-func use( params={} ):
-	Events.emit_signal("COMBAT_ACTING_abilitychosen",self)
+
+func filter_targets(targets:Array)->Array:
+	var newTargets:Array
+	assert(not targets.empty())
 	
-	if not params.has("flags"):#Ensure they exist
+	for target in targets:
+		
+		if abilityFlags && AbilityFlags.NO_HIT_FRIENDLY and target.get("isUnit"):
+			if target.faction.internalName != user.faction.internalName:#If it is from it's faction
+				targets.erase(target)#Remove it
+				
+		elif abilityFlags && AbilityFlags.NO_HIT_ENEMY and target.get("isUnit"):
+			if target.faction.internalName != user.faction.internalName:#If it isn't from it's faction
+				targets.erase(target)#Remove it
+		
+	return targets
+			
+	
+func use( params={} ):
+	assert(params.get("targets",null) != null)
+
+	
+	
+	if params.get("flags",null) == null:#Ensure they exist
 		params["flags"] = 0
 	
 	#---Populating with optional parameters---
@@ -89,8 +108,7 @@ func use( params={} ):
 			yieldMenu.add_option(option, miscOptions[option])
 		
 		if not miscOptions.empty():
-			optionSelected = yield(yieldMenu,"button_pressed")
-		
+			optionSelected = yield(yieldMenu,"button_pressed")		
 	else:
 		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
 		return
