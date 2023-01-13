@@ -11,6 +11,13 @@ var cellDict:Dictionary = {
 	2:{}
 }
 
+func get_all_of_type(type:int,location:bool=false):
+	if location:#Get the cell they are located in
+		return cellDict[type].keys()
+	else:#Get the objects
+		return cellDict[type].values()
+	
+
 func set_cellDict(type:int,value):
 	cellDict[type] = value
 
@@ -22,7 +29,7 @@ func align_to_grid(object:Object):
 	var gridPos:Vector3 = world_to_map(object.translation)
 	object.translation = map_to_world(gridPos.x,gridPos.y,gridPos.z)
 
-func get_tiles_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=mapShapes.STAR)->Array:
+func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=mapShapes.STAR)->Array:
 	var returnedTiles:Array
 	match shape:
 		mapShapes.SINGLE:#Only return the origin

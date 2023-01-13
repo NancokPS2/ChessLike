@@ -4,6 +4,9 @@ class_name GameBoard
 enum states {SETUP,COMBAT,PAUSE,END}
 var state:int
 
+enum movementFlags {AGILE,GROUNDED,FLYING,FLOATING}
+enum targetingFlags {NO_OBJECTS,NO_UNITS}
+
 enum combatStates {
 	IDLE,#Nothing is happening, actions are displayed
 	MOVING,#Awaiting for a cell to be chosen in order to move to it
@@ -102,17 +105,17 @@ func change_combat_state(newState:int):
 
 			combatStates.MOVING:
 				Events.emit_signal("COMBAT_MOVING_exit")
-				$Grid.targeting.clear()
+				$Grid.clear_targeting_grids()
 				stateVariants["targetedCells"] = []
 					
 
 			combatStates.ACTING:
 				Events.emit_signal("COMBAT_ACTING_exit")
-				$Grid.targeting.clear()#Unnecessary?
+				$Grid.clear_targeting_grids()
 
 			combatStates.TARGETING:
 				Events.emit_signal("COMBAT_TARGETING_exit")
-				$Grid.targeting.clear()
+				$Grid.clear_targeting_grids()
 				stateVariants["abilityChosen"] = null
 
 			combatStates.FACING:
@@ -148,6 +151,7 @@ func change_combat_state(newState:int):
 	combatState = newState
 	
 func _unhandled_input(event: InputEvent) -> void:
+	$Grid.update_hovered_cell()
 	match state:
 		states.SETUP:
 			if event.is_action_released("primary_click"):#Unit placement
@@ -217,7 +221,7 @@ func _unhandled_input(event: InputEvent) -> void:
 							
 				combatStates.TARGETING:
 					assert(stateVariants["abilityChosen"] != null, "abilityChosen is null!")  
-					$Grid
+					$Grid.mark_cells_for_aoe($Grid.hoveredCell,stateVariants["abilityChosen"])
 
 					if event.is_action_released("primary_click"): 
 						var parameters:Dictionary
