@@ -226,7 +226,7 @@
     {
       "category": 0,
       "title": "Need a way of visualizing AoE before using an AoE ability",
-      "details": ""
+      "details": "In progress, it currently seems to cause flickering and nothing else happens"
     },
     {
       "category": 2,
