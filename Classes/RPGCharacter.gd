@@ -24,6 +24,7 @@ signal turn_ended
 
 var stats:Dictionary
 var info:Dictionary
+var faction
 
 var abilities
 
@@ -40,10 +41,12 @@ var equipment:Dictionary
 #}
 enum limbs {HEAD,TORSO,HAND_L,HAND_R,FOOT_L,FOOT_R}
 
+
 func update_from_attributes():#Retrieves all info from it's attributes
 	stats = attributes.stats#Load stats
 	info = attributes.info#Load info
 	abilities = attributes.abilities
+	faction = attributes.faction
 
 	for slot in attributes.equipment:#Load equipment
 		if slot != "":#If the slot is not empty
@@ -77,64 +80,64 @@ func targeted_with_action(parameters:Dictionary):
 	emit_signal("acted_upon",parameters)
 	pass
 
-func use_ability(abilityInUse:Ability):
-	var parametersUsed:Dictionary
-	var targets:Array	
-#	if not passive:#Is active ability?
-#		for x in attributes.activeAbilities:
-#			if x.identifier == abilityIdentifier:
-#				abilityInUse = x
-#	else:#Is passive ability?
-#		for x in attributes.passive:
-#			if x.identifier == abilityIdentifier:
-#				abilityInUse = x
-#	abilityInUse._ready()
-	
-	if abilityInUse.targetingMode == abilityInUse.TargetingMode.SINGLE:
-		pass
-	
-	if abilityInUse.parameters && abilityInUse.ParametersReq.USED_WEAPON:#Lists weapons and waits for a choice
-		var weapons:Array
-		var UIController = CVars.refUITree.get_node("Controller")
-		var equippedGear:Array = inventory.equipped
+#func use_ability(abilityInUse:Ability):
+#	var parametersUsed:Dictionary
+#	var targets:Array	
+##	if not passive:#Is active ability?
+##		for x in attributes.activeAbilities:
+##			if x.identifier == abilityIdentifier:
+##				abilityInUse = x
+##	else:#Is passive ability?
+##		for x in attributes.passive:
+##			if x.identifier == abilityIdentifier:
+##				abilityInUse = x
+##	abilityInUse._ready()
+#
+#	if abilityInUse.targetingMode == abilityInUse.TargetingMode.SINGLE:
+#		pass
+#
+#	if abilityInUse.parameters && abilityInUse.ParametersReq.USED_WEAPON:#Lists weapons and waits for a choice
+#		var weapons:Array
+#		var UIController = CVars.refUITree.get_node("Controller")
+#		var equippedGear:Array = inventory.equipped
+#
+#		for x in equippedGear:#Get all equipped weapons
+#			if x != null and x.equipmentType == Const.equipmentTypes.WEAPON:
+#				var weaponDict:Dictionary
+#				weaponDict["name"] = "Weapon"
+#				weaponDict["text"] = x.displayName
+#				weaponDict["variant"] = x
+#				weapons.append(weaponDict)
+#
+#		if weapons.empty():#If there are no weapons, cancel the attempt
+#			push_error(attributes.unitName + " tried to show it's equipped weapons, but it didn't have any.")
+#			return
+#
+#		CVars.controlState = CVars.controlStates.MENU_CHOICE#Signal that a choice is being expected
+#		UIController.misc_update(weapons)
+#
+#		parametersUsed[abilityInUse.ParametersReq.USED_WEAPON] = yield(UIController,"button_with_variant_pressed")
+#
+#	if abilityInUse.parameters && abilityInUse.ParametersReq.TARGET_UNIT:#Awaits to choose a suitable tile to target
+#		var field = CVars.refCombatField
+#		var rangeUsed:int
+#
+#		if abilityInUse.parameters.has(Const.abilityParameters.CHOOSE_WEAPON):#Decide the range
+#			rangeUsed = parametersUsed["CHOOSE_WEAPON"].weaponRange
+#		else:
+#			rangeUsed = abilityInUse.abilityRange
+#
+#		CVars.controlState = CVars.controlStates.TARGETING
+#		field.mark_area(Const.areaShapes.STAR, field.get_coordinates_on_grid(self),1,rangeUsed)
+#
+#		parametersUsed["TARGET_UNIT"] = yield(CVars.refCombatField,"tile_selected")#Acquire a target
+#		field.clear()#Target acquired, clean tiles
+#
+#		if abilityInUse.abilityFlags && Ability.AbilityFlags.HOSTILE:#Tell the target about the attack
+#			parametersUsed["TARGET_UNIT"].emit_signal("before_attack", {"aggressor":null,"ability":abilityInUse})
+#
+#	yield(abilityInUse.use(parametersUsed),"ability_finalized")
 
-		for x in equippedGear:#Get all equipped weapons
-			if x != null and x.equipmentType == Const.equipmentTypes.WEAPON:
-				var weaponDict:Dictionary
-				weaponDict["name"] = "Weapon"
-				weaponDict["text"] = x.displayName
-				weaponDict["variant"] = x
-				weapons.append(weaponDict)
-				
-		if weapons.empty():#If there are no weapons, cancel the attempt
-			push_error(attributes.unitName + " tried to show it's equipped weapons, but it didn't have any.")
-			return
-			
-		CVars.controlState = CVars.controlStates.MENU_CHOICE#Signal that a choice is being expected
-		UIController.misc_update(weapons)
-		
-		parametersUsed[abilityInUse.ParametersReq.USED_WEAPON] = yield(UIController,"button_with_variant_pressed")
-	
-	if abilityInUse.parameters && abilityInUse.ParametersReq.TARGET_UNIT:#Awaits to choose a suitable tile to target
-		var field = CVars.refCombatField
-		var rangeUsed:int
-		
-		if abilityInUse.parameters.has(Const.abilityParameters.CHOOSE_WEAPON):#Decide the range
-			rangeUsed = parametersUsed["CHOOSE_WEAPON"].weaponRange
-		else:
-			rangeUsed = abilityInUse.abilityRange
-		
-		CVars.controlState = CVars.controlStates.TARGETING
-		field.mark_area(Const.areaShapes.STAR, field.get_coordinates_on_grid(self),1,rangeUsed)
-		
-		parametersUsed["TARGET_UNIT"] = yield(CVars.refCombatField,"tile_selected")#Acquire a target
-		field.clear()#Target acquired, clean tiles
-		
-		if abilityInUse.abilityFlags && Ability.AbilityFlags.HOSTILE:#Tell the target about the attack
-			parametersUsed["TARGET_UNIT"].emit_signal("before_attack", {"aggressor":null,"ability":abilityInUse})
-	
-	yield(abilityInUse.use(parametersUsed),"ability_finalized")
-	
 func start_turn():
 	stats.actions = stats.actionsMax
 	stats.moves = stats.movesMax
