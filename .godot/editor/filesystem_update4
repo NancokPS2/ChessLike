@@ -13,3 +13,6 @@ res://Resources/Items/Armor.gd
 res://Resources/Items/Accessory.gd
 res://Resources/Items/Weapon.gd
 res://Singletons/Const.gd
+res://Assets/Locale.en.translation
+res://Assets/Locale.es.translation
+res://Classes/Grid.gd

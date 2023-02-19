@@ -22,13 +22,13 @@ func _ready() -> void:
 	change_state(states.SETUP)
 	
 	#Connect main signals
-	Events.connect("STATE_CHANGE",self,"change_state")
-	Events.connect("STATE_CHANGE_COMBAT",self,"change_combat_state")
+	Events.STATE_CHANGE.connect(change_state)
+	Events.STATE_CHANGE_COMBAT.connect(change_combat_state)
 	
 	#State change buttons
-	$UI/ActingMenu/Move.connect("button_up",self,"change_combat_state",[combatStates.MOVING])
-	$UI/ActingMenu/Act.connect("button_up",self,"change_combat_state",[combatStates.ACTING])
-	$UI/ActingMenu/EndTurn.connect("button_up",self,"change_combat_state",[combatStates.FACING])
+	$UI/ActingMenu/Move.button_up.connect( change_combat_state.bind(combatStates.MOVING) )
+	$UI/ActingMenu/Act.button_up.connect( change_combat_state.bind(combatStates.ACTING) )
+	$UI/ActingMenu/EndTurn.button_up.connect( change_combat_state.bind(combatStates.FACING) )
 	
 	#State variant intake
 	#UNUSED
@@ -47,8 +47,9 @@ func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or n
 	var mousePos = get_viewport().get_mouse_position()
 	var rayFrom = $Grid/CameraOrigin/Camera.project_ray_origin(mousePos)
 	var rayTo = rayFrom + $Grid/CameraOrigin/Camera.project_ray_normal(mousePos) * 6000
-	var spaceState = get_world().direct_space_state
-	var selection = spaceState.intersect_ray(rayFrom, rayTo)
+	var spaceState = get_world_3d().direct_space_state
+	var physicsRay:=PhysicsRayQueryParameters3D.create(rayFrom, rayTo)
+	var selection = spaceState.intersect_ray(physicsRay)
 	
 	match infoType:
 		typesOfInfo.OBJECT:
