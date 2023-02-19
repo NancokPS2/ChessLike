@@ -5,8 +5,8 @@ class_name VBoxContainerCollapsable
 #var linkedUnit:Unit
 
 signal button_with_variant_pressed
-export (String) var expandSignal = ""
-export (String) var collapseSignal = ""
+@export (String) var expandSignal = ""
+@export (String) var collapseSignal = ""
 
 func _ready() -> void:
 	if expandSignal != "":

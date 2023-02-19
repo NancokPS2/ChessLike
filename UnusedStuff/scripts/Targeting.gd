@@ -1,6 +1,6 @@
 extends TileMap
-export(PackedScene) var movementMarker_scene
-export(PackedScene) var targetingMarker_scene
+@export(PackedScene) var movementMarker_scene
+@export(PackedScene) var targetingMarker_scene
 var moveExpansionRemaining
 var movementCounter
 var movementMarks = PoolVector2Array()

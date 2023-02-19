@@ -3,15 +3,15 @@ class_name Inventory
 
 signal inventory_altered
 
-export (int) var inventorySize
+@export var inventorySize:int
 
-export (bool) var canStoreItems #If false, any non equipped items will be sent to the stockPile
+@export var canStoreItems:bool #If false, any non equipped items will be sent to the stockPile
 
-export (Array,Resource) var items
+@export var items:Array[Resource]
 
-export (Array,Resource) var equipped = [null,load("res://Resources/Items/Weapons/BasicGun.tres"),null,null,null,null]
+@export var equipped:Array[Resource] = [null,load("res://Resources/Items/Weapons/BasicGun.tres"),null,null,null,null]
 
-export (Resource) var stockPile #Meant to be an inventory to be shared by others
+@export var stockPile:Resource #Meant to be an inventory to be shared by others
 
 var owner:Object
 

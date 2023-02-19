@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 class_name GameBoard
 
 enum states {SETUP,COMBAT,PAUSE,END}

@@ -1,6 +1,6 @@
 extends Button
 
-export
+@export
 
 func _ready() -> void:
 	connect("button_up",self,"released")

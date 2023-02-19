@@ -16,7 +16,7 @@ var combatHidden:bool #Whether it should appear in the menus during combat
 var triggerSignals:Dictionary #Upon equipping, the key will be used as the signal to connect from it's owner to a method with the same name as it's value
 #Example: {"acted":"use"}
 
-#export (MovementGrid.mapShapes) var targetingShape
+#@export (MovementGrid.mapShapes) var targetingShape
 var targetingShape:int
 var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
 var reach:int
@@ -36,7 +36,7 @@ const AbilityFlags = {
 	"TARGET_TILES":1<<10,#This ability targets tiles instead of Units or objects
 }
 
-#export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
+#@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
 var classRestrictions:Array
 
 var parametersReq:int = 0

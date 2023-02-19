@@ -50,7 +50,7 @@ func import(source_file, save_path, options, platform_variants, gen_files):
 	var temp_path = source_file.replace(".blend", ".glb")
 	var global_path = ProjectSettings.globalize_path(source_file)
 	var global_path_base = global_path.replace(".blend", "");
-	var python_file = ProjectSettings.globalize_path("res://addons/blender_importer/export_gltf.py")
+	var python_file = ProjectSettings.globalize_path("res://addons/blender_importer/@export_gltf.py")
 	var ret = OS.execute("blender", [
 		global_path,
 		"--background",

@@ -7,10 +7,10 @@ var edit: LineEdit
 var label: Label
 var old_focus: Control = null
 
-export var text: String = "" setget set_text, get_text
+@export var text: String = "" setget set_text, get_text
 
-export(INTENTION) var default_intention := INTENTION.ADDITION
-export var double_click := true
+@export(INTENTION) var default_intention := INTENTION.ADDITION
+@export var double_click := true
 
 signal text_changed(new_text)
 signal text_entered(new_text)

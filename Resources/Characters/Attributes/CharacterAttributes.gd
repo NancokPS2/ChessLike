@@ -13,9 +13,9 @@ var abilities:Array#Both passive and active abilities
 
 #General
 var owner
-export (String) var unitRace
-export (String) var unitClass
-export (String) var unitFaction
+@export var unitRace:String
+@export var unitClass:String
+@export var unitFaction:String
 
 
 func basic_setup():#Adjusts all values to class and race
@@ -44,7 +44,7 @@ func update_stats_and_info():#Replaces stats
 	#RACE
 	for attribute in raceAttributes.stats:#Flat bonuses
 		stats[attribute] = raceAttributes.stats[attribute]#Modifiers
-		 
+
 	for modifier in raceAttributes.statModifiers:
 		statModifiers[modifier] = raceAttributes.statModifiers[modifier]
 		
@@ -53,7 +53,7 @@ func update_stats_and_info():#Replaces stats
 	#CLASS
 	for attribute in classAttributes.stats:
 		stats[attribute] = (classAttributes.stats[attribute] + stats[attribute]) / 2
-		 
+
 	for modifier in classAttributes.statModifiers:
 		statModifiers[modifier] = (classAttributes.statModifiers[modifier] + statModifiers[modifier]) / 2
 	
@@ -94,7 +94,7 @@ func generate_name(type:int,firstNameList:Array=[],lastNameList:Array=[]):#Use n
 		info.lastName += lastNameList[randi() % lastNameList.size()]#randi returns an int between 0 and the size-1
 
 #Info
-export (Dictionary) var info = {
+@export var info:Dictionary = {
 	"firstName":"Unnamed",
 	"nickName":"Nick",
 	"lastName":"",
@@ -105,7 +105,7 @@ export (Dictionary) var info = {
 }
 
 #Equipment
-export (Dictionary) var equipment = {
+@export var equipment:Dictionary = {
 	"ARMOR":"",
 	"L_HAND":"",
 	"R_HAND":"",

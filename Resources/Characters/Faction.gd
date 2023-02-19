@@ -1,11 +1,11 @@
 extends Resource
 class_name Faction
 
-export (String) var displayName
-export (String) var description
-export (String) var internalName
-export (Texture) var icon
-export (Color) var color = Color.brown
-export (PoolStringArray) var hostiles
-export (PoolStringArray) var friendlies
+@export var displayName:String
+@export var description:String
+@export var internalName:String
+@export var icon:Texture
+@export var color:Color = Color.BROWN
+@export var hostiles:Array[String]
+@export var friendlies:Array[String]
 

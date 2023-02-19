@@ -5,7 +5,7 @@ func _ready():
 	var i = 0
 	var debugUnitImage = load("res://icon.png")
 
-export(PackedScene) var portrait_scene
+@export(PackedScene) var portrait_scene
 
 func create_portraits():
 	for x in get_tree().get_nodes_in_group("UNITS"):

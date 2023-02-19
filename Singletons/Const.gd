@@ -2,12 +2,12 @@ extends Node
 
 
 #Constants
-enum bodyParts{HEAD,TORSO,
+enum bodyParts {HEAD,TORSO,
 UPP_ARM_R,UPP_ARM_L,
 LOW_ARM_R,LOW_ARM_L,
 HAND_R,HAND_L,
 UPP_LEG_R,UPP_LEG_L,
-LOW_LEG_R,LOW_LEG_L
+LOW_LEG_R,LOW_LEG_L,
 FOOT_R,FOOT_L}
 
 

@@ -3,11 +3,11 @@ class_name WeaponEquipment
 
 enum WeaponTypes{GUN,BOW,CROSSBOW,CANNON,THROW,DAGGER,SWORD,HAMMER,AXE,SPEAR,GAUNTLET,STAFF,ROD,FOCUS}
 
-export (WeaponTypes) var weaponType
-export (bool)var twoHanded
-export (int,9999) var damage
-export (int,32) var weaponRange
-export (Array) var attackFlagList = []
+@export var weaponType:WeaponTypes
+@export var twoHanded:bool
+@export var damage:int
+@export_range(0,32) var weaponRange:int
+@export var attackFlagList:Array = []
 
 	
 func _init():

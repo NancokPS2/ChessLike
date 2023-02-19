@@ -3,11 +3,11 @@ class_name Equipment
 
 
 
-enum equipmentTypes{WEAPON,CONSUMABLE,ARMOR,ACCESSORY}
-export (equipmentTypes) var equipmentType
-export (Array,String) var compatibleSlots
+enum EquipmentTypes{WEAPON,CONSUMABLE,ARMOR,ACCESSORY}
+@export var equipmentType:EquipmentTypes
+@export var compatibleSlots:Array[String]
 
-export (Dictionary) var statBonuses = {
+@export var statBonuses:Dictionary = {
 	"defense":0,
 	"strength":0,
 	"agility":0,
@@ -17,7 +17,7 @@ export (Dictionary) var statBonuses = {
 	"energyMax":0
 }
 
-export (Array) var abilityList
+@export var abilityList:Array[String]
 	
 func take_item(taker:Object):
 	if taker.inventory == null:

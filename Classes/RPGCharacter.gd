@@ -1,9 +1,9 @@
-extends Spatial
+extends Node3D
 class_name Unit
 
 
-export (String) var saveName
-export (Resource) var attributes = CharAttributes.new() #UnitAttributes (stats)
+@export var saveName:String
+@export var attributes:CharAttributes = CharAttributes.new() #UnitAttributes (stats)
 var inventory:Inventory
 var facing:int = 0#Temp value
 #var attributes:UnitAttributes

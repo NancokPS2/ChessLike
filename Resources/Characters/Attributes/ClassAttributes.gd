@@ -2,9 +2,9 @@ extends AttributesBase
 class_name ClassAttributes
 
 #General
-export (String) var description
-export (Texture) var icon
+@export var description:String
+@export var icon:Texture
 
 #Abilities
-export (Array) var abilityList
+@export var abilityList:Array
 

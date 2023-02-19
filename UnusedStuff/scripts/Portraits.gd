@@ -1,5 +1,5 @@
 extends Node
-export(PackedScene) var portrait_scene
+@export(PackedScene) var portrait_scene
 var preparedSprite
 
 

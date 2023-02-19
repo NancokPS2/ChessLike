@@ -2,9 +2,9 @@ extends AttributesBase
 class_name RacialAttributes
 
 #Info
-export (String) var description
-export (String) var spriteFolder = "res://Assets/Units/characters/human/"
-export (Dictionary) var sexWeight = {
+@export var description:String
+@export var spriteFolder:String = "res://Assets/Units/characters/human/"
+@export var sexWeight:Dictionary = {
 	"Male":1,
 	"Female":1,
 	"Other":1,
@@ -13,4 +13,4 @@ export (Dictionary) var sexWeight = {
 
 
 #Abilities
-export (Array) var abilityList = ["WEAPONATTACK"]
+@export var abilityList:Array = ["WEAPONATTACK"]

@@ -1,13 +1,13 @@
 extends Resource
 class_name AttributesBase
 
-export (String) var internalName
-export (String) var displayName = "ERR_NONAME"
+@export var internalName:String
+@export var displayName:String = "ERR_NONAME"
 
-export (PackedScene) var model = load("res://Assets/CellMesh/Characters/Dummy/Dummy.tscn")
+@export var model:PackedScene = load("res://Assets/CellMesh/Characters/Dummy/Dummy.tscn")
 
 
-export (Dictionary) var stats ={
+@export var stats:Dictionary ={
 	#Combat only
 	"health":100,
 	"energy":30,
@@ -32,7 +32,7 @@ export (Dictionary) var stats ={
 	"movesMax":1,
 	"movementType":0
 }
-export (Dictionary) var statModifiers ={
+@export var statModifiers:Dictionary ={
 	"maxHealth":1.0,
 	"maxEnergy":1.0,
 	"strength":1.0,

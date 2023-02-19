@@ -4,11 +4,11 @@ class_name ButtonStateChange
 
 enum stateTypes {MAIN,COMBAT}
 
-export (bool) var activateOnRelease = true #Otherwise, it is when pressed
-export (stateTypes) var stateToAffect #Which ofthe 2 states should be affected
-export (GameBoard.states) var mainState
-export (GameBoard.combatStates) var combatState
-export (String) var freeOnSignal = ""
+@export var activateOnRelease:bool = true #Otherwise, it is when pressed
+@export var stateToAffect:stateTypes #Which ofthe 2 states should be affected
+@export var mainState:GameBoard.states
+@export var combatState:GameBoard.combatStates
+@export var freeOnSignal:String = ""
 
 func _ready() -> void:
 	if activateOnRelease:

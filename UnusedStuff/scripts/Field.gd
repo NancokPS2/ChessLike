@@ -1,6 +1,6 @@
 extends TileMap
 
-export(PackedScene) var tile_scene
+@export(PackedScene) var tile_scene
 var zoomAmount = Vector2(0.5,0.5)
 var selectedUnit = FieldVars.selectedUnitID
 

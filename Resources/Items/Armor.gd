@@ -3,6 +3,6 @@ class_name ArmorEquipment
 
 func setup() -> void:
 	internalName = "DummyArmor"
-	equipmentType = equipmentTypes.ARMOR
+	equipmentType = Types.ARMOR
 	compatibleSlots.append("ARMOR") 
 	

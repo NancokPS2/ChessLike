@@ -4,13 +4,13 @@ class_name Item
 
 #const equipmentTypes = Const.equipmentTypes
 
-#export (equipmentTypes) var type
-export (String) var internalName
-export (String) var resCategory
-export (String) var displayName
+#@export (equipmentTypes) var type
+@export var internalName:String
+@export var resCategory:String
+@export var displayName:String
 
-export (Texture) var sprite
-export (PackedScene) var model = load("res://Assets/CellMesh/Weapons/Dagger/Dagger.tscn")
+@export var sprite:Texture
+@export var model:PackedScene = load("res://Assets/CellMesh/Weapons/Dagger/Dagger.tscn")
 
 func use():
 	pass
