@@ -12,12 +12,12 @@ enum stateTypes {MAIN,COMBAT}
 
 func _ready() -> void:
 	if activateOnRelease:
-		connect("button_up",self,"button_released")
+		button_up.connect(button_released)
 	else:
-		connect("button_down",self,"button_released")
+		button_down.connect(button_released)
 		
 	if freeOnSignal != "":
-		Events.connect(freeOnSignal,self,"queue_free")
+		Events.Signal(self,freeOnSignal).connect(queue_free)
 	
 	
 func button_released():

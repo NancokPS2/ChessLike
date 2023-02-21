@@ -7,7 +7,6 @@ func _init():
 	turnDelayCost += 0
 	energyCost += 0
 	abilityFlags += AbilityFlags.HOSTILE
-	parametersReq += ParametersReq.USED_WEAPON + ParametersReq.TARGET_UNIT
 	
 
 func _use(params):

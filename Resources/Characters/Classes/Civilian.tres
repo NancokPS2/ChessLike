@@ -1,11 +1,13 @@
-[gd_resource type="Resource" load_steps=3 format=2]
+[gd_resource type="Resource" script_class="ClassAttributes" load_steps=2 format=3 uid="uid://hfnwmof6gvyn"]
 
-[ext_resource path="res://Resources/Characters/Attributes/ClassAttributes.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Units/classIcons/default.png" type="Texture" id=2]
+[ext_resource type="Script" path="res://Resources/Characters/Attributes/ClassAttributes.gd" id="1"]
 
 [resource]
-script = ExtResource( 1 )
-internalName = "CIVILIAN"
+script = ExtResource("1")
+description = ""
+abilityList = []
+internalName = ""
+displayName = "ERR_NONAME"
 stats = {
 "accuracy": 0,
 "actions": 1,
@@ -18,7 +20,6 @@ stats = {
 "energyMax": 30,
 "health": 100,
 "healthMax": 100,
-"maxTurnDelay": 100,
 "mind": 0,
 "moveDistance": 0,
 "movementType": 0,
@@ -26,7 +27,8 @@ stats = {
 "movesMax": 1,
 "special": 0,
 "strength": 0,
-"turnDelay": 0
+"turnDelay": 0,
+"turnDelayMax": 100
 }
 statModifiers = {
 "accuracy": 1.0,
@@ -40,7 +42,3 @@ statModifiers = {
 "special": 1.0,
 "strength": 1.0
 }
-name = "CHAR_CLASS_CIVILIAN_NAME"
-description = "CHAR_CLASS_CIVILIAN_DESC"
-icon = ExtResource( 2 )
-abilityList = [  ]

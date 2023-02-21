@@ -168,7 +168,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				var thingHovered = $Grid.get_cell_occupant($Grid.hoveredCell)
 				if thingHovered and thingHovered.get("isUnit"):#If a unit was clicked
 					$Grid.remove_object(thingHovered, $Grid.objectTypes.UNITS)#Remove it from the field
-					Ref.unitsInBattle.remove( Ref.unitsInBattle.find(thingHovered) )#Remove it from the unit list
+					Ref.unitsInBattle.erase( thingHovered )#Remove it from the unit list
 					
 				Ref.unitSelected = null#Deselect the current unit
 				$UI/InfoDisplay.clear_unit()

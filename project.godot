@@ -8,142 +8,6 @@
 
 config_version=5
 
-_global_script_classes=[{
-"base": "Equipment",
-"class": &"AccessoryEquipment",
-"language": &"GDScript",
-"path": "res://Resources/Items/Accessory.gd"
-}, {
-"base": "Equipment",
-"class": &"ArmorEquipment",
-"language": &"GDScript",
-"path": "res://Resources/Items/Armor.gd"
-}, {
-"base": "Resource",
-"class": &"AttributesBase",
-"language": &"GDScript",
-"path": "res://Resources/Characters/Attributes/AttributesBase.gd"
-}, {
-"base": "Button",
-"class": &"ButtonStateChange",
-"language": &"GDScript",
-"path": "res://Classes/ButtonStateChange.gd"
-}, {
-"base": "AttributesBase",
-"class": &"CharAttributes",
-"language": &"GDScript",
-"path": "res://Resources/Characters/Attributes/CharacterAttributes.gd"
-}, {
-"base": "AttributesBase",
-"class": &"ClassAttributes",
-"language": &"GDScript",
-"path": "res://Resources/Characters/Attributes/ClassAttributes.gd"
-}, {
-"base": "Item",
-"class": &"Equipment",
-"language": &"GDScript",
-"path": "res://Resources/Items/Equipment.gd"
-}, {
-"base": "Resource",
-"class": &"Faction",
-"language": &"GDScript",
-"path": "res://Resources/Characters/Faction.gd"
-}, {
-"base": "Node3D",
-"class": &"GameBoard",
-"language": &"GDScript",
-"path": "res://Objects/CombatGrid/Main.gd"
-}, {
-"base": "Resource",
-"class": &"GridData",
-"language": &"GDScript",
-"path": "res://Resources/Maps/GridData.gd"
-}, {
-"base": "Resource",
-"class": &"Inventory",
-"language": &"GDScript",
-"path": "res://Resources/Inventory.gd"
-}, {
-"base": "Resource",
-"class": &"Item",
-"language": &"GDScript",
-"path": "res://Resources/Items/Item.gd"
-}, {
-"base": "Spatial",
-"class": &"MouseManager",
-"language": &"GDScript",
-"path": "res://Classes/MouseManager.gd"
-}, {
-"base": "GridMap",
-"class": &"MovementGrid",
-"language": &"GDScript",
-"path": "res://Classes/Grid.gd"
-}, {
-"base": "AttributesBase",
-"class": &"RacialAttributes",
-"language": &"GDScript",
-"path": "res://Resources/Characters/Attributes/RacialAttributes.gd"
-}, {
-"base": "Resource",
-"class": &"SaveLoad",
-"language": &"GDScript",
-"path": "res://Resources/SaveFile.gd"
-}, {
-"base": "HBoxContainer",
-"class": &"TurnManager",
-"language": &"GDScript",
-"path": "res://Classes/TurnManager.gd"
-}, {
-"base": "Object",
-"class": &"TypeFormattingLogic",
-"language": &"GDScript",
-"path": "res://addons/metadata_inspector/TypeFormattingLogic.gd"
-}, {
-"base": "Node3D",
-"class": &"Unit",
-"language": &"GDScript",
-"path": "res://Classes/RPGCharacter.gd"
-}, {
-"base": "Panel",
-"class": &"UnitDisplay",
-"language": &"GDScript",
-"path": "res://Objects/UI/TurnDisplay/PerUnitDisplay.gd"
-}, {
-"base": "Node",
-"class": &"Utility",
-"language": &"GDScript",
-"path": "res://Tools/UtilityClasses/Utlity.gd"
-}, {
-"base": "Equipment",
-"class": &"WeaponEquipment",
-"language": &"GDScript",
-"path": "res://Resources/Items/Weapon.gd"
-}]
-_global_script_class_icons={
-"AccessoryEquipment": "",
-"ArmorEquipment": "",
-"AttributesBase": "",
-"ButtonStateChange": "",
-"CharAttributes": "",
-"ClassAttributes": "",
-"Equipment": "",
-"Faction": "",
-"GameBoard": "",
-"GridData": "",
-"Inventory": "",
-"Item": "",
-"MouseManager": "",
-"MovementGrid": "",
-"RacialAttributes": "",
-"SaveLoad": "",
-"TurnManager": "",
-"TypeFormattingLogic": "",
-"Unit": "",
-"UnitDisplay": "",
-"Utility": "",
-"WeaponEquipment": ""
-}
-
 [application]
 
 config/name="ChessLike"
@@ -194,7 +58,7 @@ texture={
 
 go_back={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 primary_click={
@@ -209,57 +73,57 @@ secondary_click={
 }
 debug_1={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 shift_mod={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 mouse_camera_mod={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 camera_forward={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 camera_backward={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 camera_left={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 camera_right={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 rotate_right={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 rotate_left={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 zoom_in={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 zoom_out={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
 NOMAP_ability_chosen={
@@ -283,4 +147,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
 environment/default_environment="res://default_env.tres"

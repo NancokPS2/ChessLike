@@ -9,7 +9,6 @@ func _init():
 	reach = 4
 	targetingShape = MovementGrid.mapShapes.STAR
 	abilityFlags = AbilityFlags.HOSTILE
-	parametersReq = ParametersReq.TARGET_UNIT
 
 
 func _use(params:Dictionary):

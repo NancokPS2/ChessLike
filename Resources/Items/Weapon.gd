@@ -11,7 +11,7 @@ enum WeaponTypes{GUN,BOW,CROSSBOW,CANNON,THROW,DAGGER,SWORD,HAMMER,AXE,SPEAR,GAU
 
 	
 func _init():
-	equipmentType = Const.equipmentTypes.WEAPON
+	equipmentType = EquipmentTypes.WEAPON
 	pass
 	
 

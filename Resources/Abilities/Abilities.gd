@@ -7,7 +7,9 @@ var displayedName:String
 
 var description:String
 
-var user:Node
+var user:Unit
+
+var mainValue:float
 
 var internalName:String = ""
 
@@ -31,19 +33,11 @@ const AbilityFlags = {
 	"NO_HIT_OBSTACLE":1<<5,#Does not affect objects
 	"NO_HIT_FRIENDLY":1<<6,#Does not affect allies
 	"NO_HIT_ENEMY":1<<7,#Does not affect enemies
-	"NO_TILE_WITH_OBJECT":1<<8,#Does not target tiles with objects
-	"NO_TILE_WITH_UNIT":1<<9,#Does not target tiles with units
-	"TARGET_TILES":1<<10,#This ability targets tiles instead of Units or objects
+	"ONLY_HIT_TILES":1<<5 + 1<<6 + 1<<7,#Combine all other NO_HIT flags
 }
 
 #@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
 var classRestrictions:Array
-
-var parametersReq:int = 0
-const ParametersReq = {
-	"TARGET_UNIT":1<<0,
-	"USED_WEAPON":1<<1
-}
 
 var energyCost:int
 
@@ -70,50 +64,51 @@ func connect_triggers():
 		
 	for signa in triggerSignals:
 		
-		var errorCode = user.connect(signa,self,triggerSignals[signa])
-		assert(errorCode == OK, str(errorCode))
+		var errorCode = user.signa.connect(triggerSignals[signa])
+		assert(errorCode == OK)
 
 func filter_targets(targets:Array)->Array:
-	var newTargets:Array
-	assert(not targets.empty())
+	var newTargets:Array = targets
+	assert(not targets.is_empty())
 	
-	for target in targets:
+	for target in newTargets:
 		
 		if abilityFlags && AbilityFlags.NO_HIT_FRIENDLY and target.get("isUnit"):
 			if target.faction.internalName != user.faction.internalName:#If it is from it's faction
-				targets.erase(target)#Remove it
+				newTargets.erase(target)#Remove it
 				
 		elif abilityFlags && AbilityFlags.NO_HIT_ENEMY and target.get("isUnit"):
 			if target.faction.internalName != user.faction.internalName:#If it isn't from it's faction
-				targets.erase(target)#Remove it
+				newTargets.erase(target)#Remove it
 		
-	return targets
+	return newTargets
 			
-	
-func use( params={} ):
-	assert(params.get("targets",null) != null)
+func is_target_ok(targets:Array)->bool:#Check if any target is valid
+	var result:Array = filter_targets(targets)
+	if result.size() > 0:
+		return true
+	else:
+		return false
+		
+func use( params:AbilityParameters ):
+	assert(params != null)
 
 	
-	
-	if params.get("flags",null) == null:#Ensure they exist
-		params["flags"] = 0
-	
 	#---Populating with optional parameters---
-	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
-	assert(yieldMenu != null)
-	var optionSelected #Not necessarily used
-	if yieldMenu != null:
+#	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
+#	assert(yieldMenu != null)
+#	var optionSelected #Not necessarily used
+#	if yieldMenu != null:
+#
+#		for option in miscOptions:#Populate with options
+#			yieldMenu.add_option(option, miscOptions[option])
+#
+#		if not miscOptions.empty():
+#			optionSelected = yield(yieldMenu,"button_pressed")
+#	else:
+#		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
+#		return
 		
-		for option in miscOptions:#Populate with options
-			yieldMenu.add_option(option, miscOptions[option])
-		
-		if not miscOptions.empty():
-			optionSelected = yield(yieldMenu,"button_pressed")		
-	else:
-		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
-		return
-		
-	params["optionSelected"] = optionSelected
 	#---------
 
 	
@@ -144,3 +139,10 @@ func kill_switch_on_check():
 	if killSwitch:
 		killSwitch = false
 		return true
+
+class AbilityParameters extends Resource:
+	var abilityFlags:int = 0
+	var targetTile:Vector3i
+	
+	
+	var optional

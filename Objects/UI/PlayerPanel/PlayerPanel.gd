@@ -1,7 +1,7 @@
 extends UnitDisplay
 
 func _ready() -> void:
-	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
+	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
 #	Events.connect("GRID_UNIT_HOVERED",self,"hover_load_unit")
 #	Events.connect("GRID_UNIT_CLICKED",self,"load_unit")
 #	pass
