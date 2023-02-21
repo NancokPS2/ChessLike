@@ -82,9 +82,9 @@ func load_abilities():
 enum nameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
 func generate_name(type:int,firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum
 	
-	if firstNameList.empty():#Failsafe
+	if firstNameList.is_empty():#Failsafe
 		firstNameList.append("Tester")
-	if lastNameList.empty():#Failsafe
+	if lastNameList.is_empty():#Failsafe
 		lastNameList.append("Testius")
 	
 	if type != nameType.FIRST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a first name...

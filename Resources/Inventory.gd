@@ -9,7 +9,15 @@ signal inventory_altered
 
 @export var items:Array[Resource]
 
-@export var equipped:Array[Resource] = [null,load("res://Resources/Items/Weapons/BasicGun.tres"),null,null,null,null]
+@export var equipped:Dictionary = {
+	Const.equipmentSlots.R_HAND:null,
+	Const.equipmentSlots.L_HAND:null,
+	Const.equipmentSlots.ARMOR:null,
+	Const.equipmentSlots.ACC1:null,
+	Const.equipmentSlots.ACC2:null,
+	Const.equipmentSlots.ACC3:null
+}
+#[null,load("res://Resources/Items/Weapons/BasicGun.tres"),null,null,null,null]
 
 @export var stockPile:Resource #Meant to be an inventory to be shared by others
 
@@ -29,7 +37,7 @@ func transfer_to_self(item:Item):#Take from another inventory
 	pass
 	
 func transfer_to_other(item:Item,destination:Inventory):#Remove from inventory and add it to another
-	var tempHolder = item
+	var tempHolder:Item = item
 	destination.add_item(tempHolder)
 	item.free()
 	pass
@@ -47,13 +55,14 @@ func add_item(item):#Create an item in this inventory
 	if not canStoreItems or items.size() > inventorySize:
 		send_to_stockpile(items.pop_back())
 	emit_signal("inventory_altered")
+	
 func connect_to_stockPile(stockpile:Inventory):
 	stockPile = stockpile
 
 
 
 #Equipment
-func equip_item(item,slot:int=0,replace:bool=false):#If replace is true, any item already in the slot will be deleted, otherwise it's sent to the inventory
+func equip_item(item,slot:String, replace:bool=false):#If replace is true, any item already in the slot will be deleted, otherwise it's sent to the inventory
 	var slotName:String
 	if !item.compatibleSlots.has(slot):#Ensure it can be equipped there
 		push_error("This equipment cannot be inserted in that slot")
@@ -64,7 +73,7 @@ func equip_item(item,slot:int=0,replace:bool=false):#If replace is true, any ite
 	equipped[slot] = item
 		
 		
-func unequip_item(slot:int):#WIP (Should use enum)
+func unequip_item(slot:String):#WIP (Should use enum)
 	add_item(equipped[slot])
 	equipped[slot] = null
 		

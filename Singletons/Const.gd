@@ -15,7 +15,7 @@ enum directions{UP,RIGHT,DOWN,LEFT}
 
 enum directionsIso{U_LEFT,U_RIGHT,D_LEFT,D_RIGHT}
 
-enum equipmentSlots{ARMOR,L_HAND,R_HAND,ACC1,ACC2,ACC3}
+const equipmentSlots = {ARMOR="ARMOR",L_HAND="L_HAND",R_HAND="R_HAND",ACC1="ACC1",ACC2="ACC2",ACC3="ACC3"}
 
 enum equipmentTypes{WEAPON,CONSUMABLE,ARMOR,ACCESSORY}
 

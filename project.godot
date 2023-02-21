@@ -89,11 +89,6 @@ _global_script_classes=[{
 "language": &"GDScript",
 "path": "res://Resources/SaveFile.gd"
 }, {
-"base": "Node",
-"class": &"SaveManager",
-"language": &"GDScript",
-"path": "res://Classes/SaveManager.gd"
-}, {
 "base": "HBoxContainer",
 "class": &"TurnManager",
 "language": &"GDScript",
@@ -141,7 +136,6 @@ _global_script_class_icons={
 "MovementGrid": "",
 "RacialAttributes": "",
 "SaveLoad": "",
-"SaveManager": "",
 "TurnManager": "",
 "TypeFormattingLogic": "",
 "Unit": "",

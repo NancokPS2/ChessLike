@@ -52,10 +52,10 @@ class SaveFile extends ConfigFile:
 		if not playerFaction is Faction:
 			messages.append("Faction is null /")
 			
-		if playerUnits.empty():
+		if playerUnits.is_empty():
 			messages.append("No playable units could be loaded /")
 			
-		if messages.empty():
+		if messages.is_empty():
 			messages.append("OK")
 		
 		return( str(messages) )
@@ -71,9 +71,9 @@ class Manager extends Node:
 		
 		return saveFile
 		
-	static func load_save_file(fileName:String)->Resource:
-		var save = ConfigFile.new()
-		return save.load(Const.dirSaves + fileName + "/save.cfg")
+	static func load_save_file(fileName:String)->ConfigFile:
+		var save = ConfigFile.new(); save.load(Const.dirSaves + fileName + "/save.cfg")
+		return save
 		
 #	static func get_all_save_data(saveFolderPath:String)->Dictionary:
 #		var dir = Directory.new()
@@ -137,3 +137,29 @@ class Manager extends Node:
 		config.set_value("main","playerFactionIN",saveFile.playerFactionIN)
 		config.set_value("main","playerUnitsIN",saveFile.playerUnitsIN)
 		return config
+
+#class SaveManager extends Node:
+#
+#	func create_empty_save_file(fileName:String):
+#		var dir = Directory.new()
+#		dir.open(Const.dirSaves)
+#		var saveFile = SaveLoad.SaveFile.new()
+#		saveFile.set_name(fileName)
+#		ResourceSaver.save(saveFile, Const.dirSaves + fileName+".tres")
+#
+#	func prepare_basic_save_file(fileName:String):
+#		create_empty_save_file(fileName)
+#		var saveFile = load(Const.dirSaves + fileName + ".tres")
+#		saveFile.playerUnits.append(load("res://Resources/Characters/UniqueCharacters/Misha.tres"))
+#		save_game(saveFile)
+#
+#	func get_save_file(fileName:String)->Resource:
+#		var dir = Directory.new()
+#		dir.open(Const.dirSaves)
+#		return load(Const.dirSaves + fileName+ ".tres")
+#
+#	func save_game(file:SaveLoad.SaveFile):
+#		var dir = Directory.new()
+#		dir.open(Const.dirSaves)
+#		ResourceSaver.save(Const.dirSaves + file.get_name() + ".tres", file)
+

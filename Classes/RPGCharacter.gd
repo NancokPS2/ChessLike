@@ -3,7 +3,7 @@ class_name Unit
 
 
 @export var saveName:String
-@export var attributes:CharAttributes = CharAttributes.new() #UnitAttributes (stats)
+@export var attributes:Resource = CharAttributes.new() #UnitAttributes (stats)
 var inventory:Inventory
 var facing:int = 0#Temp value
 #var attributes:UnitAttributes
