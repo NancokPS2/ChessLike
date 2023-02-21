@@ -18,3 +18,5 @@ res://Resources/SaveFile.gd
 res://Resources/Abilities/AllAbilities/FUCKOFF.gd
 res://Resources/Abilities/AllAbilities/WEAPONATTACK.gd
 res://Resources/Characters/Classes/Civilian.tres
+res://Resources/Items/Weapon.gd
+res://Objects/UI/PlayerPanel/PlayerPanel.gd
