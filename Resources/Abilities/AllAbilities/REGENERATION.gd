@@ -6,11 +6,12 @@ func _init():
 	classRestrictions = []
 	turnDelayCost += 0
 	energyCost += 0
+	mainValue = 0.1
 	triggerSignals = {"turn_started":"use"}
 	abilityFlags += AbilityFlags.FRIENDLY + AbilityFlags.HEALING + AbilityFlags.PASSIVE
 	
 func _use(params):
-	user.attributes.heal_health(user.attributes.healthMax*0.1)
+	user.change_stat("health", user.stats["healthMax"]*mainValue)
 	emit_signal("ability_finalized")
 
 #func use(target:Unit):

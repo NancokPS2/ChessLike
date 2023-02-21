@@ -96,28 +96,23 @@ class Manager extends Node:
 #			folderName = dir.get_next()
 #		return saves
 
-	static func save_game(file:ConfigFile)->String:#Returns the path it was saved at
+	static func save_game(file:ConfigFile, overwrite:bool = false)->String:#Returns the path it was saved at
 		var saved = file
-		var dir = Directory.new()
 		var saveName = file.get_value("main","saveName")#Name of the save file and it's folder
 		var targetDir = Const.dirSaves+saveName+"/"#Where it should be saved
+		
+		DirAccess.make_dir_recursive_absolute(targetDir)
+		var dir = DirAccess.open(targetDir)
 		var errorCode:int#Used to keep track of errors
 		
-		if dir.dir_exists(targetDir):#Alter the name if it already exists
-			file.set_value("main","saveName",saveName+"_DUP")
-			
-		errorCode = dir.make_dir_recursive(targetDir)#Create the dir just in case
-		assert(errorCode == OK)
-		dir.open(targetDir)
-			
-		if saved is Resource:#Convert to ConfigFile if not on
+		if saved is Resource:#Convert to ConfigFile if not already
 			saved = save_to_config(saved)
 			
 		saved.set_value("main","icon",targetDir+"/icon.png")#Store a path to the icon
 			
 		errorCode = saved.save(targetDir + "save.tactsav")#Save the file
 		
-		if errorCode:#If something went wrong report it
+		if errorCode != OK:#If something went wrong report it
 			push_error( "Reported error code while saving: " + str(errorCode) )
 		
 		return targetDir
