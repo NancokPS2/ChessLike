@@ -1,17 +1,17 @@
 extends CanvasLayer
 
 func _ready() -> void:
-	Events.connect("PAUSE_enter",self,"game_paused",[true])
-	Events.connect("PAUSE_exit",self,"game_paused",[false])
+	Events.PAUSE_enter.connect(game_paused.bind(true))
+	Events.PAUSE_exit.connect(game_paused.bind(false))
 	game_paused(false)
 	
-	$Buttons/Resume.connect("button_up",Events,"emit_signal",["STATE_CHANGE",GameBoard.states.COMBAT])
+	$Buttons/Resume.button_up.connect(Callable(Events,"emit_signal").bind("STATE_CHANGE",GameBoard.states.COMBAT))
 
 func game_paused(yes:bool):
 	if yes:
-		pause_mode = PAUSE_MODE_PROCESS
+		process_mode = Node.PROCESS_MODE_INHERIT
 	else:
-		pause_mode = PAUSE_MODE_STOP
+		process_mode = Node.PROCESS_MODE_DISABLED
 		
 	visible = yes
 

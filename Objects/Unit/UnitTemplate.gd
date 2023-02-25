@@ -26,14 +26,14 @@ func misc_visuals():
 	$NickName.text = info["nickName"]
 	var charSprites:SpriteFrames = ResourceLoader.load(attributes.raceAttributes.spriteFolder + "default.tres")
 
-class Model extends Spatial:
+class Model extends Node3D:
 	var modelStored:PackedScene
 	
 	func _init(modelToUse:PackedScene) -> void:
 		modelStored = modelToUse
 	
 	func add_meshes_from_scene(modelToUse:PackedScene):#Takes all the meshes from a model scene, includes animations
-		var modelInstance:Spatial = modelToUse.instance()
+		var modelInstance:Node3D = modelToUse.instance()
 		if modelInstance == null:
 			push_error("The model used is null!")
 		assert(modelInstance != null)
@@ -47,7 +47,7 @@ class Model extends Spatial:
 		var nodes:Array#Returned nodes go here
 		var modelNode:Node = model.get_state().get_node_instance(0).instance()#Get the state of the model
 		for child in modelNode.get_children():#For each child of the scene
-			if child is MeshInstance:#If it is a Mesh
+			if child is MeshInstance3D:#If it is a Mesh
 				nodes.append(child)#Add it
 
 		return nodes
@@ -58,7 +58,7 @@ class Model extends Spatial:
 		var animationRef:Node
 		
 		#Setup
-		func _init(modelToUse:PackedScene).(modelToUse) -> void:
+		func _init(modelToUse:PackedScene):
 			modelStored = modelToUse
 		
 		func _ready() -> void:		
@@ -73,21 +73,21 @@ class Model extends Spatial:
 			limbRefs.clear()
 			var meshRefs:Array = Utility.NodeManipulation.get_all_children(self)#Get all meshes
 			
-			assert(not meshRefs.empty())
+			assert(not meshRefs.is_empty())
 			
 			for mesh in meshRefs:#Store references to each limb
-				if mesh is MeshInstance:
+				if mesh is MeshInstance3D:
 					limbRefs[mesh.get_name()] = mesh
 
 		
 		
 		#Functional
-		func attach_node_to_limb(node:Spatial,usedLimb:String):
+		func attach_node_to_limb(node:Node3D,usedLimb:String):
 			if node.get_parent() != null: #Unparent if it already has one
 				node.get_parent().remove_child(node)
 				
 			var origin = node.get_node("ORIGIN")
-			if origin is Spatial:
+			if origin is Node3D:
 				node.translate(-origin.translation)
 				
 			limbRefs[usedLimb].add_child(node)

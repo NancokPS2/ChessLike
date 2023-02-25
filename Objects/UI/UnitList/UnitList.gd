@@ -4,7 +4,7 @@ var displayScene = preload("res://Objects/UI/TurnDisplay/PerUnitDisplay.tscn")#R
 var active:bool
 
 func _ready() -> void:
-	Events.connect("SETUP_exit",self,"on_setup_exit")
+	Events.SETUP_exit.connect(on_setup_exit)
 
 func populate_list(units:Array):
 	for unit in units:

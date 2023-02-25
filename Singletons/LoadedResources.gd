@@ -24,7 +24,7 @@ func load_from_folder(folderPath:String,type:String):
 	loadingDir.open(folderPath)#Start loading abilities
 	var files:PackedStringArray = loadingDir.get_files()
 	for fileName in files:
-		var loadedFile = load(folderPath+fileName)
+		var loadedFile = load(folderPath+str(fileName))
 		if !resources.has(type):#Ensure the type exists in resources
 			resources[type] = []
 			

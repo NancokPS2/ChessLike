@@ -3,4 +3,4 @@ class_name AccessoryEquipment
 
 func _init() -> void:
 	internalName = "DummyAccessory"
-	equipmentType = Types.ARMOR
+	equipmentType = EquipmentTypes.ARMOR

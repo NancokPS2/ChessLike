@@ -173,7 +173,7 @@ class Generator:
 
 	
 	static func build_from_attributes(attrib:Resource):
-		var unit = Const.UnitTemplate.instance()#Create an instance
+		var unit = Const.UnitTemplate.instantiate()#Create an instance
 		unit.attributes = attrib#Set it's attributes
 		unit.attributes.basic_setup()#Perform loading and stat calculation of attributes
 		unit.update_from_attributes()#Get the stats for unit from it's attributes

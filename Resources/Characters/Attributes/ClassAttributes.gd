@@ -6,5 +6,5 @@ class_name ClassAttributes
 @export var icon:Texture
 
 #Abilities
-@export var abilityList:Array
+@export var abilityList:Array[String]
 

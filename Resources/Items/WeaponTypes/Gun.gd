@@ -3,6 +3,6 @@ class_name WeaponEquipmentGun
 
 
 func _init() -> void:
-	._init()
+	super._init()
 	attackFlagList = [Const.attackFlags.FALL_OFF]
 	compatibleSlots = [Const.equipmentSlots.L_HAND, Const.equipmentSlots.R_HAND]

@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 onready var cameraTransform:Transform = $Camera.get_global_transform()
 

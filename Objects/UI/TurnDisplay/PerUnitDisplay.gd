@@ -8,7 +8,7 @@ var stats
 var info
 
 func _ready() -> void:
-	Events.connect("UPDATE_UNIT_INFO",self,"refresh_ui")
+	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
 	pass
 
 func load_unit(unit):#Used to load and display a unit simultaneously
@@ -49,7 +49,7 @@ func refresh_ui():
 
 func animated_glow(enabled:bool):
 	if enabled:
-		$Tween.interpolate_property(self,"modulate",Color.white,Color.white+Color(1.5,1.5,1.5,1),0.7)
+		$Tween.interpolate_property(self,"modulate",Color.WHITE,Color.WHITE+Color(1.5,1.5,1.5,1),0.7)
 		$Tween.start()
 	else:
 		$Tween.stop_all()

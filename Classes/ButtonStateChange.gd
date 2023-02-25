@@ -17,7 +17,7 @@ func _ready() -> void:
 		button_down.connect(button_released)
 		
 	if freeOnSignal != "":
-		Events.Signal(self,freeOnSignal).connect(queue_free)
+		Signal(Events,freeOnSignal).connect(queue_free)
 	
 	
 func button_released():

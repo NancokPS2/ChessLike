@@ -27,7 +27,6 @@ class_name AttributesBase
 	"accuracy":0,
 	#Secondary
 	"turnDelayMax":100,
-	"delay":0,
 	"actionsMax":1,
 	"movesMax":1,
 	"movementType":0
@@ -43,4 +42,5 @@ class_name AttributesBase
 	"defense":1.0,
 	"dodge":1.0,
 	"accuracy":1.0,
+	"turnDelayMax":1.0
 }

@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="ClassAttributes" load_steps=2 format=3 uid="uid://hfnwmof6gvyn"]
+[gd_resource type="Resource" script_class="ClassAttributes" load_steps=2 format=3 uid="uid://buhfkyea0fbb1"]
 
-[ext_resource type="Script" path="res://Resources/Characters/Attributes/ClassAttributes.gd" id="1"]
+[ext_resource type="Script" path="res://Resources/Characters/Attributes/ClassAttributes.gd" id="1_n3got"]
 
 [resource]
-script = ExtResource("1")
+script = ExtResource("1_n3got")
 description = ""
-abilityList = []
-internalName = "CIVILIAN"
-displayName = "ERR_NONAME"
+abilityList = [null]
+internalName = "GRUNT"
+displayName = "Grunt"
 stats = {
 "accuracy": 0,
 "actions": 1,

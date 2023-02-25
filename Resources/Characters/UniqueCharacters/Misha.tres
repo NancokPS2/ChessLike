@@ -1,45 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" script_class="CharAttributes" load_steps=2 format=3 uid="uid://bk2x00qqtnyqg"]
 
-[ext_resource path="res://Resources/Characters/Attributes/CharacterAttributes.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="1"]
 
 [resource]
-script = ExtResource( 1 )
-internalName = "Misha"
-displayName = "ERR_NONAME"
-stats = {
-"accuracy": 0,
-"actions": 1,
-"actionsMax": 1,
-"agility": 0,
-"defense": 0,
-"delay": 0,
-"dodge": 0,
-"energy": 30,
-"energyMax": 30,
-"health": 100,
-"healthMax": 100,
-"maxTurnDelay": 100,
-"mind": 0,
-"moveDistance": 0,
-"movementType": 0,
-"moves": 1,
-"movesMax": 1,
-"special": 0,
-"strength": 0,
-"turnDelay": 0
-}
-statModifiers = {
-"accuracy": 1.0,
-"agility": 1.0,
-"defense": 1.0,
-"dodge": 1.0,
-"maxEnergy": 1.0,
-"maxHealth": 1.0,
-"mind": 1.0,
-"moveDistance": 1.0,
-"special": 1.0,
-"strength": 1.0
-}
+script = ExtResource("1")
 unitRace = "HUMAN"
 unitClass = "GRUNT"
 unitFaction = "PLAYER"
@@ -59,4 +23,39 @@ equipment = {
 "ARMOR": "",
 "L_HAND": "",
 "R_HAND": "dagger"
+}
+internalName = "Misha"
+displayName = "ERR_NONAME"
+stats = {
+"accuracy": 0,
+"actions": 1,
+"actionsMax": 1,
+"agility": 0,
+"defense": 0,
+"dodge": 0,
+"energy": 30,
+"energyMax": 30,
+"health": 100,
+"healthMax": 100,
+"mind": 0,
+"moveDistance": 0,
+"movementType": 0,
+"moves": 1,
+"movesMax": 1,
+"special": 0,
+"strength": 0,
+"turnDelay": 0,
+"turnDelayMax": 100
+}
+statModifiers = {
+"accuracy": 1.0,
+"agility": 1.0,
+"defense": 1.0,
+"dodge": 1.0,
+"maxEnergy": 1.0,
+"maxHealth": 1.0,
+"mind": 1.0,
+"moveDistance": 1.0,
+"special": 1.0,
+"strength": 1.0
 }

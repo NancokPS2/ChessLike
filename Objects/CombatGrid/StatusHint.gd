@@ -4,16 +4,16 @@ var tempTextTimer:SceneTreeTimer
 
 
 func _ready() -> void:
-	Events.connect("HINT_UPDATE",self,"set_text")
+	Events.HINT_UPDATE.connect(set_text)
 	
-	Events.connect("SETUP_enter",self,"set_text",["UI_HINT_SETUP"])
+	Events.SETUP_enter.connect(set_text.bind("UI_HINT_SETUP"))
 	
-	Events.connect("COMBAT_enter",self,"set_text",[""])
-	Events.connect("COMBAT_IDLE_enter",self,"set_text",[""])
-	Events.connect("COMBAT_MOVING_enter",self,"set_text",["UI_HINT_COMBAT_MOVING"])
-	Events.connect("COMBAT_ACTING_enter",self,"set_text",["UI_HINT_COMBAT_ACTING"])
-	Events.connect("COMBAT_FACING_enter",self,"set_text",["UI_HINT_COMBAT_FACING"])
-	Events.connect("COMBAT_TARGETING_enter",self,"set_text",["UI_HINT_COMBAT_TARGETING"])
+	Events.COMBAT_enter.connect(set_text.bind(""))
+	Events.COMBAT_IDLE_enter.connect(set_text.bind(""))
+	Events.COMBAT_MOVING_enter.connect(set_text.bind("UI_HINT_COMBAT_MOVING"))
+	Events.COMBAT_ACTING_enter.connect(set_text.bind("UI_HINT_COMBAT_ACTING"))
+	Events.COMBAT_FACING_enter.connect(set_text.bind("UI_HINT_COMBAT_FACING"))
+	Events.COMBAT_TARGETING_enter.connect(set_text.bind("UI_HINT_COMBAT_TARGETING"))
 	
 
 
@@ -21,7 +21,7 @@ func temp_text(tempText:String,duration:float):
 	var oldText = text#Save the old text
 	text = tempText#Change the text
 	tempTextTimer = get_tree().create_timer(duration)#Prepare the timer
-	tempTextTimer.connect("timeout",self,"return_to_old_text",[tempText,oldText])#Make it return to it when it finishes
+	tempTextTimer.timeout.connect(return_to_old_text.bind(tempText,oldText))#Make it return to it when it finishes
 	
 func return_to_old_text(textExpected:String, oldText:String):
 	if textExpected == text:#The text is just as it was left when changed temporarily

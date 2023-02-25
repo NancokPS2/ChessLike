@@ -142,7 +142,7 @@ func hover_visual(gridLoc:Vector3):#Called by _input to update the marker's loca
 	
 #Targeting
 
-func mark_cells_for_movement(unit:Spatial=Ref.unitInAction):
+func mark_cells_for_movement(unit:Node3D=Ref.unitInAction):
 	#Setup
 	var origin = unit.get_meta("mapPos")
 	var size = unit.stats["moveDistance"]
@@ -153,7 +153,7 @@ func mark_cells_for_movement(unit:Spatial=Ref.unitInAction):
 	movement.highlight_cells(toMarkCells)
 
 	
-func mark_cells_for_targeting(ability:Ability, unit:Spatial=Ref.unitInAction):
+func mark_cells_for_targeting(ability:Ability, unit:Node3D=Ref.unitInAction):
 	#Setup
 	var origin = unit.get_meta("mapPos")
 	var size = ability.reach
