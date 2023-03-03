@@ -2,7 +2,7 @@ extends MovementGrid
 
 #Constants
 const defaultMeshLib = preload("res://Assets/CellMesh/Base/DefaultTiles.tres")
-const defaultCellSize = Vector3(0.32,0.16,0.32)
+const CellSize = Vector3(0.32,0.16,0.32)
 
 #Vars
 var currentMap:Map = Map.new()
@@ -11,19 +11,19 @@ var hoveredCell:Vector3#Stores the currently hovered cell
 
 var currentAbility:Ability
 
-onready var terrain = Terrain.new(currentMap)
-onready var targeting:Targeting = Targeting.new()
-onready var movement:Targeting = Targeting.new()
-onready var movementChecker:AStar = AStar.new()
+@onready var terrain = Terrain.new(currentMap)
+@onready var targeting:Targeting = Targeting.new()
+@onready var movement:Targeting = Targeting.new()
+@onready var movementChecker:AStar2D = AStar2D.new()
 
-onready var aoeVisualizer:Targeting = Targeting.new()
+@onready var aoeVisualizer:Targeting = Targeting.new()
 
 
 var abilityHolder
 func _ready() -> void:
 	Ref.combatGrid = self
 	
-	cell_size = defaultCellSize
+	cell_size = CellSize
 	
 	register_tiles(currentMap)#Store each tile in cellDict, WIP
 	add_child(terrain)#Adds the terrain so it can generate itself
@@ -58,9 +58,9 @@ func place_object(object:Node,location:Vector3, type:int=objectTypes.UNITS, forc
 			push_error("Uh oh. Metadata points to the wrong location in the grid. Attempting to fix for location: " + str(originalPos))
 			var fixed=false
 			
-			for location in cellDict[type]:
-				if cellDict[type][location] == object:
-					cellDict[type].erase(location)
+			for vector3 in cellDict[type]:
+				if cellDict[type][vector3] == object:
+					cellDict[type].erase(vector3)
 					fixed = true
 					push_warning("Managed to fix the metadata, all clear.")
 			if not fixed:
@@ -75,7 +75,7 @@ func place_object(object:Node,location:Vector3, type:int=objectTypes.UNITS, forc
 		
 	cellDict[type][location] = object#Set it's new location
 	
-	object.translation = map_to_world(location.x,location.y+defaultCellSize.y,location.z)#Update it's position
+	object.position = map_to_local( Vector3(location.x+CellSize.x,location.y+CellSize.y,location.z+CellSize.z) )#Update it's position
 	
 	object.set_meta("mapPos",location)#Store a reference to a new position on the object
 
@@ -99,7 +99,7 @@ func _input(event: InputEvent) -> void:
 	hover_visual(hoveredCell)#Relocate the visual
 	
 func update_hovered_cell() -> Vector3:
-	hoveredCell = world_to_map( Ref.mainNode.get_hovered(Ref.mainNode.typesOfInfo.POSITION) )#Keep track of the currently hovered tile
+	hoveredCell = local_to_map( Ref.mainNode.get_hovered(Ref.mainNode.typesOfInfo.POSITION) )#Keep track of the currently hovered tile
 	return hoveredCell
 	
 func _unhandled_input(event: InputEvent) -> void:
@@ -119,7 +119,7 @@ func get_cell_occupant(cell:Vector3,type:int=0):
 	
 func hover_visual(gridLoc:Vector3):#Called by _input to update the marker's location
 	if cellDict[objectTypes.TILES].has(gridLoc):#Ensure it is a valid tile
-		$ChosenCellVisual.translation = map_to_world(gridLoc.x,gridLoc.y,gridLoc.z)+Vector3(0,defaultCellSize.y,0) #Relocate the visual
+		$ChosenCellVisual.position = map_to_local(gridLoc + CellSize + Vector3.UP*2) #Relocate the visual
 	
 #func get_cells_in_area(origin:Vector3,size:int,shape:int,targetingFlags:int):#extension of get_tiles_in_shape
 #	var validTiles:Array#Which tiles will be considered go here
@@ -161,13 +161,13 @@ func mark_cells_for_targeting(ability:Ability, unit:Node3D=Ref.unitInAction):
 	var flags = ability.abilityFlags
 	
 	var toMarkCells:Array = get_cells_in_shape(get_all_of_type(objectTypes.TILES,true),origin,size,shape)
-	assert(not toMarkCells.empty())
+	assert(not toMarkCells.is_empty())
 	
 	for cell in toMarkCells:#Filter cells
-		if ability.abilityFlags && ability.AbilityFlags.NO_TILE_WITH_OBJECT and get_cell_occupant(cell,objectTypes.OBJECTS):
+		if ability.abilityFlags && ability.AbilityFlags.NO_HIT_OBSTACLE and get_cell_occupant(cell,objectTypes.OBJECTS):
 			toMarkCells.erase(cell)#Remove it
 				
-		elif ability.abilityFlags && ability.AbilityFlags.NO_TILE_WITH_UNIT and get_cell_occupant(cell,objectTypes.UNITS):
+		elif ability.abilityFlags && ability.AbilityFlags.NO_HIT_FRIENDLY and get_cell_occupant(cell,objectTypes.UNITS):
 			toMarkCells.erase(cell)#Remove it
 	
 	targeting.highlight_cells(toMarkCells)
@@ -207,13 +207,13 @@ class Terrain extends GridMap:
 		
 	var hoveredCell:Vector3#TEMP?
 	func _process(delta: float) -> void:#This is already done above, seems redundant
-		hoveredCell = world_to_map( Ref.mainNode.get_hovered(Ref.mainNode.typesOfInfo.POSITION) )
+		hoveredCell = local_to_map( Ref.mainNode.get_hovered(Ref.mainNode.typesOfInfo.POSITION) )
 
 
 
 	func _ready() -> void:
 		mesh_library = map.meshLibrary
-		cell_size = defaultCellSize#Set size
+		cell_size = CellSize#Set size
 		cell_center_y = false
 		set_name("Terrain")#Rename itself
 		load_tiles(map)
@@ -222,7 +222,7 @@ class Terrain extends GridMap:
 		for tile in map.terrainTiles:#Place all tiles in the map
 			var pos = tile[Map.TerrainTileData.TILE_POS]
 			var ID = tile[Map.TerrainTileData.TILE_ID]
-			set_cell_item(pos.x,pos.y,pos.z,ID)
+			set_cell_item(pos,ID)
 
 
 func clear_targeting_grids():
@@ -247,7 +247,7 @@ class Targeting extends GridMap:
 	
 	func _ready() -> void:
 		mesh_library = highlightingCells #TODO
-		cell_size = defaultCellSize
+		cell_size = CellSize
 		set_name("Targeting")
 		pass
 			
@@ -257,8 +257,8 @@ class Targeting extends GridMap:
 		if removeOldTiles:#Clean before marking again
 			clear()
 	
-		for tile in tileArray:
-			set_cell_item(tile.x, tile.y, tile.z, usedMesh)
+		for tilePos in tileArray:
+			set_cell_item(tilePos, usedMesh)
 	
 
 	

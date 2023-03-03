@@ -8,10 +8,10 @@ func _ready() -> void:
 
 func populate_list(units:Array):
 	for unit in units:
-		var display = displayScene.instance()
+		var display = displayScene.instantiate()
 		$ScrollContainer/List.add_child(display)
 		display.load_unit(unit)
-		display.connect("clicked_unit",self,"set_selected_unit")
+		display.clicked_unit.connect(set_selected_unit)
 
 func set_selected_unit(display:Node):
 	Ref.unitSelected = display.unitRef

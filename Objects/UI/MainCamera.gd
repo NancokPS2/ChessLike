@@ -1,7 +1,5 @@
 extends Node3D
 
-onready var cameraTransform:Transform = $Camera.get_global_transform()
-
 func _ready() -> void:
 	Ref.mainCamera = self
 	
@@ -22,16 +20,16 @@ func _process(delta: float) -> void:
 		pass
 	else:
 		if Input.is_action_pressed("camera_forward"):
-			translation += + -get_global_transform().basis.z * delta * CVars.settingCameraSpeed
+			position += + -get_global_transform().basis.z * delta * CVars.settingCameraSpeed
 			
 		elif Input.is_action_pressed("camera_right"):
-			translation += get_global_transform().basis.x * delta * CVars.settingCameraSpeed
+			position += get_global_transform().basis.x * delta * CVars.settingCameraSpeed
 			
 		elif Input.is_action_pressed("camera_backward"):
-			translation += get_global_transform().basis.z * delta * CVars.settingCameraSpeed
+			position += get_global_transform().basis.z * delta * CVars.settingCameraSpeed
 			
 		elif Input.is_action_pressed("camera_left"):
-			translation += -get_global_transform().basis.x * delta * CVars.settingCameraSpeed
+			position += -get_global_transform().basis.x * delta * CVars.settingCameraSpeed
 			
 		elif Input.is_action_pressed("rotate_left"):
 			rotation += Vector3(0,-1,0) * delta * CVars.settingCameraSpeed

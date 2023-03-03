@@ -26,7 +26,7 @@ var stats:Dictionary
 var info:Dictionary
 var faction
 
-var abilities
+var abilities:Array
 
 
 var equipment:Dictionary
@@ -169,6 +169,8 @@ func end_turn():
 #		push_error(attributes.name + " tried to attack with " + inventory.equipped[hand].get_class())
 	
 
+
+
 class Generator:
 
 	
@@ -177,7 +179,7 @@ class Generator:
 		unit.attributes = attrib#Set it's attributes
 		unit.attributes.basic_setup()#Perform loading and stat calculation of attributes
 		unit.update_from_attributes()#Get the stats for unit from it's attributes
-		assert(not unit.info.empty())
+		assert(not unit.info.is_empty())
 		return unit
 		
 	static func generate_new(nickName:String,charRace:String,charClass:String,charFaction:String="DEFAULT"):

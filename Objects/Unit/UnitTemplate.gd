@@ -33,7 +33,7 @@ class Model extends Node3D:
 		modelStored = modelToUse
 	
 	func add_meshes_from_scene(modelToUse:PackedScene):#Takes all the meshes from a model scene, includes animations
-		var modelInstance:Node3D = modelToUse.instance()
+		var modelInstance:Node3D = modelToUse.instantiate()
 		if modelInstance == null:
 			push_error("The model used is null!")
 		assert(modelInstance != null)
@@ -45,7 +45,7 @@ class Model extends Node3D:
 			
 	static func get_mesh_nodes_in_scene(model:PackedScene)->Array:
 		var nodes:Array#Returned nodes go here
-		var modelNode:Node = model.get_state().get_node_instance(0).instance()#Get the state of the model
+		var modelNode:Node = model.get_state().get_node_instance(0).instantiate()#Get the state of the model
 		for child in modelNode.get_children():#For each child of the scene
 			if child is MeshInstance3D:#If it is a Mesh
 				nodes.append(child)#Add it
@@ -88,7 +88,7 @@ class Model extends Node3D:
 				
 			var origin = node.get_node("ORIGIN")
 			if origin is Node3D:
-				node.translate(-origin.translation)
+				node.translate(-origin.position)
 				
 			limbRefs[usedLimb].add_child(node)
 

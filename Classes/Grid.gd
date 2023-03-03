@@ -26,7 +26,7 @@ func set_item_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in 
 		set_cell_item(Vector3i(pos),objetctID)
 
 func align_to_grid(object:Object):
-	var gridPos:Vector3i = local_to_map(object.translation)
+	var gridPos:Vector3i = local_to_map(object.position)
 	object.translation = map_to_local(gridPos)
 
 func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=mapShapes.STAR)->Array:

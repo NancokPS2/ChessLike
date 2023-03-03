@@ -6,10 +6,13 @@ signal clicked_unit
 var unitRef
 var stats
 var info
+@onready var tween = get_tree().create_tween().set_loops()
 
 func _ready() -> void:
 	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
-	pass
+	
+	tween.tween_property(self,"modulate",Color.WHITE * 1.25, 1)
+	tween.tween_property(self,"modulate",modulate, 0.5)
 
 func load_unit(unit):#Used to load and display a unit simultaneously
 	if unit and unit != unitRef and not ( unit.get("stats") == {} or unit.get("stats") == null ):
@@ -32,6 +35,7 @@ func clear_unit():
 func _gui_input(event: InputEvent) -> void:
 	if event.is_action_released("primary_click"):
 		emit_signal("clicked_unit",self)
+		animated_glow(true)
 		accept_event()
 	
 func get_unit_data():
@@ -49,8 +53,7 @@ func refresh_ui():
 
 func animated_glow(enabled:bool):
 	if enabled:
-		$Tween.interpolate_property(self,"modulate",Color.WHITE,Color.WHITE+Color(1.5,1.5,1.5,1),0.7)
-		$Tween.start()
+		tween.play()
 	else:
-		$Tween.stop_all()
+		tween.stop()
 		

@@ -40,7 +40,7 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:#Update hovered cell position	
 	#$DebugLabel.text = str( get_hovered(typesOfInfo.POSITION) )#TEMP
 	$DebugLabel.text = str(Ref.unitsInBattle)
-	$DebugMesh.translation = get_hovered(typesOfInfo.POSITION)#TEMP
+	$DebugMesh.position = get_hovered(typesOfInfo.POSITION)#TEMP
 
 enum typesOfInfo {POSITION,OBJECT}
 func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or node hovered by the mouse

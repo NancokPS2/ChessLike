@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b8216p2013ptk"]
+[gd_scene load_steps=19 format=3 uid="uid://b8216p2013ptk"]
 
 [ext_resource type="PackedScene" path="res://Objects/UI/PlayerPanel/UnitPanel.tscn" id="2"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/CombatStartButton.gd" id="5"]
@@ -14,12 +14,28 @@
 [ext_resource type="Script" path="res://Objects/CombatGrid/Main.gd" id="18"]
 [ext_resource type="Script" path="res://Objects/UI/UnitList/UnitList.gd" id="19"]
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5bash"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_88rcu"]
+sky_material = SubResource("ProceduralSkyMaterial_5bash")
+
+[sub_resource type="Environment" id="Environment_q32dv"]
+background_mode = 2
+sky = SubResource("Sky_88rcu")
+ambient_light_color = Color(1, 1, 1, 1)
+glow_enabled = true
+
 [sub_resource type="SphereMesh" id="1"]
 
 [sub_resource type="PlaneMesh" id="2"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("18")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_q32dv")
 
 [node name="DebugMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
@@ -34,10 +50,6 @@ text = "TEST"
 [node name="Grid" type="GridMap" parent="."]
 cell_size = Vector3(0.32, 0.16, 0.32)
 script = ExtResource("13")
-__meta__ = {
-"_editor_clip_": 0,
-"_editor_floor_": Vector3(0, 1, 0)
-}
 
 [node name="DebugHoveredTile" type="Label3D" parent="Grid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07888, 0)
@@ -78,6 +90,7 @@ script = ExtResource("9")
 collapseSignal = "COMBAT_exit"
 
 [node name="ActingMenu" type="VBoxContainer" parent="UI"]
+visible = false
 anchors_preset = -1
 anchor_top = 0.16
 anchor_right = 0.16

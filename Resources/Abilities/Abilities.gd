@@ -33,7 +33,9 @@ const AbilityFlags = {
 	"NO_HIT_OBSTACLE":1<<5,#Does not affect objects
 	"NO_HIT_FRIENDLY":1<<6,#Does not affect allies
 	"NO_HIT_ENEMY":1<<7,#Does not affect enemies
+	"NO_HIT_UNIT":1<<6 + 1<<7,#No friendlies nor allies
 	"ONLY_HIT_TILES":1<<5 + 1<<6 + 1<<7,#Combine all other NO_HIT flags
+	
 }
 
 #@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
@@ -77,7 +79,7 @@ func filter_targets(targets:Array)->Array:
 			if target.faction.internalName != user.faction.internalName:#If it is from it's faction
 				newTargets.erase(target)#Remove it
 				
-		elif abilityFlags && AbilityFlags.NO_HIT_ENEMY and target.get("isUnit"):
+		elif abilityFlags && AbilityFlags.NO_HIT_UNIT and target.get("isUnit"):
 			if target.faction.internalName != user.faction.internalName:#If it isn't from it's faction
 				newTargets.erase(target)#Remove it
 		
