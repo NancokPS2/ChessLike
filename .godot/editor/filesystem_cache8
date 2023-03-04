@@ -1,5 +1,5 @@
 2a60927148abd1d33b818b535e306557
-::res://::1677957934
+::res://::1677959416
 DefaultTileScene.tscn::PackedScene::1373775558266895894::1677957816::0::1::::<><>::
 default_env.tres::Environment::-1::1673649314::0::1::::<><>::
 icon.png::CompressedTexture2D::901346440923877254::1657319076::1677002256::1::::<><>::
@@ -7,7 +7,7 @@ ModelImportWithMetadata.gd::GDScript::-1::1670794979::0::1::::<>RefCounted<>::
 omnisharp.json::JSON::-1::1676997822::0::1::::<><>::
 README.md::TextFile::-1::1671481696::0::1::::<><>::
 TEST.gd::GDScript::-1::1677956233::0::1::::<>Control<>::
-TEST.tscn::PackedScene::1966283776586296547::1677957934::0::1::::<><>::res://TEST.gd<>res://Classes/Visual/TextLabelFancy.gd
+TEST.tscn::PackedScene::1966283776586296547::1677959416::0::1::::<><>::res://TEST.gd<>res://Classes/Visual/TextLabelFancy.gd
 ::res://addons/::1677701132
 ::res://addons/AsepriteWizard/::1677701102
 plugin.cfg::TextFile::-1::1677701102::0::1::::<><>::
@@ -304,8 +304,8 @@ Grid.gd::GDScript::-1::1677866057::0::1::::MovementGrid<>GridMap<>::
 RPGCharacter.gd::GDScript::-1::1677865812::0::1::::Unit<>Node3D<>::
 TurnManager.gd::GDScript::-1::1677002256::0::1::::TurnManager<>HBoxContainer<>::
 VBoxControllerHideable.gd::GDScript::-1::1677002256::0::1::::VBoxContainerCollapsable<>VBoxContainer<>::
-::res://Classes/Visual/::1677957934
-TextLabelFancy.gd::GDScript::-1::1677957934::0::1::::FancyLabel<>Label<>::
+::res://Classes/Visual/::1677959416
+TextLabelFancy.gd::GDScript::-1::1677959416::0::1::::FancyLabel<>Label<>::
 ::res://Docs/::1676997822
 Class Design.txt::TextFile::-1::1657319080::0::1::::<><>::
 helpful.txt::TextFile::-1::1657319080::0::1::::<><>::
