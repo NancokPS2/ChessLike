@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://3aqn2677haop"]
+
+[ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
+[ext_resource type="Script" path="res://Classes/Visual/TextLabelFancy.gd" id="2_pn7dv"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_87xmo")
+
+[node name="FancyLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 451.0
+offset_top = 321.0
+offset_right = 491.0
+offset_bottom = 344.0
+text = "ASSSSSSSSSSSSSSSSSSSSSSS MASTER"
+script = ExtResource("2_pn7dv")
+flashingEnabled = true
