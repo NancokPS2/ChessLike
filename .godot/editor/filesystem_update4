@@ -1,9 +1,4 @@
-res://Objects/UI/TurnDisplay/PerUnitDisplay.tscn
+res://TEST.tscn
 res://Assets/CellMesh/Base/DefaultTiles.tres
 res://Assets/CellMesh/Base/TargetingMesh.tres
 res://Classes/Visual/TextLabelFancy.gd
-res://TEST.tscn
-res://TEST.gd
-res://Objects/CombatGrid/3DCombatScene.tscn
-res://DefaultTileScene.tscn
-res://Objects/Unit/UnitTemplate.tscn

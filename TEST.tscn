@@ -19,3 +19,5 @@ offset_bottom = 344.0
 text = "ASSSSSSSSSSSSSSSSSSSSSSS MASTER"
 script = ExtResource("2_pn7dv")
 flashingEnabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="FancyLabel"]

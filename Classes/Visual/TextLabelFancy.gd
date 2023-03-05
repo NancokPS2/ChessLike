@@ -37,6 +37,12 @@ var floatTween:Tween
 @export var flashingColor:= Color.WHITE * 0.8 #Color to flash (this is a 20% gray by default)
 @export var flashingDuration:= 1.0 #How long it takes to flash to and from the flashingColor
 
+@export_category("Icon")
+var icon:Sprite2D
+@export var iconTexture:Texture2D
+@export var iconEnabled:=false
+@export_enum("LEFT", "ABOVE", "BELOW", "RIGHT", "ON_TOP") var iconAlignment
+@export var iconOffset:=Vector2.ZERO
 
 func _ready() -> void:
 	if floatActiveOnReady:#Auto start the floating animation when ready
@@ -73,4 +79,21 @@ func float_animation(freeWhenFinishing:bool=floatAutoFree):#This can be called m
 	modulate = originalColor
 	position = originalPosition
 	
-
+func place_icon(alignment:int=iconAlignment):
+	icon=Sprite2D.new()
+	icon.centered = true
+	icon.texture = iconTexture
+	
+	var iconSize = Vector2(iconTexture.get_width(), iconTexture.get_height())
+	var rect:Rect2 = get_rect()
+	
+	match iconAlignment:
+		"LEFT":
+			icon.position.x = rect.position - ( iconSize.x / 2 ) 
+			icon.position.y = rect.size.y / 2
+			
+		"ABOVE":
+			icon.position.x = rect.size.x / 2
+			icon.position.y = rect.size.y - iconSize.y
+			
+			
