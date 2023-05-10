@@ -9,6 +9,9 @@ class_name Item
 @export var resCategory:String
 @export var displayName:String
 
+## Items will generally reduce their amount before being outright removed
+@export var amount:int 
+
 @export var sprite:Texture
 @export var model:PackedScene = load("res://Assets/CellMesh/Weapons/Dagger/Dagger.tscn")
 

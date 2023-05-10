@@ -1,0 +1,140 @@
+-Import classes from _SHARED (Specially NestedMenu.gd)
+
+>BOARD<
+-The board will now hold units, objects and tiles into their own variables instead of a dictionary.
+These variables will update automatically
+	>Units = Vector3i:Unit
+	>Objects = Vector3i:Object
+	>Tiles = Vector3i:TileFlags
+	
+-It makes all important information available to all abilities and players trough a Singleton
+
+	
+-Properties: 
+	>var tweenStack:Array[Tween] #Holds all abilities currently being ran.
+	
+	>func run_tween_stack(): #For each element in the stack, call play(), await for it to finish, check the validity of all abilities, run the next one. Once it's done, clear the stack
+	
+-Board states: All states can respond differently to input
+	>IDLE #Unit is taking it's turn, nothing is happening otherwise.
+	>ANIMATING #Something is running an animation. Player must wait. Pausing is still allowed
+	
+	>ABILITY_TARGETING #Store the ability chosen, color valid target tiles and wait for inputs. 
+									#Once a valid target is selected, inform all targets of what targeted them then add the ability to the stack (this causes reactions to be added before. 
+		
+	>FACING_SELECT #Draw on 4 tiles around the unit, wait for input to confirm or cancel. Then cycle the turns
+	>OFF_TURN #No one has a turn right now, something else is going on. Used for cutscenes
+
+-Flow handler node: handles turn order, ability stack and current stage of action. Part of the board
+
+>UI<
+-Battle menu:
+	>MoveMenu #Holds movement abilities
+	>ObjectMenu #Holds item abilities (basic attacks included 
+	>SkillMenu #Holds action abilities
+	>Wait #Enters FACING_SELECT state
+	
+	>When a unit needs to show it's inventory, it takes every ability and sorts it into each of the menus
+
+-UnitDisplay: 
+	>Shows most important values about a unit, stores said unit and connects to its STATS_CHANGED signal 
+	>Uses @export fields to connect to the nodes used for displaying said values. Making it ideal for PackedScenes
+
+-Ability effect display:
+	>Uses UnitDisplays as elements
+	>Can scroll trough various UnitDisplays
+	>Before an ability has been confirmed, but after the targets where filtered. A menu will show the effects on the targets by making a copy of them and applying Ability.act() directly on them
+	>For later: also make passive skills be taken into account
+
+>UNIT<
+-Remove any references to abilities and the like, everything should be in their CharacterAttributes class
+
+-Unit states: WARNING: Unlike other states, these are activated independently of each other and there can be many ON at the same time (stop using bit flags for everything!!!)
+	>stateMoved: Exhausted it's movement, CancelButton runs $Unit.undo_move() (undo_move() only receives the call, the rest of it's logic is contained within it)
+	>stateActed: Exhausted it's actions, can no longer undo movement or perform actions
+	
+	
+-Unit signals:
+	>MOVED(oldLocation:Vector3i, newLocation:Vector3i) #Mostly used by the board to know when to update the object's location
+	>ACTING(ability:Ability) #???
+	>TARGETED(byWho:Unit, using:Ability) #Can be used by reaction abilities to run
+	>STATS_CHANGED() #Emitted when a battle stat needs recalculating, connects to the unit's sheet (Careful with changing permanent stats)
+
+>ATTRIBUTES
+-Split into 3 Attribute resources, Character, Race and Class
+-CharacterAttributes is used to build characters, the rest are combined with this one using combine_attributes
+
+-Properties:
+	>var baseStats:Dictionary #Keeps a reference to all base values of the AttributesBase
+	>var stats:Dictionary = The current values for the stats
+	>var attributeResources:Array[AttributesBase] #Stores all the stat sheets
+	>func combine_attributes(stats:Array[AttributesBase] = attributeResources): #Modifies stats to be based on the average of self AND every element in attributeResources
+
+-CharacterAttributes properties:
+	>enum EquipSlots #References for every slot
+	
+	>var abilities:Array[Ability] #All abilities the character will have access to, taken from every AttributeBase
+	>var inventory:Inventory #Includes a setget for setting inventory.owner = self
+	>var equipment:Dictionary = {EquipSlots.CHEST:null}
+	
+	>func equip(slot:EquipSlots, item)
+
+>ABILITY<
+-Each ability connects to a user
+
+-Flow summary:
+	>Board calls ability.targeted(filter_valid_targets(anArrayOfTiles))
+	>This leads to add_to_stack(targets), which appends Callable(get_tween(), "play") to Board.tweenStack
+	>Board.run_tween_stack() runs and plays every Tween
+
+
+-Ability flow (mostly handled by Board): 
+	1-AbilityButton in Menu is pressed, board switches to ABILITY_TARGETING state and stores the ability returned by the button
+	2-Board lights up all tiles in range using filter
+	3-Wait for player to choose target tile (DO NOT USE AWAIT)
+	4-Signal ALL targets that they have been targeted and with what
+	5-All reactionary abilities will then receive a signal carrying the targeting ability(this allows them to put themselves on the stack if necessary)
+	6-The ability's Tween is sent to the stack
+
+
+-Ability properties:
+	>var infoDict:Dictionary #Stores information about the entire combat, a reference to a dict that is constantly updated by the board(?)
+	
+	
+	>var animation:String #To be used with the unit's AnimationPlayer, plays no animation if empty
+	>var globalAnimation:String #To be used with the board's AnimationPlayer, plays no animation if empty
+	#Animations are run trough wrappers, not by directly calling AnimationPlayer.play(). As to ensure compatibility
+	>var actTiming:float #If using parallel mode, sets after which time act() is called
+	>var tweenType:const int #Used by get_tween() to get the right tween
+	>func get_tween()->Tween: #Returns the tween that will run act() and any animation it has, the board adds this to the stack
+	
+	
+	>var energyCost:int #Self explanatory
+	>var itemRequirement:Item #This ability does not work unless the player has the item in the inventory, it's amount definition decides if it is consumed or not
+	
+	>func filter_valid_targets(targetedTiles:Array[Vector3i])->Array[Vector3i]: #Checks the selected tiles in the board and their contents, returns the valid targets (most abilities will do $Board.Units[vector] to get the unit in the tile)
+	>func is_still_valid(): #Performs several checks to ensure it is viable for usage, like the targets still being targetable (runs filter_valid_targets a second time as well)
+	>func targeted(targets:Array[Vector3i]) #Called by Board when a tile has been selected for an ability, it calls emit_signal("was_targeted",self) on all targets then calls add_to_stack(targets)
+	>func add_to_stack(targets:Array[Vector3i]): #Appends a get_tween() to Board.tweenStack
+	>func act(targets:Array[Vector3i]): #The main action of the ability that will be performed on the targets, played by the Tween at some point
+	
+	>func get_button()->Button: #Generates an AbilityButton (subclass) connected to them that activates them when pressed.
+	
+	>class AbilityButton:Button #Button that emits a reference to the ability that created it.
+	
+	>class(es) ActTween extends RefCounted: #Extenders of this can generate and return a tween for the current ability, mostly for animations.
+		>class ActTweenAnimAct: #Plays the defined animations before calling act(targets) 
+		>class ActTweenActAnim: #Plays the defined animations after calling act(targets) 
+		>class ActTweenAnimActGlobalAnim: #Plays the defined animation before calling act(targets) then plays the globalAnimation
+		>class ActTweenAnimParallel: #Plays the defined animations and calls act(targets) after actTiming time has passed
+		
+-Ability categories: #Used to define in which slot they go mostly
+	>MOVEMENT: Move menu, meant to displace the user
+	>OBJECT: Uses a piece of equipment or a body part, Object menu
+	>SKILL: Active action in the skills menu
+	>SPECIAL: These activate at specific moments, the menu is not visible if there's none
+	>PASSIVE: Do not go in any menu, they activate trough triggers instead of using targets
+		
+>ABILITYOBJECT<
+-Uses items
+

@@ -7,7 +7,7 @@ class_name AttributesBase
 @export var model:PackedScene = load("res://Assets/CellMesh/Characters/Dummy/Dummy.tscn")
 
 
-@export var stats:Dictionary ={
+@export var baseStats:Dictionary ={
 	#Combat only
 	"health":100,
 	"energy":30,
@@ -31,6 +31,9 @@ class_name AttributesBase
 	"movesMax":1,
 	"movementType":0
 }
+
+@export var stats:Dictionary = baseStats
+
 @export var statModifiers:Dictionary ={
 	"maxHealth":1.0,
 	"maxEnergy":1.0,

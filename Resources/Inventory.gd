@@ -9,15 +9,6 @@ signal inventory_altered
 
 @export var items:Array[Resource]
 
-@export var equipped:Dictionary = {
-	Const.equipmentSlots.R_HAND:null,
-	Const.equipmentSlots.L_HAND:null,
-	Const.equipmentSlots.ARMOR:null,
-	Const.equipmentSlots.ACC1:null,
-	Const.equipmentSlots.ACC2:null,
-	Const.equipmentSlots.ACC3:null
-}
-#[null,load("res://Resources/Items/Weapons/BasicGun.tres"),null,null,null,null]
 
 @export var stockPile:Resource #Meant to be an inventory to be shared by others
 

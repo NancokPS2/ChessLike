@@ -1,4 +1,6 @@
 res://TEST.tscn
 res://Assets/CellMesh/Base/DefaultTiles.tres
 res://Assets/CellMesh/Base/TargetingMesh.tres
-res://Classes/Visual/TextLabelFancy.gd
+res://Classes/Control/ValueIncreaser.gd
+res://Classes/Visual/ProjectileVisual.gd
+res://Objects/CombatGrid/3DCombatScene.tscn

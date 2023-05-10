@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://3aqn2677haop"]
+[gd_scene load_steps=3 format=3 uid="uid://b880tvi6gro2i"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
-[ext_resource type="Script" path="res://Classes/Visual/TextLabelFancy.gd" id="2_pn7dv"]
+[ext_resource type="Script" path="res://Classes/Control/TextLabelFancy.gd" id="2_cxld4"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -17,7 +17,7 @@ offset_top = 321.0
 offset_right = 491.0
 offset_bottom = 344.0
 text = "ASSSSSSSSSSSSSSSSSSSSSSS MASTER"
-script = ExtResource("2_pn7dv")
+script = ExtResource("2_cxld4")
 flashingEnabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="FancyLabel"]

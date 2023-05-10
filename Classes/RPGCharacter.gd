@@ -12,12 +12,14 @@ var requiredAnimationName:String = "stand"
 var isUnit:bool = true
 
 signal moving
-signal moved
+signal moved(where:Vector3i)
 
 signal acting
 signal acted
 
-signal acted_upon
+#signal acted_upon
+signal was_targeted(withWhat:Ability)
+signal targeting(what:Vector3i, withWhat:Ability)
 
 signal turn_started
 signal turn_ended
