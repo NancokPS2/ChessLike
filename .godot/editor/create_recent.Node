@@ -1,5 +1,10 @@
+ProgressBar
+Button
+Control
+NestedButtonMenu
+CanvasLayer
+MovementGrid
 Sprite2D
 FancyLabel
-Control
 NodeStateMachine
 MeshInstance3D
