@@ -6,12 +6,13 @@ var resources:Dictionary = {}
 
 #Loading
 func _init():#Loading of files
-	load_from_folder("res://Resources/Abilities/AllAbilities/","abilities")
-	load_from_folder("res://Resources/Characters/Classes/","classes")
-	load_from_folder("res://Resources/Characters/Races/","races")
-	load_from_folder("res://Resources/Characters/Factions/","factions")
-	load_from_folder("res://Resources/Characters/UniqueCharacters/","characters")
-	load_from_folder("res://Resources/Items/Weapons/","equipment")
+#	load_from_folder("res://Resources/Abilities/AllAbilities/","abilities")
+#	load_from_folder("res://Resources/Characters/Classes/","classes")
+#	load_from_folder("res://Resources/Characters/Races/","races")
+#	load_from_folder("res://Resources/Characters/Factions/","factions")
+#	load_from_folder("res://Resources/Characters/UniqueCharacters/","characters")
+#	load_from_folder("res://Resources/Items/Weapons/","equipment")
+
 #	load_abilities("res://Resources/Abilities/AllAbilities/")
 #	load_classes("res://Resources/Characters/Classes/")
 #	load_races("res://Resources/Characters/Races/")

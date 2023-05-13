@@ -6,7 +6,7 @@ var active:bool
 func _ready() -> void:
 	Events.SETUP_exit.connect(on_setup_exit)
 
-func populate_list(units:Array):
+func populate_list(units:Array[Unit]):
 	for unit in units:
 		var display = displayScene.instantiate()
 		$ScrollContainer/List.add_child(display)

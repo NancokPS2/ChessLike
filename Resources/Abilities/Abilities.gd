@@ -2,86 +2,104 @@ extends Resource
 class_name Ability
 
 signal ability_finalized
+#const AbilityFlags = {
+#	"PASSIVE":1<<16,#Ability should not be selectable during combat
+#	"HOSTILE":1<<1,#Attacks and other ill intended abilities
+#	"FRIENDLY":1<<2,#Healing and buffs or otherwise helpful abilities
+#	"INDIRECT":1<<3,#Indirect abilities should not trigger reactions that target the user
+#	"HEALING":1<<4,#Recovers health
+#	"NO_HIT_OBSTACLE":1<<5,#Does not affect objects
+#	"NO_HIT_FRIENDLY":1<<6,#Does not affect allies
+#	"NO_HIT_ENEMY":1<<7,#Does not affect enemies
+#	"NO_HIT_UNIT":1<<6 + 1<<7,#No friendlies nor allies
+#	"ONLY_HIT_TILES":1<<5 + 1<<6 + 1<<7,#Combine all other NO_HIT flags
+#
+#}
 
-var displayedName:String
-
-var description:String
-
-var user:Unit
-
-var mainValue:float
-
-var internalName:String = ""
-
-var combatHidden:bool #Whether it should appear in the menus during combat
-
-var triggerSignals:Dictionary #Upon equipping, the key will be used as the signal to connect from it's owner to a method with the same name as it's value
-#Example: {"acted":"use"}
-
-#@export (MovementGrid.mapShapes) var targetingShape
-var targetingShape:int
-var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
-var reach:int
-
-var abilityFlags:int = 0
-const AbilityFlags = {
-	"PASSIVE":1<<16,#Ability should not be selectable during combat
-	"HOSTILE":1<<1,#Attacks and other ill intended abilities
-	"FRIENDLY":1<<2,#Healing and buffs or otherwise helpful abilities
-	"INDIRECT":1<<3,#Indirect abilities should not trigger reactions that target the user
-	"HEALING":1<<4,#Recovers health
-	"NO_HIT_OBSTACLE":1<<5,#Does not affect objects
-	"NO_HIT_FRIENDLY":1<<6,#Does not affect allies
-	"NO_HIT_ENEMY":1<<7,#Does not affect enemies
-	"NO_HIT_UNIT":1<<6 + 1<<7,#No friendlies nor allies
-	"ONLY_HIT_TILES":1<<5 + 1<<6 + 1<<7,#Combine all other NO_HIT flags
-	
+enum AbilityFlags {
+	PASSIVE,#Ability should not be selectable during combat
+	HOSTILE,#Attacks and other ill intended abilities
+	FRIENDLY,#Healing and buffs or otherwise helpful abilities
+	INDIRECT,#Indirect abilities should not trigger reactions that target the user
+	HEALING,#Recovers health
+	NO_HIT_OBSTACLE,#Does not affect objects
+	NO_HIT_FRIENDLY,#Does not affect allies
+	NO_HIT_ENEMY,#Does not affect enemies
+	NO_HIT_UNIT,#No friendlies nor allies
+	ONLY_HIT_TILES,#Combine all other NO_HIT flags
 }
 
-#@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
-var classRestrictions:Array
+enum AbilityTypes {MOVEMENT, OBJECT, SKILL, SPECIAL, PASSIVE}
 
-var energyCost:int
+var user:Unit:
+	set(val):
+		if user is Unit:
+			Utility.SignalFuncs.disconnect_signals_from(self, user)
+			user = val
+			connect_triggers()
+		else: user = val
 
-var turnDelayCost:int
+var board:GameBoard = Ref.gameBoard
 
-var abilityRange:int#Distance in tiles from the player which it can target
+#@export var mainValue:float
+@export_group("Identification")
+@export var internalName:String = ""
+@export var displayedName:String
+@export var type:AbilityTypes #Where it should appear in the menus
+@export_multiline var description:String
+#@export (MovementGrid.mapShapes) var targetingShape
 
 var miscOptions:Dictionary#Used to get extra parameters from the player
 #Example: {"Head":Const.bodyParts.HEAD}
 
-var killSwitch:bool = false
+#@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
+
+
+@export_group("Main values")
+@export var energyCost:int
+@export var turnDelayCost:int
+@export var classRestrictions:Array
+@export var triggerSignals:Dictionary #user.signal:self.method()
+#Example: {"acted":"use"}
+@export var abilityFlags:Array[AbilityFlags]
+
+@export_group("Targeting")
+@export var targetingShape:int
+@export var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
+@export var reach:int
+@export var abilityRange:int#Distance in tiles from the player which it can target
+
+
 
 signal finalized
 
-func equip(newUser:Node):
-	user = newUser
-	connect_triggers()
+#func equip(newUser:Node):
+
 
 func connect_triggers():
-	assert(user!=null)
 	if user == null:#Ensure someone has equipped it
 		push_error("Tried to perform this ability's setup, but no one has equipped it yet.")
 		return
 		
 	for signa in triggerSignals:
-		
-		var errorCode = user.signa.connect(triggerSignals[signa])
+		var methodName:String = triggerSignals[signa]
+		var errorCode = connect(signa, Callable(self, methodName))
 		assert(errorCode == OK)
 
-func filter_targets(targets:Array)->Array:
-	var newTargets:Array = targets
+func filter_targets(targets:Array[Vector3i])->Array:
 	assert(not targets.is_empty())
+	var newTargets:Array = targets
 	
-	for target in newTargets:
+#	for target in newTargets:
+#		if abilityFlags.has(AbilityFlags.NO_HIT_FRIENDLY):
 		
-		if abilityFlags && AbilityFlags.NO_HIT_FRIENDLY and target.get("isUnit"):
-			if target.faction.internalName != user.faction.internalName:#If it is from it's faction
-				newTargets.erase(target)#Remove it
-				
-		elif abilityFlags && AbilityFlags.NO_HIT_UNIT and target.get("isUnit"):
-			if target.faction.internalName != user.faction.internalName:#If it isn't from it's faction
-				newTargets.erase(target)#Remove it
+#		if abilityFlags && AbilityFlags.NO_HIT_FRIENDLY and target.get("isUnit"):
+#			if target.faction.internalName != user.faction.internalName:#If it is from it's faction
+#				newTargets.erase(target)#Remove it
+#
+#		elif abilityFlags && AbilityFlags.NO_HIT_UNIT and target.get("isUnit"):
+#			if target.faction.internalName != user.faction.internalName:#If it isn't from it's faction
+#				newTargets.erase(target)#Remove it
 		
 	return newTargets
 			
@@ -92,26 +110,10 @@ func is_target_ok(targets:Array)->bool:#Check if any target is valid
 	else:
 		return false
 		
-func use( params:AbilityParameters ):
+func use( params:Dictionary ):
 	assert(params != null)
+	user.stats.turnDelay += turnDelayCost
 
-	
-	#---Populating with optional parameters---
-#	var yieldMenu = Ref.UITree.get_node("ActionsMenu")
-#	assert(yieldMenu != null)
-#	var optionSelected #Not necessarily used
-#	if yieldMenu != null:
-#
-#		for option in miscOptions:#Populate with options
-#			yieldMenu.add_option(option, miscOptions[option])
-#
-#		if not miscOptions.empty():
-#			optionSelected = yield(yieldMenu,"button_pressed")
-#	else:
-#		push_error( "ActionsMenu returned class is wrong: " + yieldMenu.get_class() )
-#		return
-		
-	#---------
 
 	
 	_use(params)
@@ -136,15 +138,3 @@ func check_availability() -> int:
 func _check_availability() -> bool:#Virtual function, prevents usage if false
 	return true
 
-	
-func kill_switch_on_check():
-	if killSwitch:
-		killSwitch = false
-		return true
-
-class AbilityParameters extends Resource:
-	var abilityFlags:int = 0
-	var targetTile:Vector3i
-	
-	
-	var optional

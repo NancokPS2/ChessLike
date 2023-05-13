@@ -1,5 +1,11 @@
 extends Node
  
+var board:GameBoard
+var grid:MovementGrid #Combat field
+
+
+
+
 var unitInAction:Unit #Unit currently taking a turn
 var unitSelected:Node #Unit currently trying to interact with
 var unitHovered:Node
@@ -14,7 +20,7 @@ var unitsInBattle:Array #Units in battle
 
 var unitsBenched:Array #Units that are not participating
 
-var combatGrid:MovementGrid #Combat field
+
 
 var UITree:CanvasLayer #The UI
 

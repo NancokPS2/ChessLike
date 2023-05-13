@@ -1,11 +1,16 @@
 extends Resource
 class_name AttributesBase
 
+signal ATTRIBUTES_UPDATED
+
 @export var internalName:String
 @export var displayName:String = "ERR_NONAME"
 
 @export var model:PackedScene = load("res://Assets/CellMesh/Characters/Dummy/Dummy.tscn")
+@export var attributeResources:Array[AttributesBase]
 
+@export var abilities:Array[Ability]
+@export var equipmentSlots:Array[String] = ["ARMOR","L_HAND","R_HAND","ACC1","ACC2","ACC3"]
 
 @export var baseStats:Dictionary ={
 	#Combat only
@@ -47,3 +52,24 @@ class_name AttributesBase
 	"accuracy":1.0,
 	"turnDelayMax":1.0
 }
+
+func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
+	#Add stats
+	for stat in stats:
+		var statSum:int = stats[stat]
+		#Sum from each attribute
+		for attrib in attribArray:
+			statSum += attrib.stats[stat] 
+			
+		stats[stat] = statSum / (attribArray.size()+1)
+		
+	#Equipment slots
+	for attrib in attribArray:
+		for slot in attrib.equipmentSlots:
+			if not equipmentSlots.has(slot): equipmentSlots.append(slot)
+			
+	#Abilities
+	for attrib in attribArray:
+		for ability in attrib.abilities:
+			if not abilities.has(ability): abilities.append(ability)
+	emit_signal("ATTRIBUTES_UPDATED")

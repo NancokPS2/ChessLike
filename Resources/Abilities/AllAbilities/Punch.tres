@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Ability" load_steps=2 format=3 uid="uid://bt0lak1mpuuok"]
+
+[ext_resource type="Script" path="res://Resources/Abilities/Abilities.gd" id="1_4wqw0"]
+
+[resource]
+script = ExtResource("1_4wqw0")
+internalName = "punch"
+displayedName = "Punch"
+type = 1
+description = ""
+energyCost = 0
+turnDelayCost = 0
+classRestrictions = []
+triggerSignals = {}
+abilityFlags = Array[int]([])
+targetingShape = 0
+areaSize = 1
+reach = 0
+abilityRange = 0
