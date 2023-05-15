@@ -22,11 +22,11 @@ enum AbilityFlags {
 	FRIENDLY,#Healing and buffs or otherwise helpful abilities
 	INDIRECT,#Indirect abilities should not trigger reactions that target the user
 	HEALING,#Recovers health
-	NO_HIT_OBSTACLE,#Does not affect objects
-	NO_HIT_FRIENDLY,#Does not affect allies
-	NO_HIT_ENEMY,#Does not affect enemies
-	NO_HIT_UNIT,#No friendlies nor allies
-	ONLY_HIT_TILES,#Combine all other NO_HIT flags
+#	NO_HIT_OBSTACLE,#Does not affect objects
+#	NO_HIT_FRIENDLY,#Does not affect allies
+#	NO_HIT_ENEMY,#Does not affect enemies
+#	NO_HIT_UNIT,#No friendlies nor allies
+#	ONLY_HIT_TILES,#Combine all other NO_HIT flags
 }
 
 enum AbilityTypes {MOVEMENT, OBJECT, SKILL, SPECIAL, PASSIVE}
@@ -65,10 +65,14 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 
 @export_group("Targeting")
 @export var targetingShape:int
-@export var areaSize:int = 1 #Does nothing if the targetingShape does not support it, disables targeting if 0
-@export var reach:int
+@export var areaSize:int = 1 #Does nothing if the targetingShape does not support it
 @export var abilityRange:int#Distance in tiles from the player which it can target
-
+@export var filters:Array[String]:
+	set(val):
+		if filters.any( func(funcName): return Callable(Filters,funcName).is_valid() ): filters = val
+		elif not val is Array[String]: push_error("Invalid array")
+		else: push_error("Invalid filter found in the array.")
+		
 
 
 signal finalized
@@ -88,18 +92,9 @@ func connect_triggers():
 
 func filter_targets(targets:Array[Vector3i])->Array:
 	assert(not targets.is_empty())
-	var newTargets:Array = targets
-	
-#	for target in newTargets:
-#		if abilityFlags.has(AbilityFlags.NO_HIT_FRIENDLY):
-		
-#		if abilityFlags && AbilityFlags.NO_HIT_FRIENDLY and target.get("isUnit"):
-#			if target.faction.internalName != user.faction.internalName:#If it is from it's faction
-#				newTargets.erase(target)#Remove it
-#
-#		elif abilityFlags && AbilityFlags.NO_HIT_UNIT and target.get("isUnit"):
-#			if target.faction.internalName != user.faction.internalName:#If it isn't from it's faction
-#				newTargets.erase(target)#Remove it
+	var newTargets:Array = targets.duplicate()
+	for filter in filters:
+		newTargets.filter(Callable(Filters,filter).bind(user))
 		
 	return newTargets
 			
@@ -138,3 +133,23 @@ func check_availability() -> int:
 func _check_availability() -> bool:#Virtual function, prevents usage if false
 	return true
 
+const FilterNames:Dictionary = {HAS_UNIT = "has_unit"} 
+class Filters extends RefCounted:
+	
+	
+	#True if there's a unit there
+	static func has_unit(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else false
+	#True if there's not a unit
+	static func not_has_unit(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else true
+	#True if the tile has nothing in it
+	static func empty_tile(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.ANYTHING) == null else false
+	
+	static func is_ally(cell:Vector3i, user:Unit): 
+		var targetUnit:Unit = Ref.grid.search_int_tile(cell, MovementGrid.Searches.UNIT)
+		if targetUnit is Unit and user.attributes.faction.is_friendly_with(targetUnit.attributes.faction):
+			return true
+		elif not targetUnit is Unit: 
+			push_error("There is no unit here! has_unit should have been called first!")
+			return false
+		else:
+			return false

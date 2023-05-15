@@ -32,7 +32,6 @@ anchor_bottom = 0.997185
 offset_right = -0.32
 offset_bottom = -0.176003
 script = ExtResource("3_knxv8")
-navigationButtons = [null]
 metadata/_edit_use_anchors_ = true
 
 [node name="Main" type="Control" parent="UI/NestedButtonMenu"]

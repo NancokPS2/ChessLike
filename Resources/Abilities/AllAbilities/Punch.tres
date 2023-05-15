@@ -15,5 +15,5 @@ triggerSignals = {}
 abilityFlags = Array[int]([])
 targetingShape = 0
 areaSize = 1
-reach = 0
-abilityRange = 0
+abilityRange = 1
+filters = Array[String](["empty_tile"])

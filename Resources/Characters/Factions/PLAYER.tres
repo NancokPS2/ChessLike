@@ -1,12 +1,12 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" script_class="Faction" load_steps=2 format=3 uid="uid://c6yyvv4hrkg2h"]
 
-[ext_resource path="res://Resources/Characters/Faction.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://Resources/Characters/Faction.gd" id="1"]
 
 [resource]
-script = ExtResource( 1 )
+script = ExtResource("1")
 displayName = "Player"
 description = ""
 internalName = "PLAYER"
-color = Color( 0.192157, 0.858824, 0.0784314, 1 )
-hostiles = PoolStringArray(  )
-friendlies = PoolStringArray(  )
+color = Color(0.192157, 0.858824, 0.0784314, 1)
+hostiles = Array[String]([])
+friendlies = Array[String]([])

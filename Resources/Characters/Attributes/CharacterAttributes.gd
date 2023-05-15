@@ -36,17 +36,8 @@ class_name CharAttributes
 var owner
 
 
-func basic_setup():#Adjusts all values to class and race
-	update_stats_and_info()
 	
 	
-func update_stats_and_info():#Replaces stats
-	#CLASS
-	for attribute in classAttributes.stats:
-		stats[attribute] = (classAttributes.stats[attribute] + stats[attribute]) / 2
-
-	for modifier in classAttributes.statModifiers:
-		statModifiers[modifier] = (classAttributes.statModifiers[modifier] + statModifiers[modifier]) / 2
 
 enum nameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
 func generate_name(type:int,firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum

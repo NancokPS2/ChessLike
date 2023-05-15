@@ -9,3 +9,7 @@ class_name Faction
 @export var hostiles:Array[String]
 @export var friendlies:Array[String]
 
+func is_friendly_with(faction:Faction):
+	if friendlies.has(faction.internalName): return true
+	else: false
+

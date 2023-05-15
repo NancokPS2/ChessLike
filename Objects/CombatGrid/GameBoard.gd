@@ -52,9 +52,6 @@ func _ready() -> void:
 	Ref.mainNode = self
 	change_state(States.SETUP)
 	
-	#Connect main signals
-	Events.STATE_CHANGE.connect(change_state)
-	Events.STATE_CHANGE_COMBAT.connect(change_combat_state)
 	
 	#State change buttons
 #	$UI/ActingMenu/Move.button_up.connect( change_combat_state.bind(CombatStates.MOVING) )
@@ -62,16 +59,6 @@ func _ready() -> void:
 #	$UI/ActingMenu/EndTurn.button_up.connect( change_combat_state.bind(CombatStates.FACING) )
 	
 	#State variant intake
-	#UNUSED
-	
-	CVars.saveFile.setup()#Prepare save file
-	Ref.unitsBenched = CVars.saveFile.playerUnits
-	$UI/UnitList.populate_list(Ref.unitsBenched)#Put player units in the list
-
-func _input(event: InputEvent) -> void:#Update hovered cell position	
-	#$DebugLabel.text = str( get_hovered(typesOfInfo.POSITION) )#TEMP
-	$DebugLabel.text = str(Ref.unitsInBattle)
-	$DebugMesh.position = get_hovered(typesOfInfo.POSITION)#TEMP
 
 enum typesOfInfo {POSITION,OBJECT}
 func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or node hovered by the mouse

@@ -1,6 +1,6 @@
 extends Node
 #Global
-var saveFile:SaveLoad.SaveFile = SaveLoad.SaveFile.new()
+var saveFile:SaveFile = SaveFile.new()
 var playerFaction="PLAYER"
 var currentMap:Map = Map.new()
 

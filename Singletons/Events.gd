@@ -2,8 +2,11 @@ extends Node
 
 func _init() -> void:
 	for state in GameBoard.States.keys():
-		add_user_signal(state+"_enter")
-		add_user_signal(state+"_exit")
+		var enterSignal:String = state+"_enter"
+		var exitSignal:String = state+"_exit"
+		add_user_signal(enterSignal)
+		add_user_signal(exitSignal)
+		
 	
 	for state in GameBoard.CombatStates.keys():
 		add_user_signal(state+"_enter")

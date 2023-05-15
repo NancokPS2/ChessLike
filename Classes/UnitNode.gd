@@ -41,27 +41,17 @@ func targeted_with_action(parameters:Dictionary):
 	pass
 
 func start_turn():
+	attributes.stats.turnDelay = attributes.stats.turnDelayMax
 	attributes.stats.actions = attributes.stats.actionsMax
 	attributes.stats.moves = attributes.stats.movesMax
+	emit_signal("turn_started")
+
 	
 func end_turn():
 	var UI = Ref.UITree
 	emit_signal("turn_ended")
-	
-	for x in CVars.unitsInPlay:#Adjust delays
-		x.attributes.lower_turn_delay_remaining(attributes.turnDelayRemaining)
-	attributes.reset_turn_delay()
-	
-	CVars.refUnitInAction = UI.get_node("TurnManager").get_participant_with_lowest_delay(CVars.unitsInPlay)#Set unit with lowest delay as new turn owner
-	CVars.refCombatField.align_to_grid(CVars.refUnitInAction)
-	
-	if CVars.refUnitInAction.attributes.faction.identifier == CVars.playerFaction:#Enable/Disable controls
-		UI.get_node("Controller").visible = true
-	else:
-		UI.get_node("Controller").visible = false
-	UI.get_node("TurnManager").populate_list(CVars.unitsInPlay)
-	CVars.refUnitInAction.emit_signal("turn_started")
-	CVars.refUnitInAction.canUndo = true #Let it Undo their movement
+
+
 		
 #func weapon_attack(hand:int,target:Unit):
 #	if inventory.equipped[hand] is Weapon:
@@ -79,14 +69,8 @@ class Generator:
 	static func build_from_attributes(attrib:Resource):
 		var unit = Const.UnitTemplate.instantiate()#Create an instance
 		unit.attributes = attrib#Set it's attributes
-		unit.attributes.basic_setup()#Perform loading and stat calculation of attributes
-		unit.update_from_attributes()#Get the stats for unit from it's attributes
-		assert(not unit.info.is_empty())
 		return unit
 		
-	static func generate_new(nickName:String,charRace:String,charClass:String,charFaction:String="DEFAULT"):
-		var charAttribs = CharAttributes.new()
-		charAttribs.unitRace = charRace
-		charAttribs.unitClass = charClass
-		charAttribs.unitFaction = charFaction
-		return build_from_attributes(charAttribs)
+#	static func generate_new(nickName:String,charRace:String,charClass:String,charFaction:String="DEFAULT"):
+#		var charAttribs = CharAttributes.new()
+#		return build_from_attributes(charAttribs)

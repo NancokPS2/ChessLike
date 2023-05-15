@@ -2,7 +2,7 @@ extends AttributesBase
 class_name RacialAttributes
 
 #Info
-@export var description:String
+@export_multiline var description:String
 @export var spriteFolder:String = "res://Assets/Units/characters/human/"
 @export var sexWeight:Dictionary = {
 	"Male":1,
