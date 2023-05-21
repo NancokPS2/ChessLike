@@ -5,10 +5,9 @@
 [resource]
 script = ExtResource("1_n3got")
 description = ""
-abilityList = Array[String]([])
 internalName = "GRUNT"
 displayName = "Grunt"
-attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
+attributeResources = Array[Resource]([])
 abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
 equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
 baseStats = {
