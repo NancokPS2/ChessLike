@@ -26,64 +26,72 @@ var combatState:int
 @export var gridMap:MovementGrid
 @export var unitList:UnitDisplay
 
-var actingUnit:Unit
-var abilityInUse:Ability
+@export_group("")
+@export var currentMap:Map:
+	set(val):
+		currentMap = val
+		if currentMap is Map and gridMap is MovementGrid:
+			gridMap.mesh_library = currentMap.meshLibrary
+			
+			gridMap.clear()
+			for cellData in currentMap.terrainCells:
+				gridMap.set_cell_item(cellData[1],cellData[0])
+			gridMap.initialize_cells(gridMap.get_used_cells())
+			
 
-var cellFilters:Dictionary = {
-	#True if it has a unit
-	"HAS_UNIT":func(cell:Vector3i): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else false,
-	#True if there's not a unit
-	"NOT_HAS_UNIT":func(cell:Vector3i): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else true,
-	#True if the tile has nothing in it
-	"EMPTY_TILE":func(cell:Vector3i): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.ANYTHING) == null else false
-	
-}
+
+var unitReferences:Array[Unit]
+
+var picker:Picker3D = Picker3D.new()
+		
+
+var actingUnit:Unit
+
+
+var abilityInUse:Ability
+var targetedCells:Array[Vector3i]
+
+var actionStack:Array[Tween]
 
 func _init() -> void:
 	Ref.board = self
-		
-		
-
-
-
+	
+	
+func _enter_tree() -> void:
+	var registerUnit:Callable = func(node): if node is Unit and node.get_parent() == self: unitReferences.append(node)
+	get_tree().node_added.connect(registerUnit)
+	
+	
 func _ready() -> void:
-
 	#Setup
+	currentMap = currentMap
+	gridMap.cell_clicked.connect(on_cell_clicked)
+	picker.user = self
+	Signal(Events,"ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
 	Ref.mainNode = self
 	change_state(States.SETUP)
 	
+	testing()
+
+
 	
+func run_stack():
+	change_combat_state(CombatStates.ANIMATING)
+	for tween in actionStack:
+		tween.play()
+		await tween.finished
+	
+	actionStack.clear()
+		
+	
+func testing():
+	abilityInUse = $Unit.attributes.abilities[0]
+	change_combat_state(CombatStates.ABILITY_TARGETING)
+	gridMap.mark_cells([Vector3.ZERO])
 	#State change buttons
 #	$UI/ActingMenu/Move.button_up.connect( change_combat_state.bind(CombatStates.MOVING) )
 #	$UI/ActingMenu/Act.button_up.connect( change_combat_state.bind(CombatStates.ACTING) )
 #	$UI/ActingMenu/EndTurn.button_up.connect( change_combat_state.bind(CombatStates.FACING) )
-	
-	#State variant intake
-
-enum typesOfInfo {POSITION,OBJECT}
-func get_hovered(infoType:int = typesOfInfo.POSITION):#Returns the position or node hovered by the mouse
-	var mousePos = get_viewport().get_mouse_position()
-	var rayFrom = $Grid/CameraOrigin/Camera.project_ray_origin(mousePos)
-	var rayTo = rayFrom + $Grid/CameraOrigin/Camera.project_ray_normal(mousePos) * 6000
-	var spaceState = get_world_3d().direct_space_state
-	var physicsRay:=PhysicsRayQueryParameters3D.create(rayFrom, rayTo)
-	var selection = spaceState.intersect_ray(physicsRay)
-	
-	match infoType:
-		typesOfInfo.OBJECT:
-			return selection.get("collider",null)
-		
-		typesOfInfo.POSITION:
-			return selection.get("position",Vector3.ZERO)-Vector3(0,0.1,0)
-
-
-#State handling
-var stateVariants:Dictionary = {
-	"abilityChosen":null,
-	"targetedCells":[]
-}#Stores variables that can be externally modified which are handled by the States below
-func state_variant_update(variantName:String,value):
-	stateVariants[variantName] = value
 
 
 func change_state(newState:int):
@@ -124,50 +132,47 @@ func change_combat_state(newState:CombatStates):
 
 #			CombatStates.MOVING:
 #				Events.emit_signal("COMBAT_MOVING_exit")
-#				$Grid.clear_targeting_grids()
+#				gridMap.clear_targeting_grids()
 #				stateVariants["targetedCells"] = []
 #
 #
 #			CombatStates.ACTING:
 #				Events.emit_signal("COMBAT_ACTING_exit")
-#				$Grid.clear_targeting_grids()
+#				gridMap.clear_targeting_grids()
 			CombatStates.ANIMATING:
 				Events.emit_signal("ANIMATING_exit")
 				pass
 
 			CombatStates.ABILITY_TARGETING:
 				Events.emit_signal("ABILITY_TARGETING_exit")
-				$Grid.clear_targeting_grids()
-				stateVariants["abilityChosen"] = null
+				gridMap.mark_cells([])
+				abilityInUse = null
+				targetedCells.clear()
+				
+				
+				
 
 			CombatStates.FACING_SELECT:
 				Events.emit_signal("FACING_SELECT_exit")
-				stateVariants["abilityChosen"] = null
 
 				
 	match newState:#New state initialization
 		CombatStates.IDLE:
 			Events.emit_signal("COMBAT_IDLE_enter")
-			stateVariants["abilityChosen"] = null
 
 			
-#		CombatStates.MOVING:
-#			Events.emit_signal("COMBAT_MOVING_enter")
-#			$Grid.mark_cells_for_movement()
-#			stateVariants["targetedCells"] = $Grid.ABILITY_TARGETING.get_used_cells()#Store valid cells for movement or ABILITY_TARGETING
-#
-#		CombatStates.ACTING:
-#			Events.emit_signal("COMBAT_ACTING_enter")
-#			#ActionsMenu.gd:_ready() takes care of filling the abilities
 		CombatStates.ANIMATING:
 			Events.emit_signal("ANIMATING_enter")
 			pass
 			
 		CombatStates.ABILITY_TARGETING:#Called by ActionsMenu.gd: press_button()
+			if not abilityInUse is Ability: push_error("Entered targeting without an ability set.")
 			Events.emit_signal("ABILITY_TARGETING_enter")
-			$Grid.mark_cells_for_targeting(stateVariants["abilityChosen"])
-			stateVariants["targetedCells"] = $Grid.ABILITY_TARGETING.get_used_cells()#Store valid cells for movement or ABILITY_TARGETING
-			print(stateVariants["targetedCells"])#TEMP
+			var allCells:Array[Vector3i] = []; allCells.assign(gridMap.cellDict.keys()) 
+			var cellsToMark:Array[Vector3i] = abilityInUse.filter_targetable_cells(allCells)
+			gridMap.mark_cells(cellsToMark)
+			
+			
 			
 		CombatStates.FACING_SELECT:
 			Events.emit_signal("FACING_SELECT_enter")
@@ -175,30 +180,36 @@ func change_combat_state(newState:CombatStates):
 	
 	combatState = newState
 	
+				
+	
 #func _unhandled_input(event: InputEvent) -> void:
-#	$Grid.update_hovered_cell()
+#	match combatState:
+#		CombatStates.ABILITY_TARGETING:
+#			if event.is_action_pressed("primary_click")
+
+#	gridMap.update_hovered_cell()
 #	match state:
 #		States.SETUP:
 #			if event.is_action_released("primary_click"):#Unit placement
 #				if Ref.unitSelected != null:#If a unit has been selected
-#					$Grid.place_object(Ref.unitSelected,$Grid.hoveredCell,MovementGrid.objectTypes.UNITS)#Add unit to map in the highlighted cell in the UNITs section
+#					gridMap.place_object(Ref.unitSelected,gridMap.hoveredCell,MovementGrid.objectTypes.UNITS)#Add unit to map in the highlighted cell in the UNITs section
 #					if Ref.unitsInBattle.find(Ref.unitSelected ) == -1 : #If the unit is not in battle...
 #						Ref.unitsInBattle.append(Ref.unitSelected )#Add it to the list
 #
 #				else:#If not, select any clicked units
-#					Ref.unitSelected = $Grid.get_cell_occupant($Grid.hoveredCell)
+#					Ref.unitSelected = gridMap.get_cell_occupant(gridMap.hoveredCell)
 #
 #			elif event.is_action_released("secondary_click"):
-#				var thingHovered = $Grid.get_cell_occupant($Grid.hoveredCell)
+#				var thingHovered = gridMap.get_cell_occupant(gridMap.hoveredCell)
 #				if thingHovered and thingHovered.get("isUnit"):#If a unit was clicked
-#					$Grid.remove_object(thingHovered, $Grid.objectTypes.UNITS)#Remove it from the field
+#					gridMap.remove_object(thingHovered, gridMap.objectTypes.UNITS)#Remove it from the field
 #					Ref.unitsInBattle.erase( thingHovered )#Remove it from the unit list
 #
 #				Ref.unitSelected = null#Deselect the current unit
 #				$UI/InfoDisplay.clear_unit()
 #
 #			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
-#				var target = $Grid.get_cell_occupant($Grid.hoveredCell)
+#				var target = gridMap.get_cell_occupant(gridMap.hoveredCell)
 #				if target and target.get("isUnit"):
 #					$UI/InfoDisplay.load_unit(target)
 #				else:
@@ -209,14 +220,14 @@ func change_combat_state(newState:CombatStates):
 #				if Ref.unitSelected and Ref.unitSelected.get("isUnit"):#If a unit has been selected
 #					pass#Nothing ATM
 #				else:#If not, select any clicked units
-#					Ref.unitSelected = $Grid.get_cell_occupant($Grid.hoveredCell)
+#					Ref.unitSelected = gridMap.get_cell_occupant(gridMap.hoveredCell)
 #
 #			elif event.is_action_released("secondary_click"):
 #				Ref.unitSelected = null#Deselect the current unit
 #				$UI/InfoDisplay.clear_unit()
 #
 #			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
-#				var target = $Grid.get_cell_occupant($Grid.hoveredCell)#Get the unit in the cell hovered
+#				var target = gridMap.get_cell_occupant(gridMap.hoveredCell)#Get the unit in the cell hovered
 #				if target and target.get("isUnit"):#If it is a unit, show their info
 #					$UI/InfoDisplay.load_unit(target)
 #				else:#Otherwise clear it
@@ -229,8 +240,8 @@ func change_combat_state(newState:CombatStates):
 #						if Ref.unitInAction.stats.moves <= 0:#Not enough moves
 #							Events.emit_signal("HINT_UPDATE","UI_NOT_ENOUGH_MOVES") #Anounce it
 #
-#						elif $Grid.get_cell_occupant($Grid.hoveredCell) == null:#Check if the cell is empty
-#							$Grid.place_object(Ref.unitInAction,$Grid.hoveredCell)#Move the unit there
+#						elif gridMap.get_cell_occupant(gridMap.hoveredCell) == null:#Check if the cell is empty
+#							gridMap.place_object(Ref.unitInAction,gridMap.hoveredCell)#Move the unit there
 #							Ref.unitInAction.stats["moves"] -= 1#Reduce the amount of moves remaining
 #							change_combat_state(CombatStates.IDLE)#Change to IDLE state
 #
@@ -246,18 +257,18 @@ func change_combat_state(newState:CombatStates):
 #
 #				CombatStates.ABILITY_TARGETING:
 #					assert(stateVariants["abilityChosen"] != null, "abilityChosen is null!")  
-#					$Grid.mark_cells_for_aoe($Grid.hoveredCell,stateVariants["abilityChosen"])
+#					gridMap.mark_cells_for_aoe(gridMap.hoveredCell,stateVariants["abilityChosen"])
 #
 #					if event.is_action_released("primary_click"): 
 #						var parameters:Dictionary
 #						var target
 #
 #
-#						if stateVariants.targetedCells.has($Grid.hoveredCell):#Check if it is valid	
-#							target = $Grid.get_cell_occupant($Grid.hoveredCell,$Grid.objectTypes.UNITS)#Get who is in that cell
+#						if stateVariants.targetedCells.has(gridMap.hoveredCell):#Check if it is valid	
+#							target = gridMap.get_cell_occupant(gridMap.hoveredCell,gridMap.objectTypes.UNITS)#Get who is in that cell
 #
 #							if target == null:#Get an object if there's no unit
-#								target = $Grid.get_cell_occupant($Grid.hoveredCell,$Grid.objectTypes.OBJECTS)#Get who is in that cell
+#								target = gridMap.get_cell_occupant(gridMap.hoveredCell,gridMap.objectTypes.OBJECTS)#Get who is in that cell
 #
 #							if target:#If the target is valid, add it
 #								parameters["target"] = target
@@ -265,7 +276,7 @@ func change_combat_state(newState:CombatStates):
 #
 #
 #						else:
-#							push_warning( "Tried to target non-highlighted cell " + str($Grid.hoveredCell) )
+#							push_warning( "Tried to target non-highlighted cell " + str(gridMap.hoveredCell) )
 #						pass
 #					if event.is_action_released("go_back"):#Exit ABILITY_TARGETING mode
 #						change_combat_state(CombatStates.ACTING)
@@ -295,6 +306,15 @@ func _process(delta: float) -> void:
 		States.END:
 			pass
 
+## IMPORTANT for usage!!!
+func on_cell_clicked(cell:Vector3i):
+	match combatState:
+		CombatStates.ABILITY_TARGETING:
+			if gridMap.is_cell_marked(cell):
+				if targetedCells.size() < abilityInUse.amountOfTargets:
+					targetedCells.append(cell)
+				else:
+					actionStack.append(abilityInUse.get_tween(targetedCells))
 	
 
 class Cell extends Area3D:
