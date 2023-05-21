@@ -138,3 +138,6 @@ These variables will update automatically
 >ABILITYOBJECT<
 -Uses items
 
+
+Actual TODO:
+	Run tests in CombatField.tscn to find bugs

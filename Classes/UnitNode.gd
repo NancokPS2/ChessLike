@@ -3,11 +3,17 @@ class_name Unit
 
 
 @export var saveName:String
-@export var attributes:CharAttributes = CharAttributes.new() #UnitAttributes (stats)
+@export var attributes:CharAttributes = CharAttributes.new(): #UnitAttributes (stats)
+	set(val):
+		attributes = val
+		if attributes is CharAttributes: attributes.user = self
+			
 var inventory:Inventory
 var facing:int = 0#Temp value
 #var attributes:UnitAttributes
 var requiredAnimationName:String = "stand"
+
+var board:GameBoard = Ref.board
 
 var isUnit:bool = true
 
@@ -34,6 +40,8 @@ signal turn_ended
 #}
 enum limbs {HEAD,TORSO,HAND_L,HAND_R,FOOT_L,FOOT_R}
 
+func get_current_cell()->Vector3i:
+	return board.gridMap.local_to_map(position)
 	
 #Possible parameters user, flags
 func targeted_with_action(parameters:Dictionary):
