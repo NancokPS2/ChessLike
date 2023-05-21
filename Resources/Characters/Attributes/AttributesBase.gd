@@ -1,7 +1,7 @@
 extends Resource
 class_name AttributesBase
 
-signal ATTRIBUTES_UPDATED
+signal attributes_updated
 
 @export var internalName:String
 @export var displayName:String = "ERR_NONAME"
@@ -10,6 +10,7 @@ signal ATTRIBUTES_UPDATED
 @export var attributeResources:Array[AttributesBase]
 
 @export var abilities:Array[Ability]
+
 @export var equipmentSlots:Array[String] = ["ARMOR","L_HAND","R_HAND","ACC1","ACC2","ACC3"]
 
 @export var baseStats:Dictionary ={
@@ -72,4 +73,4 @@ func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
 	for attrib in attribArray:
 		for ability in attrib.abilities:
 			if not abilities.has(ability): abilities.append(ability)
-	emit_signal("ATTRIBUTES_UPDATED")
+	emit_signal("attributes_updated")

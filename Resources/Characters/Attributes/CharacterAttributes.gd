@@ -33,9 +33,17 @@ class_name CharAttributes
 
 
 #General
-var owner
+var user:Unit:
+	set(val):
+		user = val
+		for ability in abilities: ability.user = user
+		
+		
 
-
+func _init() -> void:
+	combine_attributes()
+	
+	pass
 	
 	
 

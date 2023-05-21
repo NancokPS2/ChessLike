@@ -10,7 +10,3 @@ class_name RacialAttributes
 	"Other":1,
 	"Unknown":1
 }
-
-
-#Abilities
-@export var abilityList:Array = ["WEAPONATTACK"]
