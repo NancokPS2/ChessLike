@@ -1,3 +1,4 @@
+CharAttributes
 SaveFile
 Ability
 ClassAttributes

@@ -1,3 +1,8 @@
+StaticBody3D
+CollisionShape3D
+Picker3D
+Unit
+Camera3D
 GridMap
 ProgressBar
 Button
