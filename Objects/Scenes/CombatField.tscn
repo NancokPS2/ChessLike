@@ -1,12 +1,101 @@
-[gd_scene load_steps=5 format=3 uid="uid://cdavnb85unxso"]
+[gd_scene load_steps=14 format=3 uid="uid://cdavnb85unxso"]
 
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
 [ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/CellMesh/Base/DefaultTiles.tres" id="2_qugcw"]
 [ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="3_biu6m"]
+[ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="4_b3m2h"]
+[ext_resource type="Script" path="res://Classes/UnitNode.gd" id="5_bdxke"]
+[ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="6_3uwep"]
+[ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="6_k6bkc"]
+[ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="6_sepm7"]
+[ext_resource type="Resource" uid="uid://bt0lak1mpuuok" path="res://Resources/Abilities/AllAbilities/Punch.tres" id="6_wsrwq"]
+[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="7_htu6x"]
 
-[node name="Board" type="Node3D"]
+[sub_resource type="Resource" id="Resource_okr1b"]
+script = ExtResource("4_b3m2h")
+displayName = ""
+internalName = ""
+description = ""
+heightMap = []
+meshLibrary = ExtResource("2_qugcw")
+terrainCells = Array[Array]([[0, Vector3(0, 0, 0), 0], [0, Vector3(1, 0, 0), 0], [0, Vector3(0, 0, -1), 0], [0, Vector3(0, 0, 1), 0], [0, Vector3(-1, 0, 0), 0]])
+unitsToGenerate = Array[Dictionary]([{
+"className": "CIVILIAN",
+"factionName": "DEFAULT",
+"positionInGrid": Vector2(0, 0),
+"raceName": "HUMAN",
+"unitName": "Human"
+}])
+unitsToLoad = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_txyr4"]
+script = ExtResource("6_k6bkc")
+raceAttributes = ExtResource("6_sepm7")
+classAttributes = ExtResource("6_3uwep")
+faction = ExtResource("7_htu6x")
+info = {
+"className": "Unemployed",
+"factionName": "",
+"firstName": "Unnamed",
+"lastName": "",
+"nickName": "Nick",
+"raceName": "no race?",
+"sex": "Unknown"
+}
+equipment = {
+"ACC1": "",
+"ACC2": "",
+"ACC3": "",
+"ARMOR": "",
+"L_HAND": "",
+"R_HAND": ""
+}
+internalName = ""
+displayName = "ERR_NONAME"
+attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
+abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([ExtResource("6_wsrwq")])
+equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
+baseStats = {
+"accuracy": 0,
+"actions": 1,
+"actionsMax": 1,
+"agility": 0,
+"defense": 0,
+"dodge": 0,
+"energy": 30,
+"energyMax": 30,
+"health": 100,
+"healthMax": 100,
+"mind": 0,
+"moveDistance": 0,
+"movementType": 0,
+"moves": 1,
+"movesMax": 1,
+"special": 0,
+"strength": 0,
+"turnDelay": 0,
+"turnDelayMax": 100
+}
+stats = null
+statModifiers = {
+"accuracy": 1.0,
+"agility": 1.0,
+"defense": 1.0,
+"dodge": 1.0,
+"maxEnergy": 1.0,
+"maxHealth": 1.0,
+"mind": 1.0,
+"moveDistance": 1.0,
+"special": 1.0,
+"strength": 1.0,
+"turnDelayMax": 1.0
+}
+
+[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap")]
 script = ExtResource("1_v1w2e")
+gridMap = NodePath("MovementGrid")
+currentMap = SubResource("Resource_okr1b")
 
 [node name="MovementGrid" type="GridMap" parent="."]
 mesh_library = ExtResource("2_qugcw")
@@ -44,3 +133,10 @@ layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 text = "ASS"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.931342, 0.364145, 0, -0.364145, 0.931342, 0, 1.53486, 2.32895)
+
+[node name="Unit" type="Node3D" parent="."]
+script = ExtResource("5_bdxke")
+attributes = SubResource("Resource_txyr4")
