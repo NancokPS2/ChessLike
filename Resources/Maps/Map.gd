@@ -11,8 +11,8 @@ class_name Map
 
 @export var background:Texture
 
-enum TerrainTileData {TILE_ID,TILE_POS,FLAGS}
-@export var terrainTiles:Array[Array] = [
+enum TerrainCellData {TILE_ID,TILE_POS,FLAGS}
+@export var terrainCells:Array[Array] = [
 	[0,Vector3.ZERO,0],
 	[0,Vector3.RIGHT,0],
 	[0,Vector3.FORWARD,0],
