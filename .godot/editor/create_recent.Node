@@ -1,3 +1,8 @@
+WorldEnvironment
+MeshInstance3D
+MultiMeshInstance3D
+Node2D
+Node
 StaticBody3D
 CollisionShape3D
 Picker3D
@@ -12,4 +17,3 @@ MovementGrid
 Sprite2D
 FancyLabel
 NodeStateMachine
-MeshInstance3D

@@ -16,4 +16,5 @@ abilityFlags = Array[int]([])
 targetingShape = 3
 areaSize = 1
 abilityRange = 1
+amountOfTargets = 1
 filtersUsed = Array[String](["has_unit"])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cdavnb85unxso"]
+[gd_scene load_steps=16 format=3 uid="uid://cdavnb85unxso"]
 
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="4_b3m2h"]
 [ext_resource type="Script" path="res://Classes/UnitNode.gd" id="5_bdxke"]
 [ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="6_3uwep"]
+[ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="6_cjn2s"]
 [ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="6_k6bkc"]
 [ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="6_sepm7"]
 [ext_resource type="Resource" uid="uid://bt0lak1mpuuok" path="res://Resources/Abilities/AllAbilities/Punch.tres" id="6_wsrwq"]
@@ -19,7 +20,7 @@ internalName = ""
 description = ""
 heightMap = []
 meshLibrary = ExtResource("2_qugcw")
-terrainCells = Array[Array]([[0, Vector3(0, 0, 0), 0], [0, Vector3(1, 0, 0), 0], [0, Vector3(0, 0, -1), 0], [0, Vector3(0, 0, 1), 0], [0, Vector3(-1, 0, 0), 0]])
+terrainCells = Array[Array]([[0, Vector3i(0, 0, 0), ["WALKABLE"]], [0, Vector3i(1, 0, 0), ["WALKABLE"]], [0, Vector3i(0, 0, -1), ["WALKABLE"]], [0, Vector3i(0, 0, 1), ["WALKABLE"]], [0, Vector3i(-1, 0, 0), ["WALKABLE"]], [0, Vector3i(-2, 0, 0), ["WALKABLE"]], [0, Vector3i(1, 0, 1), ["WALKABLE"]], [0, Vector3i(2, 0, 1), ["WALKABLE"]]])
 unitsToGenerate = Array[Dictionary]([{
 "className": "CIVILIAN",
 "factionName": "DEFAULT",
@@ -27,7 +28,7 @@ unitsToGenerate = Array[Dictionary]([{
 "raceName": "HUMAN",
 "unitName": "Human"
 }])
-unitsToLoad = Array[String]([])
+unitsToLoad = Array[ExtResource("6_k6bkc")]([])
 
 [sub_resource type="Resource" id="Resource_txyr4"]
 script = ExtResource("6_k6bkc")
@@ -92,6 +93,11 @@ statModifiers = {
 "turnDelayMax": 1.0
 }
 
+[sub_resource type="Environment" id="Environment_vl025"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.76
+
 [node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap")]
 script = ExtResource("1_v1w2e")
 gridMap = NodePath("MovementGrid")
@@ -135,8 +141,12 @@ offset_bottom = 8.0
 text = "ASS"
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.931342, 0.364145, 0, -0.364145, 0.931342, 0, 1.53486, 2.32895)
+transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
+script = ExtResource("6_cjn2s")
 
 [node name="Unit" type="Node3D" parent="."]
 script = ExtResource("5_bdxke")
 attributes = SubResource("Resource_txyr4")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_vl025")

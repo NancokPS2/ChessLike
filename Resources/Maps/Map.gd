@@ -1,6 +1,20 @@
 extends Resource
 class_name Map
 
+enum DefaultCellTags {
+	WALKABLE, ## All units (dirt, path)
+	EMPTY, ## Flying only (chasms)
+	LIQUID, ## All except non-swimming walkers (water)
+	UNSTABLE, ## All except heavy walkers (mud)
+	PUSHER, ## Only heavy walkers (water current, brambles)
+	HARD, ## Fall damage is increased on this kind of tile (rock)
+	SOFT, ## Fall damage is negated on this kind of tile (slime, water, hay)
+	NO_AIR, ## All but flying and hovering (strong wind)
+	ELEVATOR, ## Walkers ignore terrain differences (ladder)
+	UNTARGETABLE, ## Units may not willingly move into these (lava)
+	NO_ENTRY, ## Impossible to enter
+	}
+
 @export var displayName:String
 @export var internalName:String
 @export var description:String
@@ -11,13 +25,16 @@ class_name Map
 
 @export var background:Texture
 
-enum TerrainCellData {TILE_ID,TILE_POS,FLAGS}
+enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 @export var terrainCells:Array[Array] = [
-	[0,Vector3.ZERO,0],
-	[0,Vector3.RIGHT,0],
-	[0,Vector3.FORWARD,0],
-	[0,Vector3.BACK,0],
-	[0,Vector3.LEFT,0]
+	[0,Vector3i.ZERO,["WALKABLE"]],
+	[0,Vector3i.RIGHT,["WALKABLE"]],
+	[0,Vector3i.FORWARD,["WALKABLE"]],
+	[0,Vector3i.BACK,["WALKABLE"]],
+	[0,Vector3i.LEFT,["WALKABLE"]],
+	[0,Vector3i.LEFT*2,["WALKABLE"]],
+	[0,Vector3i(1,0,1),["WALKABLE"]],
+	[0,Vector3i(2,0,1),["WALKABLE"]]
 ]
 
 @export var unitsToGenerate:Array[Dictionary] = [
@@ -29,7 +46,7 @@ enum TerrainCellData {TILE_ID,TILE_POS,FLAGS}
 		"positionInGrid":(Vector2(0,0))
 	}
 ]
-@export var unitsToLoad:Array[String]
+@export var unitsToLoad:Array[CharAttributes]
 
 
 

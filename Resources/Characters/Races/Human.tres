@@ -12,4 +12,43 @@ sexWeight = {
 "Other": 1,
 "Unknown": 1
 }
-abilityList = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
+internalName = ""
+displayName = "ERR_NONAME"
+attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
+abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
+equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
+baseStats = {
+"accuracy": 0,
+"actions": 1,
+"actionsMax": 1,
+"agility": 0,
+"defense": 0,
+"dodge": 0,
+"energy": 30,
+"energyMax": 30,
+"health": 100,
+"healthMax": 100,
+"mind": 0,
+"moveDistance": 0,
+"movementType": 0,
+"moves": 1,
+"movesMax": 1,
+"special": 0,
+"strength": 0,
+"turnDelay": 0,
+"turnDelayMax": 100
+}
+stats = null
+statModifiers = {
+"accuracy": 1.0,
+"agility": 1.0,
+"defense": 1.0,
+"dodge": 1.0,
+"maxEnergy": 1.0,
+"maxHealth": 1.0,
+"mind": 1.0,
+"moveDistance": 1.0,
+"special": 1.0,
+"strength": 1.0,
+"turnDelayMax": 1.0
+}

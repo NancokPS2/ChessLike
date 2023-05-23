@@ -1,5 +1,5 @@
 extends Unit
-const defaultModel = preload("res://Assets/CellMesh/Characters/Dummy/Dummy.tscn")
+const defaultModel = preload("res://Assets/CellMesh/Characters/Human.tscn")
 
 func _ready():#Has temps
 	add_to_group("UNIT")

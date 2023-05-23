@@ -36,7 +36,8 @@ var combatState:int
 			gridMap.clear()
 			for cellData in currentMap.terrainCells:
 				gridMap.set_cell_item(cellData[1],cellData[0])
-			gridMap.initialize_cells(gridMap.get_used_cells())
+			gridMap.update_grid()
+			
 			
 
 

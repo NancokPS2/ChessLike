@@ -6,7 +6,8 @@ signal attributes_updated
 @export var internalName:String
 @export var displayName:String = "ERR_NONAME"
 
-@export var model:PackedScene = load("res://Assets/CellMesh/Characters/Dummy/Dummy.tscn")
+@export var model:PackedScene = load("res://Assets/CellMesh/Characters/Human.tscn")
+
 @export var attributeResources:Array[AttributesBase]
 
 @export var abilities:Array[Ability]
