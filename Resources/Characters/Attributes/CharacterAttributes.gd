@@ -30,7 +30,25 @@ class_name CharAttributes
 
 #var abilities:Array#Both passive and active abilities
 
+#12 bitsPersonality index r:energetic g:good b:lawful
+@export var personalityNumber:Array[int]=[255,255,255]
 
+var personalityColor:Color:
+	get:
+		if personalityNumber.size()!=3 or personalityNumber.max()>255: push_error("Corrupted personalityNumber!"); return Color()
+		var red:int = personalityNumber[0]
+		var green:int = personalityNumber[1]
+		var blue:int = personalityNumber[2]
+		
+		var color:=Color.BLACK
+		color.r8 = red
+		color.g8 = green
+		color.b8 = blue
+		return color
+
+var favoriteColor:Color:
+	get:
+		return Color((stats.strength/999+100), (stats.agility/999+100), (stats.mind/999+100))
 
 #General
 var user:Unit:
@@ -85,4 +103,15 @@ func generate_name(type:int,firstNameList:Array=[],lastNameList:Array=[]):#Use n
 func equip(what:Equipment, slot:String):
 	if not equipmentSlots.has(slot): push_error("Invalid slot"); return
 	else: equipment[slot] = what
+	
+func randomize_names(firstNames:Array[String], nickNames:Array[String], lastNames:Array[String]):
+	info["firstName"] = firstNames.pick_random() as String
+	stats["nickName"] = firstNames.pick_random() as String if randi_range(0,2) == 0 else ""
+	info["lastName"] = firstNames.pick_random() as String if randi_range(0,9000) == 0 else ""
+	
+func randomize_personality(energyMin:float=0, energyMax:float=255, goodMin:float=0, goodMax:float=255, lawMin:float=0, lawMax:float=255):
+	personalityNumber[0] = randi_range(energyMin,clamp(energyMax,1,255))
+	personalityNumber[1] = randi_range(goodMin,clamp(goodMax,1,255))
+	personalityNumber[2] = randi_range(lawMin,clamp(lawMax,1,255))
+	
 	
