@@ -140,4 +140,5 @@ These variables will update automatically
 
 
 Actual TODO:
-	Run tests in CombatField.tscn to find bugs
+	-Run tests in CombatField.tscn to find bugs
+	-ImageDataStorage should first try to place all pixels adjacently THEN spread them. Also move the flag's pixel to the top left again

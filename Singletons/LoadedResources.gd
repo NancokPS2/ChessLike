@@ -1,6 +1,8 @@
 extends Node
 #TODO: Make cache system that stores the names of the resources and their location in the dictionary
+const Extensions:Dictionary = {RESOURCE="tres", PACKED_SCENE="tscn"}
 var resources:Dictionary = {}
+var filePaths:Dictionary
 #Structure:resources:Dict>type:Dict>list:Array
 
 
@@ -19,6 +21,25 @@ func _init():#Loading of files
 #	load_factions("res://Resources/Characters/Factions/")
 #	load_characters("res://Resources/Characters/UniqueCharacters/")
 	pass
+
+
+func register_file_paths(folder:String, category:String, extensionFilter:String=Extensions.RESOURCE):
+	var files:PackedStringArray = DirAccess.get_files_at(folder)
+	
+	filePaths[category] = filePaths.get(category,[]).append_array(files)
+	filePaths[category].filter(func(fileName:String): return fileName.get_extension() == Extensions.RESOURCE or fileName.get_extension() == Extensions.PACKED_SCENE)
+
+
+
+
+
+
+
+
+
+
+
+
 
 func load_from_folder(folderPath:String,type:String):
 	var loadingDir = DirAccess.open(folderPath)
