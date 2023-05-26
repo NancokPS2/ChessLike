@@ -13,7 +13,7 @@ func _init() -> void:
 @export var playerUnitsIN:Array[CharAttributes]
 @export var playerFactionIN:Faction
 @export var progressFlags = {"storyStart":false}
-var settingsFile:ConfigFile
+var settingsFile:=ConfigFile.new()
 
 func save():
 	ResourceSaver.save(self, SAVE_DIR.format([saveName]))
