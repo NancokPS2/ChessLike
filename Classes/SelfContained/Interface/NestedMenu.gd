@@ -4,7 +4,7 @@ class_name NestedMenu
 
 ## BUttons that will be automatically generated, which can allow you to travel around the menus.
 ## Each element is made out of Arrays with the following format: ["Menu where the button goes", "Menu where it leads to"]
-@export var navigationButtons:Array[Array] =[] #[ [MenuWhereTheButtonIsPlaced,WhereTheButtonLeads] ]
+@export var navigationButtons:Array[Array] #[ [MenuWhereTheButtonIsPlaced,WhereTheButtonLeads] ]
 	
 ## If this node hsa Control nodes, they will be considered a menu (with the menu's name being the children's node) and the children will be part of said menu
 @export var autoStripChildControls:bool=true
@@ -19,10 +19,6 @@ var menuStack:Array[String] = []
 
 ## Stores a pair of menu name and control node
 @export var menus:Dictionary #String:Array[Control]
-
-func _init() -> void:
-	for array in navigationButtons:
-		NavigationButton.new(self,array[0],array[1])
 		
 
 func _ready():
@@ -30,7 +26,7 @@ func _ready():
 		for child in self.get_children():
 			if not child is Control: continue
 			strip_from_parent(child, child.get_name(), true)	
-		
+	add_navigation_buttons()
 	if not menus.is_empty(): change_current_menu(menus.keys()[0],true)
 
 func reorder_buttons():
@@ -45,12 +41,14 @@ func create_menu(menuName:String):
 	if autoAddBackButton: NavigationButtonBack.new(self,menuName)
 
 func get_menus()->Array[String]:
-	return menus.keys()
+	var returnal:Array[String]; returnal.assign(menus.keys())
+	return returnal
 	
 
 ## Takes all children from a control node and optionally removes it as well
 func strip_from_parent(control:Control, toMenuName:String, removeParent:bool=false):
-	if control.get_children().is_empty(): push_error("This node has no children"); return
+	if control.get_children().is_empty(): push_warning("This node has no children")
+	create_menu(toMenuName)
 	
 	for child in control.get_children():
 		if not child is Control: continue
@@ -63,7 +61,8 @@ func strip_from_parent(control:Control, toMenuName:String, removeParent:bool=fal
 
 func add_to_menu(what:Control, menuName:String):
 	if menuName == "": push_error("Menu name cannot be empty."); return
-	if not menus.has(menuName): create_menu(menuName)
+	if not menus.has(menuName): 
+		create_menu(menuName)
 	
 	menus[menuName].append(what)
 
@@ -73,8 +72,16 @@ func remove_from_menu(what:Control):
 	for menu in menus:
 		menu.erase(what)
 
-func clear_menu(menuName:String):
-	if menus.has(menuName): menus[menuName].clear()
+func clear_menu(menuName:String, includeNavigation:bool=false):
+	if menus.has(menuName): 
+		for control in menus[menuName]:
+			assert(control is Control)
+			if (control is NavigationButton or control is NavigationButtonBack) and not includeNavigation:
+				continue
+			else:
+				menus[menuName].erase(control)
+				
+				
 	else: push_warning(menuName + " does not exist.")
 		
 func delete_menu(menuName:String):
@@ -100,6 +107,10 @@ func go_to_prev_menu():
 	if not menuStack.is_empty() and menus.has(menuStack.back()):
 		change_current_menu( menuStack.pop_back(), true )
 	else: push_warning("There's no previous menu")
+	
+func add_navigation_buttons():
+	for array in navigationButtons:
+		NavigationButton.new(self,array[0],array[1])
 		
 class NavigationButtonBack extends Button:
 
