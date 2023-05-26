@@ -1,5 +1,7 @@
 extends Node
 
+signal UNIT_MOVED
+
 func _init() -> void:
 	for state in GameBoard.States.keys():
 		var enterSignal:String = state+"_enter"
@@ -53,14 +55,14 @@ func _init() -> void:
 #signal COMBAT_IDLE_exit
 
 #GridMap signals
-signal GRID_UNIT_HOVERED
-signal GRID_UNIT_CLICKED
+#signal GRID_UNIT_HOVERED
+#signal GRID_UNIT_CLICKED
 
 #UI Updates
-signal UPDATE_UNIT_INFO
+#signal UPDATE_UNIT_INFO
 
 #Misc
-signal GRID_TILE_CLICKED
-signal UNIT_IN_TILE
-signal OBJECT_IN_TILE
-signal HINT_UPDATE
+#signal GRID_TILE_CLICKED
+#signal UNIT_IN_TILE
+#signal OBJECT_IN_TILE
+#signal HINT_UPDATE

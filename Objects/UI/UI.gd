@@ -15,7 +15,7 @@ func button_pressed(button:Button):#Start button pressed
 	if button.internalName == "StartCombat":
 		$Popup/Message.text = tr("MESSAGE_QUERY_STARTCOMBAT")
 		$Popup.popup()
-		var accepted:bool = yield($Popup,"finished")
+		var accepted:bool = await($Popup,"finished")
 		
 		if accepted:
 			get_parent().change_combat_stage(CVars.combatStages.COMBAT)
