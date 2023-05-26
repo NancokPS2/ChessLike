@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="Script" path="res://Classes/Control/VBoxControllerHideable.gd" id="1"]
-
-[node name="AbilityDisplay" type="ItemList"]
-margin_right = 40.0
-margin_bottom = 40.0
-script = ExtResource( 1 )
