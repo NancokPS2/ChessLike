@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://b885kcos1b8at"]
+
+[ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="1_dq3qi"]
+
+[node name="CombatMenu" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.339687
+anchor_bottom = 0.997185
+offset_right = -0.32
+offset_bottom = -0.176003
+script = ExtResource("1_dq3qi")
+navigationButtons = Array[Array]([["MAIN", "MOVEMENT"], ["MENU", "OBJECT"], ["MENU", "SKILL"], ["MENU", "SPECIAL"]])
+autoAddBackButton = false
+metadata/_edit_use_anchors_ = true
+
+[node name="MAIN" type="Control" parent="."]
+layout_mode = 2
+
+[node name="MOVEMENT" type="Control" parent="."]
+layout_mode = 2
+
+[node name="OBJECT" type="Control" parent="."]
+layout_mode = 2
+
+[node name="SKILL" type="Control" parent="."]
+layout_mode = 2
+
+[node name="SPECIAL" type="Control" parent="."]
+layout_mode = 2

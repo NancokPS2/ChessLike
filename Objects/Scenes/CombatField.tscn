@@ -1,16 +1,16 @@
-[gd_scene load_steps=16 format=3 uid="uid://cdavnb85unxso"]
+[gd_scene load_steps=16 format=3 uid="uid://d3quwmouge5hc"]
 
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
 [ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/CellMesh/Base/DefaultTiles.tres" id="2_qugcw"]
 [ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="3_biu6m"]
 [ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="4_b3m2h"]
-[ext_resource type="Script" path="res://Classes/UnitNode.gd" id="5_bdxke"]
 [ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="6_3uwep"]
 [ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="6_cjn2s"]
 [ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="6_k6bkc"]
 [ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="6_sepm7"]
 [ext_resource type="Resource" uid="uid://bt0lak1mpuuok" path="res://Resources/Abilities/AllAbilities/Punch.tres" id="6_wsrwq"]
+[ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="7_hju4p"]
 [ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="7_htu6x"]
 
 [sub_resource type="Resource" id="Resource_okr1b"]
@@ -35,6 +35,7 @@ script = ExtResource("6_k6bkc")
 raceAttributes = ExtResource("6_sepm7")
 classAttributes = ExtResource("6_3uwep")
 faction = ExtResource("7_htu6x")
+personalityNumber = Array[int]([255, 255, 255])
 info = {
 "className": "Unemployed",
 "factionName": "",
@@ -98,10 +99,18 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.76
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap")]
+[node name="Board" type="Node3D"]
 script = ExtResource("1_v1w2e")
-gridMap = NodePath("MovementGrid")
 currentMap = SubResource("Resource_okr1b")
+
+[node name="Debug" type="Label" parent="."]
+anchors_preset = -1
+anchor_right = 0.305
+anchor_bottom = 0.211
+offset_left = 810.0
+offset_top = 232.0
+offset_right = 809.64
+offset_bottom = 232.272
 
 [node name="MovementGrid" type="GridMap" parent="."]
 mesh_library = ExtResource("2_qugcw")
@@ -113,39 +122,37 @@ script = ExtResource("1_q4sck")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="NestedButtonMenu" type="VBoxContainer" parent="UI"]
+[node name="CombatMenu" type="VBoxContainer" parent="UI"]
 anchors_preset = -1
-anchor_right = 0.339687
-anchor_bottom = 0.997185
+anchor_right = 0.327535
+anchor_bottom = 1.00027
 offset_right = -0.32
 offset_bottom = -0.176003
 script = ExtResource("3_biu6m")
+navigationButtons = Array[Array]([["MENU", "MOVEMENT"], ["MENU", "OBJECT"], ["MENU", "SKILL"], ["MENU", "SPECIAL"]])
 metadata/_edit_use_anchors_ = true
 
-[node name="Main" type="Control" parent="UI/NestedButtonMenu"]
+[node name="MENU" type="Control" parent="UI/CombatMenu"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="UI/NestedButtonMenu/Main"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "ASS"
-
-[node name="Other" type="Control" parent="UI/NestedButtonMenu"]
+[node name="MOVEMENT" type="Control" parent="UI/CombatMenu"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="UI/NestedButtonMenu/Other"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "ASS"
+[node name="OBJECT" type="Control" parent="UI/CombatMenu"]
+layout_mode = 2
+
+[node name="SKILL" type="Control" parent="UI/CombatMenu"]
+layout_mode = 2
+
+[node name="SPECIAL" type="Control" parent="UI/CombatMenu"]
+layout_mode = 2
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
 script = ExtResource("6_cjn2s")
 
 [node name="Unit" type="Node3D" parent="."]
-script = ExtResource("5_bdxke")
+script = ExtResource("7_hju4p")
 attributes = SubResource("Resource_txyr4")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

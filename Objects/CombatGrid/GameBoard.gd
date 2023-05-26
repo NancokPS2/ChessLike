@@ -5,28 +5,28 @@ enum States {SETUP,COMBAT,PAUSE,END}
 
 
 enum CombatStates {
-	IDLE,#Nothing is happening, actions are displayed
-	ANIMATING,#Awaiting for a cell to be chosen in order to move to it
-	ABILITY_TARGETING,
-	FACING_SELECT,
-	OFF_TURN
+	C_IDLE,#Nothing is happening, actions are displayed
+	C_ANIMATING,#Awaiting for a cell to be chosen in order to move to it
+	C_ABILITY_TARGETING,
+	C_FACING_SELECT,
+	C_OFF_TURN
 	}
 
-var cellDict:Dictionary:
-	set(val):
-		pass
-	get:
-		if gridMap: return gridMap.cellDict
-		else: push_error("No gridMap has been set."); return {}
+#var cellDict:Dictionary:
+#	set(val):
+#		pass
+#	get:
+#		if gridMap: return gridMap.cellDict
+#		else: push_error("No gridMap has been set."); return {}
 	
-var state:int
-var combatState:int
+
 
 @export_group("References")
 @export var gridMap:MovementGrid
 @export var unitList:UnitDisplay
+@export var menuCombat:NestedMenu
 
-@export_group("")
+@export_group("Map")
 @export var currentMap:Map:
 	set(val):
 		currentMap = val
@@ -36,23 +36,25 @@ var combatState:int
 			gridMap.clear()
 			for cellData in currentMap.terrainCells:
 				gridMap.set_cell_item(cellData[1],cellData[0])
-			gridMap.update_grid()
+			gridMap.update_grid(currentMap)
 			
 			
-
-
-var unitReferences:Array[Unit]
-
-var picker:Picker3D = Picker3D.new()
-		
+var state:int
+var combatState:int
 
 var actingUnit:Unit
+var unitReferences:Array[Unit]
+var abilityInUse:Ability:
+	set(val):
+		abilityInUse = val
+		$Debug.text = abilityInUse.displayedName
 
-
-var abilityInUse:Ability
 var targetedCells:Array[Vector3i]
-
 var actionStack:Array[Tween]
+
+var picker:Picker3D = Picker3D.new()
+
+
 
 func _init() -> void:
 	Ref.board = self
@@ -65,10 +67,11 @@ func _enter_tree() -> void:
 	
 func _ready() -> void:
 	#Setup
+	gridMap = Ref.grid
 	currentMap = currentMap
 	gridMap.cell_clicked.connect(on_cell_clicked)
 	picker.user = self
-	Signal(Events,"ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
+	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
 	Ref.mainNode = self
 	change_state(States.SETUP)
 	
@@ -77,7 +80,7 @@ func _ready() -> void:
 
 	
 func run_stack():
-	change_combat_state(CombatStates.ANIMATING)
+	change_combat_state(CombatStates.C_ANIMATING)
 	for tween in actionStack:
 		tween.play()
 		await tween.finished
@@ -86,9 +89,11 @@ func run_stack():
 		
 	
 func testing():
-	abilityInUse = $Unit.attributes.abilities[0]
-	change_combat_state(CombatStates.ABILITY_TARGETING)
-	gridMap.mark_cells([Vector3.ZERO])
+#	abilityInUse = $Unit.attributes.abilities[0]
+#	change_combat_state(CombatStates.C_ABILITY_TARGETING)
+#	gridMap.mark_cells([Vector3.ZERO])
+	menuCombat = $UI/CombatMenu
+	update_menus_to_unit($Unit)
 	#State change buttons
 #	$UI/ActingMenu/Move.button_up.connect( change_combat_state.bind(CombatStates.MOVING) )
 #	$UI/ActingMenu/Act.button_up.connect( change_combat_state.bind(CombatStates.ACTING) )
@@ -118,7 +123,7 @@ func change_state(newState:int):
 			pass
 		States.PAUSE:
 			Events.emit_signal("PAUSE_enter")
-			get_tree().paused = false
+			get_tree().paused = true
 		States.END:
 			Events.emit_signal("END_enter")
 			pass
@@ -128,57 +133,41 @@ func change_state(newState:int):
 func change_combat_state(newState:CombatStates):
 	if combatState != newState:#Exiting current state
 		match combatState:
-			CombatStates.IDLE:
-				Events.emit_signal("COMBAT_IDLE_exit")
+			CombatStates.C_IDLE:
+				Events.emit_signal("C_IDLE_exit")
 
-#			CombatStates.MOVING:
-#				Events.emit_signal("COMBAT_MOVING_exit")
-#				gridMap.clear_targeting_grids()
-#				stateVariants["targetedCells"] = []
-#
-#
-#			CombatStates.ACTING:
-#				Events.emit_signal("COMBAT_ACTING_exit")
-#				gridMap.clear_targeting_grids()
-			CombatStates.ANIMATING:
-				Events.emit_signal("ANIMATING_exit")
-				pass
+			CombatStates.C_ANIMATING:
+				Events.emit_signal("C_ANIMATING_exit")
 
-			CombatStates.ABILITY_TARGETING:
-				Events.emit_signal("ABILITY_TARGETING_exit")
+
+			CombatStates.C_ABILITY_TARGETING:
+				Events.emit_signal("C_ABILITY_TARGETING_exit")
 				gridMap.mark_cells([])
 				abilityInUse = null
 				targetedCells.clear()
-				
-				
-				
 
-			CombatStates.FACING_SELECT:
-				Events.emit_signal("FACING_SELECT_exit")
+			CombatStates.C_FACING_SELECT:
+				Events.emit_signal("C_FACING_SELECT_exit")
 
 				
 	match newState:#New state initialization
-		CombatStates.IDLE:
-			Events.emit_signal("COMBAT_IDLE_enter")
+		CombatStates.C_IDLE:
+			Events.emit_signal("C_IDLE_enter")
 
 			
-		CombatStates.ANIMATING:
-			Events.emit_signal("ANIMATING_enter")
-			pass
+		CombatStates.C_ANIMATING:
+			Events.emit_signal("C_ANIMATING_enter")
 			
-		CombatStates.ABILITY_TARGETING:#Called by ActionsMenu.gd: press_button()
+		CombatStates.C_ABILITY_TARGETING:#Called by ActionsMenu.gd: press_button()
 			if not abilityInUse is Ability: push_error("Entered targeting without an ability set.")
-			Events.emit_signal("ABILITY_TARGETING_enter")
+			Events.emit_signal("C_ABILITY_TARGETING_enter")
 			var allCells:Array[Vector3i] = []; allCells.assign(gridMap.cellDict.keys()) 
 			var cellsToMark:Array[Vector3i] = abilityInUse.filter_targetable_cells(allCells)
 			gridMap.mark_cells(cellsToMark)
-			
-			
-			
-		CombatStates.FACING_SELECT:
-			Events.emit_signal("FACING_SELECT_enter")
-			pass
-	
+
+		CombatStates.C_FACING_SELECT:
+			Events.emit_signal("C_FACING_SELECT_enter")
+
 	combatState = newState
 	
 				
@@ -310,13 +299,36 @@ func _process(delta: float) -> void:
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
 	match combatState:
-		CombatStates.ABILITY_TARGETING:
+		CombatStates.C_ABILITY_TARGETING:
 			if gridMap.is_cell_marked(cell):
 				if targetedCells.size() < abilityInUse.amountOfTargets:
 					targetedCells.append(cell)
 				else:
 					actionStack.append(abilityInUse.get_tween(targetedCells))
 	
+
+func update_menus_to_unit(unit:Unit):
+	for menu in menuCombat.get_menus():
+		menuCombat.clear_menu(menu)
+	
+	for ability in unit.attributes.abilities:
+		var button:=Button.new()
+		var menuName:String
+		match ability.type:
+			Ability.AbilityTypes.MOVEMENT: menuName = "MOVEMENT"
+			Ability.AbilityTypes.OBJECT: menuName = "OBJECT"
+			Ability.AbilityTypes.SKILL: menuName = "SKILL"
+			Ability.AbilityTypes.SPECIAL: menuName = "SPECIAL"
+			Ability.AbilityTypes.PASSIVE: return
+			_: push_error("Invalid ability type."); return
+		
+		button.text = ability.displayedName
+#		button.add_user_signal("abil",[ability])
+#		button.pressed.connect( Callable(button,"emit_signal").bind("abil",ability) )
+		button.pressed.connect(set.bind("abilityInUse",ability))
+		menuCombat.add_to_menu(button,menuName)
+		
+	menuCombat.change_current_menu("MENU")
 
 class Cell extends Area3D:
 	var mesh:Mesh
