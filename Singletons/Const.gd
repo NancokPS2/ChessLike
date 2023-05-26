@@ -23,8 +23,6 @@ enum movementTypes{IGNORE,WALK,FLY,TELEPORT} #IGNORE is only meant to be used by
 
 enum abilityTags{ATTACK,HEAL,DEBUFF,BUFF,INNATE,ENERGY_USE,ACTIVE}
 
-const UnitTemplate:PackedScene = preload("res://Objects/Unit/UnitTemplate.tscn")
-
 enum abilityParameters{TARGET_UNIT,TARGET_CONE,CHOOSE_WEAPON}
 
 enum attackFlags{HALF_ARMOR,IGNORE_ARMOR,WEAK_VS_ARMOR,CANNOT_COUNTER,FALL_OFF}
@@ -34,10 +32,12 @@ enum areaShapes{STAR,CONE,LINE,CROSS}
 
 enum genders{MALE,FEMALE,OTHER,UNKNOWN}
 
-enum classes{CIVILIAN,GRUNT}
-
-
 enum races{HUMAN,POXT,VIVISTAR,MANTADA}
+
+const Groups:Dictionary = {
+	UNIT="UNIT",
+	OBSTACLES="OBSTACLES",
+}
 
 #Directories
 const dirSaves = "user://GameData/Saves/"
