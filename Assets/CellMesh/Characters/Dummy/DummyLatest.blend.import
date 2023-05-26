@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://pk3kqalgg836"
-path="res://.godot/imported/DummyLaxStand.blend-0098201fe9bb2354f7bda1112f24bccd.scn"
+uid="uid://dyii4o23gu3qp"
+path="res://.godot/imported/DummyLatest.blend-96e731b0bdc88ca4cc0140563b63ee8b.scn"
 
 [deps]
 
-source_file="res://Assets/CellMesh/Characters/Dummy/DummyLaxStand.blend"
-dest_files=["res://.godot/imported/DummyLaxStand.blend-0098201fe9bb2354f7bda1112f24bccd.scn"]
+source_file="res://Assets/CellMesh/Characters/Dummy/DummyLatest.blend"
+dest_files=["res://.godot/imported/DummyLatest.blend-96e731b0bdc88ca4cc0140563b63ee8b.scn"]
 
 [params]
 
