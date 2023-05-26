@@ -9,11 +9,12 @@ signal marked_cell_clicked(cellPos:Vector3i)
 const TargetingMesh:MeshLibrary = preload("res://Assets/CellMesh/Base/TargetingMesh.tres")
 const Directionsi:Array[Vector3i]=[Vector3i.UP,Vector3i.DOWN,Vector3i.BACK,Vector3i.FORWARD,Vector3i.LEFT,Vector3i.RIGHT]
 const Directions:Array[Vector3]=[Vector3.UP,Vector3.DOWN,Vector3.BACK,Vector3.FORWARD,Vector3.LEFT,Vector3.RIGHT]
-
 const DefaultCellTags = Map.DefaultCellTags
+
 enum CellIDs {BLUE, TRANSPARENT, ORANGE, YELLOW}
 enum Searches {UNIT, OBSTACLE, ANYTHING, TAG}
 enum MapShapes{STAR,CONE,SINGLE,ALL}
+
 var cellDict:Dictionary = {}
 var objectPicker:=Picker3D.new()
 var pathing:GridPathing
@@ -31,6 +32,7 @@ var pathing:GridPathing
 		subGridMap.mesh_library = TargetingMesh
 
 
+
 func _init() -> void:
 	Ref.grid = self
 	cell_clicked.connect(printer)
@@ -39,11 +41,33 @@ func _ready() -> void:
 	objectPicker.debugPath = true
 	objectPicker.user = self
 
+## Updates all cells and object positions
+func update_grid(map:Map):
+	#TODO: This should not take ALL used cells (?)
+	initialize_cells(map)
+	pathing = GridPathing.new(self,get_typed_cellDict_array())
+	register_all_objects_to_cells()
+
+func register_all_objects_to_cells():
+	assert(not cellDict.is_empty())
+	var allValidNodes:Array = []
+	for group in Const.Groups: allValidNodes += get_tree().get_nodes_in_group(Const.Groups[group])
+	
+	for node in allValidNodes:
+		assert(node.get("position")!=null)
+		var cellPos:Vector3i = local_to_map(node.position)
+		
+		if not cellDict.has(cellPos): push_error("The object is outside the grid!")
+		else: cellDict[cellPos].append(node)
+
 ## Returns all cells in cellDict as Array[Vector3i]
-func get_typed_cell_array(array:Array = cellDict.keys())->Array[Vector3i]:
+func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
 	var returnal:Array[Vector3i]
 	returnal.assign(array)
 	return returnal
+
+func get_top_of_cell(cell:Vector3i)->Vector3:
+	return map_to_local(cell) + Vector3.UP * cell_size.y
 
 func printer(variant):
 	print(variant)
@@ -62,35 +86,19 @@ func get_marked_cells():
 func is_cell_marked(cellPos:Vector3i):
 	return subGridMap.get_cell_item(cellPos) != INVALID_CELL_ITEM 
 
-func get_top_of_cell(cell:Vector3i)->Vector3:
-	return map_to_local(cell) + Vector3.UP * cell_size.y
-
-## Sets an initial value for every cell, if override is true, it resets any previously defined cell
-func initialize_cells(cells:Array[Vector3i], override:bool=false):
-	for cell in cells:
+## Puts tags on the cells, if override is true, it resets any previously defined cell
+func initialize_cells(map:Map, override:bool=false):
+	var cellArrays = map.terrainCells
+	for cell in map.get_all_cells():
 		if not cellDict.has(cell) or override:
-			cellDict[cell] = []
-
-func update_grid():
-	#TODO: This should not take ALL used cells (?)
-	initialize_cells(get_used_cells())
-	pathing = GridPathing.new(self,get_typed_cell_array())
+			var cellTags = map.get_all_cell_tags(cell)
+			cellDict[cell] = map.get_all_cell_tags(cell)
+			#print(cellDict[cell])
 	
-	#TODO: In the future, it should create more layers
-
-func get_all_in_cells(targets:Array[Vector3i], what:Searches=Searches.UNIT)->Array:
-	match what:
-		Searches.UNIT:
-			var units:Array
-			for target in targets:
-				var unitInCell:Unit = search_in_tile(target,Searches.UNIT)
-			return units
-	return []
 
 ## Alias of search_in_tile(where:Vector3i, Searches.TAGS, true)
-func get_cell_tags(cell:Vector3i, getAll:bool=true)->Array[String]:
+func get_cell_tags(cell:Vector3i, getAll:bool=true)->Array:
 	return search_in_tile(cell, Searches.TAG, getAll)
-
 
 
 ## Searches for something in the given tile, returns false if it can't find anything
@@ -124,7 +132,7 @@ func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 	return null
 
 
-func set_item_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
+func set_items_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
 	for pos in cells:
 		set_cell_item(Vector3i(pos),objetctID)
 
@@ -224,7 +232,9 @@ class GridPathing extends Node:
 			var cellPos:Vector3i = gridRef.local_to_map(thisAStar.get_point_position(pointID))
 			for dir in MovementGrid.Directionsi:
 				var otherPointID = thisAStar.get_closest_point(gridRef.map_to_local(cellPos+dir))
-				thisAStar.connect_points(pointID, otherPointID)
+				
+				if pointID != otherPointID:
+					thisAStar.connect_points(pointID, otherPointID)
 				
 #			var pointID:int = connectionDict[pointPos]
 #			var validPoints:Array = connectionDict.keys()
