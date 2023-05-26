@@ -48,5 +48,20 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 ]
 @export var unitsToLoad:Array[CharAttributes]
 
+func add_terrain_cell(tileID:int, pos:Vector3i, tags:Array[String]):
+	var cellArray:Array = [tileID, pos, tags]
+	terrainCells.append(cellArray)
 
+func remove_terrain_cell(cell:Vector3i):
+	terrainCells = terrainCells.filter(func(cellArr:Array): return cellArr[1]!=cell)
 
+func get_all_cell_tags(cell:Vector3i)->Array:
+	var result:Array = terrainCells.filter(func(cellArr:Array): return cellArr[1]==cell)[0]
+	assert(result.size()==3 and not result[2].is_empty())
+	return result[2]
+
+func get_all_cells()->Array[Vector3i]:
+	var cells:Array[Vector3i]
+	for cellArr in terrainCells:
+		cells.append(cellArr[1])
+	return cells
