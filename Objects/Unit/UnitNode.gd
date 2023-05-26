@@ -1,30 +1,89 @@
-extends Unit
-const defaultModel = preload("res://Assets/CellMesh/Characters/Human.tscn")
+extends Node3D
+class_name Unit
 
-func _ready():#Has temps
-	add_to_group("UNIT")
-	misc_visuals()
-	create_body(attributes.raceAttributes.model)#Adds the base model for the unit
-	create_equipment(attributes.equipment)#Adds any equipment models on top
+enum limbs {HEAD,TORSO,HAND_L,HAND_R,FOOT_L,FOOT_R}
 
-var body:Model.Body
-func create_body(withModel:PackedScene=defaultModel):
-	body = Model.Body.new(withModel)#Assign it to the controller
-	add_child(body)
+@export var saveName:String
+@export var attributes:CharAttributes = CharAttributes.new(): #UnitAttributes (stats)
+	set(val):
+		attributes = val
+		if attributes is CharAttributes: attributes.user = self
+			
+var inventory:Inventory
+var facing:int = 0#Temp value
+#var attributes:UnitAttributes
+var requiredAnimationName:String = "stand"
+var board:GameBoard = Ref.board
+
+signal moving
+signal moved(where:Vector3i)
+
+signal acting
+signal acted
+
+#signal acted_upon
+signal was_targeted(withWhat:Ability)
+signal targeting(what:Vector3i, withWhat:Ability)
+
+signal turn_started
+signal turn_ended
+
+#const limbs:Dictionary = {
+#	"HEAD":"Head",
+#	"TORSO":"Torso",
+#	"HAND_L":"HandL",
+#	"HAND_R":"HandR",
+#	"FOOT_L":"FootL",
+#	"FOOT_R":"FootR",
+#}
+func _init() -> void:
+	add_to_group(Const.Groups.UNIT,true)
+
+func get_current_cell()->Vector3i:
+	var cell:Vector3i = board.gridMap.local_to_map(position)
+	assert(board.gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT, true).has(self))
+	return cell
 	
-func create_equipment(equipDict:Dictionary):
-	for equipRes in attributes.equipment.values():#Check every equipped item
-		if equipRes is Equipment:
-			var meshNodes:Array = Model.get_mesh_nodes_in_scene(equipRes.model)#Get it's model nodes
-		
-			body.attach_nodes_from_array(meshNodes)
-				
-		
+	
+#Possible parameters user, flags
+func targeted_with_action(parameters:Dictionary):
+	emit_signal("acted_upon",parameters)
+	pass
+
+func start_turn():
+	attributes.stats.turnDelay = attributes.stats.turnDelayMax
+	attributes.stats.actions = attributes.stats.actionsMax
+	attributes.stats.moves = attributes.stats.movesMax
+	emit_signal("turn_started")
 
 	
-func misc_visuals():
-	$NickName.text = attributes.info["nickName"]
-	var charSprites:SpriteFrames = ResourceLoader.load(attributes.raceAttributes.spriteFolder + "default.tres")
+func end_turn():
+	var UI = Ref.UITree
+	emit_signal("turn_ended")
+
+
+		
+#func weapon_attack(hand:int,target:Unit):
+#	if inventory.equipped[hand] is Weapon:
+#		var weaponUsed = inventory.equipped[hand]
+#		weaponUsed.attack(target)
+#	else:
+#		push_error(attributes.name + " tried to attack with " + inventory.equipped[hand].get_class())
+	
+
+
+
+class Generator:
+
+	
+	static func build_from_attributes(attrib:Resource):
+		var unit = Const.UnitTemplate.instantiate()#Create an instance
+		unit.attributes = attrib#Set it's attributes
+		return unit
+		
+#	static func generate_new(nickName:String,charRace:String,charClass:String,charFaction:String="DEFAULT"):
+#		var charAttribs = CharAttributes.new()
+#		return build_from_attributes(charAttribs)
 
 class Model extends Node3D:
 	var modelStored:PackedScene
@@ -32,18 +91,20 @@ class Model extends Node3D:
 	func _init(modelToUse:PackedScene) -> void:
 		modelStored = modelToUse
 	
-	func add_meshes_from_scene(modelToUse:PackedScene):#Takes all the meshes from a model scene, includes animations
-		var modelInstance:Node3D = modelToUse.instantiate()
-		if modelInstance == null:
-			push_error("The model used is null!")
-		assert(modelInstance != null)
-		
-		
-		for child in modelInstance.get_children():
-			modelInstance.remove_child(child)#Remove it from the model
-			add_child(child)#Add it to this object
+#	func add_meshes_from_scene(modelToUse:PackedScene):#Takes all the meshes from a model scene, includes animations
+#
+#
+#		var modelInstance:Node3D = modelToUse.instantiate()
+#		if modelInstance == null:
+#			push_error("The model used is null!")
+#		assert(modelInstance != null)
+#
+#
+#		for child in modelInstance.get_children():
+#			modelInstance.remove_child(child)#Remove it from the model
+#			add_child(child)#Add it to this object
 			
-	static func get_mesh_nodes_in_scene(model:PackedScene)->Array:
+	static func get_mesh_nodes_in_scene(model:PackedScene)->Array[MeshInstance3D]:
 		var nodes:Array#Returned nodes go here
 		var modelNode:Node = model.get_state().get_node_instance(0).instantiate()#Get the state of the model
 		for child in modelNode.get_children():#For each child of the scene
@@ -63,7 +124,7 @@ class Model extends Node3D:
 		
 		func _ready() -> void:		
 			set_name("Body")
-			add_meshes_from_scene(modelStored)
+#			add_meshes_from_scene(modelStored)
 			animationRef = get_node("AnimationPlayer")
 			assert(animationRef is AnimationPlayer)
 			
@@ -86,14 +147,14 @@ class Model extends Node3D:
 			if node.get_parent() != null: #Unparent if it already has one
 				node.get_parent().remove_child(node)
 				
-			var origin = node.get_node("ORIGIN")
+			var origin = node.get_node_or_null("ORIGIN")
 			if origin is Node3D:
 				node.translate(-origin.position)
 				
 			limbRefs[usedLimb].add_child(node)
 
 		func free_limb_attachment(limbToFree:String):
-			for child in limbRefs[limbToFree]:
+			for child in limbRefs[limbToFree].get_children():
 				remove_child(child)#Remove it's children
 				#child.queue_free()#And delete them
 
@@ -103,4 +164,4 @@ class Model extends Node3D:
 				attach_node_to_limb(node,node.get_name())
 			
 
-	
+
