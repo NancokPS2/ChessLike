@@ -67,7 +67,7 @@ func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
 	return returnal
 
 func get_top_of_cell(cell:Vector3i)->Vector3:
-	return map_to_local(cell) + Vector3.UP * cell_size.y
+	return map_to_local(cell) + Vector3.UP * (cell_size.y/2)
 
 func printer(variant):
 	print(variant)

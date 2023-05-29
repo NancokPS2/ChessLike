@@ -116,9 +116,10 @@ offset_bottom = 232.272
 mesh_library = ExtResource("2_qugcw")
 cell_size = Vector3(0.35, 0.35, 0.35)
 data = {
-"cells": PackedInt32Array(0, 0, 0, 65535, 65535, 0)
+"cells": PackedInt32Array(0, 0, 0, 65535, 65535, 0, 131071, 65535, 0)
 }
 script = ExtResource("1_q4sck")
+metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
