@@ -42,7 +42,12 @@ enum CombatStates {
 var state:int
 var combatState:int
 
-var actingUnit:Unit
+var actingUnit:Unit:
+	set(val):
+		actingUnit = val
+		if actingUnit is Unit:
+			update_menus_to_unit(actingUnit)
+			assert(actingUnit.is_in_group(Const.Groups.UNIT))
 var unitReferences:Array[Unit]
 var abilityInUse:Ability:
 	set(val):
@@ -61,6 +66,7 @@ func _init() -> void:
 	
 	
 func _enter_tree() -> void:
+	#Add unit when it enters the tree
 	var registerUnit:Callable = func(node): if node is Unit and node.get_parent() == self: unitReferences.append(node)
 	get_tree().node_added.connect(registerUnit)
 	
