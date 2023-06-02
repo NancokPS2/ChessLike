@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt6cw1fmaopms"]
+
+[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/UnitDisplay.gd" id="1_j2107"]
+
+[node name="UnitDisplay" type="Panel" node_paths=PackedStringArray("buttonRef", "nameLabel", "healthLabel", "delayLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_j2107")
+buttonRef = NodePath("Button")
+nameLabel = NodePath("Name")
+healthLabel = NodePath("Health")
+delayLabel = NodePath("Delay")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+metadata/_edit_use_anchors_ = true
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 0.262
+size_flags_horizontal = 3
+size_flags_vertical = 7
+
+[node name="Delay" type="Label" parent="."]
+layout_mode = 0
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 7
+
+[node name="Health" type="Label" parent="."]
+layout_mode = 0
+anchor_top = 0.307
+anchor_right = 1.0
+anchor_bottom = 0.5

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Classes/TurnManager.gd" id="2"]
 [ext_resource type="Script" path="res://Classes/SelfContained/VBoxControllerHideable.gd" id="3"]
 [ext_resource type="Script" path="res://Objects/UI/UI.gd" id="4"]
-[ext_resource type="PackedScene" uid="uid://coari17a8enje" path="res://Objects/UI/UnitDisplays/SmallMenuUnitDisplay.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://coari17a8enje" path="res://Objects/UI/UnitDisplays/SmallUnitDisplay.tscn" id="5"]
 [ext_resource type="Script" path="res://Objects/UI/UnitList/UnitList.gd" id="6"]
 [ext_resource type="Script" path="res://Objects/UI/UnitList/List.gd" id="7"]
 [ext_resource type="Script" path="res://Classes/ButtonStateChange.gd" id="8"]

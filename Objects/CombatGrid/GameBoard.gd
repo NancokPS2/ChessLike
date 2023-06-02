@@ -1,6 +1,8 @@
 extends Node3D
 class_name GameBoard
 
+signal units_changed
+
 enum States {SETUP,COMBAT,PAUSE,END}
 
 
@@ -23,7 +25,7 @@ enum CombatStates {
 
 @export_group("References")
 @export var gridMap:MovementGrid
-@export var unitList:UnitDisplay
+@export var unitList:UnitDisplayManager
 @export var menuCombat:NestedMenu
 
 @export var endTurnButton:Button
@@ -64,15 +66,18 @@ var actionStack:Array[Tween]
 var picker:Picker3D = Picker3D.new()
 
 
-
 func _init() -> void:
 	Ref.board = self
 	
 	
 func _enter_tree() -> void:
 	#Add unit when it enters the tree
-	var registerUnit:Callable = func(node): if node is Unit and node.get_parent() == self: unitsInCombat.append(node)
+	var registerUnit:Callable = func(node): 
+		if node is Unit and node.get_parent() == self: 
+			unitsInCombat.append(node); emit_signal("units_changed")
+			
 	get_tree().node_added.connect(registerUnit)
+	
 	
 	
 func _ready() -> void:
@@ -85,6 +90,7 @@ func _ready() -> void:
 	endTurnButton.pressed.connect(turn_cycle)
 #	Ref.mainNode = self
 	change_state(States.SETUP)
+	
 	
 	testing()
 
@@ -101,6 +107,7 @@ func run_stack():
 	
 func testing():
 	actingUnit = $Unit
+	unitList.refresh_units([actingUnit])
 #	abilityInUse = $Unit.attributes.abilities[0]
 #	change_combat_state(CombatStates.C_ABILITY_TARGETING)
 #	gridMap.mark_cells([Vector3.ZERO])
@@ -359,7 +366,7 @@ class Cell extends Area3D:
 #
 #	func _init(_board:GameBoard):
 #		board = _board
-	
+#TURN
 func turn_sort_units_by_delay():
 	unitsInCombat.sort_custom( func(a:Unit,b:Unit): return a.attributes.stats["turnDelay"] < b.attributes.stats["turnDelay"] )
 

@@ -1,10 +1,11 @@
 extends Panel
 class_name UnitDisplay
 
-signal clicked_unit
+signal clicked_unit(unit:Unit)
 
 var unitRef:Unit:
 	set(val):
+		if unitRef is Unit: push_error("This display already had a unitRef, swapping them is not supported yet.")
 		unitRef = val
 		if unitRef is Unit:
 			stats = unitRef.attributes.stats
@@ -16,17 +17,11 @@ var info
 @onready var tween = get_tree().create_tween().set_loops()
 
 @export_group("Input")
-@export var actAsButton:bool=true
-
-## If set, actAsButton will be automatically disabled to avoid double inputs, it will be restored if the reference is lost for any reason
-@export var buttonRef:Button#:
-#	set(val):
-#		buttonRef = val
-#		if buttonRef is Button and actAsButton:
-#			set_meta("actAsButtonWasON",true)
-#			actAsButton = false
-#		elif get_meta("actAsButtonWasON"): 
-#			actAsButton = true
+@export var buttonRef:Button:
+	set(val):
+		buttonRef = val
+		if buttonRef is Button:
+			buttonRef.pressed.connect(emit_unit)
 
 @export_group("Resources & Info Refs")
 @export var nameLabel:Label
@@ -46,7 +41,8 @@ var info
 @export_group("Secondary stats")
 @export var delayLabel:Label
 
-
+func _init() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
 
 func _ready() -> void:
 	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
@@ -70,30 +66,31 @@ func clear_unit():
 	for child in get_children():
 		child.set("text","")
 
-func _gui_input(event: InputEvent) -> void:
-	if event.is_action_released("primary_click"):
-		emit_signal("clicked_unit",self)
-		animated_glow(true)
-		accept_event()
+#func _gui_input(event: InputEvent) -> void:
+#	if event.is_action_released("primary_click"):
+#		emit_signal("clicked_unit",self)
+#		animated_glow(true)
+#		accept_event()
 	
 	
 func refresh_ui():
 	if unitRef is Unit:
-		if nameLabel: nameLabel.text = info["nickName"]
+		var testStats = unitRef.attributes.stats
+		if nameLabel: nameLabel.text = unitRef.attributes.info["nickName"]
 		
-		if classLabel: classLabel.text = info["className"]
+		if classLabel: classLabel.text = unitRef.attributes.info["className"]
 		
-		if healthLabel: healthLabel.text = str(stats["health"]) + " / " + str(stats["healthMax"])
-		if healthMeter: healthMeter.value = stats["health"]; healthMeter.max_value = stats["healthMax"]
+		if healthLabel: healthLabel.text = str(unitRef.attributes.stats["health"]) + " / " + str(unitRef.attributes.stats["healthMax"])
+		if healthMeter: healthMeter.value = unitRef.attributes.stats["health"]; healthMeter.max_value = unitRef.attributes.stats["healthMax"]
 		
-		if energyLabel: energyLabel.text = str(stats["energy"]) + " / " + str(stats["energyMax"])
-		if energyMeter: energyMeter.value = stats["energy"]; energyMeter.max_value = stats["energyMax"]
+		if energyLabel: energyLabel.text = str(unitRef.attributes.stats["energy"]) + " / " + str(unitRef.attributes.stats["energyMax"])
+		if energyMeter: energyMeter.value = unitRef.attributes.stats["energy"]; energyMeter.max_value = unitRef.attributes.stats["energyMax"]
 		
-		if delayLabel: delayLabel.text = "Delay: " + str(stats["delay"])
+		if delayLabel: delayLabel.text = "Delay: " + str(unitRef.attributes.stats["turnDelay"])
 		
-		if strengthLabel: strengthLabel.text = stats["strength"]
-		if agilityLabel: agilityLabel.text = stats["agility"]
-		if mindLabel: mindLabel.text = stats["mind"]
+		if strengthLabel: strengthLabel.text = unitRef.attributes.stats["strength"]
+		if agilityLabel: agilityLabel.text = unitRef.attributes.stats["agility"]
+		if mindLabel: mindLabel.text = unitRef.attributes.stats["mind"]
 
 func animated_glow(enabled:bool):
 	if enabled:
@@ -101,3 +98,5 @@ func animated_glow(enabled:bool):
 	else:
 		tween.stop()
 		
+func emit_unit():
+	emit_signal("clicked_unit", unitRef)

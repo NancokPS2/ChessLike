@@ -14,7 +14,13 @@ func _init() -> void:
 		add_user_signal(state+"_enter")
 		add_user_signal(state+"_exit")
 		
-		
+
+func _ready() -> void:
+	var slowTimer:=Timer.new()
+	add_child(slowTimer)
+	slowTimer.start(0.2)
+	slowTimer.timeout.connect(emit_signal.bind("UPDATE_UNIT_INFO"))
+
 ##States
 #signal SETUP_enter
 #signal SETUP_exit
@@ -59,7 +65,7 @@ func _init() -> void:
 #signal GRID_UNIT_CLICKED
 
 #UI Updates
-#signal UPDATE_UNIT_INFO
+signal UPDATE_UNIT_INFO
 
 #Misc
 #signal GRID_TILE_CLICKED

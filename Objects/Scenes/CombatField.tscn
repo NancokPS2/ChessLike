@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://d3quwmouge5hc"]
+[gd_scene load_steps=17 format=3 uid="uid://d3quwmouge5hc"]
 
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="6_cjn2s"]
 [ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="6_k6bkc"]
 [ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="6_sepm7"]
+[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_vkmkh"]
 [ext_resource type="Resource" uid="uid://bt0lak1mpuuok" path="res://Resources/Abilities/AllAbilities/Punch.tres" id="6_wsrwq"]
 [ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="7_hju4p"]
 [ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="7_htu6x"]
@@ -79,7 +80,7 @@ baseStats = {
 "turnDelay": 0,
 "turnDelayMax": 100
 }
-stats = {}
+stats = null
 statModifiers = {
 "accuracy": 1.0,
 "agility": 1.0,
@@ -99,9 +100,10 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.76
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "menuCombat", "endTurnButton")]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton")]
 script = ExtResource("1_v1w2e")
 gridMap = NodePath("MovementGrid")
+unitList = NodePath("UI/ScrollContainer/UpperList")
 menuCombat = NodePath("UI/CombatMenu")
 endTurnButton = NodePath("UI/CombatMenu/MENU/END_TURN")
 currentMap = SubResource("Resource_okr1b")
@@ -128,7 +130,7 @@ metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="CombatMenu" type="VBoxContainer" parent="UI"]
 anchors_preset = -1
-anchor_right = 0.327535
+anchor_right = 0.225
 anchor_bottom = 1.00027
 offset_right = -0.32
 offset_bottom = -0.176003
@@ -156,6 +158,18 @@ layout_mode = 2
 
 [node name="SPECIAL" type="Control" parent="UI/CombatMenu"]
 layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+anchors_preset = -1
+anchor_left = 0.225
+anchor_right = 1.0
+anchor_bottom = 0.2
+
+[node name="UpperList" type="HBoxContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("6_vkmkh")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
