@@ -1,7 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://c5ri1p0sgbr"]
+[gd_scene load_steps=6 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
-[ext_resource type="Script" path="res://Classes/Control/TextLabelFancy.gd" id="2_cxld4"]
+[ext_resource type="Script" path="res://Classes/SelfContained/TextLabelFancy.gd" id="2_y5ujn"]
 [ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="3_knxv8"]
 [ext_resource type="ImmediateMesh" path="res://Assets/testPath.tres" id="4_uqs6p"]
 
@@ -22,7 +22,7 @@ offset_top = 321.0
 offset_right = 491.0
 offset_bottom = 344.0
 text = "ASSSSSSSSSSSSSSSSSSSSSSS MASTER"
-script = ExtResource("2_cxld4")
+script = ExtResource("2_y5ujn")
 flashingEnabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="FancyLabel"]

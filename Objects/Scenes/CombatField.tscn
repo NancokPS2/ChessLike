@@ -79,7 +79,7 @@ baseStats = {
 "turnDelay": 0,
 "turnDelayMax": 100
 }
-stats = null
+stats = {}
 statModifiers = {
 "accuracy": 1.0,
 "agility": 1.0,
@@ -99,8 +99,11 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.76
 
-[node name="Board" type="Node3D"]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "menuCombat", "endTurnButton")]
 script = ExtResource("1_v1w2e")
+gridMap = NodePath("MovementGrid")
+menuCombat = NodePath("UI/CombatMenu")
+endTurnButton = NodePath("UI/CombatMenu/MENU/END_TURN")
 currentMap = SubResource("Resource_okr1b")
 
 [node name="Debug" type="Label" parent="."]
@@ -135,6 +138,12 @@ metadata/_edit_use_anchors_ = true
 
 [node name="MENU" type="Control" parent="UI/CombatMenu"]
 layout_mode = 2
+
+[node name="END_TURN" type="Button" parent="UI/CombatMenu/MENU"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "END_TURN"
 
 [node name="MOVEMENT" type="Control" parent="UI/CombatMenu"]
 layout_mode = 2

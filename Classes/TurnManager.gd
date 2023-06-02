@@ -1,5 +1,4 @@
 extends HBoxContainer
-class_name TurnManager
 
 class Sorting:#A sorting algorithm for turns
 	static func sort_by_turn_delay(a, b):

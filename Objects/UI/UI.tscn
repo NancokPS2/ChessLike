@@ -1,8 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dq8y6pggbuewl"]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://Objects/UI/CombatConfirmation.gd" id="1"]
 [ext_resource type="Script" path="res://Classes/TurnManager.gd" id="2"]
-[ext_resource type="Script" path="res://Classes/Control/VBoxControllerHideable.gd" id="3"]
+[ext_resource type="Script" path="res://Classes/SelfContained/VBoxControllerHideable.gd" id="3"]
 [ext_resource type="Script" path="res://Objects/UI/UI.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://coari17a8enje" path="res://Objects/UI/UnitDisplays/SmallMenuUnitDisplay.tscn" id="5"]
 [ext_resource type="Script" path="res://Objects/UI/UnitList/UnitList.gd" id="6"]
