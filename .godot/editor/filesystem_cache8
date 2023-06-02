@@ -373,8 +373,8 @@ Default.tres::Resource::-1::1669497959::0::1::::<><>::res://Resources/Maps/Map.g
 Default.tres::Resource::-1::1684124253::0::1::::<><>::res://Resources/SaveFileOLD.gd<>uid://bk2x00qqtnyqg
 New.tres::Resource::-1::1684124253::0::1::::<><>::res://Resources/SaveFileOLD.gd
 ::res://Objects/::1685125010
-::res://Objects/CombatGrid/::1685680791
-GameBoard.gd::GDScript::-1::1685680790::0::1::::GameBoard<>Node3D<>::
+::res://Objects/CombatGrid/::1685681016
+GameBoard.gd::GDScript::-1::1685681016::0::1::::GameBoard<>Node3D<>::
 ::res://Objects/CombatGrid/OLD/::1685679507
 3DCombatScene.tscn::PackedScene::-1::1684125988::0::1::::<><>::res://Objects/CombatGrid/GameBoard.gd<>res://Objects/UI/MainCamera.gd<>res://Objects/UI/UI.gd<>res://Objects/CombatGrid/OLD/ActionsMenu.gd<>res://Objects/CombatGrid/OLD/ActingMenu.gd<>res://Classes/ButtonStateChange.gd<>res://Classes/TurnManager.gd<>res://Objects/UI/UnitList/UnitList.gd<>res://Objects/CombatGrid/OLD/CombatStartButton.gd<>res://Objects/CombatGrid/OLD/StatusHint.gd<>res://Objects/CombatGrid/OLD/PauseMenu/PauseMenu.gd
 ActingMenu.gd::GDScript::-1::1676997822::0::1::::<>VBoxContainerCollapsable<>::
@@ -407,8 +407,8 @@ TileList.tscn::PackedScene::-1::1658685464::0::1::::<><>::
 PauseMenu.gd::GDScript::-1::1677342454::0::1::::<>CanvasLayer<>::
 ::res://Objects/CombatGrid/OLD/Setup/::1671224974
 SetupUI.tscn::PackedScene::-1::1668032644::0::1::::<><>::
-::res://Objects/Scenes/::1685680906
-CombatField.tscn::PackedScene::9158833997154785512::1685680906::0::1::::<><>::res://Classes/Grid.gd<>res://Objects/CombatGrid/GameBoard.gd<>uid://ck70ug8k6hn3f<>res://Classes/SelfContained/Interface/NestedMenu.gd<>res://Resources/Maps/Map.gd<>uid://hfnwmof6gvyn<>res://Classes/SelfContained/StolenCamScript.gd<>res://Resources/Characters/Attributes/CharacterAttributes.gd<>uid://cxuex5gycd3sp<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://bt0lak1mpuuok<>res://Objects/Unit/UnitNode.gd<>uid://c6yyvv4hrkg2h
+::res://Objects/Scenes/::1685681016
+CombatField.tscn::PackedScene::9158833997154785512::1685681016::0::1::::<><>::res://Classes/Grid.gd<>res://Objects/CombatGrid/GameBoard.gd<>uid://ck70ug8k6hn3f<>res://Classes/SelfContained/Interface/NestedMenu.gd<>res://Resources/Maps/Map.gd<>uid://hfnwmof6gvyn<>res://Classes/SelfContained/StolenCamScript.gd<>res://Resources/Characters/Attributes/CharacterAttributes.gd<>uid://cxuex5gycd3sp<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://bt0lak1mpuuok<>res://Objects/Unit/UnitNode.gd<>uid://c6yyvv4hrkg2h
 ::res://Objects/UI/::1685680900
 CombatConfirmation.gd::GDScript::-1::1668479222::0::1::::<>Popup<>::
 CombatMenu.tscn::PackedScene::4772616484880807167::1685680800::0::1::::<><>::res://Classes/SelfContained/Interface/NestedMenu.gd
