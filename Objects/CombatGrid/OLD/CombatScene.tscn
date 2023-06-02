@@ -17,7 +17,7 @@
 [ext_resource type="Script" path="res://Classes/SelfContained/VBoxControllerHideable.gd" id="15"]
 [ext_resource type="Script" path="res://Classes/TurnManager.gd" id="16"]
 [ext_resource type="TileSet" path="res://Assets/Tiles2D/Terrain/DefaultTileMap.tres" id="17"]
-[ext_resource type="PackedScene" uid="uid://y42oqvdmk48w" path="res://Objects/UI/UnitDisplays/BigMenuUnitPanel.tscn" id="18"]
+[ext_resource type="PackedScene" uid="uid://y42oqvdmk48w" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="18"]
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends TileSet

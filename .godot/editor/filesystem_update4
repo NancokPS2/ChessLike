@@ -17,3 +17,11 @@ res://Objects/UI/UnitDisplays/UnitButton.tscn
 res://Objects/UI/CombatMenu.tscn
 res://Assets/CellMesh/Characters/Human.tscn
 res://Classes/SelfContained/Interface/NestedMenu.gd
+res://Objects/UI/UnitList/UnitList.gd
+res://Objects/UI/UnitDisplays/UnitDisplay.gd
+res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd
+res://Objects/UI/UnitDisplays/Mini.tscn
+res://Objects/UI/UnitDisplays/MiniUnitDisplay.tscn
+res://Objects/UI/UnitDisplays/SmallUnitDisplay.tscn
+res://Resources/Characters/Attributes/AttributesBase.gd
+res://Singletons/Events.gd
