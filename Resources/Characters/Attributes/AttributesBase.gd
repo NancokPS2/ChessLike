@@ -39,7 +39,7 @@ signal attributes_updated
 	"movementType":0
 }
 
-@export var stats:Dictionary = baseStats
+var stats:Dictionary = baseStats
 
 @export var statModifiers:Dictionary ={
 	"maxHealth":1.0,
@@ -52,7 +52,7 @@ signal attributes_updated
 	"defense":1.0,
 	"dodge":1.0,
 	"accuracy":1.0,
-	"turnDelayMax":1.0
+	"turnDelayMax":1.0,
 }
 
 func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
