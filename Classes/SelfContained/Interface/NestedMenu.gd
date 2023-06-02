@@ -94,6 +94,9 @@ func change_current_menu(menuName:String, goingBack:bool=false):
 		remove_child(child)
 		
 	for control in menus[menuName]:
+#		assert(control.get("text")!="END_TURN")
+		if control.get_parent()!=null: 
+			control.get_parent().remove_child(control)
 		add_child(control)
 	
 	if not goingBack:

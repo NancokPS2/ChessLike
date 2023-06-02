@@ -63,10 +63,11 @@ func start_turn():
 	attributes.stats.moves = attributes.stats.movesMax
 	emit_signal("turn_started")
 
-
 func end_turn():
-	var UI = Ref.UITree
 	emit_signal("turn_ended")
+
+
+
 
 
 class Generator:

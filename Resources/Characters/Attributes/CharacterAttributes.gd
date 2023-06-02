@@ -114,4 +114,10 @@ func randomize_personality(energyMin:float=0, energyMax:float=255, goodMin:float
 	personalityNumber[1] = randi_range(goodMin,clamp(goodMax,1,255))
 	personalityNumber[2] = randi_range(lawMin,clamp(lawMax,1,255))
 	
+func apply_turn_delay(delay:int):
+	var initialDelay:int = stats.turnDelay
+	stats.turnDelay -= delay
+	if stats.turnDelay <= 0:
+		stats.turnDelay = stats.turnDelayMax - stats.turnDelay
+		
 	

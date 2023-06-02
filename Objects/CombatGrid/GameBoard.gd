@@ -26,6 +26,8 @@ enum CombatStates {
 @export var unitList:UnitDisplay
 @export var menuCombat:NestedMenu
 
+@export var endTurnButton:Button
+
 @export_group("Map")
 @export var currentMap:Map:
 	set(val):
@@ -48,7 +50,9 @@ var actingUnit:Unit:
 		if actingUnit is Unit:
 			update_menus_to_unit(actingUnit)
 			assert(actingUnit.is_in_group(Const.Groups.UNIT))
-var unitReferences:Array[Unit]
+			
+var unitsInCombat:Array[Unit]
+		
 var abilityInUse:Ability:
 	set(val):
 		abilityInUse = val
@@ -67,7 +71,7 @@ func _init() -> void:
 	
 func _enter_tree() -> void:
 	#Add unit when it enters the tree
-	var registerUnit:Callable = func(node): if node is Unit and node.get_parent() == self: unitReferences.append(node)
+	var registerUnit:Callable = func(node): if node is Unit and node.get_parent() == self: unitsInCombat.append(node)
 	get_tree().node_added.connect(registerUnit)
 	
 	
@@ -78,7 +82,8 @@ func _ready() -> void:
 	gridMap.cell_clicked.connect(on_cell_clicked)
 	picker.user = self
 	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
-	Ref.mainNode = self
+	endTurnButton.pressed.connect(turn_cycle)
+#	Ref.mainNode = self
 	change_state(States.SETUP)
 	
 	testing()
@@ -90,16 +95,17 @@ func run_stack():
 	for tween in actionStack:
 		tween.play()
 		await tween.finished
-	
+
 	actionStack.clear()
 		
 	
 func testing():
+	actingUnit = $Unit
 #	abilityInUse = $Unit.attributes.abilities[0]
 #	change_combat_state(CombatStates.C_ABILITY_TARGETING)
 #	gridMap.mark_cells([Vector3.ZERO])
-	menuCombat = $UI/CombatMenu
-	update_menus_to_unit($Unit)
+#	menuCombat = $UI/CombatMenu
+#	update_menus_to_unit($Unit)
 	#State change buttons
 #	$UI/ActingMenu/Move.button_up.connect( change_combat_state.bind(CombatStates.MOVING) )
 #	$UI/ActingMenu/Act.button_up.connect( change_combat_state.bind(CombatStates.ACTING) )
@@ -315,7 +321,8 @@ func on_cell_clicked(cell:Vector3i):
 
 func update_menus_to_unit(unit:Unit):
 	for menu in menuCombat.get_menus():
-		menuCombat.clear_menu(menu)
+		if menu != "MENU": 
+			menuCombat.clear_menu(menu)
 	
 	for ability in unit.attributes.abilities:
 		var button:=Button.new()
@@ -335,7 +342,39 @@ func update_menus_to_unit(unit:Unit):
 		menuCombat.add_to_menu(button,menuName)
 		
 	menuCombat.change_current_menu("MENU")
+	
+func get_units(combatOnly:bool=true)->Array[Unit]:
+	var units:Array[Unit]
+	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
+	if combatOnly:
+		units = units.filter(func(unit): return unit.get_parent()==self)
+	return units
 
 class Cell extends Area3D:
 	var mesh:Mesh
 	
+	
+#class UnitManager extends Node:
+#	var board:GameBoard
+#
+#	func _init(_board:GameBoard):
+#		board = _board
+	
+func turn_sort_units_by_delay():
+	unitsInCombat.sort_custom( func(a:Unit,b:Unit): return a.attributes.stats["turnDelay"] < b.attributes.stats["turnDelay"] )
+
+func turn_get_next_unit()->Unit:
+	turn_sort_units_by_delay()
+	return unitsInCombat[0]
+	
+func turn_apply_delays():
+	var currDelay:int = actingUnit.attributes.stats["turnDelay"]
+	assert(currDelay == actingUnit.attributes.stats["turnDelay"])
+	for unit in unitsInCombat: 
+		unit.attributes.apply_turn_delay(currDelay)
+	
+func turn_cycle():
+	actingUnit.end_turn()
+	turn_apply_delays()
+	actingUnit = turn_get_next_unit()
+	actingUnit.start_turn()
