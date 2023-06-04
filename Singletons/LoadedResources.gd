@@ -32,15 +32,6 @@ func register_file_paths(folder:String, category:String, extensionFilter:String=
 
 
 
-
-
-
-
-
-
-
-
-
 func load_from_folder(folderPath:String,type:String):
 	var loadingDir = DirAccess.open(folderPath)
 	loadingDir.open(folderPath)#Start loading abilities

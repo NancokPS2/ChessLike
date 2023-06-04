@@ -113,7 +113,7 @@ Accuracy:
 Buffs/Debuffs:
 - They come in tiers, abilities that affect status effects can only target specific tiers. The tier depends on how impactful the effect is
 - Sources apply a certain power of the effect. If the applied power is lower than 1 (like 0.8) nothing happens, but the stack remains and adds up to the next attempt.
-- Attempting to remove an status effect that's below 0 will reduce the stack by half but won't remove it
+- Attempting to remove a status effect that's below 0 will reduce the stack by half but won't remove it
 
 Enemy Types:
 - Fire: strong single targets with powerful AoE, may merge to become stronger
@@ -134,21 +134,22 @@ Tier 1:
 	- Blinded: accuracy becomes capped at a percentage equal to: 80 - (power * 10). e.x. a power of 2 would cap the target's accuracy to 60%
 	- Staggered: delays the next turn by 33%/power 
 	- Weaken: lowers all of the user's main stats by 10%/power
+	-Marked: increased accuracy against the victim by 10*power
 - Positive:
 	
 
 Tier 2:
 - Negative:
-	- Stunned: can't perform actions, movement halved. Duration is equal to power
+	- Crippled: Halves damage dealt. Duration is equal to power
 	- Pinned: Can't move but can act. Duration is equal to power
 	- Blank: abilities disabled. Duration is equal to power
 	- Sluggish: energy regeneration reduced by 33%/power
-	- Anti-life: prevents healing, un-dead felled under this effect can't be raised again
+	- Anti-life: prevents healing, undead get regeneration instead
 
 Tier 3:
 - Negative:
 	- Withering: reduce max health and energy of the target by 8%/power until the victim is felled
-	- Death: after 5 - power turns, the target is felled (bosses take twice as long for the effect to happen)
+	- Death: after 5 - power turns, the target is felled (bosses double the base time required)
 	
 	
 	

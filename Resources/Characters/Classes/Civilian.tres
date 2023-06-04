@@ -31,7 +31,6 @@ baseStats = {
 "turnDelay": 0,
 "turnDelayMax": 100
 }
-stats = null
 statModifiers = {
 "accuracy": 1.0,
 "agility": 1.0,

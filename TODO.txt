@@ -146,3 +146,10 @@ Reminder:
 Actual TODO:
 	-Run tests in CombatField.tscn to find bugs
 	-ImageDataStorage should first try to place all pixels adjacently THEN spread them. Also move the flag's pixel to the top left again
+	-Rethink pathing so it can account for slowing terrain cells
+	-Create a model that can be assembled to show paths (height differences means NO Sprite3D) OR create a system that can draw a Sprite3D on top of every cell, can also be used to stack markers (height differences will look odd but oh well)
+	-System for placing down units
+	-System for GameBoard to spawn units from Map class
+	-Create a proper unit generation algorithm, maybe it can employ Resources
+	-Leader system
+	

@@ -1,18 +1,19 @@
-[gd_scene load_steps=17 format=3 uid="uid://d3quwmouge5hc"]
+[gd_scene load_steps=18 format=3 uid="uid://d3quwmouge5hc"]
 
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
 [ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/CellMesh/Base/DefaultTiles.tres" id="2_qugcw"]
-[ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="3_biu6m"]
 [ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="4_b3m2h"]
-[ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="6_3uwep"]
+[ext_resource type="Script" path="res://Objects/Scenes/CombatMenu.gd" id="5_ifshg"]
 [ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="6_cjn2s"]
-[ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="6_k6bkc"]
-[ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="6_sepm7"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_vkmkh"]
-[ext_resource type="Resource" uid="uid://bt0lak1mpuuok" path="res://Resources/Abilities/AllAbilities/Punch.tres" id="6_wsrwq"]
 [ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="7_hju4p"]
-[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="7_htu6x"]
+[ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="9_o4ay7"]
+[ext_resource type="Resource" uid="uid://mxqwj66ysueu" path="res://Resources/Abilities/AllAbilities/Heal.tres" id="10_5p8b5"]
+[ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="10_17qxn"]
+[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="11_wsvr5"]
+[ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="12_k7w71"]
+[ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="13_oqvut"]
 
 [sub_resource type="Resource" id="Resource_okr1b"]
 script = ExtResource("4_b3m2h")
@@ -29,13 +30,18 @@ unitsToGenerate = Array[Dictionary]([{
 "raceName": "HUMAN",
 "unitName": "Human"
 }])
-unitsToLoad = Array[ExtResource("6_k6bkc")]([])
+unitsToLoad = Array[ExtResource("13_oqvut")]([])
 
-[sub_resource type="Resource" id="Resource_txyr4"]
-script = ExtResource("6_k6bkc")
-raceAttributes = ExtResource("6_sepm7")
-classAttributes = ExtResource("6_3uwep")
-faction = ExtResource("7_htu6x")
+[sub_resource type="Environment" id="Environment_vl025"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.76
+
+[sub_resource type="Resource" id="Resource_qb5ry"]
+script = ExtResource("13_oqvut")
+raceAttributes = ExtResource("12_k7w71")
+classAttributes = ExtResource("10_17qxn")
+faction = ExtResource("11_wsvr5")
 personalityNumber = Array[int]([255, 255, 255])
 info = {
 "className": "Unemployed",
@@ -57,7 +63,7 @@ equipment = {
 internalName = ""
 displayName = "ERR_NONAME"
 attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
-abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([ExtResource("6_wsrwq")])
+abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([ExtResource("10_5p8b5")])
 equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
 baseStats = {
 "accuracy": 0,
@@ -80,7 +86,6 @@ baseStats = {
 "turnDelay": 0,
 "turnDelayMax": 100
 }
-stats = null
 statModifiers = {
 "accuracy": 1.0,
 "agility": 1.0,
@@ -94,11 +99,6 @@ statModifiers = {
 "strength": 1.0,
 "turnDelayMax": 1.0
 }
-
-[sub_resource type="Environment" id="Environment_vl025"]
-ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.76
 
 [node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton")]
 script = ExtResource("1_v1w2e")
@@ -134,7 +134,7 @@ anchor_right = 0.225
 anchor_bottom = 1.00027
 offset_right = -0.32
 offset_bottom = -0.176003
-script = ExtResource("3_biu6m")
+script = ExtResource("5_ifshg")
 navigationButtons = Array[Array]([["MENU", "MOVEMENT"], ["MENU", "OBJECT"], ["MENU", "SKILL"], ["MENU", "SPECIAL"]])
 metadata/_edit_use_anchors_ = true
 
@@ -177,7 +177,12 @@ script = ExtResource("6_cjn2s")
 
 [node name="Unit" type="Node3D" parent="."]
 script = ExtResource("7_hju4p")
-attributes = SubResource("Resource_txyr4")
+attributes = ExtResource("9_o4ay7")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_vl025")
+
+[node name="Unit2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.210674, 0.0475795, 0.23536)
+script = ExtResource("7_hju4p")
+attributes = SubResource("Resource_qb5ry")

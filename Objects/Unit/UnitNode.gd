@@ -23,6 +23,8 @@ signal turn_ended
 		if attributes is CharAttributes: 
 			attributes.user = self
 			bodyNode.modelNode = attributes.model.instantiate()
+
+@onready var board:GameBoard = Ref.board
 			
 var bodyNode:=Body.new()
 var inventory:Inventory
@@ -33,18 +35,19 @@ var requiredAnimationName:String = "STANDING":
 		requiredAnimationName = val
 		if bodyNode is Body:
 			bodyNode.animationRef.play(requiredAnimationName)
-var board:GameBoard = Ref.board
+
 
 func _init() -> void:
 	add_to_group(Const.Groups.UNIT,true)
 
 func _ready() -> void:
+	assert(board is GameBoard)
 	add_child(bodyNode)
 	
 	#TESTING
 	requiredAnimationName = "STANDING"
 	await get_tree().process_frame 
-	position = board.gridMap.get_top_of_cell(get_current_cell())
+#	position = board.gridMap.get_top_of_cell(get_current_cell())
 
 func get_current_cell()->Vector3i:
 	var cell:Vector3i = board.gridMap.local_to_map(position)

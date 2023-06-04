@@ -1,13 +1,18 @@
-[gd_resource type="Resource" script_class="CharAttributes" load_steps=4 format=3 uid="uid://bk2x00qqtnyqg"]
+[gd_resource type="Resource" script_class="CharAttributes" load_steps=7 format=3 uid="uid://bk2x00qqtnyqg"]
 
 [ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="1"]
 [ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="1_2pybq"]
+[ext_resource type="Resource" uid="uid://xivmsux5bs5s" path="res://Resources/Abilities/AllAbilities/Punch2.tres" id="1_g8vsu"]
 [ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="1_yx3hh"]
+[ext_resource type="Resource" uid="uid://mxqwj66ysueu" path="res://Resources/Abilities/AllAbilities/Heal.tres" id="2_12q3y"]
+[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="3_3tmn3"]
 
 [resource]
 script = ExtResource("1")
 raceAttributes = ExtResource("1_2pybq")
 classAttributes = ExtResource("1_yx3hh")
+faction = ExtResource("3_3tmn3")
+personalityNumber = Array[int]([255, 255, 255])
 info = {
 "className": "Unemployed",
 "factionName": "",
@@ -28,30 +33,9 @@ equipment = {
 internalName = "Misha"
 displayName = "ERR_NONAME"
 attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
-abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
+abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([ExtResource("1_g8vsu"), ExtResource("2_12q3y")])
 equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
 baseStats = {
-"accuracy": 0,
-"actions": 1,
-"actionsMax": 1,
-"agility": 0,
-"defense": 0,
-"dodge": 0,
-"energy": 30,
-"energyMax": 30,
-"health": 100,
-"healthMax": 100,
-"mind": 0,
-"moveDistance": 0,
-"movementType": 0,
-"moves": 1,
-"movesMax": 1,
-"special": 0,
-"strength": 0,
-"turnDelay": 0,
-"turnDelayMax": 100
-}
-stats = {
 "accuracy": 0,
 "actions": 1,
 "actionsMax": 1,

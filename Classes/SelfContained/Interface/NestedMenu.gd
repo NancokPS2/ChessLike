@@ -2,6 +2,8 @@ extends VBoxContainer
 class_name NestedMenu
 ## Stores sets of Control nodes in a dictionary, allowing you to change between them.
 
+const META_MENU_DESIGNATION:String = "__NestedMenu_DesignatedMenu"
+
 ## BUttons that will be automatically generated, which can allow you to travel around the menus.
 ## Each element is made out of Arrays with the following format: ["Menu where the button goes", "Menu where it leads to"]
 @export var navigationButtons:Array[Array] #[ [MenuWhereTheButtonIsPlaced,WhereTheButtonLeads] ]
@@ -43,7 +45,12 @@ func create_menu(menuName:String):
 func get_menus()->Array[String]:
 	var returnal:Array[String]; returnal.assign(menus.keys())
 	return returnal
-	
+
+func get_all_elements()->Array[Node]:
+	var allElements:Array[Node]
+	for menuArr in menus.values():
+		allElements.append_array(menuArr)
+	return allElements
 
 ## Takes all children from a control node and optionally removes it as well
 func strip_from_parent(control:Control, toMenuName:String, removeParent:bool=false):
@@ -65,6 +72,7 @@ func add_to_menu(what:Control, menuName:String):
 		create_menu(menuName)
 	
 	menus[menuName].append(what)
+	what.set_meta(META_MENU_DESIGNATION, menuName)
 
 
 ##SLOW! Scans each menu and removes the referenced control	

@@ -4,36 +4,45 @@ Abilities: buffs and weak AoE healing
 	- Holy Radiance: heal allies in a small radius, short range
 	- Healing Hands: heal 1 adjacent ally for 50% of their max health
 	- Soothing Pulse: remove poison
+LE "Beacon of hope": Allies below 30% health heal 10% of their max health (up to 30%)	
+	
 
 - Ranger -
 Standard ranged attacker
 Abilities: centered on causing reliable damage
+LE "Tracker": Allies gain +15% accuracy, can target untargetable enemies with an 80% accuracy penalty.
 
 - Thief -
 Slippery support combatant
 Abilities: disables enemy equipment
+LE "Snitch": When applying a debuff, the enemy is also marked
 
 - Juggernaut -
 Tank with decent speed
 Abilities: survival focused buffs for self
+LE "Unstoppable force": Allies gain immunity to being pushed.
 
 - Artillerist -
 Ranged unit based around self buffs to offense
 Abilities: build up power by stacking semi-exclusive buffs or deploy simple AoE explosive shots in a hurry
+LE "Aim assist": Allies get a minimum accuracy of 75%
 
 - Gladiator -
 Fighter with a combination of attacks and debuffs
 Abilities: attacks that apply stat debuffs or displacement on the target
+LE "Allies that push enemies also increase their target's turn delay by 10% of the max delay
 
 - Elementalist -
 Versatile mage that can fit any role adequately
 Abilities: offense, healing, buffs and debuffs each based on a certain element
+LE "Elemental force": ?
 
 - Necromancer -
 Alternative to healers that allow allies to keep fighting regardless of health
 Abilities: buffs that allow allies to keep fighting with negative HP or the ability to raise an ally as a weaker version of it's original self until the end of combat
-	- Bind Wounds: instantly heal the target but lower their maximum health
-	- Reconstitute: imbue a fallen ally with necromantic energy and allow them to keep fighting, their stats are halved in this state. Using this ability before the ally fall will cause it to automatically raise after being felled  
+	- Bind Wounds: fully heal the target but lower their maximum health
+	- Reconstitute: imbue a fallen ally with necromantic energy and allow them to keep fighting, their stats are halved in this state. Using this ability before the ally falls will cause it to automatically raise after being felled  
+LE "Soul draw": Damage is increased by 25% per fallen ally	
 
 - Physician -
 Healer that uses minimal amounts of energy and has less focused but more varied healing
@@ -43,16 +52,24 @@ Healer that uses minimal amounts of energy and has less focused but more varied 
 	- Check up: remove all stat reductions
 	- Regenerative medication: grants regeneration  
 	- Strong concoction: raises all stats by 40% but damages the target's health and energy by 25%
+LE "Healthy group": Automatically reduce all status effects of tier 1 by 0.2 power every turn.
 
 - Terraformer -
 Special mage that alters the terrain
 - Abilities:
-	- Ignis Fatua: a tile reduces the health of whoever steps on it by 25% 
+	- Ignis Fatua: a cell reduces the health of whoever steps on it by 25% 
 	- Terra Firma: removes any special modifiers from the chosen tile
 	- Aqua Tempesta: floods a tile, it costs 2 movement points to traverse this
-	- Lux Solaris: a tile becomes brighter and reduces the accuracy of whoever steps on it while increasing accuracy against them
+	- Lux Solaris: a cell becomes brighter and reduces the accuracy of whoever steps on it while increasing accuracy against them
+LE "Geomancy": Effects caused by the terrain are half as effective on allies
 
 - Bard -
 Support caster with auras
 - Abilities:  
 	- March
+LE "Background music": Allies gain an extra 5 energy every turn.
+
+
+SECRET classes 
+
+Glizzymancer (penis joke)
