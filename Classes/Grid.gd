@@ -26,10 +26,11 @@ var pathing:GridPathing
 		subGridMap = val
 		add_child(subGridMap)
 		subGridMap.cell_size = cell_size
-		subGridMap.y = Vector3.UP * (cell_size.y * 0.3)
+		subGridMap.position += Vector3.UP * (cell_size.y * 0.3)
 		subGridMap.collision_layer = 0
 		subGridMap.collision_mask = 0
 		subGridMap.mesh_library = TargetingMesh
+		var a = 1
 
 
 
@@ -40,6 +41,7 @@ func _init() -> void:
 func _ready() -> void:
 	objectPicker.debugPath = true
 	objectPicker.user = self
+	subGridMap = GridMap.new()
 
 ## Updates all cells and object positions
 func update_grid(map:Map):
@@ -79,6 +81,7 @@ func mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.ORANGE):
 	subGridMap.clear()
 	for cell in cells:
 		subGridMap.set_cell_item(cell,tileID)
+	print(subGridMap.get_used_cells())
 		
 func get_marked_cells():
 	return subGridMap.get_used_cells()
