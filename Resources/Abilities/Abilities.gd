@@ -44,14 +44,21 @@ var user:Unit:
 		else: user = val
 
 ## Set alongside it's unit
-var board:GameBoard
+var board:GameBoard:
+	get: 
+		if user is Unit and user.board is GameBoard:
+			return user.get("board")
+		else:
+			push_error(str(user)+ " may not be a Unit or lack a board.")
+			return null
 
 #@export var mainValue:float
 @export_group("Identification")
 @export var internalName:String = ""
 @export var displayedName:String
 @export var type:AbilityTypes #Where it should appear in the menus
-@export_multiline var description:String
+@export_multiline var description:String:
+	get = get_description
 #@export (MovementGrid.mapShapes) var targetingShape
 
 var miscOptions:Dictionary#Used to get extra parameters from the player
@@ -61,35 +68,44 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 
 
 @export_group("Main values")
+@export var powers:Array = [1.0]
 @export var energyCost:int
 @export var turnDelayCost:int
 @export var classRestrictions:Array
 @export var triggerSignals:Dictionary #user.signal:self.method()
 #Example: {"acted":"use"}
 @export var abilityFlags:Array[AbilityFlags]
+@export var actionCost:int = 1
+@export var moveCost:int = 0
 
 @export_group("Targeting")
 @export var targetingShape:TargetingShapes
 @export var areaSize:int = 1 #Does nothing if the targetingShape does not support it
 @export var abilityRange:int#Distance in tiles from the player which it can target
 @export var amountOfTargets:int = 1
-@export var filtersUsed:Array[String]= ["has_unit"]:
+@export var filtersUsed:Array[String]:
 	set(val):
-		if filters.all( func(method): return method.is_valid() ): filtersUsed = val
-		elif not val is Array[String]: push_error("Invalid array")
+		assert(not val.is_empty())
+		if val.all( func(method:String): return method.is_valid_identifier() ): filtersUsed = val
+		elif not val is Array[String]: push_error("Invalid array.")
 		else: push_error("Invalid filter found in the array.")
 		
 var filters:Array[Callable]:
 	get:
-		#If the size does not match, update it.
-		if filters.size() != filtersUsed.size():
-			for filter in filtersUsed:
-				filters.append(Callable(Filters,filter).bind(user))
+		for filter in filtersUsed:
+			filters.append(Callable(Filters,filter).bind(user))
 		return filters
 
 
 #func equip(newUser:Node):
+func get_description():
+	return description
 
+func is_usable()->bool:
+	var stats = user.attributes.stats
+	if user.attributes.stats.actions < actionCost or user.attributes.stats.moves < moveCost: return false
+	return true
+	pass
 
 func connect_triggers():
 	if not user is Unit:#Ensure someone has equipped it
@@ -114,6 +130,9 @@ func filter_targetable_cells(cells:Array[Vector3i], shape:TargetingShapes=target
 		_:
 			push_error("Invalid shape")
 	if filteredCells.is_empty(): push_error("No targets could be returned!")
+	print_debug("First pass yielded: "+str(filteredCells))
+	filteredCells = filter_targets(filteredCells)
+	print_debug("Second pass yielded: "+str(filteredCells))
 	return filteredCells
 
 func filter_targets(targets:Array[Vector3i])->Array:
@@ -142,16 +161,22 @@ func get_tween(targets:Array[Vector3i])->Tween:
 	#Create a tween for each attack
 	var tween:Tween = user.create_tween()
 	tween.tween_callback(use.bind(targets)).set_delay(0.2)
+	tween.pause()
 	return tween
+
 	
 ## Checks for units in the cells and warns them of an upcoming attack.
 func warn_units(targets:Array[Vector3i]):
-	var units:Array[Unit] = board.gridMap.get_all_in_cells(targets, MovementGrid.Searches.UNIT)
+	var units:Array[Unit]
+	
+	for target in targets:
+		units.assign(board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT, true))
+		
 	for unit in units: unit.emit_signal("was_targeted",self)
 	
 	
 func use( targets:Array[Vector3i] ):
-	user.stats.turnDelay += turnDelayCost
+	user.attributes.stats.turnDelay += turnDelayCost
 	targets = filter_targets(targets)
 	for target in targets:
 		var possibleUnit:Unit = board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
@@ -183,7 +208,7 @@ func _check_availability() -> bool:#Virtual function, prevents usage if false
 
 
 
-const FilterNames:Dictionary = {HAS_UNIT = "has_unit", NOT_HAS_UNIT = "not_has_unit"} 
+#const FilterNames:Dictionary = {HAS_UNIT = "has_unit", NOT_HAS_UNIT = "not_has_unit"} 
 class Filters extends RefCounted:
 	
 	#True if there's a unit there
@@ -202,3 +227,7 @@ class Filters extends RefCounted:
 			return false
 		else:
 			return false
+	
+	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else false
+	
+	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else true
