@@ -27,7 +27,6 @@ enum CombatStates {
 @export var gridMap:MovementGrid
 @export var unitList:UnitDisplayManager
 @export var menuCombat:NestedMenu
-
 @export var endTurnButton:Button
 
 @export_group("Map")
@@ -58,7 +57,9 @@ var unitsInCombat:Array[Unit]
 var abilityInUse:Ability:
 	set(val):
 		abilityInUse = val
-		$Debug.text = abilityInUse.displayedName
+		if abilityInUse is Ability:
+			$Debug.text = abilityInUse.displayedName
+			change_combat_state(CombatStates.C_ABILITY_TARGETING)
 
 var targetedCells:Array[Vector3i]
 var actionStack:Array[Tween]
@@ -107,6 +108,7 @@ func run_stack():
 	
 func testing():
 	actingUnit = $Unit
+	actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
 	unitList.refresh_units([actingUnit])
 #	abilityInUse = $Unit.attributes.abilities[0]
 #	change_combat_state(CombatStates.C_ABILITY_TARGETING)
@@ -320,10 +322,20 @@ func on_cell_clicked(cell:Vector3i):
 	match combatState:
 		CombatStates.C_ABILITY_TARGETING:
 			if gridMap.is_cell_marked(cell):
+				
+				#Mark cells ready for targeting
 				if targetedCells.size() < abilityInUse.amountOfTargets:
 					targetedCells.append(cell)
+					
+					#Confirmed usage
 				else:
 					actionStack.append(abilityInUse.get_tween(targetedCells))
+					abilityInUse.user.attributes.stats.actions -= abilityInUse.actionCost
+					abilityInUse.user.attributes.stats.moves -= abilityInUse.moveCost
+					update_menus_to_unit(actingUnit)
+					run_stack()
+					
+					
 	
 
 func update_menus_to_unit(unit:Unit):
@@ -343,6 +355,7 @@ func update_menus_to_unit(unit:Unit):
 			_: push_error("Invalid ability type."); return
 		
 		button.text = ability.displayedName
+		button.disabled = not ability.is_usable()
 #		button.add_user_signal("abil",[ability])
 #		button.pressed.connect( Callable(button,"emit_signal").bind("abil",ability) )
 		button.pressed.connect(set.bind("abilityInUse",ability))
