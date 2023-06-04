@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AbilityHeal" load_steps=2 format=3 uid="uid://mxqwj66ysueu"]
+
+[ext_resource type="Script" path="res://Resources/Abilities/Scripts/HealAbility.gd" id="1_bxea0"]
+
+[resource]
+script = ExtResource("1_bxea0")
+internalName = "heal"
+displayedName = "Heal"
+type = 2
+description = ""
+powers = [0.25]
+energyCost = 10
+turnDelayCost = 50
+classRestrictions = []
+triggerSignals = {}
+abilityFlags = Array[int]([3, 5])
+targetingShape = 3
+areaSize = 1
+abilityRange = 5
+amountOfTargets = 1
+filtersUsed = Array[String](["has_unit"])
