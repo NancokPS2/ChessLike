@@ -1,16 +1,23 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" script_class="Map" load_steps=4 format=3 uid="uid://df4rsnmancak5"]
 
-[ext_resource path="res://Resources/Maps/Map.gd" type="Script" id=2]
+[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/CellMesh/Base/DefaultTiles.tres" id="1_0u5g5"]
+[ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="2"]
+[ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="3_0701y"]
 
 [resource]
-script = ExtResource( 2 )
+resource_local_to_scene = true
+script = ExtResource("2")
 displayName = "Default"
+internalName = ""
 description = ""
-height = 5
-terrainTiles = [ {
-"elevation": 0,
-"tileID": 0,
-"tilePos": Vector2( 0, 2 )
-} ]
-participantUnits = [ "GenericEnemy" ]
-extraLayers = [  ]
+heightMap = []
+meshLibrary = ExtResource("1_0u5g5")
+terrainCells = Array[Array]([[0, Vector3i(0, 0, 0), ["WALKABLE"]], [0, Vector3i(1, 0, 0), ["WALKABLE"]], [0, Vector3i(0, 0, -1), ["WALKABLE"]], [0, Vector3i(0, 0, 1), ["WALKABLE"]], [0, Vector3i(-1, 0, 0), ["WALKABLE"]], [0, Vector3i(-2, 0, 0), ["WALKABLE"]], [0, Vector3i(1, 0, 1), ["WALKABLE"]], [0, Vector3i(2, 0, 1), ["WALKABLE"]]])
+unitsToGenerate = Array[Dictionary]([{
+"className": "CIVILIAN",
+"factionName": "DEFAULT",
+"positionInGrid": Vector2(0, 0),
+"raceName": "HUMAN",
+"unitName": "Human"
+}])
+unitsToLoad = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([ExtResource("3_0701y")])

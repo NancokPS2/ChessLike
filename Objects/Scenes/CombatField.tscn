@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://d3quwmouge5hc"]
+[gd_scene load_steps=10 format=3 uid="uid://d3quwmouge5hc"]
 
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
@@ -7,13 +7,6 @@
 [ext_resource type="Script" path="res://Objects/Scenes/CombatMenu.gd" id="5_ifshg"]
 [ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="6_cjn2s"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_vkmkh"]
-[ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="7_hju4p"]
-[ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="9_o4ay7"]
-[ext_resource type="Resource" uid="uid://mxqwj66ysueu" path="res://Resources/Abilities/AllAbilities/Heal.tres" id="10_5p8b5"]
-[ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="10_17qxn"]
-[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="11_wsvr5"]
-[ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="12_k7w71"]
-[ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="13_oqvut"]
 
 [sub_resource type="Resource" id="Resource_okr1b"]
 script = ExtResource("4_b3m2h")
@@ -30,75 +23,12 @@ unitsToGenerate = Array[Dictionary]([{
 "raceName": "HUMAN",
 "unitName": "Human"
 }])
-unitsToLoad = Array[ExtResource("13_oqvut")]([])
+unitsToLoad = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([])
 
 [sub_resource type="Environment" id="Environment_vl025"]
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.76
-
-[sub_resource type="Resource" id="Resource_qb5ry"]
-script = ExtResource("13_oqvut")
-raceAttributes = ExtResource("12_k7w71")
-classAttributes = ExtResource("10_17qxn")
-faction = ExtResource("11_wsvr5")
-personalityNumber = Array[int]([255, 255, 255])
-info = {
-"className": "Unemployed",
-"factionName": "",
-"firstName": "Unnamed",
-"lastName": "",
-"nickName": "Nick",
-"raceName": "no race?",
-"sex": "Unknown"
-}
-equipment = {
-"ACC1": "",
-"ACC2": "",
-"ACC3": "",
-"ARMOR": "",
-"L_HAND": "",
-"R_HAND": ""
-}
-internalName = ""
-displayName = "ERR_NONAME"
-attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
-abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([ExtResource("10_5p8b5")])
-equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
-baseStats = {
-"accuracy": 0,
-"actions": 1,
-"actionsMax": 1,
-"agility": 0,
-"defense": 0,
-"dodge": 0,
-"energy": 30,
-"energyMax": 30,
-"health": 100,
-"healthMax": 100,
-"mind": 0,
-"moveDistance": 0,
-"movementType": 0,
-"moves": 1,
-"movesMax": 1,
-"special": 0,
-"strength": 0,
-"turnDelay": 0,
-"turnDelayMax": 100
-}
-statModifiers = {
-"accuracy": 1.0,
-"agility": 1.0,
-"defense": 1.0,
-"dodge": 1.0,
-"maxEnergy": 1.0,
-"maxHealth": 1.0,
-"mind": 1.0,
-"moveDistance": 1.0,
-"special": 1.0,
-"strength": 1.0,
-"turnDelayMax": 1.0
-}
 
 [node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton")]
 script = ExtResource("1_v1w2e")
@@ -175,14 +105,5 @@ script = ExtResource("6_vkmkh")
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
 script = ExtResource("6_cjn2s")
 
-[node name="Unit" type="Node3D" parent="."]
-script = ExtResource("7_hju4p")
-attributes = ExtResource("9_o4ay7")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_vl025")
-
-[node name="Unit2" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.210674, 0.0475795, 0.23536)
-script = ExtResource("7_hju4p")
-attributes = SubResource("Resource_qb5ry")

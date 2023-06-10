@@ -33,13 +33,7 @@ enum CombatStates {
 @export var currentMap:Map:
 	set(val):
 		currentMap = val
-		if currentMap is Map and gridMap is MovementGrid:
-			gridMap.mesh_library = currentMap.meshLibrary
-			
-			gridMap.clear()
-			for cellData in currentMap.terrainCells:
-				gridMap.set_cell_item(cellData[1],cellData[0])
-			gridMap.update_grid(currentMap)
+#		assert(currentMap is Map and gridMap is MovementGrid) 
 			
 			
 var state:int
@@ -84,11 +78,14 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	#Setup
 	gridMap = Ref.grid
-	currentMap = currentMap
-	gridMap.cell_clicked.connect(on_cell_clicked)
 	picker.user = self
-	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
+	load_map()#Loads the map into the scene.
+	
+	gridMap.cell_clicked.connect(on_cell_clicked)
 	endTurnButton.pressed.connect(turn_cycle)
+	
+	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
+	
 #	Ref.mainNode = self
 	change_state(States.SETUP)
 	
@@ -107,7 +104,9 @@ func run_stack():
 		
 	
 func testing():
-	actingUnit = $Unit
+	currentMap = load("res://Resources/Maps/UniqueMaps/Default.tres") as Map
+	load_map()
+	actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
 	actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
 	unitList.refresh_units([actingUnit])
 #	abilityInUse = $Unit.attributes.abilities[0]
@@ -343,6 +342,8 @@ func update_menus_to_unit(unit:Unit):
 		if menu != "MENU": 
 			menuCombat.clear_menu(menu)
 	
+	assert(not unit.attributes.abilities.is_empty())
+	
 	for ability in unit.attributes.abilities:
 		var button:=Button.new()
 		var menuName:String
@@ -369,6 +370,19 @@ func get_units(combatOnly:bool=true)->Array[Unit]:
 	if combatOnly:
 		units = units.filter(func(unit): return unit.get_parent()==self)
 	return units
+
+func load_map()->void:
+	assert(currentMap is Map and gridMap is MovementGrid) 
+	gridMap.mesh_library = currentMap.meshLibrary
+	
+	gridMap.clear()
+	for cellData in currentMap.terrainCells:
+		gridMap.set_cell_item(cellData[1],cellData[0])
+	
+	for unitAttrib in currentMap.unitsToLoad:
+		add_child(Unit.Generator.build_from_attributes(unitAttrib))#TEMP
+		
+	gridMap.update_grid(currentMap)
 
 class Cell extends Area3D:
 	var mesh:Mesh

@@ -103,9 +103,17 @@ func get_description():
 
 func is_usable()->bool:
 	var stats = user.attributes.stats
+	if not _can_use():  return false
+	
 	if user.attributes.stats.actions < actionCost or user.attributes.stats.moves < moveCost: return false
 	return true
 	pass
+
+func get_units(cells:Array[Vector3i])->Array[Unit]:
+	var targets:Array[Unit] 
+	for cell in cells:
+		targets.assign(user.board.gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT, true))
+	return targets
 
 func connect_triggers():
 	if not user is Unit:#Ensure someone has equipped it
@@ -191,20 +199,11 @@ func use( targets:Array[Vector3i] ):
 func _use(target:Array[Vector3i]):
 	print( user.info.nickName + " cannot punch. Because testing.")
 	pass
-	
-enum AvailabilityStatus {OK,CUSTOM_FALSE,NOT_ENOUGH_ENERGY,OTHER}
-func check_availability() -> int:  
-	var errorCode:int = 0
-	if _check_availability() == false:  
-		errorCode += AvailabilityStatus.CUSTOM_FALSE
-		
-	if user.stats["energy"] < energyCost:
-		errorCode += AvailabilityStatus.NOT_ENOUGH_ENERGY
-		
-	return errorCode
 
-func _check_availability() -> bool:#Virtual function, prevents usage if false
+
+func _can_use() -> bool:#Virtual function, prevents usage if false
 	return true
+
 
 
 

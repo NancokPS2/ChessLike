@@ -14,6 +14,7 @@ signal targeting(what:Vector3i, withWhat:Ability)
 signal turn_started
 signal turn_ended
 
+const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitTemplate.tscn")
 
 
 @export var saveName:String
@@ -45,8 +46,11 @@ func _ready() -> void:
 	add_child(bodyNode)
 	
 	#TESTING
-	requiredAnimationName = "STANDING"
 	await get_tree().process_frame 
+	var abil = load("res://Resources/Abilities/AllAbilities/Heal.tres")
+	assert(abil is Ability)
+	attributes.abilities.append(abil)
+	print(attributes.abilities)
 #	position = board.gridMap.get_top_of_cell(get_current_cell())
 
 func get_current_cell()->Vector3i:
@@ -76,8 +80,8 @@ func end_turn():
 class Generator:
 
 
-	static func build_from_attributes(attrib:Resource):
-		var unit = Const.UnitTemplate.instantiate()#Create an instance
+	static func build_from_attributes(attrib:Resource)->Unit:
+		var unit:Unit = Unit.UNIT_SCENE.instantiate()#Create an instance
 		unit.attributes = attrib#Set it's attributes
 		return unit
 
@@ -121,6 +125,7 @@ class Body extends Node3D:
 				add_child(modelNode)
 				update_limb_references()
 				animationRef = modelNode.get_node("AnimationPlayer")
+				
 	var limbRefs:Dictionary
 	var animationRef:AnimationPlayer
 

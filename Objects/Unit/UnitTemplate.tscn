@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bef5g7mx5f3sj"]
 
-[ext_resource type="Script" path="res://Objects/Unit/OLDUnitNode.gd" id="1_wwg6j"]
+[ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="1_bufqk"]
 
 [sub_resource type="Animation" id="1"]
 resource_name = "Idle"
@@ -93,8 +93,7 @@ _data = {
 }
 
 [node name="Unit" type="Node3D" groups=["UNIT"]]
-script = ExtResource("1_wwg6j")
-saveName = null
+script = ExtResource("1_bufqk")
 
 [node name="VFX" type="AnimationPlayer" parent="."]
 libraries = {

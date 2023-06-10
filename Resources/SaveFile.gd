@@ -10,9 +10,10 @@ func _init() -> void:
 	settingsFile.load( SAVE_DIR.format([saveName]) )
 
 @export var saveName = "New Game"
-@export var playerUnitsIN:Array[CharAttributes]
-@export var playerFactionIN:Faction
+@export var playerUnits:Array[CharAttributes]
+@export var playerFaction:Faction
 @export var progressFlags = {"storyStart":false}
+
 var settingsFile:=ConfigFile.new()
 
 func save():
@@ -32,4 +33,11 @@ static func get_all_save_folders()->Array[String]:
 static func validate_save(saveName:String)->bool:
 	return FileAccess.file_exists(SAVE_DIR.format([saveName]))
 	
+func get_setting(settingName:String):
+	if not settingsFile is ConfigFile: push_error("There is no settingsFile loaded"); return null
+	settingsFile.get_value("MAIN", settingName)
 	
+func set_setting(settingName:String, value):
+	if not settingsFile is ConfigFile: push_error("There is no settingsFile loaded"); return
+	settingsFile.set_value("MAIN", settingName, value)
+	pass

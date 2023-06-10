@@ -26,6 +26,10 @@ Ref="*res://Singletons/References.gd"
 
 enabled=PackedStringArray("res://addons/AsepriteWizard/plugin.cfg", "res://addons/object_state_machine/plugin.cfg")
 
+[filesystem]
+
+import/blender/enabled=false
+
 [global]
 
 speed=false

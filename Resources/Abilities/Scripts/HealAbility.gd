@@ -3,12 +3,11 @@ class_name AbilityHeal
 
 
 func get_description():
-	return "Heals for {0}% of max health of the target.".format([powers[0]])
+	return "Heals for {0}% of max health of the target.".format([str(powers[0]*100)])
 	pass
 
 func _use(targets:Array[Vector3i]):
-	for target in targets:
-		var unit:Unit = user.board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
+	for unit in get_units(targets):
 		unit.attributes.stats.health += unit.attributes.stats.healthMax * powers[0]
 
 #func use(target:Unit):
