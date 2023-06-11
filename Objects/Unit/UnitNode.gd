@@ -80,7 +80,7 @@ func end_turn():
 class Generator:
 
 
-	static func build_from_attributes(attrib:Resource)->Unit:
+	static func build_from_attributes(attrib:CharAttributes)->Unit:
 		var unit:Unit = Unit.UNIT_SCENE.instantiate()#Create an instance
 		unit.attributes = attrib#Set it's attributes
 		return unit

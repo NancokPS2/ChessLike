@@ -18,7 +18,7 @@ func _init() -> void:
 func _ready() -> void:
 	var slowTimer:=Timer.new()
 	add_child(slowTimer)
-	slowTimer.start(0.2)
+#	slowTimer.start(0.2)
 	slowTimer.timeout.connect(emit_signal.bind("UPDATE_UNIT_INFO"))
 
 ##States
