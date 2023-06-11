@@ -1,7 +1,9 @@
 extends Node3D
 class_name GameBoard
 
-signal units_changed
+## Started from Ref.start_combat(map)
+
+signal units_changed(newUnits:Array[Unit])
 
 enum States {SETUP,COMBAT,PAUSE,END}
 
@@ -25,9 +27,12 @@ enum CombatStates {
 
 @export_group("References")
 @export var gridMap:MovementGrid
+
 @export var unitList:UnitDisplayManager
 @export var menuCombat:NestedMenu
 @export var endTurnButton:Button
+
+@export var unitInfo:UnitDisplay
 
 @export_group("Map")
 @export var currentMap:Map:
@@ -43,10 +48,17 @@ var actingUnit:Unit:
 	set(val):
 		actingUnit = val
 		if actingUnit is Unit:
-			update_menus_to_unit(actingUnit)
+			update_menus_to_unit()
 			assert(actingUnit.is_in_group(Const.Groups.UNIT))
-			
-var unitsInCombat:Array[Unit]
+
+var selectedUnit:Unit:
+	get: return unitList.unitSelected if unitList.unitSelected is Unit else actingUnit
+
+var unitsInCombat:Array[Unit]:
+	get:
+		var units:Array[Unit]
+		units.assign(get_tree().get_nodes_in_group(Const.Groups.UNIT).filter(func(node:Unit): return node.get_parent() == self))
+		return units
 		
 var abilityInUse:Ability:
 	set(val):
@@ -69,9 +81,10 @@ func _enter_tree() -> void:
 	#Add unit when it enters the tree
 	var registerUnit:Callable = func(node): 
 		if node is Unit and node.get_parent() == self: 
-			unitsInCombat.append(node); emit_signal("units_changed")
+			unitsInCombat.append(node); units_changed.emit(unitsInCombat)
 			
 	get_tree().node_added.connect(registerUnit)
+	Events.UPDATE_UNIT_INFO.connect(update_menus_to_unit)
 	
 	
 	
@@ -79,18 +92,20 @@ func _ready() -> void:
 	#Setup
 	gridMap = Ref.grid
 	picker.user = self
-	load_map()#Loads the map into the scene.
 	
+	units_changed.connect(Callable(unitList,"refresh_units"))
 	gridMap.cell_clicked.connect(on_cell_clicked)
 	endTurnButton.pressed.connect(turn_cycle)
 	
 	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
+	Events.UPDATE_UNIT_INFO.connect(Callable(unitList, "refresh_ui"))
+	Events.UPDATE_UNIT_INFO.connect(Callable(unitInfo, "refresh_ui"))
 	
 #	Ref.mainNode = self
 	change_state(States.SETUP)
 	
 	
-	testing()
+#	testing()
 
 
 	
@@ -104,10 +119,10 @@ func run_stack():
 		
 	
 func testing():
-	currentMap = load("res://Resources/Maps/UniqueMaps/Default.tres") as Map
-	load_map()
-	actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
+	change_state(States.COMBAT)
+#	actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
 	actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
+	
 	unitList.refresh_units([actingUnit])
 #	abilityInUse = $Unit.attributes.abilities[0]
 #	change_combat_state(CombatStates.C_ABILITY_TARGETING)
@@ -120,11 +135,12 @@ func testing():
 #	$UI/ActingMenu/EndTurn.button_up.connect( change_combat_state.bind(CombatStates.FACING) )
 
 
-func change_state(newState:int):
+func change_state(newState:States):
 	
 	if newState != state:#Handle exiting the current state
 		match state:
 			States.SETUP:
+				actingUnit = turn_get_next_unit()
 				Events.emit_signal("SETUP_exit")
 			States.COMBAT:
 				Events.emit_signal("COMBAT_exit")
@@ -318,26 +334,32 @@ func _process(delta: float) -> void:
 
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
-	match combatState:
-		CombatStates.C_ABILITY_TARGETING:
-			if gridMap.is_cell_marked(cell):
-				
-				#Mark cells ready for targeting
-				if targetedCells.size() < abilityInUse.amountOfTargets:
-					targetedCells.append(cell)
-					
-					#Confirmed usage
-				else:
-					actionStack.append(abilityInUse.get_tween(targetedCells))
-					abilityInUse.user.attributes.stats.actions -= abilityInUse.actionCost
-					abilityInUse.user.attributes.stats.moves -= abilityInUse.moveCost
-					update_menus_to_unit(actingUnit)
-					run_stack()
-					
+	match state:
+		States.SETUP:
+			Events.UPDATE_UNIT_INFO.emit()
+			pass
+	
+		States.COMBAT:
+			match combatState:
+				CombatStates.C_ABILITY_TARGETING:
+					if gridMap.is_cell_marked(cell):
+						
+						#Mark cells ready for targeting
+						if targetedCells.size() < abilityInUse.amountOfTargets:
+							targetedCells.append(cell)
+							
+							#Confirmed usage
+						else:
+							actionStack.append(abilityInUse.get_tween(targetedCells))
+							abilityInUse.user.attributes.stats.actions -= abilityInUse.actionCost
+							abilityInUse.user.attributes.stats.moves -= abilityInUse.moveCost
+							update_menus_to_unit()
+							run_stack()
+							
 					
 	
 
-func update_menus_to_unit(unit:Unit):
+func update_menus_to_unit(unit:Unit=selectedUnit):
 	for menu in menuCombat.get_menus():
 		if menu != "MENU": 
 			menuCombat.clear_menu(menu)
@@ -363,6 +385,9 @@ func update_menus_to_unit(unit:Unit):
 		menuCombat.add_to_menu(button,menuName)
 		
 	menuCombat.change_current_menu("MENU")
+	unitInfo.unitRef = unit
+	unitInfo.refresh_ui()
+#	Events.emit_signal("UPDATE_UNIT_INFO")
 	
 func get_units(combatOnly:bool=true)->Array[Unit]:
 	var units:Array[Unit]
@@ -371,18 +396,19 @@ func get_units(combatOnly:bool=true)->Array[Unit]:
 		units = units.filter(func(unit): return unit.get_parent()==self)
 	return units
 
-func load_map()->void:
-	assert(currentMap is Map and gridMap is MovementGrid) 
-	gridMap.mesh_library = currentMap.meshLibrary
+func load_map(mapUsed:Map = currentMap)->void:
+	assert(mapUsed is Map and gridMap is MovementGrid) 
+	gridMap.mesh_library = mapUsed.meshLibrary
 	
 	gridMap.clear()
-	for cellData in currentMap.terrainCells:
+	for cellData in mapUsed.terrainCells:
 		gridMap.set_cell_item(cellData[1],cellData[0])
 	
-	for unitAttrib in currentMap.unitsToLoad:
-		add_child(Unit.Generator.build_from_attributes(unitAttrib))#TEMP
+	for unitAttrib in mapUsed.unitsToLoad:
+		add_child(Unit.Generator.build_from_attributes(unitAttrib))
 		
-	gridMap.update_grid(currentMap)
+	gridMap.update_grid(mapUsed)
+	units_changed.emit(unitsInCombat)
 
 class Cell extends Area3D:
 	var mesh:Mesh
@@ -394,12 +420,14 @@ class Cell extends Area3D:
 #	func _init(_board:GameBoard):
 #		board = _board
 #TURN
-func turn_sort_units_by_delay():
-	unitsInCombat.sort_custom( func(a:Unit,b:Unit): return a.attributes.stats["turnDelay"] < b.attributes.stats["turnDelay"] )
+func turn_get_sorted_by_delay()->Array[Unit]:
+	var unitDict:Array[Unit]
+	unitDict.assign(unitsInCombat)
+	unitDict.sort_custom( func(a:Unit,b:Unit): return a.attributes.stats["turnDelay"] < b.attributes.stats["turnDelay"] )
+	return unitDict
 
 func turn_get_next_unit()->Unit:
-	turn_sort_units_by_delay()
-	return unitsInCombat[0]
+	return turn_get_sorted_by_delay()[0]
 	
 func turn_apply_delays():
 	var currDelay:int = actingUnit.attributes.stats["turnDelay"]
@@ -412,3 +440,7 @@ func turn_cycle():
 	turn_apply_delays()
 	actingUnit = turn_get_next_unit()
 	actingUnit.start_turn()
+	
+class SetupController extends Control:
+	
+	pass
