@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://ty0c356l015p"]
+
+[ext_resource type="Theme" uid="uid://c8bw27k54y1m7" path="res://Assets/UI/ThemeElements/Main.tres" id="1_y8r1m"]
+[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd" id="2_60e7e"]
+[ext_resource type="Script" path="res://Classes/SelfContained/Interface/DecoratedList.gd" id="3_uvkne"]
+
+[node name="UnitPanel" type="Panel" node_paths=PackedStringArray("nameLabel", "classLabel", "healthMeter", "healthLabel", "energyMeter", "energyLabel", "delayLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_y8r1m")
+script = ExtResource("2_60e7e")
+nameLabel = NodePath("")
+classLabel = NodePath("")
+healthMeter = NodePath("")
+healthLabel = NodePath("")
+energyMeter = NodePath("")
+energyLabel = NodePath("")
+delayLabel = NodePath("")
+
+[node name="DecoratedList" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("3_uvkne")
+entries = Array[StringName]([&"attributes:baseStats:healthMax", &"attributes:baseStats:strength", &"attributes:baseStats:agility", &"attributes:baseStats:mind"])
+entryNameOverrides = Array[String](["Max Health", "Strength", "Agility", "Mind"])
+metadata/_edit_use_anchors_ = true
