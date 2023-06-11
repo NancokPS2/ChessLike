@@ -3,20 +3,26 @@ class_name UnitDisplay
 
 signal clicked_unit(unit:Unit)
 
+const NORMAL_COLOR:=Color(1,1,1,1)
+const NEGATIVE_COLOR:=Color(1,0.5,0.5,1)
+const POSITIVE_COLOR:=Color(0.5,1,0.5,1)
+
 var unitRef:Unit:
 	set(val):
 		if unitRef is Unit: push_error("This display already had a unitRef, swapping them is not supported yet.")
 		unitRef = val
 		if unitRef is Unit:
-			stats = unitRef.attributes.stats
-			info = unitRef.attributes.info
-			refresh_ui()
+#			stats = unitRef.attributes.stats
+#			info = unitRef.attributes.info
+#			refresh_ui()
+			pass
 
 var stats
 var info
 @onready var tween = get_tree().create_tween().set_loops()
 
 @export_group("Input")
+## For selecting the unit
 @export var buttonRef:Button:
 	set(val):
 		buttonRef = val
@@ -43,22 +49,11 @@ var info
 
 func _init() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
+#	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
 
-func _ready() -> void:
-	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
-	
+func _ready() -> void:	
 	tween.tween_property(self,"modulate",Color.WHITE * 1.25, 1)
 	tween.tween_property(self,"modulate",modulate, 0.5)
-
-func load_unit(unit):#Used to load and display a unit simultaneously
-	if unit and unit != unitRef and not ( unit.get("stats") == {} or unit.get("stats") == null ):
-		unitRef = unit
-	else:
-		push_error(str(unit) + " could not be loaded.")
-		return
-		
-	assert(unit is Unit)
-		
 	refresh_ui()
 	
 func clear_unit():
@@ -74,6 +69,7 @@ func clear_unit():
 	
 	
 func refresh_ui():
+#	assert(unitRef is Unit)
 	if unitRef is Unit:
 		var testStats = unitRef.attributes.stats
 		if nameLabel: nameLabel.text = unitRef.attributes.info["nickName"]
@@ -88,9 +84,29 @@ func refresh_ui():
 		
 		if delayLabel: delayLabel.text = "Delay: " + str(unitRef.attributes.stats["turnDelay"])
 		
-		if strengthLabel: strengthLabel.text = unitRef.attributes.stats["strength"]
-		if agilityLabel: agilityLabel.text = unitRef.attributes.stats["agility"]
-		if mindLabel: mindLabel.text = unitRef.attributes.stats["mind"]
+		if strengthLabel: 
+			strengthLabel.text = unitRef.attributes.stats["strength"]
+			var color:Color
+			if unitRef.attributes.stats.strength < unitRef.attributes.baseStats.strength: color = NEGATIVE_COLOR
+			elif unitRef.attributes.stats.strength > unitRef.attributes.baseStats.strength: color = POSITIVE_COLOR
+			else: color = NORMAL_COLOR
+			strengthLabel.add_theme_color_override("font_color", color)
+			
+		if agilityLabel: 
+			agilityLabel.text = unitRef.attributes.stats["agility"]
+			var color:Color
+			if unitRef.attributes.stats.agility < unitRef.attributes.baseStats.agility: color = NEGATIVE_COLOR
+			elif unitRef.attributes.stats.agility > unitRef.attributes.baseStats.agility: color = POSITIVE_COLOR
+			else: color = NORMAL_COLOR
+			agilityLabel.add_theme_color_override("font_color", color)
+			
+		if mindLabel: 
+			mindLabel.text = unitRef.attributes.stats["mind"]
+			var color:Color
+			if unitRef.attributes.stats.mind < unitRef.attributes.baseStats.mind: color = NEGATIVE_COLOR
+			elif unitRef.attributes.stats.mind > unitRef.attributes.baseStats.mind: color = POSITIVE_COLOR
+			else: color = NORMAL_COLOR
+			mindLabel.add_theme_color_override("font_color", color)
 
 func animated_glow(enabled:bool):
 	if enabled:
