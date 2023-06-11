@@ -1,20 +1,21 @@
-[gd_scene load_steps=10 format=3 uid="uid://d3quwmouge5hc"]
+[gd_scene load_steps=11 format=3 uid="uid://42ihlj46qyky"]
 
-[ext_resource type="Script" path="res://Classes/Grid.gd" id="1_q4sck"]
-[ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_v1w2e"]
-[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/CellMesh/Base/DefaultTiles.tres" id="2_qugcw"]
-[ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="4_b3m2h"]
-[ext_resource type="Script" path="res://Objects/Scenes/CombatMenu.gd" id="5_ifshg"]
-[ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="6_cjn2s"]
-[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_vkmkh"]
+[ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
+[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/CellMesh/Base/DefaultTiles.tres" id="2_d6nyw"]
+[ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="3_f1ng2"]
+[ext_resource type="Script" path="res://Classes/Grid.gd" id="4_wjtrp"]
+[ext_resource type="Script" path="res://Objects/CombatGrid/CombatMenu.gd" id="5_tknwe"]
+[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
+[ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
+[ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="8_5hr6c"]
 
 [sub_resource type="Resource" id="Resource_okr1b"]
-script = ExtResource("4_b3m2h")
+script = ExtResource("3_f1ng2")
 displayName = ""
 internalName = ""
 description = ""
 heightMap = []
-meshLibrary = ExtResource("2_qugcw")
+meshLibrary = ExtResource("2_d6nyw")
 terrainCells = Array[Array]([[0, Vector3i(0, 0, 0), ["WALKABLE"]], [0, Vector3i(1, 0, 0), ["WALKABLE"]], [0, Vector3i(0, 0, -1), ["WALKABLE"]], [0, Vector3i(0, 0, 1), ["WALKABLE"]], [0, Vector3i(-1, 0, 0), ["WALKABLE"]], [0, Vector3i(-2, 0, 0), ["WALKABLE"]], [0, Vector3i(1, 0, 1), ["WALKABLE"]], [0, Vector3i(2, 0, 1), ["WALKABLE"]]])
 unitsToGenerate = Array[Dictionary]([{
 "className": "CIVILIAN",
@@ -30,12 +31,13 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.76
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton")]
-script = ExtResource("1_v1w2e")
+[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton", "unitInfo")]
+script = ExtResource("1_pjmtp")
 gridMap = NodePath("MovementGrid")
 unitList = NodePath("UI/ScrollContainer/UpperList")
 menuCombat = NodePath("UI/CombatMenu")
 endTurnButton = NodePath("UI/CombatMenu/MENU/END_TURN")
+unitInfo = NodePath("UI/UnitPanel")
 currentMap = SubResource("Resource_okr1b")
 
 [node name="Debug" type="Label" parent="."]
@@ -48,12 +50,12 @@ offset_right = 809.64
 offset_bottom = 232.272
 
 [node name="MovementGrid" type="GridMap" parent="."]
-mesh_library = ExtResource("2_qugcw")
+mesh_library = ExtResource("2_d6nyw")
 cell_size = Vector3(0.35, 0.35, 0.35)
 data = {
 "cells": PackedInt32Array(0, 0, 0, 65535, 65535, 0, 131071, 65535, 0)
 }
-script = ExtResource("1_q4sck")
+script = ExtResource("4_wjtrp")
 metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -64,7 +66,7 @@ anchor_right = 0.225
 anchor_bottom = 1.00027
 offset_right = -0.32
 offset_bottom = -0.176003
-script = ExtResource("5_ifshg")
+script = ExtResource("5_tknwe")
 navigationButtons = Array[Array]([["MENU", "MOVEMENT"], ["MENU", "OBJECT"], ["MENU", "SKILL"], ["MENU", "SPECIAL"]])
 metadata/_edit_use_anchors_ = true
 
@@ -99,11 +101,18 @@ anchor_bottom = 0.2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("6_vkmkh")
+script = ExtResource("6_kw6n7")
+
+[node name="UnitPanel" parent="UI" instance=ExtResource("7_osk8e")]
+anchors_preset = -1
+anchor_top = 0.78858
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
-script = ExtResource("6_cjn2s")
+script = ExtResource("8_5hr6c")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_vl025")
