@@ -28,3 +28,11 @@ res://Objects/UI/UnitDisplays/UnitDisplay.gd
 res://Objects/CombatGrid/SetupController.tscn
 res://Objects/CombatGrid/CombatField.tscn
 res://Singletons/Events.gd
+res://Resources/Characters/Races/Human.tres
+res://Resources/Abilities/AllAbilities/Heal.tres
+res://Resources/Characters/Classes/Civilian.tres
+res://Resources/Characters/Factions/PLAYER.tres
+res://Resources/Characters/UniqueCharacters/Misha.tres
+res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.tscn
+res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd
+res://Classes/SelfContained/Interface/DecoratedList.gd
