@@ -24,3 +24,7 @@ res://Assets/UI/ProWindows.tres
 res://Assets/UI/ThemeElements/ButtonNormal.tres
 res://Assets/UI/ThemeElements/ButtonPressed.tres
 res://Assets/UI/ThemeElements/Main.tres
+res://Objects/UI/UnitDisplays/UnitDisplay.gd
+res://Objects/CombatGrid/SetupController.tscn
+res://Objects/CombatGrid/CombatField.tscn
+res://Singletons/Events.gd
