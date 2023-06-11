@@ -4,7 +4,6 @@ class_name AbilityHeal
 
 func get_description():
 	return "Heals for {0}% of max health of the target.".format([str(powers[0]*100)])
-	pass
 
 func _use(targets:Array[Vector3i]):
 	for unit in get_units(targets):

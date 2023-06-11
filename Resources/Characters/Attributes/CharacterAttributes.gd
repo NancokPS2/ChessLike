@@ -109,15 +109,17 @@ func randomize_names(firstNames:Array[String], nickNames:Array[String], lastName
 	stats["nickName"] = firstNames.pick_random() as String if randi_range(0,2) == 0 else ""
 	info["lastName"] = firstNames.pick_random() as String if randi_range(0,9000) == 0 else ""
 	
-func randomize_personality(energyMin:float=0, energyMax:float=255, goodMin:float=0, goodMax:float=255, lawMin:float=0, lawMax:float=255):
+func randomize_personality(energyMin:int=0, energyMax:int=255, goodMin:int=0, goodMax:int=255, lawMin:int=0, lawMax:int=255):
 	personalityNumber[0] = randi_range(energyMin,clamp(energyMax,1,255))
 	personalityNumber[1] = randi_range(goodMin,clamp(goodMax,1,255))
 	personalityNumber[2] = randi_range(lawMin,clamp(lawMax,1,255))
 	
 func apply_turn_delay(delay:int):
-	var initialDelay:int = stats.turnDelay
+	#Reduce delay
 	stats.turnDelay -= delay
+	
+	#If it ended up below 0, apply the remaining amount to the max.
 	if stats.turnDelay <= 0:
-		stats.turnDelay = stats.turnDelayMax - stats.turnDelay
+		stats.turnDelay = stats.turnDelayMax - abs(stats.turnDelay)
 		
 	

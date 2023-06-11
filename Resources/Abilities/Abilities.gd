@@ -211,11 +211,11 @@ func _can_use() -> bool:#Virtual function, prevents usage if false
 class Filters extends RefCounted:
 	
 	#True if there's a unit there
-	static func has_unit(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else false
+	static func has_unit(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else false
 	#True if there's not a unit
-	static func not_has_unit(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else true
+	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else true
 	#True if the tile has nothing in it
-	static func empty_tile(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.ANYTHING) == null else false
+	static func empty_tile(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.ANYTHING) == null else false
 	
 	static func is_ally(cell:Vector3i, user:Unit): 
 		var targetUnit:Unit = Ref.grid.search_int_tile(cell, MovementGrid.Searches.UNIT)

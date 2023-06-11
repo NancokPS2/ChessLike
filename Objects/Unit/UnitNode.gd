@@ -137,7 +137,7 @@ class Body extends Node3D:
 		assert(not meshRefs.is_empty())
 
 		for mesh in meshRefs:#Store references to each limb
-			if mesh is MeshInstance3D and is_limb_name_valid(mesh.get_name()):
+			if mesh is MeshInstance3D and Body.is_limb_name_valid(mesh.get_name()):
 				limbRefs[mesh.get_name()] = mesh
 
 	func attach_node_to_limb(node:Node3D, usedLimb:String):
@@ -165,8 +165,8 @@ class Body extends Node3D:
 
 	static func get_mesh_nodes_in_packed(model:PackedScene)->Array[MeshInstance3D]:
 		var nodes:Array#Returned nodes go here
-		var modelNode:Node = model.get_state().get_node_instance(0).instantiate()#Get the state of the model
-		for child in Utility.NodeFuncs.get_all_children(modelNode):#For each child of the scene
+		var modelSceneNode:Node = model.get_state().get_node_instance(0).instantiate()#Get the state of the model
+		for child in Utility.NodeFuncs.get_all_children(modelSceneNode):#For each child of the scene
 			if child is MeshInstance3D:#If it is a Mesh
 				nodes.append(child)#Add it
 		return nodes

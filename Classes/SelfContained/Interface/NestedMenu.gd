@@ -54,7 +54,7 @@ func get_all_elements()->Array[Node]:
 
 ## Takes all children from a control node and optionally removes it as well
 func strip_from_parent(control:Control, toMenuName:String, removeParent:bool=false):
-	if control.get_children().is_empty(): push_warning("This node has no children")
+#	if control.get_children().is_empty(): push_warning("This node has no children")
 	create_menu(toMenuName)
 	
 	for child in control.get_children():
@@ -127,7 +127,7 @@ class NavigationButtonBack extends Button:
 
 	func _init(nestedMenu:NestedMenu, menuLocation:String):
 		nestedMenu.add_to_menu(self,menuLocation)
-		nestedMenu.move_child(self,-1)
+#		nestedMenu.move_child(self,-1)
 		pressed.connect( Callable(nestedMenu, "go_to_prev_menu") )
 		text = "Back"
 
