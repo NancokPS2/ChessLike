@@ -3,10 +3,11 @@
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
 [ext_resource type="Script" path="res://Classes/SelfContained/TextLabelFancy.gd" id="2_y5ujn"]
 [ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="3_knxv8"]
-[ext_resource type="ImmediateMesh" path="res://Assets/testPath.tres" id="4_uqs6p"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ldgjk"]
 albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_nof6g"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -58,7 +59,7 @@ text = "OtherASS"
 
 [node name="MeshInst" type="MeshInstance3D" parent="."]
 material_override = SubResource("StandardMaterial3D_ldgjk")
-mesh = ExtResource("4_uqs6p")
+mesh = SubResource("ImmediateMesh_nof6g")
 
 [node name="Timer" type="Timer" parent="."]
 autostart = true
