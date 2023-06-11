@@ -36,3 +36,4 @@ res://Resources/Characters/UniqueCharacters/Misha.tres
 res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.tscn
 res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd
 res://Classes/SelfContained/Interface/DecoratedList.gd
+res://TODO.txt

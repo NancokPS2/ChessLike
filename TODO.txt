@@ -153,3 +153,8 @@ Actual TODO:
 	-Create a proper unit generation algorithm, maybe it can employ Resources
 	-Leader system
 	
+	-Map needs a definition of valid areas for unit placement.
+	
+	-Gameboard.on_cell_clicked needs functionality for SETUP state
+	-SETUP state should consist of placing units.
+	
