@@ -1,6 +1,8 @@
+HBoxContainer
+VBoxContainer
+VSeparator
 Unit
 ScrollContainer
-HBoxContainer
 Button
 Label
 NestedMenu
