@@ -1,7 +1,7 @@
 extends MovementGrid
 
 #Constants
-const defaultMeshLib = preload("res://Assets/CellMesh/Base/DefaultTiles.tres")
+const defaultMeshLib = preload("res://Assets/Meshes/Map/DefaultTiles.tres")
 const CellSize = Vector3(0.32,0.16,0.32)
 
 #Vars
@@ -216,7 +216,7 @@ func clear_targeting_grids():
 	aoeVisualizer.clear()
 
 class Targeting extends GridMap:
-	const highlightingCells:MeshLibrary = preload("res://Assets/CellMesh/Base/TargetingMesh.tres")
+	const highlightingCells:MeshLibrary = preload("res://Assets/CellMesh/Map/TargetingMesh.tres")
 	
 	const DataReq = {
 		"origin":null,

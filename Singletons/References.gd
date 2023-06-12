@@ -3,7 +3,7 @@ extends Node
 const COMBAT_SCENE:PackedScene = preload("res://Objects/CombatGrid/CombatField.tscn")
 
 func _ready() -> void:
-#	start_combat(load("res://Resources/Maps/UniqueMaps/Default.tres") as Map)
+	start_combat(load("res://Resources/Maps/UniqueMaps/Default.tres") as Map)
 	pass
 
 var board:GameBoard
@@ -16,7 +16,7 @@ var grid:MovementGrid #Combat field
 #var unitSelected:Node #Unit currently trying to interact with
 #var unitHovered:Node
 
-var mainNode:Node #Main node of the combat scene
+#var mainNode:Node #Main node of the combat scene
 
 var mainCamera:Node#Camera of the battlefield
 
@@ -41,3 +41,6 @@ func start_combat(map:Map):
 	mainNode.load_map(map)
 	
 	pass
+
+func get_player_faction()->Faction:
+	return CVars.saveFile.playerFaction

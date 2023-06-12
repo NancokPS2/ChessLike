@@ -13,7 +13,7 @@ class_name Item
 @export var amount:int 
 
 @export var sprite:Texture
-@export var model:PackedScene = load("res://Assets/CellMesh/Weapons/Dagger/Dagger.tscn")
+@export var model:PackedScene = load("res://Assets/Meshes/Weapons/Dagger/Dagger.tscn")
 
 func use():
 	pass
