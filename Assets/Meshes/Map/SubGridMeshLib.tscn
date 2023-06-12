@@ -1,7 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dwnf48acrasua"]
+[gd_scene load_steps=11 format=3 uid="uid://dwnf48acrasua"]
 
 [ext_resource type="Material" uid="uid://c088iikmctt2o" path="res://Assets/Meshes/Map/TargetingCellMaterial.tres" id="1_3spvc"]
 [ext_resource type="Material" uid="uid://ckvfhiv86cbx2" path="res://Assets/Meshes/Map/BlueCellMesh.tres" id="2_baflx"]
+[ext_resource type="Material" path="res://Assets/Meshes/Map/YellowCellMaterial.tres" id="3_jcib2"]
+[ext_resource type="Material" uid="uid://mtef44060b6j" path="res://Assets/Meshes/Map/GreenCellMaterial.tres" id="4_renm3"]
+[ext_resource type="Material" uid="uid://d1kyn81uv5qlr" path="res://Assets/Meshes/Map/PinkCellMaterial.tres" id="5_rrkj3"]
+[ext_resource type="Material" uid="uid://d0b656nrucudi" path="res://Assets/Meshes/Map/GreyCellMaterial.tres" id="6_avfgr"]
+[ext_resource type="Material" uid="uid://b5t4wxbyqlhvf" path="res://Assets/Meshes/Map/BrownCellMaterial.tres" id="6_m6cyr"]
+[ext_resource type="Material" uid="uid://byf8vn7nt0b36" path="res://Assets/Meshes/Map/SkyBlueCellMaterial.tres" id="7_wdv8v"]
+[ext_resource type="Material" uid="uid://dpy8vo1dk4atp" path="res://Assets/Meshes/Map/RedCellMaterial.tres" id="8_ap4gx"]
 
 [sub_resource type="PlaneMesh" id="1"]
 size = Vector2(1, 1)
@@ -22,4 +29,34 @@ surface_material_override/0 = ExtResource("2_baflx")
 [node name="YELLOW" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
 mesh = SubResource("1")
-surface_material_override/0 = ExtResource("2_baflx")
+surface_material_override/0 = ExtResource("3_jcib2")
+
+[node name="GREEN" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("4_renm3")
+
+[node name="PINK" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("5_rrkj3")
+
+[node name="BROWN" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("6_m6cyr")
+
+[node name="SKYBLUE" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("7_wdv8v")
+
+[node name="GREY" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("6_avfgr")
+
+[node name="RED" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("8_ap4gx")
