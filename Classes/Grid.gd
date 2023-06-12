@@ -6,12 +6,12 @@ class_name MovementGrid
 signal cell_clicked(cellPos:Vector3i)
 signal marked_cell_clicked(cellPos:Vector3i)
 
-const TargetingMesh:MeshLibrary = preload("res://Assets/CellMesh/Base/TargetingMesh.tres")
+const TargetingMesh:MeshLibrary = preload("res://Assets/Meshes/Map/SubGridMeshLib.tres")
 const Directionsi:Array[Vector3i]=[Vector3i.UP,Vector3i.DOWN,Vector3i.BACK,Vector3i.FORWARD,Vector3i.LEFT,Vector3i.RIGHT]
 const Directions:Array[Vector3]=[Vector3.UP,Vector3.DOWN,Vector3.BACK,Vector3.FORWARD,Vector3.LEFT,Vector3.RIGHT]
 const DefaultCellTags = Map.DefaultCellTags
 
-enum CellIDs {BLUE, TRANSPARENT, ORANGE, YELLOW}
+enum CellIDs {TARGETING, BLUE, YELLOW, GREEN, PINK, BROWN, SKYBLUE, GREY, RED}
 enum Searches {UNIT, OBSTACLE, ANYTHING, TAG}
 enum MapShapes{STAR,CONE,SINGLE,ALL}
 
@@ -77,7 +77,7 @@ func printer(variant):
 
 
 	
-func mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.ORANGE):
+func mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.TARGETING):
 	subGridMap.clear()
 	for cell in cells:
 		subGridMap.set_cell_item(cell,tileID)
@@ -110,7 +110,7 @@ func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 	match what:
 		Searches.UNIT:
 			if getAll:
-				return cellDict[where].filter(func(obj): return true if obj is Unit else false)
+				return cellDict[where].filter(func(obj): return obj is Unit)
 			else:
 				for obj in cellDict[where]: if obj is Unit: return obj
 				
