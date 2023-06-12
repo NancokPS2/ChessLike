@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://7tq2j2n30axr" path="res://Assets/Meshes/Characters/Dummy/OLDDummy.dae" id="1"]
+
+[node name="Model" instance=ExtResource( 1 )]

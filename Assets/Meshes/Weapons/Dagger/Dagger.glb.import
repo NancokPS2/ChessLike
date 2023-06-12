@@ -3,18 +3,18 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c8upch6etpftr"
-path="res://.godot/imported/Dummy.glb-a148e18df71a1734dbe1d811fe51bac8.scn"
+uid="uid://dj70kwktopjeo"
+path="res://.godot/imported/Dagger.glb-e94d9cb5fad7cb06c2c54151ca63c305.scn"
 
 [deps]
 
-source_file="res://Assets/CellMesh/Characters/Dummy/Dummy.glb"
-dest_files=["res://.godot/imported/Dummy.glb-a148e18df71a1734dbe1d811fe51bac8.scn"]
+source_file="res://Assets/Meshes/Weapons/Dagger/Dagger.glb"
+dest_files=["res://.godot/imported/Dagger.glb-e94d9cb5fad7cb06c2c54151ca63c305.scn"]
 
 [params]
 
 nodes/root_type="Spatial"
-nodes/root_name="Human"
+nodes/root_name="Scene Root"
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 meshes/ensure_tangents=true

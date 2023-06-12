@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://7tq2j2n30axr"
-path="res://.godot/imported/OLDDummy.dae-5ca3fae997dfc99997101a4fb590246c.scn"
+uid="uid://fvvvbvxy52tj"
+path="res://.godot/imported/Bulky.dae-3f225a9b7841d7491a0bd9f2febaffc8.scn"
 
 [deps]
 
-source_file="res://Assets/CellMesh/Characters/Dummy/OLDDummy.dae"
-dest_files=["res://.godot/imported/OLDDummy.dae-5ca3fae997dfc99997101a4fb590246c.scn"]
+source_file="res://Assets/Meshes/Armor/Bulky.dae"
+dest_files=["res://.godot/imported/Bulky.dae-3f225a9b7841d7491a0bd9f2febaffc8.scn"]
 
 [params]
 
@@ -25,5 +25,8 @@ meshes/lightmap_texel_size=0.1
 skins/use_named_skins=true
 animation/import=true
 animation/fps=15
+animation/trimming=false
+animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={}
+gltf/embedded_image_handling=1

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dj70kwktopjeo"
-path="res://.godot/imported/Dagger.glb-4d296ce7b03c01aa0c2fb8dcbfc7fc37.scn"
+uid="uid://h1jum2f6b5al"
+path="res://.godot/imported/Dagger.dae-4c767af130f070b44500a9522ef550f4.scn"
 
 [deps]
 
-source_file="res://Assets/CellMesh/Weapons/Dagger/Dagger.glb"
-dest_files=["res://.godot/imported/Dagger.glb-4d296ce7b03c01aa0c2fb8dcbfc7fc37.scn"]
+source_file="res://Assets/Meshes/Weapons/Dagger/Dagger.dae"
+dest_files=["res://.godot/imported/Dagger.dae-4c767af130f070b44500a9522ef550f4.scn"]
 
 [params]
 
@@ -25,5 +25,8 @@ meshes/lightmap_texel_size=0.1
 skins/use_named_skins=true
 animation/import=true
 animation/fps=15
+animation/trimming=false
+animation/remove_immutable_tracks=true
 import_script/path=""
 _subresources={}
+gltf/embedded_image_handling=1
