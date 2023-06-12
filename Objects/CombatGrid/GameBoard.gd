@@ -60,6 +60,8 @@ var unitsInCombat:Array[Unit]:
 		units.assign(get_tree().get_nodes_in_group(Const.Groups.UNIT).filter(func(node:Unit): return node.get_parent() == self))
 		return units
 		
+var allUnits:Array[Unit]
+		
 var abilityInUse:Ability:
 	set(val):
 		abilityInUse = val
@@ -81,7 +83,9 @@ func _enter_tree() -> void:
 	#Add unit when it enters the tree
 	var registerUnit:Callable = func(node): 
 		if node is Unit and node.get_parent() == self: 
-			unitsInCombat.append(node); units_changed.emit(unitsInCombat)
+			unitsInCombat.append(node)
+			allUnits.append(node)
+			units_changed.emit(unitsInCombat)
 			
 	get_tree().node_added.connect(registerUnit)
 	Events.UPDATE_UNIT_INFO.connect(update_menus_to_unit)
@@ -98,7 +102,7 @@ func _ready() -> void:
 	endTurnButton.pressed.connect(turn_cycle)
 	
 	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
-	Events.UPDATE_UNIT_INFO.connect(Callable(unitList, "refresh_ui"))
+	Events.UPDATE_UNIT_INFO.connect(Callable(unitList, "refresh_units"))
 	Events.UPDATE_UNIT_INFO.connect(Callable(unitInfo, "refresh_ui"))
 	
 #	Ref.mainNode = self
@@ -136,7 +140,7 @@ func testing():
 
 
 func change_state(newState:States):
-	
+	var stateName:String = States.find_key(state)
 	if newState != state:#Handle exiting the current state
 		match state:
 			States.SETUP:
@@ -165,6 +169,17 @@ func change_state(newState:States):
 			pass
 
 	state = newState#Change the recorded state
+	
+	#Enabling/Disabling nodes
+	for group in States.keys():
+		for node in get_tree().get_nodes_in_group(group):
+			node.process_mode = Node.PROCESS_MODE_DISABLED
+			node.visible = false
+
+	for node in get_tree().get_nodes_in_group(stateName):
+		node.process_mode = Node.PROCESS_MODE_INHERIT
+		node.visible = true
+			
 
 func change_combat_state(newState:CombatStates):
 	if combatState != newState:#Exiting current state
@@ -337,6 +352,10 @@ func on_cell_clicked(cell:Vector3i):
 	match state:
 		States.SETUP:
 			Events.UPDATE_UNIT_INFO.emit()
+			var unit:Unit = gridMap.search_in_tile(cell, gridMap.Searches.UNIT)
+			if unit is Unit: unitList.unitSelected = unit
+			
+				
 			pass
 	
 		States.COMBAT:
@@ -360,6 +379,7 @@ func on_cell_clicked(cell:Vector3i):
 	
 
 func update_menus_to_unit(unit:Unit=selectedUnit):
+	if not unit is Unit: push_warning("A unit has not been selected yet."); return
 	for menu in menuCombat.get_menus():
 		if menu != "MENU": 
 			menuCombat.clear_menu(menu)
@@ -390,11 +410,15 @@ func update_menus_to_unit(unit:Unit=selectedUnit):
 #	Events.emit_signal("UPDATE_UNIT_INFO")
 	
 func get_units(combatOnly:bool=true)->Array[Unit]:
-	var units:Array[Unit]
-	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
+#	var units:Array[Unit]
+#	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
 	if combatOnly:
-		units = units.filter(func(unit): return unit.get_parent()==self)
-	return units
+		return allUnits.filter(func(unit): return unit.get_parent()==self)
+	else: return allUnits
+	
+func get_units_from_faction(factionInterName:String):
+	return get_units().filter(func(unit:Unit): return unit.attributes.faction.internalName == factionInterName)
+	
 
 func load_map(mapUsed:Map = currentMap)->void:
 	assert(mapUsed is Map and gridMap is MovementGrid) 
@@ -405,10 +429,20 @@ func load_map(mapUsed:Map = currentMap)->void:
 		gridMap.set_cell_item(cellData[1],cellData[0])
 	
 	for unitAttrib in mapUsed.unitsToLoad:
-		add_child(Unit.Generator.build_from_attributes(unitAttrib))
+		var newUnit:Unit = Unit.Generator.build_from_attributes(unitAttrib)
+		allUnits.append(newUnit)
+		add_child(newUnit)
 		
 	gridMap.update_grid(mapUsed)
 	units_changed.emit(unitsInCombat)
+	
+	#Place spawn positions, relies on MovementGrid.CellIDs
+	var index:int=0
+	for spawnClump in mapUsed.get_faction_spawns():
+		if spawnClump.size() > 8: push_error("Not enough colors for spawn locations!")
+		index+=1
+		for spawnPos in spawnClump:
+			gridMap.mark_cells(spawnPos,index)
 
 class Cell extends Area3D:
 	var mesh:Mesh
@@ -442,5 +476,10 @@ func turn_cycle():
 	actingUnit.start_turn()
 	
 class SetupController extends Control:
+	var board:GameBoard
+	
+	func _init(_board:GameBoard) -> void:
+		board = _board
+		
 	
 	pass
