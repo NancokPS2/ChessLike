@@ -13,7 +13,7 @@ func set_unit_selected(unit:Unit):
 	Events.UPDATE_UNIT_INFO.emit()
 	print(unitSelected)
 
-func refresh_units(units:Array[Unit]):
+func refresh_units(units:Array[Unit] = Ref.board.unitsInCombat):
 	assert(not units.is_empty())
 	for child in get_children(): child.queue_free()
 	for unit in units:

@@ -14,7 +14,7 @@ signal targeting(what:Vector3i, withWhat:Ability)
 signal turn_started
 signal turn_ended
 
-const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitTemplate.tscn")
+const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 
 
 @export var saveName:String
@@ -107,7 +107,7 @@ class Body extends Node3D:
 #	FOOT_L="FOOT_L", FOOT_R="FOOT_R"
 #	}
 	const Parts:Array[String] = ["HEAD", "TORSO",
-	"UPP_ARM_L","ARM_R",
+	"UPP_ARM_L","UPP_ARM_R",
 	"LOW_ARM_L","LOW_ARM_R",
 	"HAND_L", "HAND_R",
 	"UPP_LEG_L", "UPP_LEG_R",
@@ -139,6 +139,13 @@ class Body extends Node3D:
 		for mesh in meshRefs:#Store references to each limb
 			if mesh is MeshInstance3D and Body.is_limb_name_valid(mesh.get_name()):
 				limbRefs[mesh.get_name()] = mesh
+				
+		if limbRefs.values().has(null): push_error("Null value for a limb node in this Body!")
+		if limbRefs.size() < Parts.size(): 
+			var missingParts:Array = Parts.filter(func(limbName): return not limbRefs.has(limbName))
+			push_error("This model has missing parts: " + str(missingParts))
+		elif limbRefs.size() > Parts.size(): 
+			push_error("This model has more parts than expected: " + str(limbRefs))
 
 	func attach_node_to_limb(node:Node3D, usedLimb:String):
 		if not is_limb_name_valid(usedLimb): push_error("{0} is not a valid limb name.".format([usedLimb])); return
