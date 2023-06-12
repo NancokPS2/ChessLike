@@ -21,7 +21,7 @@ enum DefaultCellTags {
 
 @export var heightMap:Array = []
 
-@export var meshLibrary:MeshLibrary = preload("res://Assets/CellMesh/Base/DefaultTiles.tres")
+@export var meshLibrary:MeshLibrary = preload("res://Assets/Meshes/Map/DefaultTiles.tres")
 
 @export var background:Texture
 
@@ -37,6 +37,12 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 	[0,Vector3i(2,0,1),["WALKABLE"]]
 ]
 
+
+@export var spawnLocations:Array[Array] = [
+	[Vector3i(2,0,1)],
+	[Vector3i.LEFT*2]
+]
+
 @export var unitsToGenerate:Array[Dictionary] = [
 	{
 		"unitName":"Human",
@@ -47,6 +53,18 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 	}
 ]
 @export var unitsToLoad:Array[CharAttributes]
+
+func get_faction_spawns(factions:Array[Faction])->Dictionary:
+	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
+	var spawns:Array[Array] = spawnLocations
+	var finalDict:Dictionary
+	
+	for faction in factions:
+		finalDict[faction] = spawns.pop_back()
+		
+	return finalDict
+
+
 
 func add_terrain_cell(tileID:int, pos:Vector3i, tags:Array[String]):
 	var cellArray:Array = [tileID, pos, tags]
@@ -65,3 +83,4 @@ func get_all_cells()->Array[Vector3i]:
 	for cellArr in terrainCells:
 		cells.append(cellArr[1])
 	return cells
+
