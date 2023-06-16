@@ -54,15 +54,15 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 ]
 @export var unitsToLoad:Array[CharAttributes]
 
-func get_faction_spawns(factions:Array[Faction])->Dictionary:
-	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
-	var spawns:Array[Array] = spawnLocations
-	var finalDict:Dictionary
-	
-	for faction in factions:
-		finalDict[faction] = spawns.pop_back()
-		
-	return finalDict
+#func get_faction_spawns(factions:Array[Faction])->Dictionary:
+#	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
+#	var spawns:Array[Array] = spawnLocations
+#	var finalDict:Dictionary
+#
+#	for faction in factions:
+#		finalDict[faction.internalName] = spawns.pop_back()
+#
+#	return finalDict
 
 
 

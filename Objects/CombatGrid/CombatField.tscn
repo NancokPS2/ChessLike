@@ -13,8 +13,13 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.76
 
-[node name="Board" type="Node3D"]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton", "unitInfo")]
 script = ExtResource("1_pjmtp")
+gridMap = NodePath("MovementGrid")
+unitList = NodePath("UI/UnitList/UpperList")
+menuCombat = NodePath("UI/CombatMenu")
+endTurnButton = NodePath("UI/CombatMenu/MENU/END_TURN")
+unitInfo = NodePath("UI/UnitPanel")
 
 [node name="Debug" type="Label" parent="."]
 anchors_preset = -1
