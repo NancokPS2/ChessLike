@@ -388,8 +388,8 @@ Default.tres::Resource::-1::1669497959::0::1::::<><>::res://Resources/Maps/Map.g
 Default.tres::Resource::-1::1684124253::0::1::::<><>::res://Resources/SaveFileOLD.gd<>uid://bk2x00qqtnyqg
 New.tres::Resource::-1::1684124253::0::1::::<><>::res://Resources/SaveFileOLD.gd
 ::res://Objects/::1686506151
-::res://Objects/CombatGrid/::1686958095
-CombatField.tscn::PackedScene::3884953243149551382::1686958095::0::1::::<><>::res://Objects/CombatGrid/GameBoard.gd<>uid://ck70ug8k6hn3f<>res://Classes/Grid.gd<>res://Objects/CombatGrid/CombatMenu.gd<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://rfogk7y8u50q<>res://Classes/SelfContained/StolenCamScript.gd
+::res://Objects/CombatGrid/::1686958170
+CombatField.tscn::PackedScene::3884953243149551382::1686958170::0::1::::<><>::res://Objects/CombatGrid/GameBoard.gd<>uid://ck70ug8k6hn3f<>res://Classes/Grid.gd<>res://Objects/CombatGrid/CombatMenu.gd<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://rfogk7y8u50q<>res://Classes/SelfContained/StolenCamScript.gd
 CombatMenu.gd::GDScript::-1::1686505843::0::1::::<>NestedMenu<>::
 GameBoard.gd::GDScript::-1::1686957060::0::1::::GameBoard<>Node3D<>::
 SetupController.tscn::PackedScene::1198588973014987145::1686507427::0::1::::<><>::
