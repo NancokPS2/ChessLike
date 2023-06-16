@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cj3hhvncar7il"]
+
+[ext_resource type="Shader" path="res://Other/Shaders/SquareWaves.gdshader" id="1_nqv26"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nqv26")
+shader_parameter/mainColor = Color(0.0313726, 0.909804, 0.941176, 0.392157)
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_frequency = 4.5
+shader_parameter/wave_amplitude = 0.4

@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dmb6726yqgqqa"]
+
+[ext_resource type="Shader" path="res://Other/Shaders/Waves.gdshader" id="1_qnmpt"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_qnmpt")
+shader_parameter/mainColor = Color(0.435294, 0.435294, 0.435294, 0.392157)
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_frequency = 4.5
+shader_parameter/wave_amplitude = 0.4
