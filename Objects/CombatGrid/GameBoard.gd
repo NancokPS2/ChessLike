@@ -355,6 +355,13 @@ func on_cell_clicked(cell:Vector3i):
 			var unit:Unit = gridMap.search_in_tile(cell, gridMap.Searches.UNIT)
 			if unit is Unit: unitList.unitSelected = unit
 			
+			#If there is a unit selected.
+			if unitList.unitSelected is Unit:
+				if not unitList.unitSelected.get_parent() == self:
+					add_child(unitList.unitSelected)
+				else:
+					unitList.unitSelected.position = gridMap.map_to_local(cell)
+				
 				
 			pass
 	
@@ -416,9 +423,16 @@ func get_units(combatOnly:bool=true)->Array[Unit]:
 		return allUnits.filter(func(unit): return unit.get_parent()==self)
 	else: return allUnits
 	
-func get_units_from_faction(factionInterName:String):
+func get_units_from_faction(factionInterName:String)->Array[Unit]:
 	return get_units().filter(func(unit:Unit): return unit.attributes.faction.internalName == factionInterName)
 	
+func get_present_factions(inCombatOnly:bool)->Array[Faction]:
+	var units:Array[Unit] = get_units(inCombatOnly)
+	var factionList:Array[Faction]
+	for unit in units:
+		if not factionList.has(unit.attributes.faction):
+			factionList.append(unit.attributes.faction)
+	return factionList
 
 func load_map(mapUsed:Map = currentMap)->void:
 	assert(mapUsed is Map and gridMap is MovementGrid) 
@@ -437,12 +451,20 @@ func load_map(mapUsed:Map = currentMap)->void:
 	units_changed.emit(unitsInCombat)
 	
 	#Place spawn positions, relies on MovementGrid.CellIDs
-	var index:int=0
-	for spawnClump in mapUsed.get_faction_spawns():
-		if spawnClump.size() > 8: push_error("Not enough colors for spawn locations!")
+	var index:int=1
+	for faction in get_present_factions(false):
+		var spawnCells:Array[Vector3i] 
+		spawnCells.assign(mapUsed.spawnLocations[index])
+		gridMap.mark_cells(spawnCells, index, false)
+		gridMap.tag_cells(spawnCells, "FACTION_SPAWN_"+faction.internalName)
+		
+		print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
 		index+=1
-		for spawnPos in spawnClump:
-			gridMap.mark_cells(spawnPos,index)
+	
+#	for spawnArray in mapUsed.spawnLocations:
+#		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
+#
+
 
 class Cell extends Area3D:
 	var mesh:Mesh
@@ -480,6 +502,8 @@ class SetupController extends Control:
 	
 	func _init(_board:GameBoard) -> void:
 		board = _board
+		
+	
 		
 	
 	pass
