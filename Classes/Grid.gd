@@ -15,6 +15,8 @@ enum CellIDs {TARGETING, BLUE, YELLOW, GREEN, PINK, BROWN, SKYBLUE, GREY, RED}
 enum Searches {UNIT, OBSTACLE, ANYTHING, TAG}
 enum MapShapes{STAR,CONE,SINGLE,ALL}
 
+
+## Stores all the information of every cell Vector3:Array
 var cellDict:Dictionary = {}
 var objectPicker:=Picker3D.new()
 var pathing:GridPathing
@@ -77,11 +79,11 @@ func printer(variant):
 
 
 	
-func mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.TARGETING):
-	subGridMap.clear()
+func mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.TARGETING, autoClear:bool=true):
+	if autoClear: subGridMap.clear()
 	for cell in cells:
 		subGridMap.set_cell_item(cell,tileID)
-	print(subGridMap.get_used_cells())
+	print_debug(subGridMap.get_used_cells())
 		
 func get_marked_cells():
 	return subGridMap.get_used_cells()
@@ -103,6 +105,10 @@ func initialize_cells(map:Map, override:bool=false):
 func get_cell_tags(cell:Vector3i, getAll:bool=true)->Array:
 	return search_in_tile(cell, Searches.TAG, getAll)
 
+func tag_cells(cells:Array[Vector3i], tag:String):
+	for cell in cells:
+		cellDict[cell].append(tag)
+	
 
 ## Searches for something in the given tile, returns false if it can't find anything
 func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=false):
