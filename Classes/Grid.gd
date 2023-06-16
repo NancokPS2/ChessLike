@@ -17,7 +17,7 @@ enum MapShapes{STAR,CONE,SINGLE,ALL}
 
 
 ## Stores all the information of every cell Vector3:Array
-var cellDict:Dictionary = {}
+var cellDict:Array[Cell] = []
 var objectPicker:=Picker3D.new()
 var pathing:GridPathing
 
@@ -52,7 +52,10 @@ func update_grid(map:Map):
 	pathing = GridPathing.new(self,get_typed_cellDict_array())
 	register_all_objects_to_cells()
 
+
+## Used to register units and obstacles.
 func register_all_objects_to_cells():
+	
 	assert(not cellDict.is_empty())
 	var allValidNodes:Array = []
 	for group in Const.Groups: allValidNodes += get_tree().get_nodes_in_group(Const.Groups[group])
@@ -60,15 +63,15 @@ func register_all_objects_to_cells():
 	for node in allValidNodes:
 		assert(node.get("position")!=null)
 		var cellPos:Vector3i = local_to_map(node.position)
-		
-		if not cellDict.has(cellPos): push_error("The object is outside the grid!")
-		else: cellDict[cellPos].append(node)
+		var cell:Cell = Cell.find_cell_with_position(cellDict, cellPos)
+		if cell is Cell: cell.append(node)
+		else: push_error("The object is outside the grid!")
 
 ## Returns all cells in cellDict as Array[Vector3i]
-func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
-	var returnal:Array[Vector3i]
-	returnal.assign(array)
-	return returnal
+#func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
+#	var returnal:Array[Vector3i]
+#	returnal.assign(array)
+#	return returnal
 
 func get_top_of_cell(cell:Vector3i)->Vector3:
 	return map_to_local(cell) + Vector3.UP * (cell_size.y/2)
