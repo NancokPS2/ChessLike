@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnlnrysct03yk"]
+
+[ext_resource type="PackedScene" uid="uid://dq616t6audi8a" path="res://Assets/Meshes/Map/CellItemMesh/GrassyTile.glb" id="1_e8vtd"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="GrassyTile" parent="." instance=ExtResource("1_e8vtd")]

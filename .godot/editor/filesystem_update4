@@ -20,3 +20,15 @@ res://Objects/CombatGrid/GameBoard.gd
 res://Resources/Maps/Map.gd
 res://Classes/Grid.gd
 res://Resources/CellResource.gd
+res://Assets/Meshes/Map/DefaultTileScene.tscn
+res://Assets/Meshes/Map/GrassyTileScene.tscn
+res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres
+res://Assets/Meshes/Map/MeshLibs/SubGridMeshLib.tscn
+res://Assets/Meshes/Map/MeshLibs/DefaultTileScene.tscn
+res://Assets/Meshes/Map/MeshLibs/GrassyTileScene.tscn
+res://Resources/Characters/Races/Human.tres
+res://Resources/Abilities/AllAbilities/Heal.tres
+res://Resources/Characters/Classes/Civilian.tres
+res://Resources/Characters/Factions/PLAYER.tres
+res://Resources/Characters/UniqueCharacters/Misha.tres
+res://Resources/Maps/UniqueMaps/Default.tres

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/Meshes/Map/DefaultTiles.tres" id="1"]
+[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/Meshes/Map/MeshLibs/DefaultTiles.tres" id="1"]
 
 [node name="Spatial" type="Spatial"]
 

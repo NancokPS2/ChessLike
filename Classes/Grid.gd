@@ -6,7 +6,7 @@ class_name MovementGrid
 signal cell_clicked(cellPos:Vector3i)
 signal marked_cell_clicked(cellPos:Vector3i)
 
-const TargetingMesh:MeshLibrary = preload("res://Assets/Meshes/Map/SubGridMeshLib.tres")
+const TargetingMesh:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/SubGridMeshLib.tres")
 const Directionsi:Array[Vector3i]=[Vector3i.UP,Vector3i.DOWN,Vector3i.BACK,Vector3i.FORWARD,Vector3i.LEFT,Vector3i.RIGHT]
 const Directions:Array[Vector3]=[Vector3.UP,Vector3.DOWN,Vector3.BACK,Vector3.FORWARD,Vector3.LEFT,Vector3.RIGHT]
 const DefaultCellTags = Map.DefaultCellTags
@@ -44,6 +44,8 @@ func _ready() -> void:
 	objectPicker.debugPath = true
 	objectPicker.user = self
 	subGridMap = GridMap.new()
+	
+	print_debug(mesh_library.get_item_list())
 
 ## Updates all cells and object positions
 func update_grid(map:Map):
@@ -52,7 +54,11 @@ func update_grid(map:Map):
 	pathing = GridPathing.new(self,get_typed_cellDict_array())
 	register_all_objects_to_cells()
 
+## Used to register units and obstacles.
 func register_all_objects_to_cells():
+	for cell in cellDict:
+		cellDict[cell] = cellDict[cell].filter(func(cont): return not cont is String )
+	
 	assert(not cellDict.is_empty())
 	var allValidNodes:Array = []
 	for group in Const.Groups: allValidNodes += get_tree().get_nodes_in_group(Const.Groups[group])
@@ -251,7 +257,7 @@ class GridPathing extends Node:
 #
 #			for otherPointPos in validPoints:
 #				thisAStar.connect_points(pointID,connectionDict[otherPointPos])
-				
+		assert(not aStarLayers.is_empty())
 		
 	
 	func get_point_from_pos(point:Vector3, aStarLayer:String=DEFAULT_LAYER)->int:

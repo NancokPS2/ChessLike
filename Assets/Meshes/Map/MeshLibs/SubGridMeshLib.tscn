@@ -1,0 +1,80 @@
+[gd_scene load_steps=20 format=3 uid="uid://cy7lt2rowve1b"]
+
+[ext_resource type="Material" uid="uid://c1wxd2rabn204" path="res://Assets/Meshes/Map/TargetingWavyShader.tres" id="1_oqatc"]
+[ext_resource type="Shader" path="res://Other/Shaders/Waves.gdshader" id="2_r2uni"]
+[ext_resource type="Material" uid="uid://dg6bfmntfojxn" path="res://Assets/Meshes/Map/BlueWavyShader.tres" id="3_874r3"]
+[ext_resource type="Material" uid="uid://cni4m40ocv8g3" path="res://Assets/Meshes/Map/YellowWavyShader.tres" id="4_6mqyq"]
+[ext_resource type="Material" uid="uid://cod0ku6487d5t" path="res://Assets/Meshes/Map/YellowCellMaterial.tres" id="5_jlq2k"]
+[ext_resource type="Material" uid="uid://cmty52glumf63" path="res://Assets/Meshes/Map/GreenWavyShader.tres" id="6_e6vwh"]
+[ext_resource type="Material" uid="uid://mtef44060b6j" path="res://Assets/Meshes/Map/GreenCellMaterial.tres" id="7_jr06g"]
+[ext_resource type="Material" uid="uid://cujo0cwijbmhi" path="res://Assets/Meshes/Map/PinkWavyShader.tres" id="8_56xg2"]
+[ext_resource type="Material" uid="uid://d1kyn81uv5qlr" path="res://Assets/Meshes/Map/PinkCellMaterial.tres" id="9_oeek8"]
+[ext_resource type="Material" uid="uid://drwhjn88chsu7" path="res://Assets/Meshes/Map/BrownWavyShader.tres" id="10_lctcu"]
+[ext_resource type="Material" uid="uid://b5t4wxbyqlhvf" path="res://Assets/Meshes/Map/BrownCellMaterial.tres" id="11_hg1xk"]
+[ext_resource type="Material" uid="uid://cj3hhvncar7il" path="res://Assets/Meshes/Map/SkyblueWavyShader.tres" id="12_mq3lk"]
+[ext_resource type="Material" uid="uid://byf8vn7nt0b36" path="res://Assets/Meshes/Map/SkyBlueCellMaterial.tres" id="13_t8x21"]
+[ext_resource type="Material" uid="uid://dmb6726yqgqqa" path="res://Assets/Meshes/Map/GreyWavyShader.tres" id="14_vsv70"]
+[ext_resource type="Material" uid="uid://d0b656nrucudi" path="res://Assets/Meshes/Map/GreyCellMaterial.tres" id="15_hedth"]
+[ext_resource type="Material" uid="uid://b2jjyjcs1ulu8" path="res://Assets/Meshes/Map/RedWavyShader.tres" id="16_b24r8"]
+[ext_resource type="Material" uid="uid://dpy8vo1dk4atp" path="res://Assets/Meshes/Map/RedCellMaterial.tres" id="17_q2c25"]
+
+[sub_resource type="PlaneMesh" id="1"]
+size = Vector2(0.16, 0.16)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w3sy1"]
+render_priority = 0
+shader = ExtResource("2_r2uni")
+shader_parameter/mainColor = Color(1, 0.313726, 0, 0.392157)
+shader_parameter/wave_speed = 1.0
+shader_parameter/wave_frequency = 4.5
+shader_parameter/wave_amplitude = 0.4
+
+[node name="Spatial" type="Node3D"]
+transform = Transform3D(0.3, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="Targeting" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
+material_override = ExtResource("1_oqatc")
+mesh = SubResource("1")
+surface_material_override/0 = SubResource("ShaderMaterial_w3sy1")
+
+[node name="BLUE" type="MeshInstance3D" parent="."]
+material_override = ExtResource("3_874r3")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("3_874r3")
+
+[node name="YELLOW" type="MeshInstance3D" parent="."]
+material_override = ExtResource("4_6mqyq")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("5_jlq2k")
+
+[node name="GREEN" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.34, 0)
+material_override = ExtResource("6_e6vwh")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("7_jr06g")
+
+[node name="PINK" type="MeshInstance3D" parent="."]
+material_override = ExtResource("8_56xg2")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("9_oeek8")
+
+[node name="BROWN" type="MeshInstance3D" parent="."]
+material_override = ExtResource("10_lctcu")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("11_hg1xk")
+
+[node name="SKYBLUE" type="MeshInstance3D" parent="."]
+material_override = ExtResource("12_mq3lk")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("13_t8x21")
+
+[node name="GREY" type="MeshInstance3D" parent="."]
+material_override = ExtResource("14_vsv70")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("15_hedth")
+
+[node name="RED" type="MeshInstance3D" parent="."]
+material_override = ExtResource("16_b24r8")
+mesh = SubResource("1")
+surface_material_override/0 = ExtResource("17_q2c25")

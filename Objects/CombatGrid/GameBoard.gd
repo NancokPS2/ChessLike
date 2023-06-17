@@ -435,6 +435,7 @@ func get_present_factions(inCombatOnly:bool)->Array[Faction]:
 	return factionList
 
 func load_map(mapUsed:Map = currentMap)->void:
+	mapUsed.is_valid()
 	assert(mapUsed is Map and gridMap is MovementGrid) 
 	gridMap.mesh_library = mapUsed.meshLibrary
 	
@@ -465,9 +466,6 @@ func load_map(mapUsed:Map = currentMap)->void:
 #		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
 #
 
-
-class Cell extends Area3D:
-	var mesh:Mesh
 	
 	
 #class UnitManager extends Node:

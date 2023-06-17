@@ -1,7 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://bvl5u23p1tryk"]
+[gd_scene load_steps=9 format=3 uid="uid://xeum2r6b38cn"]
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
-[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/Meshes/Map/DefaultTiles.tres" id="2_23y28"]
+[ext_resource type="MeshLibrary" uid="uid://ck70ug8k6hn3f" path="res://Assets/Meshes/Map/MeshLibs/DefaultTiles.tres" id="2_orbkk"]
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="4_wjtrp"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/CombatMenu.gd" id="5_tknwe"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
@@ -31,8 +31,8 @@ offset_right = 809.64
 offset_bottom = 232.272
 
 [node name="MovementGrid" type="GridMap" parent="." groups=["COMBAT", "SETUP"]]
-mesh_library = ExtResource("2_23y28")
-cell_size = Vector3(0.35, 0.35, 0.35)
+mesh_library = ExtResource("2_orbkk")
+cell_size = Vector3(0.33, 0.33, 0.33)
 data = {
 "cells": PackedInt32Array(0, 0, 0, 65535, 65535, 0, 131071, 65535, 0)
 }
@@ -94,6 +94,9 @@ metadata/_edit_use_anchors_ = true
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
 script = ExtResource("8_5hr6c")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.965926, 1.13133e-08, -0.258819, 0.258819, -4.2222e-08, 0.965926, 0, -1, -4.37114e-08, 0, 4, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_vl025")

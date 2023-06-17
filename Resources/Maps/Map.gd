@@ -21,7 +21,7 @@ enum DefaultCellTags {
 
 @export var heightMap:Array = []
 
-@export var meshLibrary:MeshLibrary = preload("res://Assets/Meshes/Map/DefaultTiles.tres")
+@export var meshLibrary:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres")
 
 @export var background:Texture
 
@@ -84,3 +84,13 @@ func get_all_cells()->Array[Vector3i]:
 		cells.append(cellArr[1])
 	return cells
 
+func is_valid()->bool:
+	var tileItems:int = meshLibrary.get_item_list().size()
+	for cellArr in terrainCells:
+		if cellArr[TerrainCellData.TILE_ID] >= tileItems:
+			push_error("Invalid mesh ID on terrainCells, maximum value for this meshLibrary is " + str(tileItems) + ". " + str(cellArr))
+			return false
+#	if terrainCells.any(func(cellArr:Array): return cellArr[TerrainCellData.TILE_ID]):
+
+		
+	return true
