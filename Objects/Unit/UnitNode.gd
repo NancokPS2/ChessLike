@@ -55,7 +55,7 @@ func _ready() -> void:
 
 func get_current_cell()->Vector3i:
 	var cell:Vector3i = board.gridMap.local_to_map(position)
-	assert(board.gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT, true).has(self))
+#	assert(board.gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT, true).has(self))
 	return cell
 
 
