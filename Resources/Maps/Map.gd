@@ -1,6 +1,8 @@
 extends Resource
 class_name Map
 
+
+
 enum DefaultCellTags {
 	WALKABLE, ## All units (dirt, path)
 	EMPTY, ## Flying only (chasms)
@@ -55,13 +57,19 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 		"positionInGrid":(Vector2(0,0))
 	}
 ]
-@export var unitsToLoad:Array[CharAttributes]
+
+enum LoadableUnitsData {POSITION, UNIT_RESOURCE}
+@export var loadableUnits:Array[CharAttributes]
+
+
 
 @export_group("Auto Generation")
 @export var generateTerrain:bool = false
 @export var noiseName:StringName = "NOISE_DEFAULT"
+@export var noiseSeed:int = 0
 @export var wantedSize:Vector3i = Vector3i.ONE*15
 @export_range(1,8) var maxFactions:int = 2
+
 
 #func get_faction_spawns(factions:Array[Faction])->Dictionary:
 #	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
@@ -72,13 +80,13 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 #		finalDict[faction.internalName] = spawns.pop_back()
 #
 #	return finalDict
-
-func _init() -> void:
-	var generator:=TerrainGenerator.new()
+func auto_generation():
 	if generateTerrain:
+		var generator:=TerrainGenerator.new()
 		if generator.get(noiseName) is FastNoiseLite:
-			generator.simple_noise_generation(self, wantedSize, generator.get(internalName)) 
+			generator.simple_noise_generation(self, wantedSize, generator.get(noiseName), noiseSeed) 
 		else: push_error("Not a valid noise constant.")
+	
 
 func add_terrain_cell(tileID:int, pos:Vector3i, tags:Array[String]):
 	var cellArray:Array = [tileID, pos, tags]
@@ -95,8 +103,9 @@ func get_all_cell_tags(cell:Vector3i)->Array:
 func get_all_cells()->Array[Vector3i]:
 	var cells:Array[Vector3i]
 	for cellArr in terrainCells:
-		cells.append(cellArr[1])
+		cells.append(cellArr[TerrainCellData.TILE_POS])
 	return cells
+
 
 func is_valid()->bool:
 	var tileItems:int = meshLibrary.get_item_list().size()
@@ -113,9 +122,10 @@ class TerrainGenerator extends RefCounted:
 	const NOISE_DEFAULT:FastNoiseLite = preload("res://Other/DefaultTerrainNoise.tres")
 
 
-	static func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite=NOISE_DEFAULT, tags:Dictionary={}):
+	static func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite=NOISE_DEFAULT, seed:int=0, tags:Dictionary={}):
 		mapUsed.terrainCells.clear()
 		mapUsed.spawnLocations.clear()
+		noiseUsed.seed
 		if tags == {}:
 			tags[0] = ["WALKABLE"]
 		for x in size.x:
