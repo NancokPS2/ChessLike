@@ -435,6 +435,7 @@ func get_present_factions(inCombatOnly:bool)->Array[Faction]:
 	return factionList
 
 func load_map(mapUsed:Map = currentMap)->void:
+	currentMap = mapUsed
 	mapUsed.is_valid()
 	assert(mapUsed is Map and gridMap is MovementGrid) 
 	gridMap.mesh_library = mapUsed.meshLibrary

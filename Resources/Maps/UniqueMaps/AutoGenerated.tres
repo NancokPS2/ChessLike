@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Map" load_steps=3 format=3 uid="uid://bfr0af0aosxio"]
+
+[ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="2_hjv53"]
+[ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="3_o2ibs"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("2_hjv53")
+displayName = "Default"
+internalName = null
+description = null
+maxSize = null
+heightMap = null
+terrainCells = null
+spawnLocations = null
+unitsToGenerate = null
+unitsToLoad = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([ExtResource("3_o2ibs")])

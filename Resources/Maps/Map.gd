@@ -15,8 +15,10 @@ enum DefaultCellTags {
 	NO_ENTRY, ## Impossible to enter
 	}
 
-@export var displayName:String
-@export var internalName:String
+@export var displayName:String  
+  
+## Set to a Noise name to use that automatically.
+@export var internalName:StringName
 @export var description:String
 
 @export var heightMap:Array = []
@@ -26,16 +28,17 @@ enum DefaultCellTags {
 @export var background:Texture
 
 enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
-@export var terrainCells:Array[Array] = [
-	[0,Vector3i.ZERO,["WALKABLE"]],
-	[0,Vector3i.RIGHT,["WALKABLE"]],
-	[0,Vector3i.FORWARD,["WALKABLE"]],
-	[0,Vector3i.BACK,["WALKABLE"]],
-	[0,Vector3i.LEFT,["WALKABLE"]],
-	[0,Vector3i.LEFT*2,["WALKABLE"]],
-	[0,Vector3i(1,0,1),["WALKABLE"]],
-	[0,Vector3i(2,0,1),["WALKABLE"]]
-]
+@export var terrainCells:Array[Array] 
+# [
+#	[0,Vector3i.ZERO,["WALKABLE"]],
+#	[0,Vector3i.RIGHT,["WALKABLE"]],
+#	[0,Vector3i.FORWARD,["WALKABLE"]],
+#	[0,Vector3i.BACK,["WALKABLE"]],
+#	[0,Vector3i.LEFT,["WALKABLE"]],
+#	[0,Vector3i.LEFT*2,["WALKABLE"]],
+#	[0,Vector3i(1,0,1),["WALKABLE"]],
+#	[0,Vector3i(2,0,1),["WALKABLE"]]
+#]
 
 
 @export var spawnLocations:Array[Array] = [
@@ -54,6 +57,12 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 ]
 @export var unitsToLoad:Array[CharAttributes]
 
+@export_group("Auto Generation")
+@export var generateTerrain:bool = false
+@export var noiseName:StringName = "NOISE_DEFAULT"
+@export var wantedSize:Vector3i = Vector3i.ONE*15
+@export_range(1,8) var maxFactions:int = 2
+
 #func get_faction_spawns(factions:Array[Faction])->Dictionary:
 #	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
 #	var spawns:Array[Array] = spawnLocations
@@ -64,7 +73,12 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 #
 #	return finalDict
 
-
+func _init() -> void:
+	var generator:=TerrainGenerator.new()
+	if generateTerrain:
+		if generator.get(noiseName) is FastNoiseLite:
+			generator.simple_noise_generation(self, wantedSize, generator.get(internalName)) 
+		else: push_error("Not a valid noise constant.")
 
 func add_terrain_cell(tileID:int, pos:Vector3i, tags:Array[String]):
 	var cellArray:Array = [tileID, pos, tags]
@@ -94,3 +108,29 @@ func is_valid()->bool:
 
 		
 	return true
+
+class TerrainGenerator extends RefCounted:
+	const NOISE_DEFAULT:FastNoiseLite = preload("res://Other/DefaultTerrainNoise.tres")
+
+
+	static func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite=NOISE_DEFAULT, tags:Dictionary={}):
+		mapUsed.terrainCells.clear()
+		mapUsed.spawnLocations.clear()
+		if tags == {}:
+			tags[0] = ["WALKABLE"]
+		for x in size.x:
+			for z in size.z:
+				var tileID:int = 0
+				var height:int = abs(noiseUsed.get_noise_2d(x/size.x,z/size.z)*10)
+				var tagsUsed:Array[String] 
+				tagsUsed.assign(tags[tileID])
+				mapUsed.add_terrain_cell(tileID, Vector3i(x,height,z), tagsUsed)
+		
+		var copyOfTerrain:Array[Array] = mapUsed.terrainCells.duplicate(true)
+		for faction in mapUsed.maxFactions:
+			var thisFaction:Array = []
+			thisFaction.append(copyOfTerrain.pop_back()[Map.TerrainCellData.TILE_POS])
+			thisFaction.append(copyOfTerrain.pop_back()[Map.TerrainCellData.TILE_POS])
+			mapUsed.spawnLocations.append(thisFaction)
+			
+		assert(mapUsed.terrainCells.size() >= size.x*size.z)
