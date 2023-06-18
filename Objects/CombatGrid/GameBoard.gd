@@ -351,7 +351,8 @@ func _process(delta: float) -> void:
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
 	if unitList.unitSelected is Unit and unitList.unitSelected.get_parent() == self:
-		gridMap.pathing.update_individual_visual_meshes(unitList.unitSelected.get_current_cell(),gridMap.map_to_local(cell))
+		var origin:Vector3i = unitList.unitSelected.get_current_cell()
+		gridMap.pathing.update_individual_visual_meshes(origin, cell)
 		
 	match state:
 		States.SETUP:
