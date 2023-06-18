@@ -4,6 +4,8 @@ const MINI_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/MiniUnit
 const SMALL_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/SmallUnitDisplay.tscn")
 const BIG_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn")
 
+const NO_FACTION_FILTER:StringName = ""
+
 @export_enum("MINI_DISPLAY","SMALL_DISPLAY","BIG_DISPLAY") var displayUsed:String ="MINI_DISPLAY"
 
 var unitSelected:Unit
@@ -13,10 +15,14 @@ func set_unit_selected(unit:Unit):
 	Events.UPDATE_UNIT_INFO.emit()
 	print(unitSelected)
 
-func refresh_units(units:Array[Unit] = Ref.board.unitsInCombat):
+func refresh_units(units:Array[Unit] = Ref.board.allUnits, factionFilter:StringName = NO_FACTION_FILTER):
 	assert(not units.is_empty())
 	for child in get_children(): child.queue_free()
 	for unit in units:
+		#Check if the filter is active and if the unit fulfills it.
+		if factionFilter != NO_FACTION_FILTER and unit.attributes.faction.internalName != factionFilter:
+			continue
+			
 		var newDisplay:UnitDisplay = get(displayUsed).instantiate()
 		newDisplay.unitRef = unit
 		newDisplay.custom_minimum_size = Vector2(size.y*2, size.y)
