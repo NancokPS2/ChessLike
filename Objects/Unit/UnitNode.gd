@@ -47,9 +47,10 @@ func _ready() -> void:
 	
 	#TESTING
 	await get_tree().process_frame 
-	var abil = load("res://Resources/Abilities/AllAbilities/Heal.tres")
+	var abil:Ability = load("res://Resources/Abilities/AllAbilities/Heal.tres")
 	assert(abil is Ability)
 	attributes.abilities.append(abil)
+	abil.user = self
 	print(attributes.abilities)
 #	position = board.gridMap.get_top_of_cell(get_current_cell())
 

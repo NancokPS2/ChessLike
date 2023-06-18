@@ -114,5 +114,8 @@ transform = Transform3D(0.999969, 0.0028502, 0.00727676, -0.00281973, 0.999987, 
 
 [node name="NickName" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504893, 0)
+billboard = 2
+double_sided = false
+fixed_size = true
 text = "MYNAME"
 width = 320.0
