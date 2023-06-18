@@ -1,3 +1,5 @@
+FastNoiseLite
+NoiseTexture2D
 StyleBoxTexture
 Theme
 Ability
