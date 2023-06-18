@@ -5,8 +5,9 @@ class_name GameBoard
 
 signal units_changed(newUnits:Array[Unit])
 
-enum States {SETUP,COMBAT,PAUSE,END}
+const SPAWN_TAG:StringName = "FACTION_SPAWN_"
 
+enum States {SETUP,COMBAT,PAUSE,END}
 
 enum CombatStates {
 	C_IDLE,#Nothing is happening, actions are displayed
@@ -349,6 +350,9 @@ func _process(delta: float) -> void:
 
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
+	if unitList.unitSelected is Unit and unitList.unitSelected.get_parent() == self:
+		gridMap.pathing.update_individual_visual_meshes(unitList.unitSelected.get_current_cell(),gridMap.map_to_local(cell))
+		
 	match state:
 		States.SETUP:
 			Events.UPDATE_UNIT_INFO.emit()
@@ -357,10 +361,12 @@ func on_cell_clicked(cell:Vector3i):
 			
 			#If there is a unit selected.
 			if unitList.unitSelected is Unit:
-				if not unitList.unitSelected.get_parent() == self:
-					add_child(unitList.unitSelected)
-				else:
-					unitList.unitSelected.position = gridMap.map_to_local(cell)
+				#The selected cell has the correct tag.
+				if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitList.unitSelected.attributes.faction.internalName):
+					if not unitList.unitSelected.get_parent() == self:
+						add_child(unitList.unitSelected)
+					gridMap.place_object(cell, unitList.unitSelected)
+#						unitList.unitSelected.position = gridMap.map_to_local(cell)
 				
 				
 			pass
@@ -391,7 +397,7 @@ func update_menus_to_unit(unit:Unit=selectedUnit):
 		if menu != "MENU": 
 			menuCombat.clear_menu(menu)
 	
-	assert(not unit.attributes.abilities.is_empty())
+#	assert(not unit.attributes.abilities.is_empty())
 	
 	for ability in unit.attributes.abilities:
 		var button:=Button.new()
@@ -435,34 +441,47 @@ func get_present_factions(inCombatOnly:bool)->Array[Faction]:
 	return factionList
 
 func load_map(mapUsed:Map = currentMap)->void:
-	currentMap = mapUsed
-	mapUsed.is_valid()
 	assert(mapUsed is Map and gridMap is MovementGrid) 
-	gridMap.mesh_library = mapUsed.meshLibrary
 	
+	currentMap = mapUsed
+	mapUsed.auto_generation()
+	mapUsed.is_valid()
+	
+	# Load cells
 	gridMap.clear()
+	gridMap.mesh_library = mapUsed.meshLibrary
 	for cellData in mapUsed.terrainCells:
 		gridMap.set_cell_item(cellData[1],cellData[0])
+	gridMap.initialize_cells(mapUsed)
 	
-	for unitAttrib in mapUsed.unitsToLoad:
+		
+	# Add units
+	for unitAttrib in mapUsed.loadableUnits:
 		var newUnit:Unit = Unit.Generator.build_from_attributes(unitAttrib)
 		allUnits.append(newUnit)
-		add_child(newUnit)
-		
-	gridMap.update_grid(mapUsed)
-	units_changed.emit(unitsInCombat)
-	
-	#Place spawn positions, relies on MovementGrid.CellIDs
+			
+	#Place spawn positions
 	var index:int=1
 	for faction in get_present_factions(false):
 		var spawnCells:Array[Vector3i] 
 		spawnCells.assign(mapUsed.spawnLocations[index])
 		gridMap.mark_cells(spawnCells, index, false)
-		gridMap.tag_cells(spawnCells, "FACTION_SPAWN_"+faction.internalName)
+		gridMap.tag_cells(spawnCells, SPAWN_TAG + faction.internalName)
 		
 		print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
 		index+=1
 	
+	# Place new unit
+#	add_child(newUnit)
+#
+#		# If the unit ends up out of bounds, correct it
+#		if not gridMap.cellDict.has(newUnit.get_current_cell()):
+#			push_warning("Unit out of bounds, fixing...")
+#			assert(not gridMap.get_used_cells().is_empty())
+#			gridMap.place_object(gridMap.get_used_cells().pick_random(), newUnit)
+		
+	gridMap.update_grid(mapUsed)
+	unitList.refresh_units(allUnits, CVars.saveFile.playerFaction.internalName)
 #	for spawnArray in mapUsed.spawnLocations:
 #		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
 #
