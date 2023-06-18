@@ -23,5 +23,6 @@ unitsToGenerate = Array[Dictionary]([{
 loadableUnits = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([ExtResource("1_d4liq")])
 generateTerrain = true
 noiseName = &"NOISE_DEFAULT"
+noiseSeed = 0
 wantedSize = Vector3i(15, 15, 15)
 maxFactions = 2
