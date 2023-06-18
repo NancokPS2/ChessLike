@@ -5,6 +5,7 @@ class_name MovementGrid
 
 signal cell_clicked(cellPos:Vector3i)
 signal marked_cell_clicked(cellPos:Vector3i)
+signal placed_object(cell:Vector3i, object:Object)
 
 const TargetingMesh:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/SubGridMeshLib.tres")
 const Directionsi:Array[Vector3i]=[Vector3i.UP,Vector3i.DOWN,Vector3i.BACK,Vector3i.FORWARD,Vector3i.LEFT,Vector3i.RIGHT]
@@ -47,17 +48,18 @@ func _ready() -> void:
 	
 	print_debug(mesh_library.get_item_list())
 
-## Updates all cells and object positions
+## Updates all object positions in the Grid
 func update_grid(map:Map):
 	#TODO: This should not take ALL used cells (?)
-	initialize_cells(map)
+#	initialize_cells(map)
 	pathing = GridPathing.new(self,get_typed_cellDict_array())
 	register_all_objects_to_cells()
 
 ## Used to register units and obstacles.
 func register_all_objects_to_cells():
 	for cell in cellDict:
-		cellDict[cell] = cellDict[cell].filter(func(cont): return not cont is String )
+		cellDict[cell] = cellDict[cell].filter(func(cont): return not cont is StringName )
+		assert(not cellDict.values().is_empty(), "There appears to not even be tags in this map. Ensure they are not being filtered.")
 	
 	assert(not cellDict.is_empty())
 	var allValidNodes:Array = []
@@ -81,7 +83,7 @@ func get_top_of_cell(cell:Vector3i)->Vector3:
 
 func printer(variant):
 	print(variant)
-	pathing.update_individual_visual_meshes(map_to_local(Vector3i.ZERO),map_to_local(variant))
+	
 
 
 	
@@ -146,7 +148,6 @@ func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 		
 	return null
 
-
 func set_items_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
 	for pos in cells:
 		set_cell_item(Vector3i(pos),objetctID)
@@ -154,6 +155,10 @@ func set_items_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in
 func align_to_grid(object:Object):
 	var gridPos:Vector3i = local_to_map(object.position)
 	object.translation = map_to_local(gridPos)
+	
+func place_object(cell:Vector3i, object:Node3D):
+	object.position = map_to_local(cell)
+	placed_object.emit(cell, object)
 
 func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=MapShapes.STAR, facing:int=SIDE_TOP)->Array:
 	var returnedTiles:Array
