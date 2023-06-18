@@ -1,17 +1,27 @@
-[gd_resource type="Resource" script_class="Map" load_steps=3 format=3 uid="uid://bfr0af0aosxio"]
+[gd_resource type="Resource" script_class="Map" load_steps=4 format=3 uid="uid://bfr0af0aosxio"]
 
+[ext_resource type="Resource" uid="uid://ccahm2xfvtsi7" path="res://Resources/Characters/UniqueCharacters/Marco.tres" id="1_d4liq"]
+[ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="1_yjl0t"]
 [ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="2_hjv53"]
-[ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="3_o2ibs"]
 
 [resource]
-resource_local_to_scene = true
 script = ExtResource("2_hjv53")
 displayName = "Default"
-internalName = null
-description = null
-maxSize = null
-heightMap = null
-terrainCells = null
-spawnLocations = null
-unitsToGenerate = null
-unitsToLoad = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([ExtResource("3_o2ibs")])
+internalName = &""
+description = ""
+heightMap = []
+meshLibrary = ExtResource("1_yjl0t")
+terrainCells = Array[Array]([])
+spawnLocations = Array[Array]([[Vector3i(2, 0, 1)], [Vector3i(-2, 0, 0)]])
+unitsToGenerate = Array[Dictionary]([{
+"className": "CIVILIAN",
+"factionName": "DEFAULT",
+"positionInGrid": Vector2(0, 0),
+"raceName": "HUMAN",
+"unitName": "Human"
+}])
+loadableUnits = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([ExtResource("1_d4liq")])
+generateTerrain = true
+noiseName = &"NOISE_DEFAULT"
+wantedSize = Vector3i(15, 15, 15)
+maxFactions = 2

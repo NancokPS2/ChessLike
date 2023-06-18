@@ -13,7 +13,7 @@ classAttributes = ExtResource("1_yx3hh")
 faction = ExtResource("3_3tmn3")
 personalityNumber = Array[int]([255, 255, 255])
 info = {
-"className": "Unemployed",
+"className": "This",
 "factionName": "",
 "firstName": "Unnamed",
 "lastName": "",
