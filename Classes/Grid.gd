@@ -265,9 +265,10 @@ class GridPathing extends Node:
 		assert(not aStarLayers.is_empty())
 		
 	
-	func get_point_from_pos(point:Vector3, aStarLayer:String=DEFAULT_LAYER)->int:
+	func get_point_from_pos(point:Vector3i, aStarLayer:String=DEFAULT_LAYER)->int:
 		var aStarUsed:AStar3D = aStarLayers[aStarLayer]
-		var pointRet:int = aStarUsed.get_closest_point(point)
+		
+		var pointRet:int = aStarUsed.get_closest_point(gridRef.map_to_local(point))
 		return pointRet
 	
 	func update_individual_visual_meshes(startPoint:Vector3, endPoint:Vector3, aStarLayer:String=DEFAULT_LAYER, color:=Color.RED):
