@@ -1,1 +1,8 @@
-Characters
+-World:
+	>Magic with some degree of steam based technology
+	>Magic comes from creature's life forces. The presence of undeath acts as a sort of anti magic.
+	
+Technologies: 
+	>Steam trains
+	>Balloons
+	>Extremely expensive and newly devised planes. None have the materials or power to move more than a couple of people.
