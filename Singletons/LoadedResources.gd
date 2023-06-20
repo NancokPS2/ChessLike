@@ -1,20 +1,27 @@
-extends Node
+extends ResourceManager
 #TODO: Make cache system that stores the names of the resources and their location in the dictionary
 const Extensions:Dictionary = {RESOURCE="tres", PACKED_SCENE="tscn"}
-var resources:Dictionary = {}
-var filePaths:Dictionary
-#Structure:resources:Dict>type:Dict>list:Array
+
+const ResGroups:Array[String] = ["ABILITY", "CLASS", "FACTION", "RACE", "CHARACTER", "EQUIPMENT"]
 
 
-#Loading
 func _init():#Loading of files
-#	load_from_folder("res://Resources/Abilities/AllAbilities/","abilities")
-#	load_from_folder("res://Resources/Characters/Classes/","classes")
-#	load_from_folder("res://Resources/Characters/Races/","races")
-#	load_from_folder("res://Resources/Characters/Factions/","factions")
-#	load_from_folder("res://Resources/Characters/UniqueCharacters/","characters")
-#	load_from_folder("res://Resources/Items/Weapons/","equipment")
-
+	autoLoadResources = true
+	store_from_folder("res://Resources/Abilities/AllAbilities/","ABILITY")
+	store_from_folder("res://Resources/Characters/Classes/","CLASS")
+	store_from_folder("res://Resources/Characters/Races/","RACE")
+	store_from_folder("res://Resources/Characters/Factions/","FACTION")
+	store_from_folder("res://Resources/Characters/UniqueCharacters/","CHARACTER")
+	store_from_folder("res://Resources/Items/Weapons/","EQUIPMENT")
+	
+	super._init()
+	
+func _get_identifier(fileName:String)->String:
+	var res:Resource = load(fileName)
+	var identifier = res.get("internalName")
+	if identifier is String: return identifier 
+	else: push_error("No internalName defined in resource."); return fileName
+	pass
 #	load_abilities("res://Resources/Abilities/AllAbilities/")
 #	load_classes("res://Resources/Characters/Classes/")
 #	load_races("res://Resources/Characters/Races/")
@@ -23,53 +30,53 @@ func _init():#Loading of files
 	pass
 
 
-func register_file_paths(folder:String, category:String, extensionFilter:String=Extensions.RESOURCE):
-	var files:PackedStringArray = DirAccess.get_files_at(folder)
-	
-	filePaths[category] = filePaths.get(category,[]).append_array(files)
-	filePaths[category].filter(func(fileName:String): return fileName.get_extension() == Extensions.RESOURCE or fileName.get_extension() == Extensions.PACKED_SCENE)
-
-
-
-
-func load_from_folder(folderPath:String,type:String):
-	var loadingDir = DirAccess.open(folderPath)
-	loadingDir.open(folderPath)#Start loading abilities
-	var files:PackedStringArray = loadingDir.get_files()
-	for fileName in files:
-		var loadedFile = load(folderPath+str(fileName))
-		if !resources.has(type):#Ensure the type exists in resources
-			resources[type] = []
-			
-		if loadedFile is GDScript:#If it is a script of a resource
-			var script = loadedFile
-			loadedFile = Resource.new()
-			loadedFile.set_script(script)
-
-			
-		resources[type].append(loadedFile.duplicate())#Add it to the list of the corresponding type
-	pass
-	
-func get_resource(identifier:String,type:String,useCategory:bool = false):#If useCategory is true
-	if identifier == "":
-		push_error("No identifier given for " + type + " returnal.")
-	elif type == "":
-		push_error("Tried to retrieve resource but a type was not specified for identifier: " + identifier)
-		return
-	if not useCategory:#If NOT USING a category
-		for resource in resources[type]:
-			if resource.internalName == identifier:
-				assert(resource != null)
-				return resource
-	else:#If USING a category
-		for resource in resources[type]:
-			if resources.get("resCategory") != null and resource.get("resCategory") == identifier:
-				assert(resource != null)
-				return resource
-	push_error("Resource not found. Name: "+identifier+" | Type: " + type)
-	
-func get_all_resources(type:String)->Array:
-	return resources[type]
+#func register_file_paths(folder:String, category:String, extensionFilter:String=Extensions.RESOURCE):
+#	var files:PackedStringArray = DirAccess.get_files_at(folder)
+#
+#	filePaths[category] = filePaths.get(category,[]).append_array(files)
+#	filePaths[category].filter(func(fileName:String): return fileName.get_extension() == Extensions.RESOURCE or fileName.get_extension() == Extensions.PACKED_SCENE)
+#
+#
+#
+#
+#func store_from_folder(folderPath:String,type:String):
+#	var loadingDir = DirAccess.open(folderPath)
+#	loadingDir.open(folderPath)#Start loading abilities
+#	var files:PackedStringArray = loadingDir.get_files()
+#	for fileName in files:
+#		var loadedFile = load(folderPath+str(fileName))
+#		if !resources.has(type):#Ensure the type exists in resources
+#			resources[type] = []
+#
+#		if loadedFile is GDScript:#If it is a script of a resource
+#			var script = loadedFile
+#			loadedFile = Resource.new()
+#			loadedFile.set_script(script)
+#
+#
+#		resources[type].append(loadedFile.duplicate())#Add it to the list of the corresponding type
+#	pass
+#
+#func get_resource(identifier:String,type:String,useCategory:bool = false):#If useCategory is true
+#	if identifier == "":
+#		push_error("No identifier given for " + type + " returnal.")
+#	elif type == "":
+#		push_error("Tried to retrieve resource but a type was not specified for identifier: " + identifier)
+#		return
+#	if not useCategory:#If NOT USING a category
+#		for resource in resources[type]:
+#			if resource.internalName == identifier:
+#				assert(resource != null)
+#				return resource
+#	else:#If USING a category
+#		for resource in resources[type]:
+#			if resources.get("resCategory") != null and resource.get("resCategory") == identifier:
+#				assert(resource != null)
+#				return resource
+#	push_error("Resource not found. Name: "+identifier+" | Type: " + type)
+#
+#func get_all_resources(type:String)->Array:
+#	return resources[type]
 	
 #var loadedAbilities:Array
 #func load_abilities(pathToFolder:String):
