@@ -1,6 +1,10 @@
 extends Node
 
-signal UNIT_MOVED
+signal UNIT_MOVED(unit:Unit)
+signal UNIT_SELECTED(unit:Unit)
+
+
+signal ABILITY_USED(ability:Ability)
 
 func _init() -> void:
 	for state in GameBoard.States.keys():
