@@ -85,7 +85,7 @@ func _enter_tree() -> void:
 	var registerUnit:Callable = func(node): 
 		if node is Unit and node.get_parent() == self: 
 			unitsInCombat.append(node)
-			allUnits.append(node)
+			if not allUnits.has(node): allUnits.append(node)
 			units_changed.emit(unitsInCombat)
 			
 	get_tree().node_added.connect(registerUnit)
@@ -364,8 +364,10 @@ func on_cell_clicked(cell:Vector3i):
 			if unitList.unitSelected is Unit:
 				#The selected cell has the correct tag.
 				if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitList.unitSelected.attributes.faction.internalName):
+					#Add it if not added already.
 					if not unitList.unitSelected.get_parent() == self:
 						add_child(unitList.unitSelected)
+					#Place it
 					gridMap.place_object(cell, unitList.unitSelected)
 #						unitList.unitSelected.position = gridMap.map_to_local(cell)
 				
@@ -423,15 +425,17 @@ func update_menus_to_unit(unit:Unit=selectedUnit):
 	unitInfo.refresh_ui()
 #	Events.emit_signal("UPDATE_UNIT_INFO")
 	
-func get_units(combatOnly:bool=true)->Array[Unit]:
+func get_units(combatOnly:bool=true, factionFilter:String = "")->Array[Unit]:
+	var unitArr:Array[Unit]
+	unitArr = allUnits
 #	var units:Array[Unit]
 #	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
 	if combatOnly:
-		return allUnits.filter(func(unit): return unit.get_parent()==self)
-	else: return allUnits
+		unitArr = unitArr.filter(func(unit): return unit.get_parent()==self)
+	if factionFilter != "":
+		unitArr = unitArr.filter(func(unit): return unit.attributes.faction.internalName == factionFilter)
 	
-func get_units_from_faction(factionInterName:String)->Array[Unit]:
-	return get_units().filter(func(unit:Unit): return unit.attributes.faction.internalName == factionInterName)
+	return unitArr
 	
 func get_present_factions(inCombatOnly:bool)->Array[Faction]:
 	var units:Array[Unit] = get_units(inCombatOnly)
@@ -455,7 +459,6 @@ func load_map(mapUsed:Map = currentMap)->void:
 		gridMap.set_cell_item(cellData[1],cellData[0])
 	gridMap.initialize_cells(mapUsed)
 	
-		
 	# Add units
 	for unitAttrib in mapUsed.loadableUnits:
 		var newUnit:Unit = Unit.Generator.build_from_attributes(unitAttrib)
@@ -472,28 +475,13 @@ func load_map(mapUsed:Map = currentMap)->void:
 		print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
 		index+=1
 	
-	# Place new unit
-#	add_child(newUnit)
-#
-#		# If the unit ends up out of bounds, correct it
-#		if not gridMap.cellDict.has(newUnit.get_current_cell()):
-#			push_warning("Unit out of bounds, fixing...")
-#			assert(not gridMap.get_used_cells().is_empty())
-#			gridMap.place_object(gridMap.get_used_cells().pick_random(), newUnit)
 		
 	gridMap.update_grid(mapUsed)
-	unitList.refresh_units(allUnits, CVars.saveFile.playerFaction.internalName)
+	Events.UPDATE_UNIT_INFO.emit()
 #	for spawnArray in mapUsed.spawnLocations:
 #		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
 #
 
-	
-	
-#class UnitManager extends Node:
-#	var board:GameBoard
-#
-#	func _init(_board:GameBoard):
-#		board = _board
 #TURN
 func turn_get_sorted_by_delay()->Array[Unit]:
 	var unitDict:Array[Unit]
