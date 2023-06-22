@@ -21,6 +21,7 @@ ResList="*res://Singletons/LoadedResources.gd"
 CVars="*res://Singletons/CVars.gd"
 Events="*res://Singletons/Events.gd"
 Ref="*res://Singletons/References.gd"
+ResLoad="res://Singletons/LoadedResources.gd"
 
 [editor_plugins]
 
