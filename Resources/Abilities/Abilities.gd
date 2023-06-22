@@ -71,7 +71,7 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 @export var powers:Array = [1.0]
 @export var energyCost:int
 @export var turnDelayCost:int
-@export var classRestrictions:Array
+@export var classRestrictions:Array[String]
 @export var triggerSignals:Dictionary #user.signal:self.method()
 #Example: {"acted":"use"}
 @export var abilityFlags:Array[AbilityFlags]
@@ -103,9 +103,11 @@ func get_description():
 
 func is_usable()->bool:
 	var stats = user.attributes.stats
-	if not _can_use():  return false
 	
-	if user.attributes.stats.actions < actionCost or user.attributes.stats.moves < moveCost: return false
+	if stats.actions < actionCost: return false
+	elif stats.moves < moveCost: return false
+	elif not custom_can_use():  return false
+	
 	return true
 	pass
 
@@ -183,8 +185,11 @@ func warn_units(targets:Array[Vector3i]):
 	for unit in units: unit.emit_signal("was_targeted",self)
 	
 	
-func use( targets:Array[Vector3i] ):
+func use( targets:Array[Vector3i] ):	
+	user.attributes.stats.moves -= moveCost
+	user.attributes.stats.actions -= actionCost
 	user.attributes.stats.turnDelay += turnDelayCost
+	
 	targets = filter_targets(targets)
 	for target in targets:
 		var possibleUnit:Unit = board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
@@ -192,16 +197,17 @@ func use( targets:Array[Vector3i] ):
 			possibleUnit.emit_signal("was_targeted",self)
 			
 	
+	
 	_use(targets)
-	Events.emit_signal("UPDATE_UNIT_INFO")
-	pass
+	Events.UPDATE_UNIT_INFO.emit()
+	Events.ABILITY_USED.emit(self)
 	
 func _use(target:Array[Vector3i]):
 	print( user.info.nickName + " cannot punch. Because testing.")
 	pass
 
 
-func _can_use() -> bool:#Virtual function, prevents usage if false
+func custom_can_use() -> bool:#Virtual function, prevents usage if false
 	return true
 
 

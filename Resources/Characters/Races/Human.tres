@@ -12,7 +12,7 @@ sexWeight = {
 "Other": 1,
 "Unknown": 1
 }
-internalName = ""
+internalName = "human"
 displayName = "ERR_NONAME"
 attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
 abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
