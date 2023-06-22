@@ -16,11 +16,11 @@ func _init():#Loading of files
 	
 	super._init()
 	
-func _get_identifier(fileName:String)->String:
-	var res:Resource = load(fileName)
+func _get_identifier(filePath:String)->String:
+	var res:Resource = load(filePath)
 	var identifier = res.get("internalName")
 	if identifier is String: return identifier 
-	else: push_error("No internalName defined in resource."); return fileName
+	else: push_error("No internalName defined in resource."); return ""
 	pass
 #	load_abilities("res://Resources/Abilities/AllAbilities/")
 #	load_classes("res://Resources/Characters/Classes/")

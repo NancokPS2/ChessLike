@@ -30,17 +30,19 @@ func _init():#Loading of files
 func store_from_folder(folderPath:String,group:String):
 	var files:PackedStringArray = DirAccess.get_files_at(folderPath)
 	for fileName in files:
-		store_single_resource(folderPath, group)
+		store_single_resource(folderPath+fileName, group)
 	
 func store_single_resource(filePath:String,group:String):
 	var fileName:String = filePath.get_file()
-	var identifier:String = _get_identifier(fileName)
+	var identifier:String = _get_identifier(filePath)
+	if identifier == "": push_error("Empty or invalid identifier. File path: {0} | Identifier: {1} | Group: {2}".format([filePath, identifier, group])); return
 	
 	#Ensure the group exists in resources
-#	if not resources.has(group): resources[group] = {}
+	if not resources.has(group): resources[group] = {}
 	
 	#Add it to the list of the corresponding group
-	resources.get(group,{})[identifier] = fileName
+	
+	resources[group][identifier] = filePath
 	
 	if autoLoadResources:
 		resources[group][identifier] = get_resource(identifier, group)
@@ -68,7 +70,7 @@ func get_resource(identifier:String,group:String)->Resource:#If useCategory is t
 ## Used when registering a Resource to the main Dictionary
 func _get_identifier(fileName:String)->String:
 	return fileName
-	pass
+
 	
 func add_to_pool(identifier:String, group:String, targetPool:String):
 	var res:Resource = get_resource(identifier, group)
