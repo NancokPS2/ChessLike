@@ -52,7 +52,7 @@ func _ready() -> void:
 func update_grid(map:Map):
 	#TODO: This should not take ALL used cells (?)
 #	initialize_cells(map)
-	pathing = GridPathing.new(self,get_typed_cellDict_array())
+	pathing = GridPathing.new(self,map)
 	register_all_objects_to_cells()
 
 ## Used to register units and obstacles.
@@ -196,7 +196,9 @@ class GridPathing extends Node:
 		Vector3i.UP:Vector3(0,0,0),
 		Vector3i.DOWN:Vector3(180,0,0),
 		}
-	const DEFAULT_LAYER:String = "all"
+	const LAYER_ALL:String = "all"
+	const LAYER_WALK:String = "walk"
+	const LAYER_FLY:String = "fly"
 	const ALLOW_ALL_TILES:int = 0
 	
 	var aStarLayers:Dictionary #String:AStar3D
@@ -205,13 +207,13 @@ class GridPathing extends Node:
 	var individualVisualMeshes:Array[MeshInstance3D]
 	var debugMode:bool
 	
-	func _init(_gridRef:MovementGrid, points:Array[Vector3i]=[], _debugMode:bool=true):
+	func _init(_gridRef:MovementGrid, map:Map, _debugMode:bool=true):
 		debugMode = _debugMode
 		gridRef = _gridRef
-		add_points_from_cell_positions(points)
+		add_points_from_cell_positions(map)
 		gridRef.add_child(visualPathMeshInst)
 		
-	func get_cells_in_path(startCell:Vector3i,endCell:Vector3i, layer:String=DEFAULT_LAYER)->Array[Vector3i]:
+	func get_cells_in_path(startCell:Vector3i,endCell:Vector3i, layer:String=LAYER_ALL)->Array[Vector3i]:
 		var thisAStar:AStar3D = aStarLayers[layer]
 		var pointA:int = thisAStar.get_closest_point(gridRef.map_to_local(startCell)) 
 		var pointB:int = thisAStar.get_closest_point(gridRef.map_to_local(endCell))
@@ -225,7 +227,7 @@ class GridPathing extends Node:
 	
 	
 	## Creates and connects all points for pathing
-	func add_points_from_cell_positions(points:Array[Vector3i], layer:String=DEFAULT_LAYER, pathableCellIDs:int=ALLOW_ALL_TILES):
+	func add_points_from_cell_positions(map:Map, layer:String=LAYER_ALL, pathableCellIDs:int=ALLOW_ALL_TILES):
 		#Will not work if it has less than 2 points or the dimensions are different.
 		if gridRef.cellDict.size() < 2: push_error("The cellDict of the MovementGrid has less than 2 points. Cannot generate pathing."); return
 		if not (gridRef.cell_size.x == gridRef.cell_size.z and gridRef.cell_size.z == gridRef.cell_size.y ): push_error("Adding points to non-cubic GridMaps has not been implemented"); return
@@ -239,7 +241,8 @@ class GridPathing extends Node:
 		if thisAStar.get_point_capacity() < gridRef.cellDict.size(): thisAStar.reserve_space(gridRef.cellDict.size())
 		
 		#Create the points
-		for point in points:
+		for terrainCell in map.terrainCells:
+			var point:Vector3 = terrainCell[Map.TerrainCellData.TILE_POS]
 			var pointLocal:Vector3 = gridRef.map_to_local(point)
 			var pointID:int = thisAStar.get_available_point_id()
 			thisAStar.add_point(pointID, pointLocal)
@@ -247,31 +250,33 @@ class GridPathing extends Node:
 		print_debug("Added {0} points for pathing.".format( [thisAStar.get_point_count()] ))
 			
 		#Connect them
-		var connectionDict:Dictionary
-		for pointID in thisAStar.get_point_ids():
-			var cellPos:Vector3i = gridRef.local_to_map(thisAStar.get_point_position(pointID))
-			for dir in MovementGrid.Directionsi:
-				var otherPointID = thisAStar.get_closest_point(gridRef.map_to_local(cellPos+dir))
-				
-				if pointID != otherPointID:
-					thisAStar.connect_points(pointID, otherPointID)
-				
-#			var pointID:int = connectionDict[pointPos]
-#			var validPoints:Array = connectionDict.keys()
-#			validPoints.filter(func(val:Vector3): return true if val.distance_to(pointPos) <= distanceToNeighbor else false)
-#
-#			for otherPointPos in validPoints:
-#				thisAStar.connect_points(pointID,connectionDict[otherPointPos])
-		assert(not aStarLayers.is_empty())
+		match layer:
+			LAYER_ALL:
+				var connectionDict:Dictionary
+				for pointID in thisAStar.get_point_ids():
+					var cellPos:Vector3i = gridRef.local_to_map(thisAStar.get_point_position(pointID))
+					for dir in MovementGrid.Directionsi:
+						var otherPointID = thisAStar.get_closest_point(gridRef.map_to_local(cellPos+dir))
+						
+						if pointID != otherPointID:
+							thisAStar.connect_points(pointID, otherPointID)
+						
+		#			var pointID:int = connectionDict[pointPos]
+		#			var validPoints:Array = connectionDict.keys()
+		#			validPoints.filter(func(val:Vector3): return true if val.distance_to(pointPos) <= distanceToNeighbor else false)
+		#
+		#			for otherPointPos in validPoints:
+		#				thisAStar.connect_points(pointID,connectionDict[otherPointPos])
+				assert(not aStarLayers.is_empty())
 		
 	
-	func get_point_from_pos(point:Vector3i, aStarLayer:String=DEFAULT_LAYER)->int:
+	func get_point_from_pos(point:Vector3i, aStarLayer:String=LAYER_ALL)->int:
 		var aStarUsed:AStar3D = aStarLayers[aStarLayer]
 		
 		var pointRet:int = aStarUsed.get_closest_point(gridRef.map_to_local(point))
 		return pointRet
 	
-	func update_individual_visual_meshes(startPoint:Vector3, endPoint:Vector3, aStarLayer:String=DEFAULT_LAYER, color:=Color.RED):
+	func update_individual_visual_meshes(startPoint:Vector3, endPoint:Vector3, aStarLayer:String=LAYER_ALL, color:=Color.RED):
 		for mesh in individualVisualMeshes: mesh.queue_free()
 		individualVisualMeshes.clear()
 		
