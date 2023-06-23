@@ -44,7 +44,7 @@ baseStats = {
 "health": 100,
 "healthMax": 100,
 "mind": 0,
-"moveDistance": 0,
+"moveDistance": 10,
 "movementType": 0,
 "moves": 1,
 "movesMax": 1,

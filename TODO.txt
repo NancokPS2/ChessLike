@@ -153,4 +153,5 @@ Actual TODO:
 	-Create a proper unit generation algorithm, maybe it can employ Resources
 	-Leader system
 	
-	-Units seem to magically duplicate during SETUP state
+	-AbilityMovement WIP
+	
