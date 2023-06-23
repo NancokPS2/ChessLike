@@ -3,6 +3,16 @@ class_name AttributesBase
 
 signal attributes_updated
 
+enum MovementTypes {
+	WALK, #Simple ground movement
+	FLY, #Ignore most movement restrictions
+	HOVER, #Ignore most movement costs except height 
+	HEAVY_WALK, #Special kind of walk, meant for extra restrictions 
+	SWIM, #Water only 
+	AMPHIBIOUS, #Water and land
+	TELEPORT, #Ignore all restrictions except for tiles it may not land on.
+	}
+
 @export var internalName:String
 @export var displayName:String = "ERR_NONAME"
 
@@ -28,7 +38,7 @@ signal attributes_updated
 	"agility":0,
 	"mind":0,
 	"special":0,
-	"moveDistance":0,
+	"moveDistance":10,
 	"defense":0,
 	"dodge":0,
 	"accuracy":0,
