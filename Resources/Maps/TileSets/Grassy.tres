@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MapTileSet" load_steps=3 format=3 uid="uid://df31gmpdhw5v3"]
+
+[ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="1_3ffda"]
+[ext_resource type="Script" path="res://Resources/Maps/MapTileSet.gd" id="1_vva5l"]
+
+[resource]
+script = ExtResource("1_vva5l")
+meshLibrary = ExtResource("1_3ffda")
+terrainCosts = {
+0: 1,
+1: 1,
+2: 1,
+3: 1,
+4: 1,
+5: 1,
+6: 1,
+7: 1,
+8: 1,
+9: 1,
+10: 1,
+11: 1
+}

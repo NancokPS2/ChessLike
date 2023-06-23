@@ -25,7 +25,15 @@ enum DefaultCellTags {
 
 @export var heightMap:Array = []
 
-@export var meshLibrary:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres")
+@export var meshLibrary:MeshLibrary:# = preload("res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres")
+	get: return tileSet.meshLibrary
+	
+@export var tileSet:MapTileSet
+#	set(val): 
+#		tileSet=val
+#		if not get_all_IDs().all(func(cellID:int): return tileSet.meshLibrary.get_item_list().has(cellID)):
+#			push_error("")
+		
 
 @export var background:Texture
 
@@ -106,6 +114,14 @@ func get_all_cells()->Array[Vector3i]:
 		cells.append(cellArr[TerrainCellData.TILE_POS])
 	return cells
 
+func get_all_IDs()->Array[int]:
+	var IDs:Array[int]
+	for cellArr in terrainCells:
+		var currID:int = cellArr[TerrainCellData.TILE_ID]
+		if not IDs.has(currID):
+			IDs.append(currID)
+	return IDs
+		
 
 func is_valid()->bool:
 	var tileItems:int = meshLibrary.get_item_list().size()
@@ -121,8 +137,15 @@ func is_valid()->bool:
 class TerrainGenerator extends RefCounted:
 	const NOISE_DEFAULT:FastNoiseLite = preload("res://Other/DefaultTerrainNoise.tres")
 
+#	func save_noise_texture(noise:FastNoiseLite, fileName:String="SampleName.png"):
+#		var noiseTex:=NoiseTexture2D.new()
+#		noiseTex.noise = noise
+		
+		
+		
+		
 
-	static func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite=NOISE_DEFAULT, seed:int=0, tags:Dictionary={}):
+	func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite, seed:int=0, tags:Dictionary={}):
 		mapUsed.terrainCells.clear()
 		mapUsed.spawnLocations.clear()
 		noiseUsed.seed
@@ -131,7 +154,9 @@ class TerrainGenerator extends RefCounted:
 		for x in size.x:
 			for z in size.z:
 				var tileID:int = 0
-				var height:int = abs(noiseUsed.get_noise_2d(x/size.x,z/size.z)*10)
+				var noisePos:=Vector2( size.x/max(x,1), size.z/max(z,1) )
+				var noiseVal:float = noiseUsed.get_noise_2dv(noisePos)
+				var height:int = abs(noiseVal)*mapUsed.wantedSize.y
 				var tagsUsed:Array[String] 
 				tagsUsed.assign(tags[tileID])
 				mapUsed.add_terrain_cell(tileID, Vector3i(x,height,z), tagsUsed)
