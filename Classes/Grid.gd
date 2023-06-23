@@ -242,7 +242,10 @@ class GridPathing extends Node:
 		
 		#Create the points
 		for terrainCell in map.terrainCells:
-			var point:Vector3 = terrainCell[Map.TerrainCellData.TILE_POS]
+			var itemID:int = terrainCell[Map.TerrainCellData.TILE_ID]
+			var moveCost:int = map.tileSet.get_item_move_cost(itemID)
+			
+			var point:Vector3i = terrainCell[Map.TerrainCellData.TILE_POS]
 			var pointLocal:Vector3 = gridRef.map_to_local(point)
 			var pointID:int = thisAStar.get_available_point_id()
 			thisAStar.add_point(pointID, pointLocal)
@@ -276,7 +279,7 @@ class GridPathing extends Node:
 		var pointRet:int = aStarUsed.get_closest_point(gridRef.map_to_local(point))
 		return pointRet
 	
-	func update_individual_visual_meshes(startPoint:Vector3, endPoint:Vector3, aStarLayer:String=LAYER_ALL, color:=Color.RED):
+	func get_unit_path(unit:Unit, startPoint:Vector3, endPoint:Vector3, aStarLayer:String=LAYER_ALL, color:=Color.RED)->Array[Vector3i]:
 		for mesh in individualVisualMeshes: mesh.queue_free()
 		individualVisualMeshes.clear()
 		
@@ -284,12 +287,15 @@ class GridPathing extends Node:
 		var startPointID:int = get_point_from_pos(startPoint)
 		var endPointID:int = get_point_from_pos(endPoint)
 		var points:PackedVector3Array = aStarUsed.get_point_path(startPointID, endPointID)
+		var returnedPoints:Array[Vector3i]; returnedPoints.assign(points)
 #		assert(aStarUsed.are_points_connected(startPointID,endPointID))
 		assert(not points.is_empty())
 		
-		print(points)
-		for point in points:
+		for point in points: #Using returnedPoints breaks it, WIP
 			place_mesh_in_pos(point, VisualMeshRotations[Vector3i.RIGHT])
+			
+		return returnedPoints
+		
 
 	
 	func place_mesh_in_pos(pos:Vector3, orientation:Vector3i):
