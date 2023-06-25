@@ -375,19 +375,25 @@ func on_cell_clicked(cell:Vector3i):
 			pass
 	
 		States.COMBAT:
+			
 			match combatState:
+				#An ability has been selected
 				CombatStates.C_ABILITY_TARGETING:
+					assert(abilityInUse is Ability)
 					if gridMap.is_cell_marked(cell):
 						
 						#Mark cells ready for targeting
 						if targetedCells.size() < abilityInUse.amountOfTargets:
 							targetedCells.append(cell)
 							
-							#Confirmed usage
+						#Confirmed usage
 						else:
 							actionStack.append(abilityInUse.get_tween(targetedCells))
-							abilityInUse.user.attributes.stats.actions -= abilityInUse.actionCost
-							abilityInUse.user.attributes.stats.moves -= abilityInUse.moveCost
+							var attrib:AttributesBase = abilityInUse.user.attributes
+							if abilityInUse.moveCost > attrib.stats[attrib.StatNames.MOVES]: push_error("Insufficient moves left."); return
+							if abilityInUse.actionCost > attrib.stats[attrib.StatNames.ACTIONS]: push_error("Insufficient actions left."); return
+#							abilityInUse.user.attributes.change_stat(AttributesBase.StatNames.ACTIONS) -= abilityInUse.actionCost
+#							abilityInUse.user.attributes.change_stat(AttributesBase.StatNames.MOVES) -= abilityInUse.moveCost
 							update_menus_to_unit()
 							run_stack()
 							
