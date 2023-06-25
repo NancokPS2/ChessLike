@@ -1,8 +1,6 @@
 extends Node
 
 #Global
-var saveFile:SaveFile = load("res://Resources/SaveFile/DefaultSave.tres")
-var currentMap:Map = Map.new()
 
 #Settings
 var settingsFile:ConfigFile
