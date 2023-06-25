@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_edmyd"]
 [ext_resource type="Script" path="res://Objects/UI/MainCamera.gd" id="2_tabqa"]
-[ext_resource type="Script" path="res://Objects/UI/UI.gd" id="3_31baq"]
+[ext_resource type="Script" path="res://UnusedStuff/UI.gd" id="3_31baq"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/OLD/ActionsMenu.gd" id="4_172if"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/OLD/ActingMenu.gd" id="5_6mub1"]
 [ext_resource type="Script" path="res://Classes/ButtonStateChange.gd" id="6_vfksi"]

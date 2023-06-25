@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://l6u416bklps4"]
+
+[ext_resource type="Script" path="res://Classes/SelfContained/Interface/DecoratedList.gd" id="1_uwvj0"]
+
+[node name="DecoratedList" type="VBoxContainer"]
+anchors_preset = -1
+anchor_left = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("1_uwvj0")
+entries = Array[StringName]([&"attributes:baseStats:healthMax", &"attributes:baseStats:strength", &"attributes:baseStats:agility", &"attributes:baseStats:mind"])
+entryNameOverrides = Array[String](["Max Health", "Strength", "Agility", "Mind"])
+metadata/_edit_use_anchors_ = true

@@ -87,7 +87,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("6_kw6n7")
-displayUsed = null
 
 [node name="UnitPanel" parent="UI" groups=["COMBAT", "SETUP"] instance=ExtResource("7_osk8e")]
 anchors_preset = -1

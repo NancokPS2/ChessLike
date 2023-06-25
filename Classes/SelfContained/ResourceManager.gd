@@ -76,3 +76,7 @@ func add_to_pool(identifier:String, group:String, targetPool:String):
 	var res:Resource = get_resource(identifier, group)
 	pools.get(targetPool,[]).append(res)
 	pass
+
+func get_all_in_group(group:String, variant)->Array:
+	if not resources.has(group): push_error("The group {0} does not exist.".format([group])); return []
+	return resources[group].values()

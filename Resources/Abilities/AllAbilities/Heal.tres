@@ -8,7 +8,10 @@ internalName = "heal"
 displayedName = "Heal"
 type = 2
 description = ""
-powers = [0.25]
+customVals = {
+"duration": 1,
+"power": 1.0
+}
 energyCost = 10
 turnDelayCost = 50
 classRestrictions = Array[String]([])

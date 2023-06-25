@@ -154,4 +154,5 @@ Actual TODO:
 	-Leader system
 	
 	-AbilityMovement WIP
+	-AttributesBase.combine_attributes doesn't seem to work in UnitMenu.tscn. Ensure that it combines baseStats and that it's ready that too.
 	
