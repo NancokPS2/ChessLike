@@ -113,15 +113,15 @@ func apply_turn_delay(delay:int):
 
 class Generator extends RefCounted:
 	enum NameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
-	func generate_name(attrib:CharAttributes, type:NameType,firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum
+	func generate_name(attrib:CharAttributes, type:NameType, firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum
 	
 		if firstNameList.is_empty():#Failsafe
 			firstNameList.append("Tester")
 		if lastNameList.is_empty():#Failsafe
 			lastNameList.append("Testius")
 		
-		if type != nameType.FIRST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a first name...
+		if type != NameType.FIRST_ONLY or type != NameType.FIRST_AND_LAST:#If it requires a first name...
 			attrib.info.firstName = firstNameList[randi() % firstNameList.size()]#randi returns an int between 0 and the size-1
 		
-		if type != nameType.LAST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a last unitName...
+		if type != NameType.LAST_ONLY or type != NameType.FIRST_AND_LAST:#If it requires a last unitName...
 			attrib.info.lastName += lastNameList[randi() % lastNameList.size()]#randi returns an int between 0 and the size-1
