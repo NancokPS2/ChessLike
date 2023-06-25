@@ -13,6 +13,30 @@ enum MovementTypes {
 	TELEPORT, #Ignore all restrictions except for tiles it may not land on.
 	}
 
+const StatNames:Dictionary = {
+	HEALTH = "health",
+	ENERGY = "energy",
+	TURN_DELAY = "turnDelay",
+	ACTIONS = "actions",
+	MOVES = "moves",
+	#Primary
+	HEALTH_MAX = "healthMax",
+	ENERGY_MAX = "energyMax",
+	STRENGTH = "strength",
+	AGILITY = "agility",
+	MIND = "mind",
+	SPECIAL = "special",
+	MOVE_DISTANCE = "moveDistance",
+	DEFENSE = "defense",
+	DODGE = "dodge",
+	ACCURACY = "accuracy",
+	#Secondary
+	TURN_DELAY_MAX = "turnDelayMax",
+	ACTIONS_MAX = "actionsMax",
+	MOVES_MAX = "movesMax",
+	MOVEMENT_TYPE ="movementType",
+	}
+
 @export var internalName:String
 @export var displayName:String = "ERR_NONAME"
 
