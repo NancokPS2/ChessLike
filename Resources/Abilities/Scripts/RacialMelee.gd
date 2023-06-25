@@ -1,13 +1,10 @@
 extends Ability
-class_name AbilityHeal
 
-
-func get_description():
-	return "Heals for {0}% of max health of the target.".format([str(customVals["power"]*100)])
-
+	
 func _use(targets:Array[Vector3i]):
-	for unit in get_units(targets):
-		unit.attributes.stats.health += unit.attributes.stats.healthMax * customVals["power"]
+	for target in targets:
+		var unit:Unit = user.board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
+		unit.attributes.stats.health -= 10
 
 #func use(target:Unit):
 #	if inventory.equipped[hand] is Weapon:

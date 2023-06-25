@@ -68,7 +68,7 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 
 
 @export_group("Main values")
-@export var powers:Array = [1.0]
+@export var customVals:Dictionary = {"power":1.0, "duration":1 as int}
 @export var energyCost:int
 @export var turnDelayCost:int
 @export var classRestrictions:Array[String]
@@ -182,7 +182,7 @@ func warn_units(targets:Array[Vector3i]):
 	for target in targets:
 		units.assign(board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT, true))
 		
-	for unit in units: unit.emit_signal("was_targeted",self)
+	for unit in units: unit.was_targeted.emit(self)
 	
 	
 func use( targets:Array[Vector3i] ):	
@@ -191,10 +191,11 @@ func use( targets:Array[Vector3i] ):
 	user.attributes.stats.turnDelay += turnDelayCost
 	
 	targets = filter_targets(targets)
-	for target in targets:
-		var possibleUnit:Unit = board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
-		if possibleUnit is Unit:
-			possibleUnit.emit_signal("was_targeted",self)
+	#The warning happens in get_tween(), no need for this.
+#	for target in targets:
+#		var possibleUnit:Unit = board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
+#		if possibleUnit is Unit:
+#			possibleUnit.was_targeted.emit(self)
 			
 	
 	
