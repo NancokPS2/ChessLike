@@ -60,9 +60,9 @@ const StatNames:Dictionary = {
 	#Primary
 	"healthMax":100,
 	"energyMax":30,
-	"strength":0,
-	"agility":0,
-	"mind":0,
+	"strength":100,
+	"agility":100,
+	"mind":100,
 	"special":0,
 	"moveDistance":10,
 	"defense":0,
@@ -162,4 +162,25 @@ func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
 	for attrib in attribArray:
 		for ability in attrib.abilities:
 			if not abilities.has(ability): abilities.append(ability)
-	emit_signal("attributes_updated")
+	attributes_updated.emit()
+
+func combine_attributes_base_stats(attribArray:Array[AttributesBase] = attributeResources):
+	#Add stats
+	for stat in baseStats:
+		var statSum:int = baseStats[stat]
+		#Sum from each attribute
+		for attrib in attribArray:
+			statSum += attrib.baseStats[stat] 
+			
+		baseStats[stat] = statSum / (attribArray.size()+1)
+		
+	#Equipment slots
+	for attrib in attribArray:
+		for slot in attrib.equipmentSlots:
+			if not equipmentSlots.has(slot): equipmentSlots.append(slot)
+			
+	#Abilities
+	for attrib in attribArray:
+		for ability in attrib.abilities:
+			if not abilities.has(ability): abilities.append(ability)
+	attributes_updated.emit()

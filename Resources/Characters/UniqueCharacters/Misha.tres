@@ -1,23 +1,22 @@
-[gd_resource type="Resource" script_class="CharAttributes" load_steps=6 format=3 uid="uid://bk2x00qqtnyqg"]
+[gd_resource type="Resource" script_class="CharAttributes" load_steps=5 format=3 uid="uid://bk2x00qqtnyqg"]
 
 [ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="1"]
 [ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="1_2pybq"]
 [ext_resource type="Resource" uid="uid://mxqwj66ysueu" path="res://Resources/Abilities/AllAbilities/Heal.tres" id="1_htvq7"]
 [ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="1_yx3hh"]
-[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="3_3tmn3"]
 
 [resource]
 script = ExtResource("1")
 raceAttributes = ExtResource("1_2pybq")
 classAttributes = ExtResource("1_yx3hh")
-faction = ExtResource("3_3tmn3")
-personalityNumber = Array[int]([255, 255, 255])
+factionIdentifier = ""
+personalityNumber = Array[int]([253, 255, 255])
 info = {
 "className": "This",
 "factionName": "",
-"firstName": "Unnamed",
-"lastName": "",
-"nickName": "Nick",
+"firstName": "Misha",
+"lastName": "Lash",
+"nickName": "Misha",
 "raceName": "no race?",
 "sex": 0
 }

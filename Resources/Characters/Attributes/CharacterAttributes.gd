@@ -7,6 +7,8 @@ class_name CharAttributes
 		if raceAttributes is RacialAttributes: attributeResources.erase(raceAttributes)
 		attributeResources.append(val)
 		info.raceName = raceAttributes.displayName
+		if classAttributes != null:
+			combine_attributes_base_stats()
 	get:
 		for attrib in attributeResources:
 			if attrib is RacialAttributes: return attrib
@@ -17,16 +19,19 @@ class_name CharAttributes
 		if classAttributes is ClassAttributes: attributeResources.erase(classAttributes)
 		attributeResources.append(val)
 		info.className = classAttributes.displayName
+		if raceAttributes != null:
+			combine_attributes_base_stats()
 	get:
 		for attrib in attributeResources:
 			if attrib is ClassAttributes: return attrib
 		return null
+
 		
 @export var inventory:Inventory
-@export var faction:Faction:
+@export var factionIdentifier:String:
 	set(val):
-		faction = val
-		info.factionName = faction.displayName
+		factionIdentifier = val
+
 
 #var abilities:Array#Both passive and active abilities
 
@@ -59,7 +64,8 @@ var user:Unit:
 		
 
 func _init() -> void:
-	combine_attributes()
+#	assert(not attributeResources.is_empty())
+#	combine_attributes()
 	
 	pass
 	
@@ -74,7 +80,7 @@ func _init() -> void:
 	"lastName":"",
 	"raceName":"no race?",
 	"className":"Unemployed",
-	"factionName":"",
+	"factionIdentifier":"",
 	"sex":"Unknown"
 }
 
@@ -110,6 +116,10 @@ func apply_turn_delay(delay:int):
 	if stats.turnDelay <= 0:
 		stats.turnDelay = stats.turnDelayMax - abs(stats.turnDelay)
 		
+
+func get_faction()->Faction:
+	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
+	return faction if faction is Faction else "Faction {0} not found!".format([factionIdentifier])
 
 class Generator extends RefCounted:
 	enum NameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
