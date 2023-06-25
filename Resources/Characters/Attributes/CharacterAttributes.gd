@@ -65,19 +65,7 @@ func _init() -> void:
 	
 	
 
-enum nameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
-func generate_name(type:int,firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum
-	
-	if firstNameList.is_empty():#Failsafe
-		firstNameList.append("Tester")
-	if lastNameList.is_empty():#Failsafe
-		lastNameList.append("Testius")
-	
-	if type != nameType.FIRST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a first name...
-		info.firstName = firstNameList[randi() % firstNameList.size()]#randi returns an int between 0 and the size-1
-	
-	if type != nameType.LAST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a last unitName...
-		info.lastName += lastNameList[randi() % lastNameList.size()]#randi returns an int between 0 and the size-1
+
 
 #Info
 @export var info:Dictionary = {
@@ -122,4 +110,18 @@ func apply_turn_delay(delay:int):
 	if stats.turnDelay <= 0:
 		stats.turnDelay = stats.turnDelayMax - abs(stats.turnDelay)
 		
+
+class Generator extends RefCounted:
+	enum NameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
+	func generate_name(attrib:CharAttributes, type:NameType,firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum
 	
+		if firstNameList.is_empty():#Failsafe
+			firstNameList.append("Tester")
+		if lastNameList.is_empty():#Failsafe
+			lastNameList.append("Testius")
+		
+		if type != nameType.FIRST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a first name...
+			attrib.info.firstName = firstNameList[randi() % firstNameList.size()]#randi returns an int between 0 and the size-1
+		
+		if type != nameType.LAST_ONLY or type != nameType.FIRST_AND_LAST:#If it requires a last unitName...
+			attrib.info.lastName += lastNameList[randi() % lastNameList.size()]#randi returns an int between 0 and the size-1
