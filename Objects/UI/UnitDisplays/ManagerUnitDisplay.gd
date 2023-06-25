@@ -1,5 +1,8 @@
 extends Control
 class_name UnitDisplayManager
+
+signal unit_selected
+
 const MINI_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/MiniUnitDisplay.tscn")
 const SMALL_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/SmallUnitDisplay.tscn")
 const BIG_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn")
@@ -13,6 +16,7 @@ var unitSelected:Unit
 		
 func set_unit_selected(unit:Unit):
 	unitSelected = unit
+	unit_selected.emit(unit)
 	Events.UPDATE_UNIT_INFO.emit()
 	print(unitSelected)
 
