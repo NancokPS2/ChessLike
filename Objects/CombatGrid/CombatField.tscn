@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://xeum2r6b38cn"]
+[gd_scene load_steps=10 format=3 uid="uid://xeum2r6b38cn"]
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
 [ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="2_nmaf4"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://Objects/CombatGrid/CombatMenu.gd" id="5_tknwe"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
 [ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
+[ext_resource type="Script" path="res://Classes/SelfContained/PivotCamera3D.gd" id="7_tkxj7"]
 [ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="8_5hr6c"]
 
 [sub_resource type="Environment" id="Environment_vl025"]
@@ -94,6 +95,17 @@ anchor_top = 0.78858
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
+
+[node name="PivotCamera3D" type="Node3D" parent="."]
+script = ExtResource("7_tkxj7")
+controlActions = {
+"rotate_down": "camera_down",
+"rotate_left": "camera_left",
+"rotate_right": "camera_right",
+"rotate_up": "camera_up",
+"zoom_in": "zoom_in",
+"zoom_out": "zoom_out"
+}
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
