@@ -3,6 +3,8 @@ class_name AttributesBase
 
 signal attributes_updated
 
+signal stat_changed(stat:String)
+
 enum MovementTypes {
 	WALK, #Simple ground movement
 	FLY, #Ignore most movement restrictions
@@ -88,6 +90,58 @@ var stats:Dictionary = baseStats
 	"accuracy":1.0,
 	"turnDelayMax":1.0,
 }
+
+func stat_change(stat:String, changeAmount:int):
+	assert(changeAmount is int)
+#	if not (changeAmount is int or changeAmount is float): push_error("Invalid value type."); return
+	if not stats.has(stat): push_error("Non existent stat."); return
+	
+	match stat:
+		StatNames.HEALTH:
+			stats[stat] += changeAmount
+			stats[stat] = clamp(stats[stat], -999, stats[StatNames.HEALTH_MAX] )
+			
+		StatNames.ENERGY:
+			stats[stat] += changeAmount
+			stats[stat] = clamp(stats[stat], -999, stats[StatNames.ENERGY_MAX] )
+
+		StatNames.TURN_DELAY:
+			stats[stat] += changeAmount
+			stats[stat] = clamp(stats[stat], -999, stats[StatNames.TURN_DELAY_MAX] )
+
+		StatNames.STRENGTH:
+			stats[stat] += changeAmount
+			
+		StatNames.AGILITY:
+			stats[stat] += changeAmount
+			
+		StatNames.MIND:
+			stats[stat] += changeAmount
+			
+		StatNames.SPECIAL:
+			stats[stat] += changeAmount
+			
+		StatNames.MOVE_DISTANCE:
+			stats[stat] += changeAmount
+			
+		StatNames.ACCURACY:
+			stats[stat] += changeAmount
+			
+		StatNames.TURN_DELAY:
+			stats[stat] += changeAmount
+			stats[stat] = clamp(stats[stat], -999, stats[StatNames.TURN_DELAY_MAX] )
+
+		StatNames.ACTIONS:
+			stats[stat] += changeAmount
+			stats[stat] = clamp(stats[stat], 0, stats[StatNames.ACTIONS_MAX] )
+
+		StatNames.MOVES:
+			stats[stat] += changeAmount
+			stats[stat] = clamp(stats[stat], 0, stats[StatNames.MOVES_MAX] )
+			
+		_:
+			push_error("Cannot handle this stat from this method!")
+	stat_changed.emit(stat)
 
 func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
 	#Add stats
