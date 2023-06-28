@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://u0st4s8ds0ku"]
+[gd_scene load_steps=7 format=3 uid="uid://cq02b4gq61ffa"]
 
 [ext_resource type="Script" path="res://Objects/UnitMenu/UnitMenu.gd" id="1_arnfn"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="1_ws15d"]
 [ext_resource type="PackedScene" uid="uid://cvijuqks5beft" path="res://Assets/Meshes/Characters/Human.tscn" id="3_yqhv4"]
 [ext_resource type="Script" path="res://Classes/SelfContained/PivotCamera3D.gd" id="4_66sby"]
 [ext_resource type="PackedScene" uid="uid://l6u416bklps4" path="res://Objects/UI/UnitDisplays/StatDecoratedList.tscn" id="5_xbg00"]
+[ext_resource type="Environment" uid="uid://cf7eiyb1unktc" path="res://DefaultEnviroment.tres" id="6_60ksk"]
 
 [node name="UnitMenu" type="Control" node_paths=PackedStringArray("statList", "unitDisplay", "camera")]
 layout_mode = 3
@@ -59,3 +60,9 @@ defaultRotation = Vector3(0, 0, 0)
 cameraPos = Vector3(0, 0, 0.1)
 fov = 60.0
 controlsActive = false
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2.37132, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("6_60ksk")

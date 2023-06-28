@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://ty0c356l015p"]
+[gd_scene load_steps=4 format=3 uid="uid://7ibvnjaujia8"]
 
 [ext_resource type="Theme" uid="uid://c8bw27k54y1m7" path="res://Assets/UI/ThemeElements/Main.tres" id="1_y8r1m"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd" id="2_60e7e"]
@@ -21,3 +21,8 @@ delayLabel = NodePath("")
 [node name="DecoratedList" parent="." instance=ExtResource("3_a52xn")]
 layout_mode = 0
 anchors_preset = 0
+anchor_left = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1

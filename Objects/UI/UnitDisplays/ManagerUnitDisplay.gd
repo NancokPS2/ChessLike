@@ -33,5 +33,6 @@ func refresh_units(units:Array[Unit] = Ref.board.get_units(false, "PLAYER"), fac
 		newDisplay.custom_minimum_size = Vector2(size.y*2, size.y)
 		newDisplay.clicked_unit.connect(set_unit_selected)
 		add_child(newDisplay)
+		newDisplay.refresh_ui(true)
 		
 		pass
