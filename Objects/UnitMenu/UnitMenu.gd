@@ -3,11 +3,18 @@ extends Control
 @export var statList:DecoratedList
 @export var unitDisplay:UnitDisplayManager
 @export var camera:PivotCamera3D
+@export var viewport:Viewport
+@export var modelNode:Node3D:
+	get:
+		if not modelNode is Node3D and viewport is Viewport:
+			var foundNode:Node3D = viewport.get_child(0)
+			return foundNode
+		else: return modelNode
 
 var loadedUnits:Array[Unit]
 
 func _ready() -> void:
-	unitDisplay.unit_selected.connect(update_list)
+	unitDisplay.unit_selected.connect(on_unit_selected)
 	update_display_manager()
 
 func update_display_manager():
@@ -24,7 +31,9 @@ func update_display_manager():
 	#Show them in the UI
 	unitDisplay.refresh_units(loadedUnits)
 
-func update_list(unit:Unit):
+func on_unit_selected(unit:Unit):
 	statList.defaultObject = unit
 	statList.update_from_entries(unit)
+	modelNode.replace_by(unit.attributes.model.instantiate())
+	
 	pass
