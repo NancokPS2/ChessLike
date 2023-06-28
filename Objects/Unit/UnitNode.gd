@@ -7,7 +7,6 @@ signal moved(where:Vector3i)
 signal acting
 signal acted
 
-#signal acted_upon
 signal was_targeted(withWhat:Ability)
 signal targeting(what:Vector3i, withWhat:Ability)
 
@@ -29,7 +28,6 @@ const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 @onready var board:GameBoard = Ref.board
 			
 var bodyNode:=Body.new()
-var inventory:Inventory
 var facing:int = 0#Temp value
 #var attributes:UnitAttributes
 var requiredAnimationName:String = "STANDING":
@@ -59,12 +57,6 @@ func get_current_cell()->Vector3i:
 	var cell:Vector3i = board.gridMap.local_to_map(position)
 #	assert(board.gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT, true).has(self))
 	return cell
-
-
-#Possible parameters user, flags
-func targeted_with_action(parameters:Dictionary):
-	emit_signal("acted_upon",parameters)
-	pass
 
 func start_turn():
 	attributes.stats.turnDelay = attributes.stats.turnDelayMax
@@ -128,7 +120,8 @@ class Body extends Node3D:
 				add_child(modelNode)
 				update_limb_references()
 				animationRef = modelNode.get_node("AnimationPlayer")
-				
+	
+	#Contains a reference to each mesh that's a limb
 	var limbRefs:Dictionary
 	var animationRef:AnimationPlayer
 
@@ -155,7 +148,7 @@ class Body extends Node3D:
 		if not usedLimb in limbRefs: push_error("No node has been assigned to {0} ref.".format([usedLimb])); return
 		
 		#Get node
-		var nodeUsed = node.duplicate(7)
+		var nodeUsed:Node3D = node.duplicate(7)
 
 		#If it has an ORIGIN point, use that.
 		var origin = nodeUsed.get_node_or_null("ORIGIN")
