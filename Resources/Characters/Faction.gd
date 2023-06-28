@@ -11,6 +11,14 @@ class_name Faction
 
 @export var existingUnits:Array[CharAttributes]
 
+@export var inventoryContents:Array[Item]
+
+func inventory_add_item(item:Item):
+	inventoryContents.append(item)
+
+func inventory_remove_item(item:Item):
+	inventoryContents.erase(item)
+
 func is_friendly_with(faction:Faction):
 	if friendlies.has(faction.internalName): return true
 	else: false
