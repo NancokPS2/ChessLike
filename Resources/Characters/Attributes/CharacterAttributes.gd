@@ -1,6 +1,10 @@
 extends AttributesBase
 class_name CharAttributes
 
+signal equipment_changed(newItem:Item)
+
+enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3}
+
 #Resources
 @export var raceAttributes:RacialAttributes:
 	set(val):
@@ -33,17 +37,36 @@ class_name CharAttributes
 		return classAttributes
 
 		
-@export var inventory:Inventory
+#@export var inventory:Inventory = Inventory.new()
+#var inventoryManager:=InventoryManager.new(self, inventory)
+
 @export var factionIdentifier:String:
 	set(val):
 		factionIdentifier = val
 
-
-#var abilities:Array#Both passive and active abilities
+#Equipment
+@export var equipment:Dictionary = {
+	"ARMOR":"",
+	"L_HAND":"",
+	"R_HAND":"",
+	"ACC1":"",
+	"ACC2":"",
+	"ACC3":""
+	}
+	
+#Info
+@export var info:Dictionary = {
+	"firstName":"Unnamed",
+	"nickName":"Nick",
+	"lastName":"",
+	"raceName":"no race?",
+	"className":"Unemployed",
+	"factionIdentifier":"",
+	"sex":"Unknown"
+}
 
 #12 bitsPersonality index r:energetic g:good b:lawful
 @export var personalityNumber:Array[int]=[255,255,255]
-
 var personalityColor:Color:
 	get:
 		if personalityNumber.size()!=3 or personalityNumber.max()>255: push_error("Corrupted personalityNumber!"); return Color()
@@ -74,37 +97,12 @@ var passiveEffects:Array[PassiveEffect]
 func _init() -> void:
 #	assert(not attributeResources.is_empty())
 #	combine_attributes()
-	
-	pass
-	
+	equipment_changed.connect(equipment_update_abilities)
 	
 
 
-
-#Info
-@export var info:Dictionary = {
-	"firstName":"Unnamed",
-	"nickName":"Nick",
-	"lastName":"",
-	"raceName":"no race?",
-	"className":"Unemployed",
-	"factionIdentifier":"",
-	"sex":"Unknown"
-}
-
-#Equipment
-@export var equipment:Dictionary = {
-	"ARMOR":"",
-	"L_HAND":"",
-	"R_HAND":"",
-	"ACC1":"",
-	"ACC2":"",
-	"ACC3":""
-	}
 	
-func equip(what:Equipment, slot:String):
-	if not equipmentSlots.has(slot): push_error("Invalid slot"); return
-	else: equipment[slot] = what
+
 	
 func randomize_names(firstNames:Array[String], nickNames:Array[String], lastNames:Array[String]):
 	info["firstName"] = firstNames.pick_random() as String
@@ -132,6 +130,31 @@ func get_faction()->Faction:
 	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
 	return faction if faction is Faction else "Faction {0} not found!".format([factionIdentifier])
 
+
+
+func equipment_equip(what:Equipment, slot:EquipSlots):
+	if not what is Equipment: push_error("Not Equipment"); return
+	else: equipment[slot] = what
+	
+func equipment_get_item(slot:EquipSlots):
+	var item:Item = equipment[slot]
+	return item if item is Item else null
+	
+	
+func equipment_update_abilities():
+	#Get the attack ability for weapons or other on_use items
+	for item in equipment.values():
+		assert(item is Item)
+		var ability:Ability = item.get_abilities(self)
+		if ability is Ability and not abilities.has(ability): abilities.append(ability)
+		
+		#
+		for itemAbil in item.abilityList:
+			if not itemAbil.has(ability): abilities.append(ability)
+		
+	#Ensure it has no null values
+	assert(abilities.find(null) == -1)
+
 class Generator extends RefCounted:
 	enum NameType {FIRST_AND_LAST,FIRST_ONLY,MR_LAST,LAST_ONLY}
 	func generate_name(attrib:CharAttributes, type:NameType, firstNameList:Array=[],lastNameList:Array=[]):#Use nameType enum
@@ -146,3 +169,19 @@ class Generator extends RefCounted:
 		
 		if type != NameType.LAST_ONLY or type != NameType.FIRST_AND_LAST:#If it requires a last unitName...
 			attrib.info.lastName += lastNameList[randi() % lastNameList.size()]#randi returns an int between 0 and the size-1
+
+#class InventoryManager extends RefCounted:
+#
+#	var slots:Dictionary
+#
+#	var attributes:CharAttributes
+#	var inventory:Inventory
+#
+#	func _init(_attributes:CharAttributes, _inventory:Inventory):
+#		inventory = _inventory
+#		attributes = _attributes
+#
+
+	
+	
+	
