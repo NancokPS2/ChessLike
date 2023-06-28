@@ -83,6 +83,7 @@ class Entry extends HBoxContainer:
 		add_child(iconNode)
 		add_child(nameLabel)
 		add_child(valLabel)
+		arrange_controls()
 		update_entry()
 	
 	func update_entry():
@@ -93,3 +94,6 @@ class Entry extends HBoxContainer:
 		if valFont is Font: valLabel.add_theme_font_override("font",valFont)
 		
 		
+	func arrange_controls():
+		valLabel.size_flags_horizontal = Control.SIZE_SHRINK_END + Control.SIZE_EXPAND
+		pass

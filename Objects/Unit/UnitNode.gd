@@ -23,6 +23,7 @@ const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 		attributes = val
 		if attributes is CharAttributes: 
 			attributes.user = self
+			assert(attributes.user == self)
 			bodyNode.modelNode = attributes.model.instantiate()
 
 @onready var board:GameBoard = Ref.board
@@ -74,7 +75,8 @@ func start_turn():
 func end_turn():
 	emit_signal("turn_ended")
 
-
+func get_passive_effects():
+	pass
 
 
 

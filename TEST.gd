@@ -5,7 +5,7 @@ var imageStorageTest:=ImageDataStorage.new()
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action("camera_forward"):
+	if event.is_action("camera_up"):
 		$FancyLabel.floating_animation(false)
 
 
