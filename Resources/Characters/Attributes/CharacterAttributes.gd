@@ -5,26 +5,32 @@ class_name CharAttributes
 @export var raceAttributes:RacialAttributes:
 	set(val):
 		if raceAttributes is RacialAttributes: attributeResources.erase(raceAttributes)
+		raceAttributes = val
 		attributeResources.append(val)
 		info.raceName = raceAttributes.displayName
-		if classAttributes != null:
-			combine_attributes_base_stats()
+#		assert(user)
+#		assert(not user)
+#		if classAttributes != null:
+#			combine_attributes_base_stats()
 	get:
 		for attrib in attributeResources:
 			if attrib is RacialAttributes: return attrib
-		return null
+		return raceAttributes
 		
 @export var classAttributes:ClassAttributes:
 	set(val):
 		if classAttributes is ClassAttributes: attributeResources.erase(classAttributes)
+		classAttributes = val
 		attributeResources.append(val)
 		info.className = classAttributes.displayName
-		if raceAttributes != null:
-			combine_attributes_base_stats()
+#		assert(user)
+#		assert(not user)
+#		if raceAttributes != null:
+#			combine_attributes_base_stats()
 	get:
 		for attrib in attributeResources:
 			if attrib is ClassAttributes: return attrib
-		return null
+		return classAttributes
 
 		
 @export var inventory:Inventory
@@ -60,8 +66,10 @@ var user:Unit:
 	set(val):
 		user = val
 		for ability in abilities: ability.user = user
+		if user is Unit:
+			user.ready.connect(combine_attributes_base_stats,CONNECT_ONE_SHOT)
 		
-		
+var passiveEffects:Array[PassiveEffect]
 
 func _init() -> void:
 #	assert(not attributeResources.is_empty())
@@ -116,6 +124,9 @@ func apply_turn_delay(delay:int):
 	if stats.turnDelay <= 0:
 		stats.turnDelay = stats.turnDelayMax - abs(stats.turnDelay)
 		
+func add_passive_effect(passive:PassiveEffect):
+	passiveEffects.append(passive)
+	passive.setup(user)
 
 func get_faction()->Faction:
 	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
