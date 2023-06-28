@@ -143,36 +143,47 @@ func stat_change(stat:String, changeAmount:int):
 			push_error("Cannot handle this stat from this method!")
 	stat_changed.emit(stat)
 
-func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
-	#Add stats
-	for stat in stats:
-		var statSum:int = stats[stat]
-		#Sum from each attribute
-		for attrib in attribArray:
-			statSum += attrib.stats[stat] 
-			
-		stats[stat] = statSum / (attribArray.size()+1)
-		
-	#Equipment slots
-	for attrib in attribArray:
-		for slot in attrib.equipmentSlots:
-			if not equipmentSlots.has(slot): equipmentSlots.append(slot)
-			
-	#Abilities
-	for attrib in attribArray:
-		for ability in attrib.abilities:
-			if not abilities.has(ability): abilities.append(ability)
-	attributes_updated.emit()
+#func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
+#	#Add stats
+#	for stat in stats:
+#		var statSum:int = stats[stat]
+#		#Sum from each attribute
+#		for attrib in attribArray:
+#			statSum += attrib.stats[stat] 
+#
+#		stats[stat] = statSum / ( max(attribArray.size(),1) )
+#
+#	#Equipment slots
+#	for attrib in attribArray:
+#		for slot in attrib.equipmentSlots:
+#			if not equipmentSlots.has(slot): equipmentSlots.append(slot)
+#
+#	#Abilities
+#	for attrib in attribArray:
+#		for ability in attrib.abilities:
+#			if not abilities.has(ability): abilities.append(ability)
+#	attributes_updated.emit()
 
-func combine_attributes_base_stats(attribArray:Array[AttributesBase] = attributeResources):
+func combine_attributes_base_stats(attribArray:Array[AttributesBase] = attributeResources, includeSelf:bool=false):
+	var _attribArray:Array[AttributesBase] = attribArray.duplicate()
+	
+	var raceRes = get("raceAttributes")
+	var classRes = get("classAttributes")
+	if raceRes is AttributesBase: _attribArray.append(raceRes) 
+	if classRes is AttributesBase: _attribArray.append(classRes) 
+	
+	assert(not _attribArray.is_empty())
 	#Add stats
+	
+	if includeSelf: _attribArray.append(self)
 	for stat in baseStats:
-		var statSum:int = baseStats[stat]
-		#Sum from each attribute
-		for attrib in attribArray:
-			statSum += attrib.baseStats[stat] 
+		#Sum from each attribute to average
+		var statAverage:int
+		for attrib in _attribArray:
+			statAverage += attrib.baseStats[stat] 
 			
-		baseStats[stat] = statSum / (attribArray.size()+1)
+		statAverage = statAverage / ( max(_attribArray.size(),1) )
+		baseStats[stat] = statAverage
 		
 	#Equipment slots
 	for attrib in attribArray:
