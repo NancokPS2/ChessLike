@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EquipmentWeapon" load_steps=2 format=3 uid="uid://bvpympbiskvbj"]
+
+[ext_resource type="Script" path="res://Resources/Items/Weapon.gd" id="1_sv01m"]
+
+[resource]
+script = ExtResource("1_sv01m")
+weaponType = 6
+twoHanded = false
+damage = 1
+weaponRange = 1
+compatibleSlots = Array[int]([1, 2])
+statBonuses = {
+"agility": 0,
+"defense": 0,
+"energyMax": 0,
+"healthMax": 0,
+"mind": 0,
+"special": 0,
+"strength": 0
+}
+abilityList = Array[String]([])
+itemType = 0
+internalName = "dagger"
+displayName = "Dagger"
+uses = 0

@@ -1,11 +1,10 @@
 extends Item
 class_name Equipment
 
+enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3} #CharAttributes.EquipSlots
 
+@export var compatibleSlots:Array[EquipSlots]
 
-enum EquipmentTypes{WEAPON,CONSUMABLE,ARMOR,ACCESSORY}
-@export var equipmentType:EquipmentTypes
-@export var compatibleSlots:Array[String]
 
 @export var statBonuses:Dictionary = {
 	"defense":0,
@@ -17,10 +16,8 @@ enum EquipmentTypes{WEAPON,CONSUMABLE,ARMOR,ACCESSORY}
 	"energyMax":0
 }
 
-@export var abilityList:Array[String]
+
 	
-func take_item(taker:Object):
-	if taker.inventory == null:
-		print_debug(taker.get_name() + " does not have an inventory to hold " + displayName)
-	else:
-		taker.inventory.add_item(self)
+
+
+
