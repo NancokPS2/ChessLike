@@ -49,7 +49,7 @@ var board:GameBoard:
 		if user is Unit and user.board is GameBoard:
 			return user.get("board")
 		else:
-			push_error(str(user)+ " may not be a Unit or lack a board.")
+			push_error(str(user)+ " may not be a Unit or lacks a board.")
 			return null
 
 #@export var mainValue:float

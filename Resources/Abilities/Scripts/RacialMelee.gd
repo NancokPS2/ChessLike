@@ -2,9 +2,10 @@ extends Ability
 
 	
 func _use(targets:Array[Vector3i]):
-	for target in targets:
-		var unit:Unit = user.board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
-		unit.attributes.stats.health -= 10
+	for target in get_units(targets):
+#		var unit:Unit = user.board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
+		target.attributes.stat_change("health", -10)
+
 
 #func use(target:Unit):
 #	if inventory.equipped[hand] is Weapon:

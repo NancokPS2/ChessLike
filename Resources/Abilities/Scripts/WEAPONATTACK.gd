@@ -1,27 +1,23 @@
 extends Ability
+class_name AbilityWeaponAttack
 
-func _init():
-	displayedName = "ACTION_WEAPONATTACK_NAME"
-	internalName = "WEAPONATTACK"
-	classRestrictions = []
-	turnDelayCost += 0
-	energyCost += 0
-	abilityFlags += AbilityFlags.HOSTILE
+var weapon:EquipmentWeapon
+
+func _use(targets:Array[Vector3i]):
+	var _weapon = get_weapon()
+	for target in get_units(targets):
+		target.change_stat("health", -calculate_damage(target, _weapon))
 	
 
-func _use(params):
-	var weaponHolder = user.equipment["R_HAND"]
-	
-	params["target"].change_stat("health",weaponHolder.damage)
-	emit_signal("ability_finalized")#Must emit the signal or the game will soft-lock
+func custom_can_use()->bool:
+	return false if not (weapon is EquipmentWeapon or user.equipment["R_HAND"] or user.equipment["L_HAND"] ) else true
 
-func _check_availability():
-	if user.equipment["R_HAND"] == null or user.equipment["L_HAND"] == null:
-		return false
-	else:
-		return true
+func get_weapon():
+	if weapon is EquipmentWeapon: return weapon
+	if user.equipment["R_HAND"]: return user.equipment["R_HAND"]
+	else: return user.equipment["L_HAND"]
 
-const parameters = {
-	"target":null,
-	"flags":null
-}
+func calculate_damage(target:Unit, weapon:EquipmentWeapon)->int:
+	return weapon.damage
+	pass
+
