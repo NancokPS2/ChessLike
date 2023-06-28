@@ -17,8 +17,6 @@ var unitRef:Unit:
 #			refresh_ui()
 			pass
 
-var stats
-var info
 @onready var tween = get_tree().create_tween().set_loops()
 
 @export_group("Input")
@@ -47,6 +45,9 @@ var info
 @export_group("Secondary stats")
 @export var delayLabel:Label
 
+var stats:Dictionary
+var info:Dictionary
+
 func _init() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE)
 #	Events.UPDATE_UNIT_INFO.connect(refresh_ui)
@@ -54,7 +55,7 @@ func _init() -> void:
 func _ready() -> void:	
 	tween.tween_property(self,"modulate",Color.WHITE * 1.25, 1)
 	tween.tween_property(self,"modulate",modulate, 0.5)
-	refresh_ui()
+#	refresh_ui()
 	
 func clear_unit():
 	unitRef = Node.new()
@@ -68,43 +69,48 @@ func clear_unit():
 #		accept_event()
 	
 	
-func refresh_ui():
+func refresh_ui(useBaseStats:bool=false):
 #	assert(unitRef is Unit)
+	# THESE MAY DIFFER FROM ACTUAL VALUES!
+	stats = unitRef.get("attributes").baseStats.duplicate()
+	info = unitRef.get("attributes").info.duplicate()
+	var keyUsed:String = "baseStats" if useBaseStats else "stats"
+
 	if unitRef is Unit:
 		var testStats = unitRef.attributes.stats
 		if nameLabel: nameLabel.text = unitRef.attributes.info["nickName"]
 		
 		if classLabel: classLabel.text = unitRef.attributes.info["className"]
 		
-		if healthLabel: healthLabel.text = str(unitRef.attributes.stats["health"]) + " / " + str(unitRef.attributes.stats["healthMax"])
-		if healthMeter: healthMeter.value = unitRef.attributes.stats["health"]; healthMeter.max_value = unitRef.attributes.stats["healthMax"]
+		if healthLabel: healthLabel.text = str(unitRef.attributes[keyUsed]["health"]) + " / " + str(unitRef.attributes[keyUsed]["healthMax"])
+		if healthMeter: healthMeter.value = unitRef.attributes[keyUsed]["health"]; healthMeter.max_value = unitRef.attributes[keyUsed]["healthMax"]
 		
-		if energyLabel: energyLabel.text = str(unitRef.attributes.stats["energy"]) + " / " + str(unitRef.attributes.stats["energyMax"])
-		if energyMeter: energyMeter.value = unitRef.attributes.stats["energy"]; energyMeter.max_value = unitRef.attributes.stats["energyMax"]
+		if energyLabel: energyLabel.text = str(unitRef.attributes[keyUsed]["energy"]) + " / " + str(unitRef.attributes[keyUsed]["energyMax"])
+		if energyMeter: energyMeter.value = unitRef.attributes[keyUsed]["energy"]; energyMeter.max_value = unitRef.attributes[keyUsed]["energyMax"]
 		
-		if delayLabel: delayLabel.text = "Delay: " + str(unitRef.attributes.stats["turnDelay"])
+		if delayLabel: delayLabel.text = "Delay: " + str(unitRef.attributes[keyUsed]["turnDelay"])
 		
 		if strengthLabel: 
 			strengthLabel.text = unitRef.attributes.stats["strength"]
 			var color:Color
-			if unitRef.attributes.stats.strength < unitRef.attributes.baseStats.strength: color = NEGATIVE_COLOR
-			elif unitRef.attributes.stats.strength > unitRef.attributes.baseStats.strength: color = POSITIVE_COLOR
+			if unitRef.attributes.stats.strength < unitRef.attributes[keyUsed].strength: color = NEGATIVE_COLOR
+			elif unitRef.attributes.stats.strength > unitRef.attributes[keyUsed].strength: color = POSITIVE_COLOR
 			else: color = NORMAL_COLOR
 			strengthLabel.add_theme_color_override("font_color", color)
 			
 		if agilityLabel: 
 			agilityLabel.text = unitRef.attributes.stats["agility"]
 			var color:Color
-			if unitRef.attributes.stats.agility < unitRef.attributes.baseStats.agility: color = NEGATIVE_COLOR
-			elif unitRef.attributes.stats.agility > unitRef.attributes.baseStats.agility: color = POSITIVE_COLOR
+			if unitRef.attributes.stats.agility < unitRef.attributes[keyUsed].agility: color = NEGATIVE_COLOR
+			elif unitRef.attributes.stats.agility > unitRef.attributes[keyUsed].agility: color = POSITIVE_COLOR
 			else: color = NORMAL_COLOR
 			agilityLabel.add_theme_color_override("font_color", color)
 			
 		if mindLabel: 
 			mindLabel.text = unitRef.attributes.stats["mind"]
 			var color:Color
-			if unitRef.attributes.stats.mind < unitRef.attributes.baseStats.mind: color = NEGATIVE_COLOR
-			elif unitRef.attributes.stats.mind > unitRef.attributes.baseStats.mind: color = POSITIVE_COLOR
+			if unitRef.attributes.stats.mind < unitRef.attributes[keyUsed].mind: color = NEGATIVE_COLOR
+			elif unitRef.attributes.stats.mind > unitRef.attributes[keyUsed].mind: color = POSITIVE_COLOR
 			else: color = NORMAL_COLOR
 			mindLabel.add_theme_color_override("font_color", color)
 
