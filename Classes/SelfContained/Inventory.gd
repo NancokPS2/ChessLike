@@ -12,7 +12,7 @@ enum ObjectFilters {TOOL, COMPONENT}
 
 
 #@export var validClasses:Array[String]
-@export var contents:Dictionary
+@export var contents:Array[Item]
 @export var invSize:int = 1
 @export var maxItemSize:int = 3
 
