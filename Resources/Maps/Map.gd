@@ -3,18 +3,18 @@ class_name Map
 
 
 
-enum DefaultCellTags {
-	WALKABLE, ## All units (dirt, path)
-	EMPTY, ## Flying only (chasms)
-	LIQUID, ## All except non-swimming walkers (water)
-	UNSTABLE, ## All except heavy walkers (mud)
-	PUSHER, ## Only heavy walkers (water current, brambles)
-	HARD, ## Fall damage is increased on this kind of tile (rock)
-	SOFT, ## Fall damage is negated on this kind of tile (slime, water, hay)
-	NO_AIR, ## All but flying and hovering (strong wind)
-	ELEVATOR, ## Walkers ignore terrain differences (ladder)
-	UNTARGETABLE, ## Units may not willingly move into these (lava)
-	NO_ENTRY, ## Impossible to enter
+const DefaultCellTags:Dictionary = {
+	WALKABLE="WALKABLE", ## All units (dirt, path)
+	EMPTY="EMPTY", ## Flying only (chasms)
+	LIQUID="LIQUID", ## All except non-swimming walkers (water)
+	UNSTABLE="UNSTABLE", ## All except heavy walkers (mud)
+	DENSE="DENSE", ## Only heavy walkers (water current, brambles)
+	HARD="HARD", ## Fall damage is increased on this kind of tile (rock)
+	SOFT="SOFT", ## Fall damage is negated on this kind of tile (slime, water, hay)
+	NO_AIR="NO_AIR", ## All but flying and hovering (strong wind)
+	ELEVATOR="ELEVATOR", ## Walkers ignore terrain differences (ladder)
+	UNTARGETABLE="UNTARGETABLE", ## Units may not willingly move into these (lava)
+	NO_ENTRY="NO_ENTRY", ## Impossible to enter
 	}
 
 @export var displayName:String  
@@ -66,8 +66,7 @@ enum TerrainCellData {TILE_ID,TILE_POS,TAGS}
 	}
 ]
 
-enum LoadableUnitsData {POSITION, UNIT_RESOURCE}
-@export var loadableUnits:Array[CharAttributes]
+@export var initialUnits:Array[MapUnit]
 
 
 
@@ -94,7 +93,28 @@ func auto_generation():
 		if generator.get(noiseName) is FastNoiseLite:
 			generator.simple_noise_generation(self, wantedSize, generator.get(noiseName), noiseSeed) 
 		else: push_error("Not a valid noise constant.")
+		
+	fix_initial_units(initialUnits)
+
+## Should be ran after auto_generation. Fixes the height of the units and generates unfinished ones
+func fix_initial_units(mapUnits:Array[MapUnit]):
+	var cells:Array[Vector3i] = get_all_cells()
+	for unit in mapUnits:
+		#The unit is placed at a different height from the map
+		if not cells.has(unit.position):
+			#Look for a viable height to place the unit in.
+			for posY in range(wantedSize.y, 0, -1):
+				if cells.has(Vector3i(unit.position.x, posY, unit.position.z)): unit.position.y = posY; break
+				
+func generate_tags_from_tile_set():
+	var tileSetTags:Dictionary = tileSet.tags
+	for index in range(terrainCells.size()):
+		var cellID:Array = terrainCells[index][Map.TerrainCellData.TILE_ID]
+		
+		var tagsToAdd:Array = tileSetTags.get(cellID,[])
+		terrainCells[index][Map.TerrainCellData.TAGS].append_array(tagsToAdd)
 	
+
 
 func add_terrain_cell(tileID:int, pos:Vector3i, tags:Array[String]):
 	var cellArray:Array = [tileID, pos, tags]
@@ -124,12 +144,22 @@ func get_all_IDs()->Array[int]:
 		
 
 func is_valid()->bool:
-	var tileItems:int = meshLibrary.get_item_list().size()
-	for cellArr in terrainCells:
-		if cellArr[TerrainCellData.TILE_ID] >= tileItems:
-			push_error("Invalid mesh ID on terrainCells, maximum value for this meshLibrary is " + str(tileItems) + ". " + str(cellArr))
+	
+	var cellIDs:Array[int] = get_all_IDs()
+	var cellPositions:Array[Vector3i] = get_all_cells()
+	
+	var cellMaxValue:int = meshLibrary.get_item_list().size()
+	
+	#Ensure that no cell defines a non existent TileID
+	for ID in cellIDs:
+		if ID >= cellMaxValue:
+			push_error("Invalid mesh ID on terrainCells, maximum value for this meshLibrary is " + str(cellMaxValue) + ". The cell's ID is " + str(ID))
 			return false
-#	if terrainCells.any(func(cellArr:Array): return cellArr[TerrainCellData.TILE_ID]):
+	
+	#Check that all initial units are placed in a valid cell
+	if not initialUnits.all(func(unit:MapUnit): return cellPositions.has(unit.position) ):
+		push_error("At least one unit was placed outside the map. Ensure initialUnits positions match the cells defined in terrainCells.")
+		return false
 
 		
 	return true
@@ -146,11 +176,12 @@ class TerrainGenerator extends RefCounted:
 		
 
 	func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite, seed:int=0, tags:Dictionary={}):
+		assert(mapUsed.terrainCells.is_empty(), "A map that expects generation should not have predefined cells.")
 		mapUsed.terrainCells.clear()
 		mapUsed.spawnLocations.clear()
 		noiseUsed.seed
-		if tags == {}:
-			tags[0] = ["WALKABLE"]
+#		if tags == {}:
+#			tags[0] = ["WALKABLE"]
 		for x in size.x:
 			for z in size.z:
 				var tileID:int = 0
@@ -158,8 +189,10 @@ class TerrainGenerator extends RefCounted:
 				var noiseVal:float = noiseUsed.get_noise_2dv(noisePos)
 				var height:int = abs(noiseVal)*mapUsed.wantedSize.y
 				var tagsUsed:Array[String] 
-				tagsUsed.assign(tags[tileID])
-				mapUsed.add_terrain_cell(tileID, Vector3i(x,height,z), tagsUsed)
+#				tagsUsed.assign(tags[tileID])
+				mapUsed.add_terrain_cell(tileID, Vector3i(x,height,z), [])
+		
+		mapUsed.generate_tags_from_tile_set()
 		
 		var copyOfTerrain:Array[Array] = mapUsed.terrainCells.duplicate(true)
 		for faction in mapUsed.maxFactions:
@@ -169,3 +202,9 @@ class TerrainGenerator extends RefCounted:
 			mapUsed.spawnLocations.append(thisFaction)
 			
 		assert(mapUsed.terrainCells.size() >= size.x*size.z)
+		
+
+
+
+			
+		pass
