@@ -25,7 +25,7 @@ func refresh_units(units:Array[Unit] = Ref.board.get_units(false, "PLAYER"), fac
 	for child in get_children(): child.queue_free()
 	for unit in units:
 		#Check if the filter is active and if the unit fulfills it.
-		if factionFilter != NO_FACTION_FILTER and unit.attributes.faction.internalName != factionFilter:
+		if factionFilter != NO_FACTION_FILTER and unit.attributes.get_faction().internalName != factionFilter:
 			continue
 			
 		var newDisplay:UnitDisplay = get(displayUsed).instantiate()

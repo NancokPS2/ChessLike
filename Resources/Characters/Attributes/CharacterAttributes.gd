@@ -43,6 +43,7 @@ enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3}
 @export var factionIdentifier:String:
 	set(val):
 		factionIdentifier = val
+#		if not get_faction() is Faction: push_error("No faction found with identifier " + factionIdentifier)
 
 #Equipment
 @export var equipment:Dictionary = {
@@ -128,7 +129,9 @@ func add_passive_effect(passive:PassiveEffect):
 
 func get_faction()->Faction:
 	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
-	return faction if faction is Faction else "Faction {0} not found!".format([factionIdentifier])
+	if not faction is Faction: push_error("No faction found with identifier " + factionIdentifier); faction = null
+	
+	return faction
 
 
 

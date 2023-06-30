@@ -226,7 +226,7 @@ class Filters extends RefCounted:
 	
 	static func is_ally(cell:Vector3i, user:Unit): 
 		var targetUnit:Unit = Ref.grid.search_int_tile(cell, MovementGrid.Searches.UNIT)
-		if targetUnit is Unit and user.attributes.faction.is_friendly_with(targetUnit.attributes.faction):
+		if targetUnit is Unit and user.attributes.get_faction().is_friendly_with(targetUnit.attributes.get_faction()):
 			return true
 		elif not targetUnit is Unit: 
 			push_error("There is no unit here! has_unit should have been called first!")

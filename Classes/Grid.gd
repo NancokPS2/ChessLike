@@ -48,6 +48,7 @@ func _ready() -> void:
 	
 	print_debug(mesh_library.get_item_list())
 
+
 ## Updates all object positions in the Grid
 func update_grid(map:Map):
 	#TODO: This should not take ALL used cells (?)
@@ -104,8 +105,15 @@ func initialize_cells(map:Map, override:bool=false):
 	var cellArrays = map.terrainCells
 	for cell in map.get_all_cells():
 		if not cellDict.has(cell) or override:
-			var cellTags = map.get_all_cell_tags(cell)
-			cellDict[cell] = map.get_all_cell_tags(cell)
+			
+			#Type conversion from Array[String] to Array
+			var cellTags:Array 
+			cellTags.assign( map.get_all_cell_tags(cell) )
+			
+			#Addition
+#			assert(not cellTags.is_typed())
+			cellDict[cell] = cellTags
+			assert(not cellDict[cell].is_typed())
 			#print(cellDict[cell])
 	
 
@@ -243,7 +251,6 @@ class GridPathing extends Node:
 		#Create the points
 		for terrainCell in map.terrainCells:
 			var itemID:int = terrainCell[Map.TerrainCellData.TILE_ID]
-			var moveCost:int = map.tileSet.get_item_move_cost(itemID)
 			
 			var point:Vector3i = terrainCell[Map.TerrainCellData.TILE_POS]
 			var pointLocal:Vector3 = gridRef.map_to_local(point)

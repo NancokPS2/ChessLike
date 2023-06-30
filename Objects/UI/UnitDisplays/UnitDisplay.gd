@@ -72,11 +72,12 @@ func clear_unit():
 func refresh_ui(useBaseStats:bool=false):
 #	assert(unitRef is Unit)
 	# THESE MAY DIFFER FROM ACTUAL VALUES!
-	stats = unitRef.get("attributes").baseStats.duplicate()
-	info = unitRef.get("attributes").info.duplicate()
-	var keyUsed:String = "baseStats" if useBaseStats else "stats"
-
+	
 	if unitRef is Unit:
+		stats = unitRef.get("attributes").baseStats.duplicate()
+		info = unitRef.get("attributes").info.duplicate()
+		var keyUsed:String = "baseStats" if useBaseStats else "stats"
+		
 		var testStats = unitRef.attributes.stats
 		if nameLabel: nameLabel.text = unitRef.attributes.info["nickName"]
 		

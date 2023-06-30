@@ -15,6 +15,11 @@ class_name MapTileSet
 var itemIDs:PackedInt32Array:
 	get: return meshLibrary.get_item_list()
 
+func get_tags_for_ID(ID:int)->Array[String]:
+	var arr:Array[String]
+	arr.assign(tags[ID])
+	return arr
+
 #func get_item_move_cost(itemID:int)->int:
 #	var terrainCosts = moveCostWalk
 #	if not itemIDs.has(itemID): push_error("itemIDs does not include " + str(itemID)); return 1

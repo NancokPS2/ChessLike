@@ -363,7 +363,7 @@ func on_cell_clicked(cell:Vector3i):
 			#If there is a unit selected.
 			if unitList.unitSelected is Unit:
 				#The selected cell has the correct tag.
-				if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitList.unitSelected.attributes.faction.internalName):
+				if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitList.unitSelected.attributes.get_faction().internalName):
 					#Add it if not added already.
 					if not unitList.unitSelected.get_parent() == self:
 						add_child(unitList.unitSelected)
@@ -439,7 +439,7 @@ func get_units(combatOnly:bool=true, factionFilter:String = "")->Array[Unit]:
 	if combatOnly:
 		unitArr = unitArr.filter(func(unit): return unit.get_parent()==self)
 	if factionFilter != "":
-		unitArr = unitArr.filter(func(unit): return unit.attributes.faction.internalName == factionFilter)
+		unitArr = unitArr.filter(func(unit): return unit.attributes.get_faction().internalName == factionFilter)
 	
 	return unitArr
 	
@@ -447,8 +447,8 @@ func get_present_factions(inCombatOnly:bool)->Array[Faction]:
 	var units:Array[Unit] = get_units(inCombatOnly)
 	var factionList:Array[Faction]
 	for unit in units:
-		if not factionList.has(unit.attributes.faction):
-			factionList.append(unit.attributes.faction)
+		if not factionList.has(unit.attributes.get_faction()):
+			factionList.append(unit.attributes.get_faction())
 	return factionList
 
 func load_map(mapUsed:Map = currentMap)->void:
@@ -466,24 +466,29 @@ func load_map(mapUsed:Map = currentMap)->void:
 	gridMap.initialize_cells(mapUsed)
 	
 	# Add units
-	for unitAttrib in mapUsed.loadableUnits:
-		var newUnit:Unit = Unit.Generator.build_from_attributes(unitAttrib)
+	for mapUnit in mapUsed.initialUnits:
+		assert(mapUnit is MapUnit)
+		var newUnit:Unit = Unit.Generator.build_from_attributes(mapUnit.attributes)
+		gridMap.place_object(mapUnit.position, newUnit)
 		allUnits.append(newUnit)
+		add_child(newUnit)
 			
 	#Place spawn positions
-	var index:int=1
+	var index:int=0
 	for faction in get_present_factions(false):
 		var spawnCells:Array[Vector3i] 
 		spawnCells.assign(mapUsed.spawnLocations[index])
-		gridMap.mark_cells(spawnCells, index, false)
-		gridMap.tag_cells(spawnCells, SPAWN_TAG + faction.internalName)
-		
-		print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
+		gridMap.mark_cells(spawnCells, index+1, false)
+		if faction is Faction: 
+			gridMap.tag_cells(spawnCells, SPAWN_TAG + faction.internalName)
+			print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
+		else: push_error("Faction is null!")
 		index+=1
 	
 		
 	gridMap.update_grid(mapUsed)
-	Events.UPDATE_UNIT_INFO.emit()
+#	Events.UPDATE_UNIT_INFO.emit()
+	
 #	for spawnArray in mapUsed.spawnLocations:
 #		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
 #

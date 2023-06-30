@@ -99,6 +99,7 @@ func auto_generation():
 ## Should be ran after auto_generation. Fixes the height of the units and generates unfinished ones
 func fix_initial_units(mapUnits:Array[MapUnit]):
 	var cells:Array[Vector3i] = get_all_cells()
+	assert(not mapUnits.is_empty())
 	for unit in mapUnits:
 		#The unit is placed at a different height from the map
 		if not cells.has(unit.position):
@@ -107,11 +108,12 @@ func fix_initial_units(mapUnits:Array[MapUnit]):
 				if cells.has(Vector3i(unit.position.x, posY, unit.position.z)): unit.position.y = posY; break
 				
 func generate_tags_from_tile_set():
-	var tileSetTags:Dictionary = tileSet.tags
+#	var tileSetTags:Dictionary = tileSet.tags
 	for index in range(terrainCells.size()):
-		var cellID:Array = terrainCells[index][Map.TerrainCellData.TILE_ID]
+		var cellID:int = terrainCells[index][Map.TerrainCellData.TILE_ID]
 		
-		var tagsToAdd:Array = tileSetTags.get(cellID,[])
+#		var tagsToAdd:Array = tileSetTags.get(cellID,[])
+		var tagsToAdd:Array = tileSet.get_tags_for_ID(cellID)
 		terrainCells[index][Map.TerrainCellData.TAGS].append_array(tagsToAdd)
 	
 
@@ -126,7 +128,7 @@ func remove_terrain_cell(cell:Vector3i):
 func get_all_cell_tags(cell:Vector3i)->Array:
 	var result:Array = terrainCells.filter(func(cellArr:Array): return cellArr[1]==cell)[0]
 	assert(result.size()==3 and not result[2].is_empty())
-	return result[2]
+	return result[2] as Array
 
 func get_all_cells()->Array[Vector3i]:
 	var cells:Array[Vector3i]

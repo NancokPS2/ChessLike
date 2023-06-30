@@ -21,7 +21,6 @@ func _get_identifier(filePath:String)->String:
 	var identifier = res.get("internalName")
 	if identifier is String: return identifier 
 	else: push_error("No internalName defined in resource."); return ""
-	pass
 #	load_abilities("res://Resources/Abilities/AllAbilities/")
 #	load_classes("res://Resources/Characters/Classes/")
 #	load_races("res://Resources/Characters/Races/")
@@ -29,6 +28,10 @@ func _get_identifier(filePath:String)->String:
 #	load_characters("res://Resources/Characters/UniqueCharacters/")
 	pass
 
+func get_all_factions()->Array[Faction]:
+	var arr:Array[Faction]
+	arr.assign(get_all_in_group("FACTION"))
+	return arr
 
 #func register_file_paths(folder:String, category:String, extensionFilter:String=Extensions.RESOURCE):
 #	var files:PackedStringArray = DirAccess.get_files_at(folder)
