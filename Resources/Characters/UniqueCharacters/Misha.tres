@@ -10,7 +10,14 @@ script = ExtResource("1")
 raceAttributes = ExtResource("1_2pybq")
 classAttributes = ExtResource("1_yx3hh")
 factionIdentifier = ""
-personalityNumber = Array[int]([253, 255, 255])
+equipment = {
+"ACC1": "",
+"ACC2": "",
+"ACC3": "",
+"ARMOR": "",
+"L_HAND": "",
+"R_HAND": "dagger"
+}
 info = {
 "className": "This",
 "factionName": "",
@@ -20,14 +27,7 @@ info = {
 "raceName": "no race?",
 "sex": 0
 }
-equipment = {
-"ACC1": "",
-"ACC2": "",
-"ACC3": "",
-"ARMOR": "",
-"L_HAND": "",
-"R_HAND": "dagger"
-}
+personalityNumber = Array[int]([253, 255, 255])
 internalName = "Misha"
 displayName = "ERR_NONAME"
 attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])

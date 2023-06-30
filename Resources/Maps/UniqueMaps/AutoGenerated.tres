@@ -1,6 +1,5 @@
-[gd_resource type="Resource" script_class="Map" load_steps=5 format=3 uid="uid://bfr0af0aosxio"]
+[gd_resource type="Resource" script_class="Map" load_steps=4 format=3 uid="uid://bfr0af0aosxio"]
 
-[ext_resource type="Resource" uid="uid://ccahm2xfvtsi7" path="res://Resources/Characters/UniqueCharacters/Marco.tres" id="1_d4liq"]
 [ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="1_yjl0t"]
 [ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="2_hjv53"]
 [ext_resource type="Resource" uid="uid://df31gmpdhw5v3" path="res://Resources/Maps/TileSets/Grassy.tres" id="4_0nqpp"]
@@ -22,7 +21,7 @@ unitsToGenerate = Array[Dictionary]([{
 "raceName": "HUMAN",
 "unitName": "Human"
 }])
-loadableUnits = Array[Resource("res://Resources/Characters/Attributes/CharacterAttributes.gd")]([ExtResource("1_d4liq")])
+initialUnits = Array[Resource("res://Resources/Maps/MapLoadableUnit.gd")]([])
 generateTerrain = true
 noiseName = &"NOISE_DEFAULT"
 noiseSeed = 0

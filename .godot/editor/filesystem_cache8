@@ -1,15 +1,15 @@
 2a60927148abd1d33b818b535e306557
-::res://::1688051321
-DefaultEnviroment.tres::Environment::5190104091342360664::1688051321::0::1::::<><>::
+::res://::1688143431
+DefaultEnviroment.tres::Environment::5190104091342360664::1688140154::0::1::::<><>::
 icon.png::CompressedTexture2D::901346440923877254::1657319076::1677002256::1::::<><>::
 Lore.txt::TextFile::-1::1687887852::0::1::::<><>::
 ModelImportWithMetadata.gd::GDScript::-1::1670794979::0::1::::<>RefCounted<>::
 omnisharp.json::JSON::-1::1676997822::0::1::::<><>::
 README.md::TextFile::-1::1671481696::0::1::::<><>::
 TEST.gd::GDScript::-1::1687887498::0::1::::<>Control<>::
-TEST.tscn::PackedScene::4172520617367178532::1687988459::0::1::::<><>::res://TEST.gd<>res://Classes/SelfContained/TextLabelFancy.gd<>res://Classes/SelfContained/Interface/NestedMenu.gd<>res://Classes/SelfContained/PropertyRegistry.gd<>res://Objects/Unit/UnitNode.gd<>res://Objects/CombatGrid/GameBoard.gd<>uid://m3vbrc8tmtak
+TEST.tscn::PackedScene::4172520617367178532::1688143206::0::1::::<><>::res://TEST.gd<>res://Classes/SelfContained/TextLabelFancy.gd<>res://Classes/SelfContained/Interface/NestedMenu.gd<>res://Classes/SelfContained/PropertyRegistry.gd<>res://Objects/Unit/UnitNode.gd<>res://Objects/CombatGrid/GameBoard.gd<>uid://m3vbrc8tmtak
 TestSaveFile.tres::Resource/Resource::-1::1687102972::0::1::::<><>::res://Resources/SaveFile/SaveFile.gd
-TODO.txt::TextFile::-1::1687963811::0::1::::<><>::
+TODO.txt::TextFile::-1::1688143431::0::1::::<><>::
 ::res://addons/::1677701132
 ::res://addons/AsepriteWizard/::1677701102
 plugin.cfg::TextFile::-1::1677701102::0::1::::<><>::
@@ -185,8 +185,8 @@ MainTheme.tres::Theme::-1::1673643841::0::1::::<><>::res://Assets/UI/SideUIBackg
 ::res://Assets/Meshes/::1686581744
 ::res://Assets/Meshes/Armor/::1686581580
 Bulky.dae::PackedScene::395608795588056459::1669678690::1686581580::1::::<><>::
-::res://Assets/Meshes/Characters/::1687988460
-Human.tscn::PackedScene::6263905131309974773::1687988460::0::1::::<><>::uid://c8upch6etpftr
+::res://Assets/Meshes/Characters/::1688143208
+Human.tscn::PackedScene::6263905131309974773::1688143208::0::1::::<><>::uid://c8upch6etpftr
 ::res://Assets/Meshes/Characters/Dummy/::1686581580
 Dummy.dae::::-1::0::0::0::::<><>::
 Dummy.glb::PackedScene::7131275504761889043::1684792261::1686581580::1::::<><>::
@@ -216,12 +216,12 @@ YellowWavyShader.tres::ShaderMaterial::5703595141467084468::1687711321::0::1::::
 ::res://Assets/Meshes/Map/CellItemMesh/::1687046526
 GrassyTile.glb::PackedScene::8347914306946098842::1686961371::1687046526::1::::<><>::uid://cjhduw2hlrdhx
 GrassyTile_Material Base Color.png::CompressedTexture2D::5419210668820151273::1686959554::1686959555::1::::<><>::
-::res://Assets/Meshes/Map/MeshLibs/::1688053553
+::res://Assets/Meshes/Map/MeshLibs/::1688143431
 DefaultTiles.tres::MeshLibrary::5542343899208416665::1687045960::0::1::::<><>::
 DefaultTileScene.tscn::PackedScene::1373775558266895894::1687710580::0::1::::<><>::
-GrassyTiles.tres::MeshLibrary::5460618066015064028::1688053553::0::1::::<><>::uid://cjhduw2hlrdhx
+GrassyTiles.tres::MeshLibrary::5460618066015064028::1688143431::0::1::::<><>::uid://cjhduw2hlrdhx
 GrassyTileScene.tscn::PackedScene::8095246141554888930::1687711401::0::1::::<><>::uid://dq616t6audi8a
-SubGridMeshLib.tres::MeshLibrary::4283056817168270791::1688051318::0::1::::<><>::uid://byf8vn7nt0b36<>uid://dg6bfmntfojxn<>uid://d0b656nrucudi<>uid://cod0ku6487d5t<>uid://dpy8vo1dk4atp<>uid://mtef44060b6j<>res://Other/Shaders/Waves.gdshader<>uid://d1kyn81uv5qlr<>uid://b5t4wxbyqlhvf
+SubGridMeshLib.tres::MeshLibrary::4283056817168270791::1688143431::0::1::::<><>::uid://byf8vn7nt0b36<>uid://dg6bfmntfojxn<>uid://d0b656nrucudi<>uid://cod0ku6487d5t<>uid://dpy8vo1dk4atp<>uid://mtef44060b6j<>res://Other/Shaders/Waves.gdshader<>uid://d1kyn81uv5qlr<>uid://b5t4wxbyqlhvf
 SubGridMeshLib.tscn::PackedScene::6524136964891971469::1687710580::0::1::::<><>::uid://c1wxd2rabn204<>res://Other/Shaders/Waves.gdshader<>uid://dg6bfmntfojxn<>uid://cni4m40ocv8g3<>uid://cod0ku6487d5t<>uid://cmty52glumf63<>uid://mtef44060b6j<>uid://cujo0cwijbmhi<>uid://d1kyn81uv5qlr<>uid://drwhjn88chsu7<>uid://b5t4wxbyqlhvf<>uid://cj3hhvncar7il<>uid://byf8vn7nt0b36<>uid://dmb6726yqgqqa<>uid://d0b656nrucudi<>uid://b2jjyjcs1ulu8<>uid://dpy8vo1dk4atp
 ::res://Assets/Meshes/New Folder/::1669676548
 ::res://Assets/Meshes/Weapons/::1673440424
@@ -246,17 +246,17 @@ HoverGlow.png::CompressedTexture2D::-1::0::0::1::::<><>::
 MovementMark.png::CompressedTexture2D::-1::0::0::1::::<><>::
 PlaceHolderTile.png::CompressedTexture2D::-1::0::0::1::::<><>::
 TargetingMark.png::CompressedTexture2D::-1::0::0::1::::<><>::
-::res://Assets/UI/::1688051320
+::res://Assets/UI/::1688143431
 ButtonUI.png::CompressedTexture2D::3670731722918787191::1659899382::1686502689::1::::<><>::
 ButtonUIPressed.png::CompressedTexture2D::2344521209916511416::1659899385::1686502666::1::::<><>::
 GenericUIBackground2.png::CompressedTexture2D::6320877851794877652::1659897522::1686502692::1::::<><>::
 GenericUIBackground.png::CompressedTexture2D::6636250051653280432::1659891615::1686502700::1::::<><>::
-ProWindows.tres::FontFile::6749958600075791466::1688051319::0::1::::<><>::
+ProWindows.tres::FontFile::6749958600075791466::1688143431::0::1::::<><>::
 SideUIBackground2.png::CompressedTexture2D::7432284078302747015::1659897939::1686502698::1::::<><>::
-::res://Assets/UI/ThemeElements/::1688051321
+::res://Assets/UI/ThemeElements/::1688143431
 ButtonNormal.tres::StyleBoxTexture::7766828832531057336::1686503204::0::1::::<><>::uid://bskeod7cpbu4v
 ButtonPressed.tres::StyleBoxTexture::5810029894697508874::1686503220::0::1::::<><>::uid://8nx6lt8e35fw
-Main.tres::Theme::7092523273069663984::1688051321::0::1::::<><>::uid://diwksh02wm8gi<>uid://co1olxdkl23xe<>uid://c3fy3j0oyfv4u
+Main.tres::Theme::7092523273069663984::1688143431::0::1::::<><>::uid://diwksh02wm8gi<>uid://co1olxdkl23xe<>uid://c3fy3j0oyfv4u
 ::res://Assets/Units/::1671224969
 ::res://Assets/Units/characters/::1671224968
 IconDirectionAtlas.png::CompressedTexture2D::-1::0::0::1::::<><>::
@@ -329,12 +329,12 @@ GenericUIBackground.png::CompressedTexture2D::-1::0::0::1::::<><>::
 Mainx32.fnt::::-1::0::0::0::::<><>::
 Mainx64.fnt::::-1::0::0::0::::<><>::
 SideUIBackground.png::CompressedTexture2D::-1::0::0::1::::<><>::
-::res://Classes/::1687887851
+::res://Classes/::1688143133
 ButtonStateChange.gd::GDScript::-1::1677342502::0::1::::ButtonStateChange<>Button<>::
-Grid.gd::GDScript::-1::1687887851::0::1::::MovementGrid<>GridMap<>::
+Grid.gd::GDScript::-1::1688143133::0::1::::MovementGrid<>GridMap<>::
 TurnManager.gd::GDScript::-1::1685672246::0::1::::<>HBoxContainer<>::
 ::res://Classes/Control/::1685671746
-::res://Classes/SelfContained/::1687990729
+::res://Classes/SelfContained/::1688142480
 ActionRemapper.gd::GDScript::-1::1682605767::0::1::::ActionRemapper<>Node<>::
 AudioController.gd::GDScript::-1::1681429182::0::1::::AudioController<>AudioStreamPlayer<>::
 Body3DMovement.gd::GDScript::-1::1682996149::0::1::::MovementSystem<>Node3D<>::
@@ -347,7 +347,7 @@ ImageStorage.gd::GDScript::-1::1684973818::0::1::::ImageDataStorage<>RefCounted<
 InputController.gd::GDScript::-1::1682570205::0::1::::InputController<>Node<>::
 Inventory3D.gd::GDScript::-1::1681700847::0::1::::GridMapInventory<>GridMap<>::
 Inventory.gd::GDScript::-1::1687990729::0::1::::Inventory<>Resource<>::
-LoadedResources.gd::GDScript::-1::1681790654::0::1::::<>Node<>::
+LoadedResources.gd::GDScript::-1::1688142480::0::1::::<>Node<>::
 MeshRenderer3D.gd::GDScript::-1::1682570839::0::1::::MeshRenderer<>Node3D<>::
 MultiFieldEditor.gd::GDScript::-1::1681429182::0::1::::MultiFieldEditor<>HBoxContainer<>::
 MultiTextureDrawer.gd::GDScript::-1::1682738498::0::1::::MultiTextureDrawer<>Node2D<>::
@@ -355,10 +355,10 @@ MusicPlayer.gd::GDScript::-1::1682258573::0::1::::MusicPlayer<>Node<>::
 ObjSaveLoad.gd::GDScript::-1::1682000400::0::1::::ObjSaveLoad<>Resource<>::
 PauseControl.gd::GDScript::-1::1681429182::0::1::::PauseControl<>Control<>::
 Picker3D.gd::GDScript::-1::1684874317::0::1::::Picker3D<>Node3D<>::
-PivotCamera3D.gd::GDScript::-1::1687712691::0::1::::PivotCamera3D<>Node3D<>::
+PivotCamera3D.gd::GDScript::-1::1688142480::0::1::::PivotCamera3D<>Node3D<>::
 PropertyRegistry.gd::GDScript::-1::1687895770::0::1::::PropertyRegistry<>Node<>::
 Radar3D.gd::GDScript::-1::1681961625::0::1::::Radar3D<>Node3D<>::
-ResourceManager.gd::GDScript::-1::1687714478::0::1::::ResourceManager<>Node<>::
+ResourceManager.gd::GDScript::-1::1688142480::0::1::::ResourceManager<>Node<>::
 SettingList.gd::GDScript::-1::1681429182::0::1::::SettingList<>GridContainer<>::
 StolenCamScript.gd::GDScript::-1::1681429182::0::1::::FreeLookCamera<>Camera3D<>::
 TextLabelFancy.gd::GDScript::-1::1678044727::0::1::::FancyLabel<>Label<>::
@@ -371,10 +371,10 @@ ValueIncreaser.gd::GDScript::-1::1678638194::0::1::::ValueButtons<>VSeparator<>:
 VBoxControllerHideable.gd::GDScript::-1::1677002256::0::1::::VBoxContainerCollapsable<>VBoxContainer<>::
 VirtualTouchScreen3D.gd::GDScript::-1::1682569085::0::1::::VirtualTouchScreen3D<>StaticBody3D<>::
 ::res://Classes/SelfContained/Debug/::1687885761
-::res://Classes/SelfContained/Interface/::1687964407
+::res://Classes/SelfContained/Interface/::1688142480
 ControlPopup.gd::GDScript::-1::1681429182::0::1::::ControlPopup<>Control<>::
 DecoratedList.gd::GDScript::-1::1687964407::0::1::::DecoratedList<>VBoxContainer<>::
-NestedMenu.gd::GDScript::-1::1686500634::0::1::::NestedMenu<>VBoxContainer<>::
+NestedMenu.gd::GDScript::-1::1688142480::0::1::::NestedMenu<>VBoxContainer<>::
 SettingList.gd::GDScript::-1::1681429182::0::1::::SettingList<>GridContainer<>::
 ToolTip.gd::GDScript::-1::1681429182::0::1::::Tooltip<>Panel<>::
 TSCNSelectContainer.gd::GDScript::-1::1681429182::0::1::::TSCNSelectContainer<>GridContainer<>::
@@ -396,10 +396,10 @@ Default.tres::Resource::-1::1669497959::0::1::::<><>::res://Resources/Maps/Map.g
 Default.tres::Resource::-1::1687102976::0::1::::<><>::res://Resources/SaveFile/SaveFileOLD.gd<>uid://bk2x00qqtnyqg
 New.tres::Resource::-1::1687102976::0::1::::<><>::res://Resources/SaveFile/SaveFileOLD.gd
 ::res://Objects/::1687712981
-::res://Objects/CombatGrid/::1687988459
-CombatField.tscn::PackedScene::1623838129876274149::1687988459::0::1::::<><>::res://Objects/CombatGrid/GameBoard.gd<>uid://cj2ft1q0ojhsu<>res://Classes/Grid.gd<>res://Objects/CombatGrid/CombatMenu.gd<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://rfogk7y8u50q<>res://Classes/SelfContained/PivotCamera3D.gd<>res://Classes/SelfContained/StolenCamScript.gd
+::res://Objects/CombatGrid/::1688143395
+CombatField.tscn::PackedScene::1623838129876274149::1688143395::0::1::::<><>::res://Objects/CombatGrid/GameBoard.gd<>uid://cj2ft1q0ojhsu<>res://Classes/Grid.gd<>res://Objects/CombatGrid/CombatMenu.gd<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://rfogk7y8u50q<>res://Classes/SelfContained/PivotCamera3D.gd<>res://Classes/SelfContained/StolenCamScript.gd
 CombatMenu.gd::GDScript::-1::1687887848::0::1::::<>NestedMenu<>::
-GameBoard.gd::GDScript::-1::1687887850::0::1::::GameBoard<>Node3D<>::
+GameBoard.gd::GDScript::-1::1688142479::0::1::::GameBoard<>Node3D<>::
 SetupController.tscn::PackedScene::1198588973014987145::1686507427::0::1::::<><>::
 ::res://Objects/CombatGrid/OLD/::1687887850
 3DCombatScene.tscn::PackedScene::-1::1687713178::0::1::::<><>::res://Objects/CombatGrid/GameBoard.gd<>res://Objects/UI/MainCamera.gd<>res://UnusedStuff/UI.gd<>res://Objects/CombatGrid/OLD/ActionsMenu.gd<>res://Objects/CombatGrid/OLD/ActingMenu.gd<>res://Classes/ButtonStateChange.gd<>res://Classes/TurnManager.gd<>res://Objects/UI/UnitList/UnitList.gd<>res://Objects/CombatGrid/OLD/CombatStartButton.gd<>res://Objects/CombatGrid/OLD/StatusHint.gd<>res://Objects/CombatGrid/OLD/PauseMenu/PauseMenu.gd
@@ -431,9 +431,9 @@ Editor.tscn::PackedScene::-1::1683905515::0::1::::<><>::res://Objects/CombatGrid
 PauseMenu.gd::GDScript::-1::1677342454::0::1::::<>CanvasLayer<>::
 ::res://Objects/CombatGrid/OLD/Setup/::1671224974
 SetupUI.tscn::PackedScene::-1::1668032644::0::1::::<><>::
-::res://Objects/Overworld/::1687988459
+::res://Objects/Overworld/::1688143207
 Overworld.gd::GDScript::-1::1687712930::0::1::::Overworld<>Node2D<>::
-Overworld.tscn::PackedScene::4349745344871497070::1687988459::0::1::::<><>::res://Objects/Overworld/Overworld.gd
+Overworld.tscn::PackedScene::4349745344871497070::1688143207::0::1::::<><>::res://Objects/Overworld/Overworld.gd
 OverworldLocation.gd::GDScript::-1::1687712962::0::1::::<>Resource<>::
 ::res://Objects/UI/::1687963862
 CombatConfirmation.gd::GDScript::-1::1668479222::0::1::::<>Popup<>::
@@ -442,22 +442,22 @@ MainCamera.gd::GDScript::-1::1677867158::0::1::::<>Node3D<>::
 Popup.tscn::PackedScene::-1::1683900225::0::1::::<><>::res://Classes/ButtonStateChange.gd<>res://Objects/UI/CombatConfirmation.gd
 ::res://Objects/UI/InventoryDisplays/::1687963862
 ::res://Objects/UI/TurnDisplay/::1686507654
-::res://Objects/UI/UnitDisplays/::1688054437
+::res://Objects/UI/UnitDisplays/::1688143208
 BigUnitDisplay.tscn::PackedScene::1204393559081622922::1686578604::0::1::::<><>::res://Objects/UI/UnitDisplays/UnitDisplay.gd<>uid://c8bw27k54y1m7
 DedicatedUnitDisplay.gd::GDScript::-1::1687964695::0::1::::<>UnitDisplay<>::
-DedicatedUnitDisplay.tscn::PackedScene::2262656933848165129::1688054437::0::1::::<><>::uid://c8bw27k54y1m7<>res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd<>uid://l6u416bklps4
-ManagerUnitDisplay.gd::GDScript::-1::1687963202::0::1::::UnitDisplayManager<>Control<>::
+DedicatedUnitDisplay.tscn::PackedScene::2262656933848165129::1688143208::0::1::::<><>::uid://c8bw27k54y1m7<>res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd<>uid://l6u416bklps4
+ManagerUnitDisplay.gd::GDScript::-1::1688142480::0::1::::UnitDisplayManager<>Control<>::
 MiniUnitDisplay.tscn::PackedScene::3784166518519928982::1686578604::0::1::::<><>::res://Objects/UI/UnitDisplays/UnitDisplay.gd
 SmallUnitDisplay.tscn::PackedScene::5756533068632041242::1686578603::0::1::::<><>::res://Objects/UI/UnitDisplays/UnitDisplay.gd
 StatDecoratedList.tscn::PackedScene::837340531828070293::1687715910::0::1::::<><>::res://Classes/SelfContained/Interface/DecoratedList.gd
-UnitDisplay.gd::GDScript::-1::1687964728::0::1::::UnitDisplay<>Panel<>::
-::res://Objects/Unit/::1687988459
+UnitDisplay.gd::GDScript::-1::1688142481::0::1::::UnitDisplay<>Panel<>::
+::res://Objects/Unit/::1688143204
 OLDUnitNode.gd::GDScript::-1::1685125730::0::1::::<>Unit<>::
-UnitNode.gd::GDScript::-1::1687986406::0::1::::Unit<>Node3D<>::
-UnitNode.tscn::PackedScene::2679331871932144709::1687988459::0::1::::<><>::res://Objects/Unit/UnitNode.gd
-::res://Objects/UnitMenu/::1687992680
+UnitNode.gd::GDScript::-1::1688142481::0::1::::Unit<>Node3D<>::
+UnitNode.tscn::PackedScene::2679331871932144709::1688143204::0::1::::<><>::res://Objects/Unit/UnitNode.gd
+::res://Objects/UnitMenu/::1688143208
 UnitMenu.gd::GDScript::-1::1687985881::0::1::::<>Control<>::
-UnitMenu.tscn::PackedScene::5949114987260215806::1687992680::0::1::::<><>::res://Objects/UnitMenu/UnitMenu.gd<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://cvijuqks5beft<>res://Classes/SelfContained/PivotCamera3D.gd<>uid://l6u416bklps4<>uid://cf7eiyb1unktc
+UnitMenu.tscn::PackedScene::5949114987260215806::1688143208::0::1::::<><>::res://Objects/UnitMenu/UnitMenu.gd<>res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd<>uid://cvijuqks5beft<>res://Classes/SelfContained/PivotCamera3D.gd<>uid://l6u416bklps4<>uid://cf7eiyb1unktc
 ::res://Other/::1687047918
 DefaultTerrainNoise.tres::FastNoiseLite::8410976583131903137::1687047918::0::1::::<><>::
 ::res://Other/Shaders/::1686956039
@@ -470,10 +470,10 @@ Registry.gd::GDScript::-1::1687887843::0::1::::<><>::
 CellResource.gd::GDScript::-1::1687887848::0::1::::Cell<>Resource<>::
 TestRes.gd::GDScript::-1::1676997822::0::1::::TESTRES<>Resource<>::
 TESTRES.tres::Resource::-1::1668717105::0::1::::<><>::res://Resources/TestRes.gd
-::res://Resources/Abilities/::1687989909
-Abilities.gd::GDScript::-1::1687989909::0::1::::Ability<>Resource<>::
-::res://Resources/Abilities/AllAbilities/::1687961515
-Heal.tres::Resource/Resource::890758093390323740::1687961515::0::1::::<><>::res://Resources/Abilities/Scripts/HealAbility.gd
+::res://Resources/Abilities/::1688138923
+Abilities.gd::GDScript::-1::1688138923::0::1::::Ability<>Resource<>::
+::res://Resources/Abilities/AllAbilities/::1688140337
+Heal.tres::Resource/AbilityHeal::890758093390323740::1688140337::0::1::::<><>::res://Resources/Abilities/Scripts/HealAbility.gd
 Punch2.tres::Resource/Resource::1632155889483734430::1687412778::0::1::::<><>::res://Resources/Abilities/Abilities.gd
 ::res://Resources/Abilities/Scripts/::1687989727
 Damage.gd::GDScript::-1::1687887849::0::1::::AbilityDamage<>Ability<>::
@@ -483,32 +483,32 @@ HealAbility.gd::GDScript::-1::1687887851::0::1::::AbilityHeal<>Ability<>::
 RacialMelee.gd::GDScript::-1::1687989341::0::1::::<>Ability<>::
 Walk.gd::GDScript::-1::1687539416::0::1::::AbilityMovement<>Ability<>::
 WeaponAttack.gd::GDScript::-1::1687989727::0::1::::AbilityWeaponAttack<>Ability<>::
-::res://Resources/Characters/::1687991094
+::res://Resources/Characters/::1688142025
 CharacterInventory.gd::GDScript::-1::1687988135::0::1::::CharInventory<>Resource<>::
 Faction.gd::GDScript::-1::1687991094::0::1::::Faction<>Resource<>::
-::res://Resources/Characters/Attributes/::1687992187
+::res://Resources/Characters/Attributes/::1688142479
 AttributesBase.gd::GDScript::-1::1687963546::0::1::::AttributesBase<>Resource<>::
-CharacterAttributes.gd::GDScript::-1::1687992187::0::1::::CharAttributes<>AttributesBase<>::
+CharacterAttributes.gd::GDScript::-1::1688142479::0::1::::CharAttributes<>AttributesBase<>::
 ClassAttributes.gd::GDScript::-1::1684638205::0::1::::ClassAttributes<>AttributesBase<>::
 RacialAttributes.gd::GDScript::-1::1684638176::0::1::::RacialAttributes<>AttributesBase<>::
-::res://Resources/Characters/Classes/::1687961515
-Civilian.tres::Resource/Resource::502473054784725329::1687961515::0::1::::<><>::res://Resources/Characters/Attributes/ClassAttributes.gd
+::res://Resources/Characters/Classes/::1688140336
+Civilian.tres::Resource/ClassAttributes::502473054784725329::1688140336::0::1::::<><>::res://Resources/Characters/Attributes/ClassAttributes.gd
 Grunt.tres::Resource/Resource::3804970910408275704::1684638224::0::1::::<><>::res://Resources/Characters/Attributes/ClassAttributes.gd
-::res://Resources/Characters/Factions/::1687714928
+::res://Resources/Characters/Factions/::1688143431
 Default.tres::Resource::-1::1668538444::0::1::::<><>::res://Resources/Characters/Faction.gd
-PLAYER.tres::Resource/Resource::6999736443891886261::1687714928::0::1::::<><>::res://Resources/Characters/Faction.gd<>uid://bk2x00qqtnyqg
-::res://Resources/Characters/Races/::1687961515
+PLAYER.tres::Resource/Faction::6999736443891886261::1688143431::0::1::::<><>::res://Resources/Characters/Faction.gd<>uid://bk2x00qqtnyqg
+::res://Resources/Characters/Races/::1688140337
 Default.tres::Resource::-1::1668539220::0::1::::<><>::res://Resources/Characters/Attributes/RacialAttributes.gd
-Human.tres::Resource/Resource::6428757853435625499::1687961515::0::1::::<><>::res://Resources/Characters/Attributes/RacialAttributes.gd
+Human.tres::Resource/RacialAttributes::6428757853435625499::1688140337::0::1::::<><>::res://Resources/Characters/Attributes/RacialAttributes.gd
 Mantada.tres::Resource::-1::1668538663::0::1::::<><>::res://Resources/Characters/Attributes/RacialAttributes.gd
 Poxt.tres::Resource::-1::1668538663::0::1::::<><>::res://Resources/Characters/Attributes/RacialAttributes.gd
 Vivistar.tres::Resource::-1::1668538663::0::1::::<><>::res://Resources/Characters/Attributes/RacialAttributes.gd
-::res://Resources/Characters/UniqueCharacters/::1687963642
+::res://Resources/Characters/UniqueCharacters/::1688143431
 Cisko.tres::Resource::-1::1670782264::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd
 Default.tres::Resource::-1::1668899527::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd
 GenericEnemy.tres::Resource::-1::1668538663::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd
-Marco.tres::Resource/Resource::4913666957055454400::1687537939::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd<>uid://hfnwmof6gvyn<>uid://c6yyvv4hrkg2h<>uid://cxuex5gycd3sp
-Misha.tres::Resource/Resource::3145489793667810590::1687963642::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd<>uid://cxuex5gycd3sp<>uid://mxqwj66ysueu<>uid://hfnwmof6gvyn
+Marco.tres::Resource/CharAttributes::4913666957055454400::1688143431::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd<>uid://hfnwmof6gvyn<>uid://cxuex5gycd3sp
+Misha.tres::Resource/CharAttributes::3145489793667810590::1688143431::0::1::::<><>::res://Resources/Characters/Attributes/CharacterAttributes.gd<>uid://cxuex5gycd3sp<>uid://mxqwj66ysueu<>uid://hfnwmof6gvyn
 ::res://Resources/Items/::1687992648
 Accessory.gd::GDScript::-1::1677343362::0::1::::AccessoryEquipment<>Equipment<>::
 Equipment.gd::GDScript::-1::1687991731::0::1::::Equipment<>Item<>::
@@ -519,37 +519,37 @@ Weapon.gd::GDScript::-1::1687992648::0::1::::EquipmentWeapon<>Equipment<>::
 Dummy.tres::Resource::-1::1667801405::0::1::::<><>::res://Resources/Items/Armor.gd
 ::res://Resources/Items/Equipment/::1667801220
 ::res://Resources/Items/EquipmentTemplates/::1687992680
-Dagger.tres::Resource/EquipmentWeapon::3892831493538943023::1687991545::0::1::::<><>::res://Resources/Items/Weapon.gd
-Gun.tres::Resource/EquipmentWeapon::6805697241161014332::1687992680::0::1::::<><>::res://Resources/Items/Weapon.gd
-Punch.tres::Resource/EquipmentWeapon::2278127215949376608::1687992661::0::1::::<><>::res://Resources/Items/Weapon.gd
+Dagger.tres::Resource/Resource::3892831493538943023::1687991545::0::1::::<><>::res://Resources/Items/Weapon.gd
+Gun.tres::Resource/Resource::6805697241161014332::1687992680::0::1::::<><>::res://Resources/Items/Weapon.gd
+Punch.tres::Resource/Resource::2278127215949376608::1687992661::0::1::::<><>::res://Resources/Items/Weapon.gd
 ::res://Resources/Items/UniqueItems/::1657078753
 ::res://Resources/Items/WeaponTypes/::1687991528
 Dagger.gd::GDScript::-1::1677343316::0::1::::WeaponEquipmentDagger<>WeaponEquipment<>::
 Gauntlet.gd::GDScript::-1::1677343349::0::1::::WeaponEquipmentGauntlet<>WeaponEquipment<>::
 Gun.gd::GDScript::-1::1687991528::0::1::::EquipmentWeaponGun<>EquipmentWeapon<>::
-::res://Resources/Maps/::1688054438
+::res://Resources/Maps/::1688142480
 GridData.gd::GDScript::-1::1687887851::0::1::::GridData<>Resource<>::
-Map.gd::GDScript::-1::1688054438::0::1::::Map<>Resource<>::
-MapLoadableUnit.gd::GDScript::-1::1688051544::0::1::::MapUnit<>Resource<>::
-MapTileSet.gd::GDScript::-1::1688053879::0::1::::MapTileSet<>Resource<>::
+Map.gd::GDScript::-1::1688142480::0::1::::Map<>Resource<>::
+MapLoadableUnit.gd::GDScript::-1::1688142462::0::1::::MapUnit<>Resource<>::
+MapTileSet.gd::GDScript::-1::1688137712::0::1::::MapTileSet<>Resource<>::
 ::res://Resources/Maps/TileSets/::1688054013
-Grassy.tres::Resource/MapTileSet::7569598856557324958::1688054013::0::1::::<><>::uid://cj2ft1q0ojhsu<>res://Resources/Maps/MapTileSet.gd
-::res://Resources/Maps/UniqueMaps/::1687536162
-AutoGenerated.tres::Resource/Resource::2773977549777744938::1687536162::0::1::::<><>::uid://ccahm2xfvtsi7<>uid://cj2ft1q0ojhsu<>res://Resources/Maps/Map.gd<>uid://df31gmpdhw5v3
+Grassy.tres::Resource/Resource::7569598856557324958::1688054013::0::1::::<><>::uid://cj2ft1q0ojhsu<>res://Resources/Maps/MapTileSet.gd
+::res://Resources/Maps/UniqueMaps/::1688143431
+AutoGenerated.tres::Resource/Map::2773977549777744938::1688143431::0::1::::<><>::uid://cj2ft1q0ojhsu<>res://Resources/Maps/Map.gd<>uid://df31gmpdhw5v3
 Default.tres::Resource/Resource::7896267335292693031::1687049001::0::1::::<><>::uid://cj2ft1q0ojhsu<>res://Resources/Maps/Map.gd<>uid://bk2x00qqtnyqg
 Thingy.tres::Resource::-1::1658721997::0::1::::<><>::res://Resources/Maps/Map.gd
 ::res://Resources/PassiveEffects/::1687885689
 PassiveEffect.gd::GDScript::-1::1687885632::0::1::::PassiveEffect<>Resource<>::
-::res://Resources/SaveFile/::1687103040
-DefaultSave.tres::Resource/Resource::404791420569767957::1687103040::0::1::::<><>::uid://c6yyvv4hrkg2h<>res://Resources/SaveFile/SaveFile.gd
-SaveFile.gd::GDScript::-1::1687103002::0::1::::SaveFile<>Resource<>::
+::res://Resources/SaveFile/::1688143133
+DefaultSave.tres::Resource/SaveFile::-1::1688142025::0::1::::<><>::uid://c6yyvv4hrkg2h<>res://Resources/SaveFile/SaveFile.gd
+SaveFile.gd::GDScript::-1::1688142481::0::1::::SaveFile<>Resource<>::
 SaveFileOLD.gd::GDScript::-1::1684124302::0::1::::SaveLoad<>Resource<>::
-::res://Singletons/::1687887851
+::res://Singletons/::1688142763
 Const.gd::GDScript::-1::1687887849::0::1::::<>Node<>::
 CVars.gd::GDScript::-1::1687887849::0::1::::<>Node<>::
-Events.gd::GDScript::-1::1687887849::0::1::::<>Node<>::
-LoadedResources.gd::GDScript::-1::1687887851::0::1::::<>ResourceManager<>::
-References.gd::GDScript::-1::1687713329::0::1::::<>Node<>::
+Events.gd::GDScript::-1::1688142479::0::1::::<>Node<>::
+LoadedResources.gd::GDScript::-1::1688142763::0::1::::<>ResourceManager<>::
+References.gd::GDScript::-1::1688142480::0::1::::<>Node<>::
 ::res://TESTING/::1671224976
 Debug.gd::GDScript::-1::1670794978::0::1::::<>Control<>::
 Debug.tscn::PackedScene::-1::1670787995::0::1::::<><>::res://TESTING/Debug.gd
@@ -627,66 +627,7 @@ readme-8898.txt::TextFile::-1::1657319083::0::1::::<><>::
 readme-adfd.txt::TextFile::-1::1657319083::0::1::::<><>::
 readme-d127.txt::TextFile::-1::1657319083::0::1::::<><>::
 readme-faad.txt::TextFile::-1::1657319083::0::1::::<><>::
-::res://UnusedStuff/assets/placeholders/::1671224984
-::res://UnusedStuff/assets/placeholders/Default/::1671224984
-9patch_GraveyardTile_all_64-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-9patch_Redwood Background_all_64.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_2.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_3.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_4.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_5.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_6.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_7.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_8.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_9.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_10.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_11.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_12.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_13.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_14.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_15.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Big Guy_Run_16.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Blueenemy2-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-2.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-3.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-4.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-5.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-6.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-7.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-8.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Dino_Dead_1-9.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Hallway-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Blue Bordered with White Border.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Brown.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Circle White.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Dark Wood.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Green.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Stone.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_White With Blue Border.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_White With Border.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_White.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Icon Background_Wood.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Key button.png::CompressedTexture2D::-1::0::0::1::::<><>::
-NewObject-1-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Roar-4.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Roar-5.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Roar-6-0.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Roar-6.png::CompressedTexture2D::-1::0::0::1::::<><>::
-room-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Shadow-1-0.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-2.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-3.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-4.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-5.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-6.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-7.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-8.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-9.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walk-10.png::CompressedTexture2D::-1::0::0::1::::<><>::
-Walker-1.png::CompressedTexture2D::-1::0::0::1::::<><>::
+::res://UnusedStuff/assets/placeholders/::1688141845
 ::res://UnusedStuff/assets/placeholders/WIPs/::1671224984
 fcecb591bf178318a9234c14a88621f9.png::CompressedTexture2D::-1::0::0::1::::<><>::
 simple_character.bmp::CompressedTexture2D::-1::0::0::1::::<><>::

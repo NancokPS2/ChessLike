@@ -1,24 +1,14 @@
-[gd_resource type="Resource" script_class="CharAttributes" load_steps=5 format=3 uid="uid://ccahm2xfvtsi7"]
+[gd_resource type="Resource" script_class="CharAttributes" load_steps=4 format=3 uid="uid://ccahm2xfvtsi7"]
 
 [ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="1"]
 [ext_resource type="Resource" uid="uid://hfnwmof6gvyn" path="res://Resources/Characters/Classes/Civilian.tres" id="1_y715c"]
-[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="2_eqs7s"]
 [ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="3_kqw70"]
 
 [resource]
 script = ExtResource("1")
 raceAttributes = ExtResource("3_kqw70")
 classAttributes = ExtResource("1_y715c")
-faction = ExtResource("2_eqs7s")
-personalityNumber = Array[int]([255, 255, 255])
-info = {
-"className": "Unemployed",
-"firstName": "Unnamed",
-"lastName": "",
-"nickName": "Nick",
-"raceName": "no race?",
-"sex": 0
-}
+factionIdentifier = ""
 equipment = {
 "ACC1": "",
 "ACC2": "",
@@ -27,6 +17,15 @@ equipment = {
 "L_HAND": "",
 "R_HAND": ""
 }
+info = {
+"className": "Unemployed",
+"firstName": "Unnamed",
+"lastName": "",
+"nickName": "Nick",
+"raceName": "no race?",
+"sex": 0
+}
+personalityNumber = Array[int]([255, 255, 255])
 internalName = "TEST"
 displayName = "ERR_NONAME"
 attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
