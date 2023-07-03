@@ -31,7 +31,10 @@ enum CombatStates {
 
 @export var unitList:UnitDisplayManager
 @export var menuCombat:NestedMenu
+@export var confirmationDialogue:ConfirmationPopup
+
 @export var endTurnButton:Button
+@export var startCombatButton:Button
 
 @export var unitInfo:UnitDisplay
 
@@ -67,7 +70,7 @@ var abilityInUse:Ability:
 	set(val):
 		abilityInUse = val
 		if abilityInUse is Ability:
-			$Debug.text = abilityInUse.displayedName
+#			$Debug.text = abilityInUse.displayedName
 			change_combat_state(CombatStates.C_ABILITY_TARGETING)
 
 var targetedCells:Array[Vector3i]
@@ -100,7 +103,12 @@ func _ready() -> void:
 	
 	units_changed.connect(Callable(unitList,"refresh_units"))
 	gridMap.cell_clicked.connect(on_cell_clicked)
+	
 	endTurnButton.pressed.connect(turn_cycle)
+	
+	startCombatButton.pressed.connect(change_state.bind(States.COMBAT))
+	startCombatButton.pressed.connect(startCombatButton.queue_free,CONNECT_DEFERRED)
+	
 	
 	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
 	Events.UPDATE_UNIT_INFO.connect(Callable(unitList, "refresh_units"))
@@ -141,7 +149,8 @@ func testing():
 
 
 func change_state(newState:States):
-	var stateName:String = States.find_key(state)
+	var currentStateName:String = States.find_key(state)
+	var newStateName:String = States.find_key(newState)
 	if newState != state:#Handle exiting the current state
 		match state:
 			States.SETUP:
@@ -177,7 +186,7 @@ func change_state(newState:States):
 			node.process_mode = Node.PROCESS_MODE_DISABLED
 			node.visible = false
 
-	for node in get_tree().get_nodes_in_group(stateName):
+	for node in get_tree().get_nodes_in_group(newStateName):
 		node.process_mode = Node.PROCESS_MODE_INHERIT
 		node.visible = true
 			
@@ -350,9 +359,14 @@ func _process(delta: float) -> void:
 
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
+	$Debug.text = gridMap.get_cell_debug_text(cell)
+	
+	
 	if selectedUnit is Unit and selectedUnit.get_parent() == self:
 		var origin:Vector3i = selectedUnit.get_current_cell()
 		gridMap.pathing.get_unit_path(selectedUnit, origin, cell)
+		
+	
 		
 	match state:
 		States.SETUP:
@@ -486,7 +500,8 @@ func load_map(mapUsed:Map = currentMap)->void:
 		index+=1
 	
 		
-	gridMap.update_grid(mapUsed)
+	gridMap.update_pathing(mapUsed)
+	gridMap.update_object_positions()
 #	Events.UPDATE_UNIT_INFO.emit()
 	
 #	for spawnArray in mapUsed.spawnLocations:
