@@ -50,14 +50,14 @@ func _ready() -> void:
 
 
 ## Updates all object positions in the Grid
-func update_grid(map:Map):
+func update_pathing(map:Map):
 	#TODO: This should not take ALL used cells (?)
 #	initialize_cells(map)
 	pathing = GridPathing.new(self,map)
-	register_all_objects_to_cells()
+	update_object_positions()
 
 ## Used to register units and obstacles.
-func register_all_objects_to_cells():
+func update_object_positions():
 	for cell in cellDict:
 		cellDict[cell] = cellDict[cell].filter(func(cont): return not cont is StringName )
 		assert(not cellDict.values().is_empty(), "There appears to not even be tags in this map. Ensure they are not being filtered.")
@@ -128,7 +128,7 @@ func tag_cells(cells:Array[Vector3i], tag:String):
 
 ## Searches for something in the given tile, returns false if it can't find anything
 func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=false):
-	if not cellDict.has(where): push_error(str(where) + " is not a valid cell.")
+	if not cellDict.has(where): push_error(str(where) + " is not a valid cell."); return null
 	match what:
 		Searches.UNIT:
 			if getAll:
@@ -156,6 +156,15 @@ func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 		
 	return null
 
+func get_cell_debug_text(cell:Vector3i)->String:
+	var text:String
+	
+	text += str(cell) + "\n"
+	text += "Units: " + str(search_in_tile(cell,Searches.UNIT,true)) + "\n"
+	text += "Obstacles: " + str(search_in_tile(cell,Searches.OBSTACLE,true)) + "\n"
+	text += "Tags: " + str(search_in_tile(cell,Searches.TAG,true)) + "\n"
+	return text
+
 func set_items_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
 	for pos in cells:
 		set_cell_item(Vector3i(pos),objetctID)
@@ -167,6 +176,7 @@ func align_to_grid(object:Object):
 func place_object(cell:Vector3i, object:Node3D):
 	object.position = map_to_local(cell)
 	placed_object.emit(cell, object)
+	update_object_positions()
 
 func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=MapShapes.STAR, facing:int=SIDE_TOP)->Array:
 	var returnedTiles:Array
