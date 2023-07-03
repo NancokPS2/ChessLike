@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://xeum2r6b38cn"]
+[gd_scene load_steps=11 format=3 uid="uid://xeum2r6b38cn"]
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
 [ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="2_nmaf4"]
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="4_wjtrp"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/CombatMenu.gd" id="5_tknwe"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
+[ext_resource type="Script" path="res://Classes/SelfContained/Interface/ConfirmationPopup.gd" id="7_j8kol"]
 [ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
 [ext_resource type="Script" path="res://Classes/SelfContained/PivotCamera3D.gd" id="7_tkxj7"]
 [ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="8_5hr6c"]
@@ -17,12 +18,14 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 1.12
 reflected_light_source = 1
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "endTurnButton", "unitInfo")]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("gridMap", "unitList", "menuCombat", "confirmationDialogue", "endTurnButton", "startCombatButton", "unitInfo")]
 script = ExtResource("1_pjmtp")
 gridMap = NodePath("MovementGrid")
 unitList = NodePath("UI/UnitList/UpperList")
 menuCombat = NodePath("UI/CombatMenu")
+confirmationDialogue = NodePath("UI/ConfirmationPopup")
 endTurnButton = NodePath("UI/CombatMenu/MENU/END_TURN")
+startCombatButton = NodePath("UI/StartCombat")
 unitInfo = NodePath("UI/UnitPanel")
 
 [node name="Debug" type="Label" parent="."]
@@ -93,6 +96,30 @@ anchors_preset = -1
 anchor_top = 0.78858
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ConfirmationPopup" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchor_left = 0.145
+anchor_top = 0.187
+anchor_right = 0.855
+anchor_bottom = 0.813
+offset_left = 0.120026
+offset_top = -0.0879898
+offset_right = -0.120056
+offset_bottom = 0.0879517
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_j8kol")
+
+[node name="StartCombat" type="Button" parent="UI"]
+anchors_preset = -1
+anchor_left = 0.85
+anchor_top = 0.6
+anchor_right = 1.0
+anchor_bottom = 0.75
+text = "START_COMBAT"
 metadata/_edit_use_anchors_ = true
 
 [node name="PivotCamera3D" type="Node3D" parent="."]

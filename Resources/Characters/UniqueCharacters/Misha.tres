@@ -9,7 +9,7 @@
 script = ExtResource("1")
 raceAttributes = ExtResource("1_2pybq")
 classAttributes = ExtResource("1_yx3hh")
-factionIdentifier = ""
+factionIdentifier = "PLAYER"
 equipment = {
 "ACC1": "",
 "ACC2": "",
