@@ -21,5 +21,5 @@ func inventory_remove_item(item:Item):
 
 func is_friendly_with(faction:Faction):
 	if friendlies.has(faction.internalName): return true
-	else: false
+	else: return false
 

@@ -99,7 +99,8 @@ func auto_generation():
 ## Should be ran after auto_generation. Fixes the height of the units and generates unfinished ones
 func fix_initial_units(mapUnits:Array[MapUnit]):
 	var cells:Array[Vector3i] = get_all_cells()
-	assert(not mapUnits.is_empty())
+#	assert(not mapUnits.is_empty())
+	if mapUnits.is_empty(): push_warning("No units defined in this map.")
 	for unit in mapUnits:
 		#The unit is placed at a different height from the map
 		if not cells.has(unit.position):
@@ -107,6 +108,7 @@ func fix_initial_units(mapUnits:Array[MapUnit]):
 			for posY in range(wantedSize.y, 0, -1):
 				if cells.has(Vector3i(unit.position.x, posY, unit.position.z)): unit.position.y = posY; break
 				
+## Uses the tags:Dictionary variable from the tileSet to assign IDs
 func generate_tags_from_tile_set():
 #	var tileSetTags:Dictionary = tileSet.tags
 	for index in range(terrainCells.size()):

@@ -107,8 +107,8 @@ func _init() -> void:
 	
 func randomize_names(firstNames:Array[String], nickNames:Array[String], lastNames:Array[String]):
 	info["firstName"] = firstNames.pick_random() as String
-	stats["nickName"] = firstNames.pick_random() as String if randi_range(0,2) == 0 else ""
-	info["lastName"] = firstNames.pick_random() as String if randi_range(0,9000) == 0 else ""
+	stats["nickName"] = nickNames.pick_random() as String if randi_range(0,5) > 4 else ""
+	info["lastName"] = lastNames.pick_random() as String if randi_range(0,900) > 0 else ""
 	
 func randomize_personality(energyMin:int=0, energyMax:int=255, goodMin:int=0, goodMax:int=255, lawMin:int=0, lawMax:int=255):
 	personalityNumber[0] = randi_range(energyMin,clamp(energyMax,1,255))
@@ -129,8 +129,8 @@ func add_passive_effect(passive:PassiveEffect):
 
 func get_faction()->Faction:
 	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
-	if not faction is Faction: push_error("No faction found with identifier " + factionIdentifier); faction = null
-	
+	if not faction is Faction: push_error("No faction found with identifier " + factionIdentifier); return null
+	assert(faction.existingUnits.has(self))
 	return faction
 
 

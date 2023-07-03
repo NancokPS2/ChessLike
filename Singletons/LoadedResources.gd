@@ -26,10 +26,9 @@ func _get_identifier(filePath:String)->String:
 #	load_races("res://Resources/Characters/Races/")
 #	load_factions("res://Resources/Characters/Factions/")
 #	load_characters("res://Resources/Characters/UniqueCharacters/")
-	pass
 
 func get_all_factions()->Array[Faction]:
-	var arr:Array[Faction]
+	var arr:Array[Faction] = []
 	arr.assign(get_all_in_group("FACTION"))
 	return arr
 
