@@ -1,9 +1,11 @@
 extends Resource
 class_name Faction
 
+const NULL_FACTION:="UNALIGNED"
+
 @export var displayName:String
 @export var description:String
-@export var internalName:String
+@export var internalName:String = NULL_FACTION
 @export var icon:Texture
 @export var color:Color = Color.BROWN
 @export var hostiles:Array[String]
