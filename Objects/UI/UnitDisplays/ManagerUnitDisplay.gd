@@ -16,8 +16,9 @@ var unitSelected:Unit
 		
 func set_unit_selected(unit:Unit):
 	unitSelected = unit
-	unit_selected.emit(unit)
-	Events.UPDATE_UNIT_INFO.emit()
+	refresh_units()
+#	unit_selected.emit(unit)
+#	Events.UPDATE_UNIT_INFO.emit()
 	print(unitSelected)
 
 func refresh_units(units:Array[Unit] = Ref.board.get_units(false, "PLAYER"), factionFilter:StringName = NO_FACTION_FILTER):
