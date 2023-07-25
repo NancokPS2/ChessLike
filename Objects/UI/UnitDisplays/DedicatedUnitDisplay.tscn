@@ -4,19 +4,12 @@
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/DedicatedUnitDisplay.gd" id="2_60e7e"]
 [ext_resource type="PackedScene" uid="uid://l6u416bklps4" path="res://Objects/UI/UnitDisplays/StatDecoratedList.tscn" id="3_a52xn"]
 
-[node name="UnitPanel" type="Panel" node_paths=PackedStringArray("nameLabel", "classLabel", "healthMeter", "healthLabel", "energyMeter", "energyLabel", "delayLabel")]
+[node name="UnitPanel" type="Panel"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_y8r1m")
 script = ExtResource("2_60e7e")
-nameLabel = NodePath("")
-classLabel = NodePath("")
-healthMeter = NodePath("")
-healthLabel = NodePath("")
-energyMeter = NodePath("")
-energyLabel = NodePath("")
-delayLabel = NodePath("")
 
 [node name="DecoratedList" parent="." instance=ExtResource("3_a52xn")]
 layout_mode = 0

@@ -63,9 +63,11 @@ func update_pathing(map:Map):
 
 ## Used to register units and obstacles.
 func update_object_positions():
+	#Remove all but tags
 	for cell in cellDict:
 		cellDict[cell] = cellDict[cell].filter(func(cont): return not cont is StringName )
 		assert(not cellDict.values().is_empty(), "There appears to not even be tags in this map. Ensure they are not being filtered.")
+	
 	
 	assert(not cellDict.is_empty())
 	var allValidNodes:Array = []

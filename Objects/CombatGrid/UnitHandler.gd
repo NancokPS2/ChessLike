@@ -99,10 +99,6 @@ func filter_units_by_faction(faction:Faction, units:Array[Unit] = get_all_units(
 		func(unit:Unit):
 			return unit.attributes.get_faction() == faction
 			)
-	pass
-
-
-
 
 #TURN
 func turn_get_units_sorted_by_delay(state:=UnitStates.COMBAT)->Array[Unit]:

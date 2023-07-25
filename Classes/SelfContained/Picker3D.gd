@@ -23,6 +23,7 @@ var world3d:World3D
 @export var debugPath:bool=false
 var pathHolder:Path3D
 
+## Attempts to get the object under the mouse, returns null if it isn't touching something.
 func get_from_mouse(info:QueriedInfo):
 	if !viewport or !world3d:
 		push_error("No Viewport or World3D has been set.")

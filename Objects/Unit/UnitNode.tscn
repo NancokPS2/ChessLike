@@ -94,6 +94,7 @@ _data = {
 
 [node name="Unit" type="Node3D" groups=["UNIT"]]
 script = ExtResource("1_7ft5o")
+saveName = null
 
 [node name="VFX" type="AnimationPlayer" parent="."]
 libraries = {
