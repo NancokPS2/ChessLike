@@ -5,8 +5,11 @@ class_name MovementGrid
 
 signal cell_clicked(cellPos:Vector3i)
 signal marked_cell_clicked(cellPos:Vector3i)
+signal cell_hovered(cellPos:Vector3i)
+
 signal placed_object(cell:Vector3i, object:Object)
 
+const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
 const TargetingMesh:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/SubGridMeshLib.tres")
 const Directionsi:Array[Vector3i]=[Vector3i.UP,Vector3i.DOWN,Vector3i.BACK,Vector3i.FORWARD,Vector3i.LEFT,Vector3i.RIGHT]
 const Directions:Array[Vector3]=[Vector3.UP,Vector3.DOWN,Vector3.BACK,Vector3.FORWARD,Vector3.LEFT,Vector3.RIGHT]
@@ -21,6 +24,8 @@ enum MapShapes{STAR,CONE,SINGLE,ALL}
 var cellDict:Dictionary = {}
 var objectPicker:=Picker3D.new()
 var pathing:GridPathing
+
+var cellHovered:Vector3i
 
 @export var subGridMap:GridMap = GridMap.new():
 	set(val):
@@ -196,14 +201,23 @@ func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=Map
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("primary_click"):
+	if event is InputEventMouseMotion:
+		var mouseIntersect:Vector3 = objectPicker.get_from_mouse(Picker3D.QueriedInfo.POSITION)
+		if mouseIntersect is Vector3: cellHovered = local_to_map(mouseIntersect)
+		else: cellHovered = INVALID_CELL_COORDS
+		cell_hovered.emit(cellHovered)
+	
+	elif event.is_action_pressed("primary_click"):
 		var mouseIntersect = objectPicker.get_from_mouse(Picker3D.QueriedInfo.POSITION)
+		
+		#If nothing was clicked, end here
 		if not mouseIntersect is Vector3: 
 			return
+			
 		else:
 			mouseIntersect = local_to_map(mouseIntersect)
-			emit_signal("cell_clicked", mouseIntersect)
-			if is_cell_marked(mouseIntersect): emit_signal("marked_cell_clicked", mouseIntersect)
+			cell_clicked.emit(mouseIntersect)
+			if is_cell_marked(mouseIntersect): marked_cell_clicked.emit(mouseIntersect)
 	
 class GridPathing extends Node:
 	const VisualMeshRotations:Dictionary ={
