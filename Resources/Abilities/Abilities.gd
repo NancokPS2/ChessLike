@@ -90,6 +90,9 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 		elif not val is Array[String]: push_error("Invalid array.")
 		else: push_error("Invalid filter found in the array.")
 		
+@export_group("Visuals")
+@export var animationDuration:float
+		
 var filters:Array[Callable]:
 	get:
 		for filter in filtersUsed:
@@ -163,17 +166,25 @@ func are_targets_ok(targets:Array)->bool:#Check if any target is valid
 	else:
 		return false
 		
-func get_tween(targets:Array[Vector3i])->Tween:
+#func get_tween(targets:Array[Vector3i])->Tween:
+#	#Filter any unwanted targets.
+#	targets = filter_targets(targets)
+#	warn_units(targets)
+#
+#	#Create a tween for each attack
+#	var tween:Tween = user.create_tween()
+#	tween.tween_callback(use.bind(targets)).set_delay(0.2)
+#	tween.pause()
+#	return tween
+func queue_call(targets:Array[Vector3i], queue:CallQueue):
 	#Filter any unwanted targets.
 	targets = filter_targets(targets)
 	warn_units(targets)
 	
-	#Create a tween for each attack
-	var tween:Tween = user.create_tween()
-	tween.tween_callback(use.bind(targets)).set_delay(0.2)
-	tween.pause()
-	return tween
-
+	#Create call
+	queue.add_queued(use)
+	queue.set_queued_arguments([targets])
+	queue.set_queued_post_wait(animationDuration)
 	
 ## Checks for units in the cells and warns them of an upcoming attack.
 func warn_units(targets:Array[Vector3i]):
@@ -211,7 +222,8 @@ func _use(target:Array[Vector3i]):
 func custom_can_use() -> bool:#Virtual function, prevents usage if false
 	return true
 
-
+#class AbilityCall extends Callable:
+#	var targets:
 
 
 #const FilterNames:Dictionary = {HAS_UNIT = "has_unit", NOT_HAS_UNIT = "not_has_unit"} 
