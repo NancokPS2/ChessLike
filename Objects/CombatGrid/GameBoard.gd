@@ -27,7 +27,10 @@ enum CombatStates {
 
 
 @export_group("References")
+@export var callQueue:CallQueue
+
 @export var gridMap:MovementGrid
+@export var unitHandler:UnitHandler
 
 @export var unitList:UnitDisplayManager
 @export var menuCombat:NestedMenu
@@ -48,21 +51,7 @@ enum CombatStates {
 var state:int
 var combatState:int
 
-var actingUnit:Unit:
-	set(val):
-		actingUnit = val
-		if actingUnit is Unit:
-			update_menus_to_unit()
-			assert(actingUnit.is_in_group(Const.Groups.UNIT))
 
-var selectedUnit:Unit:
-	get: return unitList.unitSelected if unitList.unitSelected is Unit else actingUnit
-
-var unitsInCombat:Array[Unit]:
-	get:
-		var units:Array[Unit]
-		units.assign(get_tree().get_nodes_in_group(Const.Groups.UNIT).filter(func(node:Unit): return node.get_parent() == self))
-		return units
 		
 var allUnits:Array[Unit]
 		
@@ -73,11 +62,10 @@ var abilityInUse:Ability:
 #			$Debug.text = abilityInUse.displayedName
 			change_combat_state(CombatStates.C_ABILITY_TARGETING)
 
+
+
 var targetedCells:Array[Vector3i]
 var actionStack:Array[Tween]
-
-var picker:Picker3D = Picker3D.new()
-
 
 func _init() -> void:
 	Ref.board = self
@@ -85,13 +73,13 @@ func _init() -> void:
 	
 func _enter_tree() -> void:
 	#Add unit when it enters the tree
-	var registerUnit:Callable = func(node): 
-		if node is Unit and node.get_parent() == self: 
-			unitsInCombat.append(node)
-			if not allUnits.has(node): allUnits.append(node)
-			units_changed.emit(unitsInCombat)
-			
-	get_tree().node_added.connect(registerUnit)
+#	var registerUnit:Callable = func(node): 
+#		if node is Unit and node.get_parent() == self: 
+#			unitsInCombat.append(node)
+#			if not allUnits.has(node): allUnits.append(node)
+#			units_changed.emit(unitsInCombat)
+#
+#	get_tree().node_added.connect(registerUnit)
 	Events.UPDATE_UNIT_INFO.connect(update_menus_to_unit)
 	
 	
@@ -99,12 +87,11 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	#Setup
 	gridMap = Ref.grid
-	picker.user = self
 	
-	units_changed.connect(Callable(unitList,"refresh_units"))
+#	units_changed.connect(Callable(unitList,"refresh_units"))
 	gridMap.cell_clicked.connect(on_cell_clicked)
 	
-	endTurnButton.pressed.connect(turn_cycle)
+#	endTurnButton.pressed.connect(turn_cycle)
 	
 	startCombatButton.pressed.connect(change_state.bind(States.COMBAT))
 	startCombatButton.pressed.connect(startCombatButton.queue_free,CONNECT_DEFERRED)
@@ -124,19 +111,23 @@ func _ready() -> void:
 	
 func run_stack():
 	change_combat_state(CombatStates.C_ANIMATING)
-	for tween in actionStack:
-		tween.play()
-		await tween.finished
+	
+#	for tween in actionStack:
+#		tween.play()
+#		await tween.finished
+#
+#	actionStack.clear()
 
-	actionStack.clear()
-		
+func queue_ability():
+	pass
+
 	
 func testing():
 	change_state(States.COMBAT)
-#	actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
-	actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
+#	unitHandler.actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
+	unitHandler.actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
 	
-	unitList.refresh_units([actingUnit])
+	unitList.refresh_units([unitHandler.actingUnit])
 #	abilityInUse = $Unit.attributes.abilities[0]
 #	change_combat_state(CombatStates.C_ABILITY_TARGETING)
 #	gridMap.mark_cells([Vector3.ZERO])
@@ -154,7 +145,7 @@ func change_state(newState:States):
 	if newState != state:#Handle exiting the current state
 		match state:
 			States.SETUP:
-				actingUnit = turn_get_next_unit()
+#				unitHandler.actingUnit = turn_get_next_unit()
 				Events.emit_signal("SETUP_exit")
 			States.COMBAT:
 				Events.emit_signal("COMBAT_exit")
@@ -362,9 +353,9 @@ func on_cell_clicked(cell:Vector3i):
 	$Debug.text = gridMap.get_cell_debug_text(cell)
 	
 	
-	if selectedUnit is Unit and selectedUnit.get_parent() == self:
-		var origin:Vector3i = selectedUnit.get_current_cell()
-		gridMap.pathing.get_unit_path(selectedUnit, origin, cell)
+	if unitHandler.selectedUnit is Unit and unitHandler.selectedUnit.get_parent() == self:
+		var origin:Vector3i = unitHandler.selectedUnit.get_current_cell()
+		gridMap.pathing.get_unit_path(unitHandler.selectedUnit, origin, cell)
 		
 	
 		
@@ -402,7 +393,8 @@ func on_cell_clicked(cell:Vector3i):
 							
 						#Confirmed usage
 						else:
-							actionStack.append(abilityInUse.get_tween(targetedCells))
+							callQueue.add_queued(abilityInUse.get_tween(targetedCells).play)
+#							actionStack.append(abilityInUse.get_tween(targetedCells))
 							var attrib:AttributesBase = abilityInUse.user.attributes
 							if abilityInUse.moveCost > attrib.stats[attrib.StatNames.MOVES]: push_error("Insufficient moves left."); return
 							if abilityInUse.actionCost > attrib.stats[attrib.StatNames.ACTIONS]: push_error("Insufficient actions left."); return
@@ -414,7 +406,7 @@ func on_cell_clicked(cell:Vector3i):
 					
 	
 
-func update_menus_to_unit(unit:Unit=selectedUnit):
+func update_menus_to_unit(unit:Unit=unitHandler.unitHandler.selectedUnit):
 	if not unit is Unit: push_warning("A unit has not been selected yet."); return
 	for menu in menuCombat.get_menus():
 		if menu != "MENU": 
@@ -483,9 +475,10 @@ func load_map(mapUsed:Map = currentMap)->void:
 	for mapUnit in mapUsed.initialUnits:
 		assert(mapUnit is MapUnit)
 		var newUnit:Unit = Unit.Generator.build_from_attributes(mapUnit.attributes)
-		gridMap.place_object(mapUnit.position, newUnit)
-		allUnits.append(newUnit)
-		add_child(newUnit)
+		unitHandler.add_unit(newUnit)
+#		gridMap.place_object(mapUnit.position, newUnit)
+#		allUnits.append(newUnit)
+#		add_child(newUnit)
 			
 	#Place spawn positions
 	var index:int=0
@@ -507,28 +500,6 @@ func load_map(mapUsed:Map = currentMap)->void:
 #	for spawnArray in mapUsed.spawnLocations:
 #		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
 #
-
-#TURN
-func turn_get_sorted_by_delay()->Array[Unit]:
-	var unitDict:Array[Unit]
-	unitDict.assign(unitsInCombat)
-	unitDict.sort_custom( func(a:Unit,b:Unit): return a.attributes.stats["turnDelay"] < b.attributes.stats["turnDelay"] )
-	return unitDict
-
-func turn_get_next_unit()->Unit:
-	return turn_get_sorted_by_delay()[0]
-	
-func turn_apply_delays():
-	var currDelay:int = actingUnit.attributes.stats["turnDelay"]
-	assert(currDelay == actingUnit.attributes.stats["turnDelay"])
-	for unit in unitsInCombat: 
-		unit.attributes.apply_turn_delay(currDelay)
-	
-func turn_cycle():
-	actingUnit.end_turn()
-	turn_apply_delays()
-	actingUnit = turn_get_next_unit()
-	actingUnit.start_turn()
 	
 class SetupController extends Control:
 	var board:GameBoard
