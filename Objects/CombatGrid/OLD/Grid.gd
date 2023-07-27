@@ -44,7 +44,7 @@ func register_tiles(map:Map):#WIP?
 		cellDict[objectTypes.TILES][pos]=ID
 
 
-func place_object(object:Node,location:Vector3, type:int=objectTypes.UNITS, forcePlacement:bool=false):
+func position_object_3D(object:Node,location:Vector3, type:int=objectTypes.UNITS, forcePlacement:bool=false):
 	assert(object is Node)
 	
 	if object.get_parent() != $MapObjs: #If it is not in the map yet, add it

@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7mpsx1gipqp2"]
+
+[ext_resource type="Script" path="res://Objects/CombatGrid/CombatMenu.gd" id="1_m6ch8"]
+
+[node name="CombatMenu" type="VBoxContainer" groups=["COMBAT"]]
+anchors_preset = -1
+anchor_right = 0.225
+anchor_bottom = 1.00027
+offset_right = -0.32
+offset_bottom = -0.176003
+script = ExtResource("1_m6ch8")
+navigationButtons = Array[Array]([["MENU", "MOVEMENT"], ["MENU", "OBJECT"], ["MENU", "SKILL"], ["MENU", "SPECIAL"]])
+metadata/_edit_use_anchors_ = true
+
+[node name="MENU" type="Control" parent="."]
+layout_mode = 2
+
+[node name="END_TURN" type="Button" parent="MENU"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "END_TURN"
+
+[node name="MOVEMENT" type="Control" parent="."]
+layout_mode = 2
+
+[node name="OBJECT" type="Control" parent="."]
+layout_mode = 2
+
+[node name="SKILL" type="Control" parent="."]
+layout_mode = 2
+
+[node name="SPECIAL" type="Control" parent="."]
+layout_mode = 2
