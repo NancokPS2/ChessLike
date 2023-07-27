@@ -6,6 +6,7 @@ class_name MovementGrid
 signal cell_clicked(cellPos:Vector3i)
 signal marked_cell_clicked(cellPos:Vector3i)
 signal cell_hovered(cellPos:Vector3i)
+signal new_cell_hovered(cellPos:Vector3i) ## Only fires when a different cell is moused over
 
 signal placed_object(cell:Vector3i, object:Object)
 
@@ -16,7 +17,7 @@ const Directions:Array[Vector3]=[Vector3.UP,Vector3.DOWN,Vector3.BACK,Vector3.FO
 const DefaultCellTags = Map.DefaultCellTags
 
 enum CellIDs {TARGETING, BLUE, YELLOW, GREEN, PINK, BROWN, SKYBLUE, GREY, RED}
-enum Searches {UNIT, OBSTACLE, ANYTHING, TAG}
+enum Searches {UNIT, OBSTACLE, ANYTHING, TAG, ALL_OBJECTS}
 enum MapShapes{STAR,CONE,SINGLE,ALL}
 
 
@@ -85,9 +86,6 @@ func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
 	var returnal:Array[Vector3i]
 	returnal.assign(array)
 	return returnal
-
-func get_top_of_cell(cell:Vector3i)->Vector3:
-	return map_to_local(cell) + Vector3.UP * (cell_size.y/2)
 
 func printer(variant):
 	print(variant)
@@ -159,6 +157,11 @@ func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 			else:
 				for obj in cellDict[where]: if obj is String: return obj
 				
+		Searches.ALL_OBJECTS:
+			if getAll:
+				return cellDict[where].filter(func(obj): return obj is Unit) #or obj is Obstacle)
+			else:
+				for obj in cellDict[where]: if obj is Unit: return obj
 		_: push_error("Invalid Search, OBSTACLE not yet implemented either.")
 		
 	return null
@@ -180,8 +183,9 @@ func align_to_grid(object:Object):
 	var gridPos:Vector3i = local_to_map(object.position)
 	object.translation = map_to_local(gridPos)
 	
-func place_object(cell:Vector3i, object:Node3D):
+func position_object_3D(cell:Vector3i, object:Node3D):
 	object.position = map_to_local(cell)
+	add_child(object)
 	placed_object.emit(cell, object)
 	update_object_positions()
 
@@ -208,6 +212,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		if mouseIntersect is Vector3: cellHovered = local_to_map(mouseIntersect)
 		else: cellHovered = INVALID_CELL_COORDS
 		cell_hovered.emit(cellHovered)
+		
+		if cellHovered != get_meta("LAST_HOVERED", INVALID_CELL_COORDS): new_cell_hovered.emit(cellHovered)
+		
+		set_meta("LAST_HOVERED", cellHovered)
 	
 	elif event.is_action_pressed("primary_click"):
 		var mouseIntersect = objectPicker.get_from_mouse(Picker3D.QueriedInfo.POSITION)
