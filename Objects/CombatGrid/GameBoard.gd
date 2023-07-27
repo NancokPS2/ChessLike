@@ -3,7 +3,9 @@ class_name GameBoard
 
 ## Started from Ref.start_combat(map)
 
-signal units_changed(newUnits:Array[Unit])
+signal unit_clicked(unit:Unit)
+signal cell_clicked(cell:Vector3i)
+signal cell_clicked_empty(cell:Vector3i)
 
 const SPAWN_TAG:StringName = "FACTION_SPAWN_"
 
@@ -89,7 +91,7 @@ func _ready() -> void:
 	gridMap = Ref.grid
 	
 #	units_changed.connect(Callable(unitList,"refresh_units"))
-	gridMap.cell_clicked.connect(on_cell_clicked)
+#	gridMap.cell_clicked.connect(on_cell_clicked)
 	
 #	endTurnButton.pressed.connect(turn_cycle)
 	
@@ -127,7 +129,7 @@ func testing():
 #	unitHandler.actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
 	unitHandler.actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
 	
-	unitList.refresh_units([unitHandler.actingUnit])
+#	unitList.refresh_units([unitHandler.actingUnit])
 #	abilityInUse = $Unit.attributes.abilities[0]
 #	change_combat_state(CombatStates.C_ABILITY_TARGETING)
 #	gridMap.mark_cells([Vector3.ZERO])
@@ -194,9 +196,9 @@ func change_combat_state(newState:CombatStates):
 
 			CombatStates.C_ABILITY_TARGETING:
 				Events.emit_signal("C_ABILITY_TARGETING_exit")
-				gridMap.mark_cells([])
-				abilityInUse = null
-				targetedCells.clear()
+#				gridMap.mark_cells([])
+#				abilityInUse = null
+#				targetedCells.clear()
 
 			CombatStates.C_FACING_SELECT:
 				Events.emit_signal("C_FACING_SELECT_exit")
@@ -211,11 +213,11 @@ func change_combat_state(newState:CombatStates):
 			Events.emit_signal("C_ANIMATING_enter")
 			
 		CombatStates.C_ABILITY_TARGETING:#Called by ActionsMenu.gd: press_button()
-			if not abilityInUse is Ability: push_error("Entered targeting without an ability set.")
+#			if not abilityInUse is Ability: push_error("Entered targeting without an ability set.")
 			Events.emit_signal("C_ABILITY_TARGETING_enter")
-			var allCells:Array[Vector3i] = []; allCells.assign(gridMap.cellDict.keys()) 
-			var cellsToMark:Array[Vector3i] = abilityInUse.filter_targetable_cells(allCells)
-			gridMap.mark_cells(cellsToMark)
+#			var allCells:Array[Vector3i] = []; allCells.assign(gridMap.cellDict.keys()) 
+#			var cellsToMark:Array[Vector3i] = abilityInUse.filter_targetable_cells(allCells)
+#			gridMap.mark_cells(cellsToMark)
 
 		CombatStates.C_FACING_SELECT:
 			Events.emit_signal("C_FACING_SELECT_enter")
@@ -223,116 +225,6 @@ func change_combat_state(newState:CombatStates):
 	combatState = newState
 	
 				
-	
-#func _unhandled_input(event: InputEvent) -> void:
-#	match combatState:
-#		CombatStates.ABILITY_TARGETING:
-#			if event.is_action_pressed("primary_click")
-
-#	gridMap.update_hovered_cell()
-#	match state:
-#		States.SETUP:
-#			if event.is_action_released("primary_click"):#Unit placement
-#				if Ref.unitSelected != null:#If a unit has been selected
-#					gridMap.place_object(Ref.unitSelected,gridMap.hoveredCell,MovementGrid.objectTypes.UNITS)#Add unit to map in the highlighted cell in the UNITs section
-#					if Ref.unitsInBattle.find(Ref.unitSelected ) == -1 : #If the unit is not in battle...
-#						Ref.unitsInBattle.append(Ref.unitSelected )#Add it to the list
-#
-#				else:#If not, select any clicked units
-#					Ref.unitSelected = gridMap.get_cell_occupant(gridMap.hoveredCell)
-#
-#			elif event.is_action_released("secondary_click"):
-#				var thingHovered = gridMap.get_cell_occupant(gridMap.hoveredCell)
-#				if thingHovered and thingHovered.get("isUnit"):#If a unit was clicked
-#					gridMap.remove_object(thingHovered, gridMap.objectTypes.UNITS)#Remove it from the field
-#					Ref.unitsInBattle.erase( thingHovered )#Remove it from the unit list
-#
-#				Ref.unitSelected = null#Deselect the current unit
-#				$UI/InfoDisplay.clear_unit()
-#
-#			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
-#				var target = gridMap.get_cell_occupant(gridMap.hoveredCell)
-#				if target and target.get("isUnit"):
-#					$UI/InfoDisplay.load_unit(target)
-#				else:
-#					$UI/InfoDisplay.clear_unit()
-#
-#		States.COMBAT:
-#			if event.is_action_released("primary_click"):#Unit selection
-#				if Ref.unitSelected and Ref.unitSelected.get("isUnit"):#If a unit has been selected
-#					pass#Nothing ATM
-#				else:#If not, select any clicked units
-#					Ref.unitSelected = gridMap.get_cell_occupant(gridMap.hoveredCell)
-#
-#			elif event.is_action_released("secondary_click"):
-#				Ref.unitSelected = null#Deselect the current unit
-#				$UI/InfoDisplay.clear_unit()
-#
-#			elif event is InputEventMouseMotion and Ref.unitSelected == null:#If no unit has been selected and one was moused over
-#				var target = gridMap.get_cell_occupant(gridMap.hoveredCell)#Get the unit in the cell hovered
-#				if target and target.get("isUnit"):#If it is a unit, show their info
-#					$UI/InfoDisplay.load_unit(target)
-#				else:#Otherwise clear it
-#					$UI/InfoDisplay.clear_unit()
-#
-#			match combatState:
-#				CombatStates.MOVING:
-#					if event.is_action_released("primary_click"):
-#
-#						if Ref.unitInAction.stats.moves <= 0:#Not enough moves
-#							Events.emit_signal("HINT_UPDATE","UI_NOT_ENOUGH_MOVES") #Anounce it
-#
-#						elif gridMap.get_cell_occupant(gridMap.hoveredCell) == null:#Check if the cell is empty
-#							gridMap.place_object(Ref.unitInAction,gridMap.hoveredCell)#Move the unit there
-#							Ref.unitInAction.stats["moves"] -= 1#Reduce the amount of moves remaining
-#							change_combat_state(CombatStates.IDLE)#Change to IDLE state
-#
-#					if event.is_action_released("go_back"):#Exit ABILITY_TARGETING mode
-#						change_combat_state(CombatStates.IDLE)
-#
-#
-#				CombatStates.ACTING:
-#					if event.is_action_released("NOMAP_ability_chosen"):
-#						assert(event.get_meta("ability",null) != null)
-#						stateVariants["abilityChosen"] = event.get_meta("ability",null)
-#						change_combat_state(CombatStates.ABILITY_TARGETING)
-#
-#				CombatStates.ABILITY_TARGETING:
-#					assert(stateVariants["abilityChosen"] != null, "abilityChosen is null!")  
-#					gridMap.mark_cells_for_aoe(gridMap.hoveredCell,stateVariants["abilityChosen"])
-#
-#					if event.is_action_released("primary_click"): 
-#						var parameters:Dictionary
-#						var target
-#
-#
-#						if stateVariants.targetedCells.has(gridMap.hoveredCell):#Check if it is valid	
-#							target = gridMap.get_cell_occupant(gridMap.hoveredCell,gridMap.objectTypes.UNITS)#Get who is in that cell
-#
-#							if target == null:#Get an object if there's no unit
-#								target = gridMap.get_cell_occupant(gridMap.hoveredCell,gridMap.objectTypes.OBJECTS)#Get who is in that cell
-#
-#							if target:#If the target is valid, add it
-#								parameters["target"] = target
-#								stateVariants["abilityChosen"].use(parameters)
-#
-#
-#						else:
-#							push_warning( "Tried to target non-highlighted cell " + str(gridMap.hoveredCell) )
-#						pass
-#					if event.is_action_released("go_back"):#Exit ABILITY_TARGETING mode
-#						change_combat_state(CombatStates.ACTING)
-#
-#				CombatStates.FACING:
-#					if event.is_action_released("primary_click"):
-#						Events.emit_signal("COMBAT_FACING_exit")
-#						change_combat_state(CombatStates.IDLE)
-#						pass
-#
-#		States.PAUSE:
-#			pass
-#		States.END:
-#			pass
 	
 func _process(delta: float) -> void:
 	match state:
@@ -353,6 +245,20 @@ func on_cell_clicked(cell:Vector3i):
 	$Debug.text = gridMap.get_cell_debug_text(cell)
 	
 	
+	var unitInCell:Unit = gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT)
+	#A cell with a unit was clicked
+	if unitInCell is Unit: 
+		unit_clicked.emit(unitInCell)
+		
+	#Is it empty
+	if gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS) == []: 
+		cell_clicked_empty.emit()
+	
+	#There was something, so it isn't empty.
+	else:
+		cell_clicked.emit(cell)
+		
+	#Debug pathing
 	if unitHandler.selectedUnit is Unit and unitHandler.selectedUnit.get_parent() == self:
 		var origin:Vector3i = unitHandler.selectedUnit.get_current_cell()
 		gridMap.pathing.get_unit_path(unitHandler.selectedUnit, origin, cell)
@@ -362,18 +268,22 @@ func on_cell_clicked(cell:Vector3i):
 	match state:
 		States.SETUP:
 			Events.UPDATE_UNIT_INFO.emit()
-			var unit:Unit = gridMap.search_in_tile(cell, gridMap.Searches.UNIT)
-			if unit is Unit: unitList.unitSelected = unit
+#			var unit:Unit = gridMap.search_in_tile(cell, gridMap.Searches.UNIT)
+#			if unit is Unit: unitList.unitSelected = unit
+			
+			#Unit spawn logic.
 			
 			#If there is a unit selected.
-			if unitList.unitSelected is Unit:
+			if unitHandler.selectedUnit is Unit:
+				var unitToSpawn:Unit = unitHandler.selectedUnit
 				#The selected cell has the correct tag.
-				if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitList.unitSelected.attributes.get_faction().internalName):
-					#Add it if not added already.
-					if not unitList.unitSelected.get_parent() == self:
-						add_child(unitList.unitSelected)
-					#Place it
-					gridMap.place_object(cell, unitList.unitSelected)
+				if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitToSpawn.attributes.get_faction().internalName):
+					#The unit was not removed and may be added
+					if unitHandler.get_unit_state(unitToSpawn) != UnitHandler.UnitStates.REMOVED:
+						#Add it if not added already.
+						unitHandler.spawn_unit(unitToSpawn, cell)
+						#Position it
+						gridMap.position_object_3D(cell, unitList.unitSelected)
 #						unitList.unitSelected.position = gridMap.map_to_local(cell)
 				
 				
@@ -462,7 +372,7 @@ func load_map(mapUsed:Map = currentMap)->void:
 	
 	currentMap = mapUsed
 	mapUsed.auto_generation()
-	mapUsed.is_valid()
+	if not mapUsed.is_valid(): push_error("Could not validate map!")
 	
 	# Load cells
 	gridMap.clear()
@@ -475,8 +385,8 @@ func load_map(mapUsed:Map = currentMap)->void:
 	for mapUnit in mapUsed.initialUnits:
 		assert(mapUnit is MapUnit)
 		var newUnit:Unit = Unit.Generator.build_from_attributes(mapUnit.attributes)
-		unitHandler.add_unit(newUnit)
-#		gridMap.place_object(mapUnit.position, newUnit)
+		unitHandler.add_unit(newUnit, unitHandler.UnitStates.BENCHED)
+#		gridMap.position_object_3D(mapUnit.position, newUnit)
 #		allUnits.append(newUnit)
 #		add_child(newUnit)
 			
