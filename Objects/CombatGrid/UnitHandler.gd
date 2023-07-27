@@ -3,6 +3,7 @@ class_name UnitHandler
 
 signal added_unit_to_list(unit:Unit)
 signal removed_unit_from_list(unit:Unit)
+signal updated_combat_roster(unitList:Array[Unit])
 
 signal selected_unit(unit:Unit)
 
@@ -19,23 +20,14 @@ const DEFAULT_UNIT_DATA:Dictionary = {
 	UnitDataFields.STATE : UnitStates.REMOVED
 	}
 
+@export_category("References")
 @export var board:GameBoard = Ref.board
+@export var unitDisplayManager:UnitDisplayManager
 
 var actingUnit:Unit
-#	set(val):
-#		actingUnit = val
-#		if actingUnit is Unit:
-#			update_menus_to_unit()
-#			assert(actingUnit.is_in_group(Const.Groups.UNIT))
 
 var selectedUnit:Unit
-#	get: return unitDict.unitSelected if unitDict.unitSelected is Unit else actingUnit
 
-#var unitsInCombat:Array[Unit]:
-#	get:
-#		var units:Array[Unit]
-#		units.assign(get_tree().get_nodes_in_group(Const.Groups.UNIT).filter(func(node:Unit): return node.get_parent() == self))
-#		return units
 var unitDict:Dictionary #Unit:Data
 #var unitDict:Array[Unit]
 
@@ -46,6 +38,20 @@ func add_unit(unit:Unit, state:UnitStates = UnitStates.REMOVED):
 		added_unit_to_list.emit(unit)
 	
 	else: push_error("This unit is already in the list.")
+	
+func spawn_unit(unit:Unit, where:Vector3i):
+	assert( unitDict.has(unit), "This unit was not added trough add_unit()" )
+	assert( unit.get_parent() == self or unit.get_parent() == null, "Units should only be a child of this node." )
+	assert( unit.get_parent() != self, "This unit already was already added" )
+	
+	#Set it to combat, this adds it
+	set_unit_state(unit, UnitStates.COMBAT)
+	
+#	#Position it
+#	board.gridMap.position_object_3D(where, unit)
+	
+	
+	
 
 func select_unit(unit:Unit):
 	selectedUnit = unit
@@ -57,7 +63,19 @@ func remove_unit(unit:Unit):
 		removed_unit_from_list.emit(unit)
 	pass
 
-func change_unit_state(unit:Unit, state:UnitStates):
+#func update_unit_container(faction:Faction=Ref.saveFile.playerFaction):
+#	assert(faction is Faction)
+#	var units:Array[Unit] = filter_units_by_faction(faction)
+#	for unit in units:
+#		var button:=UnitButton.new()
+#		button.unit = unit
+#		unitContainer.add_child(button)
+#
+#
+#		pass
+#	pass
+
+func set_unit_state(unit:Unit, state:UnitStates):
 	unitDict[unit][UnitDataFields.STATE] = state
 	
 	match state:
@@ -72,7 +90,11 @@ func change_unit_state(unit:Unit, state:UnitStates):
 		UnitStates.COMBAT: 
 			add_child(unit)
 			put_unit_in_combat.emit(unit)
-			
+
+func get_unit_state(unit:Unit):
+	return unitDict[unit][UnitDataFields.STATE]
+
+
 func get_all_units()->Array[Unit]:
 	return unitDict.keys()
 	
@@ -143,3 +165,11 @@ class UnitFilters extends RefCounted:
 	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else false
 	
 	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else true
+
+class UnitButton extends Button:
+	var unit:Unit
+				
+	var faction:Faction:
+		get:
+			return unit.attributes.get_faction()
+	
