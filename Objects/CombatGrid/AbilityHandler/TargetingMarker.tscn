@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://b87fywkitlex8"]
+
+[ext_resource type="Texture2D" uid="uid://c1swclroqmlbc" path="res://Assets/UI/GenericUIBackground.png" id="1_3r5i1"]
+
+[node name="TargetingMarker" type="Node3D"]
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+modulate = Color(0.984314, 0, 0, 1)
+axis = 1
+no_depth_test = true
+texture = ExtResource("1_3r5i1")
