@@ -39,17 +39,18 @@ const StatNames:Dictionary = {
 	MOVEMENT_TYPE ="movementType",
 	}
 
-@export var internalName:String
-@export var displayName:String = "ERR_NONAME"
-
-@export var model:PackedScene = load("res://Assets/Meshes/Characters/Human.tscn")
 
 @export var attributeResources:Array[AttributesBase]
-
 @export var abilities:Array[Ability]
-
 @export var equipmentSlots:Array[String] = ["ARMOR","L_HAND","R_HAND","ACC1","ACC2","ACC3"]
 
+@export_group("Visuals")
+@export var internalName:String
+@export var displayName:String = "ERR_NONAME"
+@export var model:PackedScene = load("res://Assets/Meshes/Characters/Human.tscn")
+
+
+@export_group("Stats")
 @export var baseStats:Dictionary ={
 	#Combat only
 	"health":100,
