@@ -32,7 +32,7 @@ enum AbilityFlags {
 
 enum AbilityTypes {MOVEMENT, OBJECT, SKILL, SPECIAL, PASSIVE}
 
-enum TargetingShapes {ANY, STAR, CONE, ALL}
+enum TargetingShapes {SELF, ANY, STAR, CONE, ALL}
 
 var user:Unit:
 	set(val):
@@ -65,13 +65,13 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 #Example: {"Head":Const.bodyParts.HEAD}
 
 #@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
-
+@export_group("Restrictions")
+@export var classRestrictions:Array[String]
 
 @export_group("Main values")
 @export var customVals:Dictionary = {"power":1.0, "duration":1 as int}
 @export var energyCost:int
 @export var turnDelayCost:int
-@export var classRestrictions:Array[String]
 @export var triggerSignals:Dictionary #user.signal:self.method()
 #Example: {"acted":"use"}
 @export var abilityFlags:Array[AbilityFlags]
@@ -80,14 +80,18 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 
 @export_group("Targeting")
 @export var targetingShape:TargetingShapes
-@export var areaSize:int = 1 #Does nothing if the targetingShape does not support it
-@export var abilityRange:int#Distance in tiles from the player which it can target
+@export var targetingAreaSize:int = 1 #Does nothing if the targetingShape does not support it
+@export var targetingRange:int#Distance in tiles from the player which it can target
+
+@export var targetingAOEShape:TargetingShapes
+@export var targetingAOESize:int
+
 @export var amountOfTargets:int = 1
-@export var filtersUsed:Array[String]:
+@export var targetingFilterNames:Array[String]:
 	set(val):
 		assert(not val.is_empty())
-		if val.all( func(method:String): return method.is_valid_identifier() ): filtersUsed = val
-		elif not val is Array[String]: push_error("Invalid array.")
+		if val.all( func(method:String): return method.is_valid_identifier() ): targetingFilterNames = val
+#		elif not val is Array[String]: push_error("Invalid array type.")
 		else: push_error("Invalid filter found in the array.")
 		
 @export_group("Visuals")
@@ -95,8 +99,8 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 		
 var filters:Array[Callable]:
 	get:
-		for filter in filtersUsed:
-			filters.append(Callable(Filters,filter).bind(user))
+		for filter in targetingFilterNames:
+			filters.append(Callable(Filters,filter))
 		return filters
 
 
@@ -109,7 +113,7 @@ func is_usable()->bool:
 	
 	if stats.actions < actionCost: return false
 	elif stats.moves < moveCost: return false
-	elif not custom_can_use():  return false
+	elif not _custom_can_use():  return false
 	
 	return true
 	pass
@@ -129,42 +133,36 @@ func connect_triggers():
 		var errorCode = connect(signa, Callable(self, methodName))
 		assert(errorCode == OK)
 
-func filter_targetable_cells(cells:Array[Vector3i], shape:TargetingShapes=targetingShape)->Array[Vector3i]:
-	var userCell:Vector3i = user.get_current_cell()
-	var filteredCells:Array[Vector3i] = []
-	match shape:
-		TargetingShapes.STAR:
-			for cell in cells:
-				var manhattanDistance:int = abs(userCell.x - cell.x) + abs(userCell.y - cell.y) + abs(userCell.z - cell.z)
-				if manhattanDistance <= abilityRange: filteredCells.append(cell)
-		
-		TargetingShapes.ALL:
-			filteredCells = cells
-		_:
-			push_error("Invalid shape")
-	if filteredCells.is_empty(): push_error("No targets could be returned!")
-	print_debug("First pass yielded: "+str(filteredCells))
-	filteredCells = filter_targets(filteredCells)
-	print_debug("Second pass yielded: "+str(filteredCells))
-	return filteredCells
-
-func filter_targets(targets:Array[Vector3i])->Array:
-	assert(not targets.is_empty())
-	var newTargets:Array = targets.duplicate()
-	
-	
-	
-	for filter in filters:
-		newTargets = newTargets.filter(filter)
-		
-	return newTargets
+#func filter_targetable_cells(cells:Array[Vector3i], shape:TargetingShapes=targetingShape)->Array[Vector3i]:
+#	var userCell:Vector3i = user.get_current_cell()
+#	var filteredCells:Array[Vector3i] = []
+#	match shape:
+#		TargetingShapes.STAR:
+#			for cell in cells:
+#				var manhattanDistance:int = abs(userCell.x - cell.x) + abs(userCell.y - cell.y) + abs(userCell.z - cell.z)
+#				if manhattanDistance <= targetingRange: filteredCells.append(cell)
+#
+#		TargetingShapes.ALL:
+#			filteredCells = cells
+#		_:
+#			push_error("Invalid shape")
+#	if filteredCells.is_empty(): push_error("No targets could be returned!")
+#	print_debug("First pass yielded: "+str(filteredCells))
+#	filteredCells = filter_targets(filteredCells)
+#	print_debug("Second pass yielded: "+str(filteredCells))
+#	return filteredCells
+#
+#func filter_targets(targets:Array[Vector3i])->Array:
+#	assert(not targets.is_empty())
+#	var newTargets:Array = targets.duplicate()
+#
+#
+#
+#	for filter in filters:
+#		newTargets = newTargets.filter(filter)
+#
+#	return newTargets
 			
-func are_targets_ok(targets:Array)->bool:#Check if any target is valid
-	var result:Array = filter_targets(targets)
-	if result.size() > 0:
-		return true
-	else:
-		return false
 		
 #func get_tween(targets:Array[Vector3i])->Tween:
 #	#Filter any unwanted targets.
@@ -176,15 +174,15 @@ func are_targets_ok(targets:Array)->bool:#Check if any target is valid
 #	tween.tween_callback(use.bind(targets)).set_delay(0.2)
 #	tween.pause()
 #	return tween
-func queue_call(targets:Array[Vector3i], queue:CallQueue):
-	#Filter any unwanted targets.
-	targets = filter_targets(targets)
-	warn_units(targets)
-	
-	#Create call
-	queue.add_queued(use)
-	queue.set_queued_arguments([targets])
-	queue.set_queued_post_wait(animationDuration)
+#func queue_call(targets:Array[Vector3i], queue:CallQueue):
+#	#Filter any unwanted targets.
+#	targets = filter_targets(targets)
+#	warn_units(targets)
+#
+#	#Create call
+#	queue.add_queued(use)
+#	queue.set_queued_arguments([targets])
+#	queue.set_queued_post_wait(animationDuration)
 	
 ## Checks for units in the cells and warns them of an upcoming attack.
 func warn_units(targets:Array[Vector3i]):
@@ -201,7 +199,7 @@ func use( targets:Array[Vector3i] ):
 	user.attributes.stats.actions -= actionCost
 	user.attributes.stats.turnDelay += turnDelayCost
 	
-	targets = filter_targets(targets)
+#	targets = filter_targets(targets)
 	#The warning happens in get_tween(), no need for this.
 #	for target in targets:
 #		var possibleUnit:Unit = board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
@@ -219,12 +217,11 @@ func _use(target:Array[Vector3i]):
 	pass
 
 
-func custom_can_use() -> bool:#Virtual function, prevents usage if false
+func _custom_can_use() -> bool:#Virtual function, prevents usage if false
 	return true
 
-#class AbilityCall extends Callable:
-#	var targets:
-
+func _custom_filter(_target:Vector3i)->bool:
+	return true
 
 #const FilterNames:Dictionary = {HAS_UNIT = "has_unit", NOT_HAS_UNIT = "not_has_unit"} 
 class Filters extends RefCounted:
@@ -249,3 +246,10 @@ class Filters extends RefCounted:
 	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else false
 	
 	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else true
+
+class Effects extends RefCounted:
+	
+	static func deal_damage(target:Unit, amount:float):
+		
+		pass
+	pass
