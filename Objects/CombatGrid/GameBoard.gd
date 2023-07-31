@@ -145,31 +145,8 @@ func change_state(newState:States):
 	var currentStateName:String = States.find_key(state)
 	var newStateName:String = States.find_key(newState)
 	if newState != state:#Handle exiting the current state
-		match state:
-			States.SETUP:
-#				unitHandler.actingUnit = turn_get_next_unit()
-				Events.emit_signal("SETUP_exit")
-			States.COMBAT:
-				Events.emit_signal("COMBAT_exit")
-			States.PAUSE:
-				Events.emit_signal("PAUSE_exit")
-				get_tree().paused = false
-			States.END:
-				Events.emit_signal("END_exit")
-	
-	match newState:#Entering the new state
-		States.SETUP:
-			Events.emit_signal("SETUP_enter")
-			pass
-		States.COMBAT:
-			Events.emit_signal("COMBAT_enter")
-			pass
-		States.PAUSE:
-			Events.emit_signal("PAUSE_enter")
-			get_tree().paused = true
-		States.END:
-			Events.emit_signal("END_enter")
-			pass
+		Events.BOARD_STATE_EXITED.emit(state)
+		Events.BOARD_STATE_ENTERED.emit(newState)
 
 	state = newState#Change the recorded state
 	
@@ -185,43 +162,9 @@ func change_state(newState:States):
 			
 
 func change_combat_state(newState:CombatStates):
-	if combatState != newState:#Exiting current state
-		match combatState:
-			CombatStates.C_IDLE:
-				Events.emit_signal("C_IDLE_exit")
-
-			CombatStates.C_ANIMATING:
-				Events.emit_signal("C_ANIMATING_exit")
-
-
-			CombatStates.C_ABILITY_TARGETING:
-				Events.emit_signal("C_ABILITY_TARGETING_exit")
-#				gridMap.mark_cells([])
-#				abilityInUse = null
-#				targetedCells.clear()
-
-			CombatStates.C_FACING_SELECT:
-				Events.emit_signal("C_FACING_SELECT_exit")
-
-				
-	match newState:#New state initialization
-		CombatStates.C_IDLE:
-			Events.emit_signal("C_IDLE_enter")
-
-			
-		CombatStates.C_ANIMATING:
-			Events.emit_signal("C_ANIMATING_enter")
-			
-		CombatStates.C_ABILITY_TARGETING:#Called by ActionsMenu.gd: press_button()
-#			if not abilityInUse is Ability: push_error("Entered targeting without an ability set.")
-			Events.emit_signal("C_ABILITY_TARGETING_enter")
-#			var allCells:Array[Vector3i] = []; allCells.assign(gridMap.cellDict.keys()) 
-#			var cellsToMark:Array[Vector3i] = abilityInUse.filter_targetable_cells(allCells)
-#			gridMap.mark_cells(cellsToMark)
-
-		CombatStates.C_FACING_SELECT:
-			Events.emit_signal("C_FACING_SELECT_enter")
-
+	if combatState != newState:#State has been changed
+		Events.BOARD_COMBAT_STATE_EXITED.emit(combatState)
+		Events.BOARD_COMBAT_STATE_ENTERED.emit(newState)
 	combatState = newState
 	
 				
@@ -252,6 +195,7 @@ func on_cell_clicked(cell:Vector3i):
 		
 	#Is it empty
 	if gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS) == []: 
+		assert( gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS).is_empty() )
 		cell_clicked_empty.emit()
 	
 	#There was something, so it isn't empty.
@@ -347,25 +291,27 @@ func update_menus_to_unit(unit:Unit=unitHandler.unitHandler.selectedUnit):
 	unitInfo.refresh_ui()
 #	Events.emit_signal("UPDATE_UNIT_INFO")
 	
-func get_units(combatOnly:bool=true, factionFilter:String = "")->Array[Unit]:
-	var unitArr:Array[Unit]
-	unitArr = allUnits
-#	var units:Array[Unit]
-#	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
-	if combatOnly:
-		unitArr = unitArr.filter(func(unit): return unit.get_parent()==self)
-	if factionFilter != "":
-		unitArr = unitArr.filter(func(unit): return unit.attributes.get_faction().internalName == factionFilter)
+#func get_units(combatOnly:bool=true, factionFilter:String = "")->Array[Unit]:
+#	var unitArr:Array[Unit]
+#	unitArr = allUnits
+##	var units:Array[Unit]
+##	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
+#	if combatOnly:
+#		unitArr = unitArr.filter(func(unit): return unit.get_parent()==self)
+#	if factionFilter != "":
+#		unitArr = unitArr.filter(func(unit): return unit.attributes.get_faction().internalName == factionFilter)
+#
+#	return unitArr
 	
-	return unitArr
-	
-func get_present_factions(inCombatOnly:bool)->Array[Faction]:
-	var units:Array[Unit] = get_units(inCombatOnly)
-	var factionList:Array[Faction]
-	for unit in units:
-		if not factionList.has(unit.attributes.get_faction()):
-			factionList.append(unit.attributes.get_faction())
-	return factionList
+#func get_present_factions(inCombatOnly:bool)->Array[Faction]:
+#	var units:Array[Unit] = get_units(inCombatOnly)
+#	var factionList:Array[Faction]
+#	for unit in units:
+#		if not factionList.has(unit.attributes.get_faction()):
+#			factionList.append(unit.attributes.get_faction())
+#	return factionList
+
+
 
 func load_map(mapUsed:Map = currentMap)->void:
 	assert(mapUsed is Map and gridMap is MovementGrid) 
