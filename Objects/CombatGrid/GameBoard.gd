@@ -323,13 +323,12 @@ func load_map(mapUsed:Map = currentMap)->void:
 	# Load cells
 	gridMap.clear()
 	gridMap.mesh_library = mapUsed.meshLibrary
-	for cellData in mapUsed.terrainCells:
-		gridMap.set_cell_item(cellData[1],cellData[0])
+	for cell in mapUsed.terrainCells:
+		gridMap.set_cell_item(cell.position,cell.tileID)
 	gridMap.initialize_cells(mapUsed)
 	
 	# Add units
 	for mapUnit in mapUsed.initialUnits:
-		assert(mapUnit is MapUnit)
 		var newUnit:Unit = Unit.Generator.build_from_attributes(mapUnit.attributes)
 		unitHandler.add_unit(newUnit, unitHandler.UnitStates.BENCHED)
 #		gridMap.position_object_3D(mapUnit.position, newUnit)
@@ -338,7 +337,7 @@ func load_map(mapUsed:Map = currentMap)->void:
 			
 	#Place spawn positions
 	var index:int=0
-	for faction in get_present_factions(false):
+	for faction in mapUsed.factions:
 		var spawnCells:Array[Vector3i] 
 		spawnCells.assign(mapUsed.spawnLocations[index])
 		gridMap.mark_cells(spawnCells, index+1, false)

@@ -47,8 +47,10 @@ func spawn_unit(unit:Unit, where:Vector3i):
 	#Set it to combat, this adds it
 	set_unit_state(unit, UnitStates.COMBAT)
 	
-#	#Position it
-#	board.gridMap.position_object_3D(where, unit)
+#func is_cell_spawn_point(cell:Vector3i):
+#	if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitToSpawn.attributes.get_faction().internalName):
+#		pass
+#	pass
 	
 	
 	
@@ -144,6 +146,9 @@ func turn_cycle():
 	actingUnit.start_turn()
 	turn_cycled.emit()
 
+
+
+
 class UnitFilters extends RefCounted:
 #True if there's a unit there
 	static func has_unit(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else false
@@ -166,10 +171,8 @@ class UnitFilters extends RefCounted:
 	
 	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else true
 
-class UnitButton extends Button:
-	var unit:Unit
-				
-	var faction:Faction:
-		get:
-			return unit.attributes.get_faction()
+class SpawnHandler extends Node:
+	var factions:Array[Faction]
+	var spawnPos
+	pass
 	
