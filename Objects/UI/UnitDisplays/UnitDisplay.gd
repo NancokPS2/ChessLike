@@ -78,7 +78,6 @@ func refresh_ui(useBaseStats:bool=false):
 		info = unitRef.get("attributes").info.duplicate()
 		var keyUsed:String = "baseStats" if useBaseStats else "stats"
 		
-		var testStats = unitRef.attributes.stats
 		if nameLabel: nameLabel.text = unitRef.attributes.info["nickName"]
 		
 		if classLabel: classLabel.text = unitRef.attributes.info["className"]
