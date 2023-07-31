@@ -3,20 +3,26 @@ extends Node
 signal UNIT_MOVED(unit:Unit)
 signal UNIT_SELECTED(unit:Unit)
 
+signal BOARD_STATE_ENTERED(state:GameBoard.States)
+signal BOARD_STATE_EXITED(state:GameBoard.States)
+
+signal BOARD_COMBAT_STATE_ENTERED(state:GameBoard.States)
+signal BOARD_COMBAT_STATE_EXITED(state:GameBoard.States)
 
 signal ABILITY_USED(ability:Ability)
 
 func _init() -> void:
-	for state in GameBoard.States.keys():
-		var enterSignal:String = state+"_enter"
-		var exitSignal:String = state+"_exit"
-		add_user_signal(enterSignal)
-		add_user_signal(exitSignal)
-		
-	
-	for state in GameBoard.CombatStates.keys():
-		add_user_signal(state+"_enter")
-		add_user_signal(state+"_exit")
+#	for state in GameBoard.States.keys():
+#		var enterSignal:String = state+"_enter"
+#		var exitSignal:String = state+"_exit"
+#		add_user_signal(enterSignal)
+#		add_user_signal(exitSignal)
+#
+#
+#	for state in GameBoard.CombatStates.keys():
+#		add_user_signal(state+"_enter")
+#		add_user_signal(state+"_exit")
+	pass
 		
 
 func _ready() -> void:
