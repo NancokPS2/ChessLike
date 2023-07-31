@@ -106,20 +106,20 @@ func is_cell_marked(cellPos:Vector3i):
 	return subGridMap.get_cell_item(cellPos) != INVALID_CELL_ITEM 
 
 ## Puts tags on the cells, if override is true, it resets any previously defined cell
-func initialize_cells(map:Map, override:bool=false):
-	var cellArrays = map.terrainCells
-	for cell in map.get_all_cells():
-		if not cellDict.has(cell) or override:
-			
-			#Type conversion from Array[String] to Array
-			var cellTags:Array 
-			cellTags.assign( map.get_all_cell_tags(cell) )
-			
-			#Addition
-#			assert(not cellTags.is_typed())
-			cellDict[cell] = cellTags
-			assert(not cellDict[cell].is_typed())
-			#print(cellDict[cell])
+#func initialize_cells(map:Map, override:bool=false):
+#	var cellArrays = map.terrainCells
+#	for cell in map.get_all_cell_positions():
+#		if not cellDict.has(cell) or override:
+#
+#			#Type conversion from Array[String] to Array
+#			var cellTags:Array 
+#			cellTags.assign( map.get_all_cell_tags(cell) )
+#
+#			#Addition
+##			assert(not cellTags.is_typed())
+#			cellDict[cell] = cellTags
+#			assert(not cellDict[cell].is_typed())
+#			#print(cellDict[cell])
 	
 
 ## Alias of search_in_tile(where:Vector3i, Searches.TAGS, true)
@@ -283,10 +283,10 @@ class GridPathing extends Node:
 		if thisAStar.get_point_capacity() < gridRef.cellDict.size(): thisAStar.reserve_space(gridRef.cellDict.size())
 		
 		#Create the points
-		for terrainCell in map.terrainCells:
-			var itemID:int = terrainCell[Map.TerrainCellData.TILE_ID]
+		for cell in map.cellArray:
+			var itemID:int = cell.tileID
 			
-			var point:Vector3i = terrainCell[Map.TerrainCellData.TILE_POS]
+			var point:Vector3i = cell.position
 			var pointLocal:Vector3 = gridRef.map_to_local(point)
 			var pointID:int = thisAStar.get_available_point_id()
 			thisAStar.add_point(pointID, pointLocal)
