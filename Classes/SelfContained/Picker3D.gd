@@ -10,6 +10,8 @@ var depth:float = 0.3
 		if user is Node:
 			viewport = user.get_viewport()
 			assert(viewport is Viewport)
+
+@export var forcedCamera:Camera3D
 			
 @export var viewport:Viewport:
 	set(val):
@@ -28,7 +30,7 @@ func get_from_mouse(info:QueriedInfo):
 	if !viewport or !world3d:
 		push_error("No Viewport or World3D has been set.")
 		
-	var camera = viewport.get_camera_3d()
+	var camera = viewport.get_camera_3d() if forcedCamera == null else forcedCamera
 	var from:Vector3 = camera.global_position
 	var to:Vector3 = from + camera.project_ray_normal( viewport.get_mouse_position()  ) * rayLength
 	if debugPath:

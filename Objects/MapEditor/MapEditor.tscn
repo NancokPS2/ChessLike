@@ -1,0 +1,203 @@
+[gd_scene load_steps=14 format=3 uid="uid://ckpraarlinqkh"]
+
+[ext_resource type="Script" path="res://Objects/MapEditor/MapEditor.gd" id="1_g8iku"]
+[ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="1_lcqr3"]
+[ext_resource type="Script" path="res://Classes/SelfContained/Picker3D.gd" id="2_p3g0s"]
+[ext_resource type="Script" path="res://Objects/MapEditor/CellDataEditor.gd" id="3_bmngl"]
+[ext_resource type="Script" path="res://Classes/SelfContained/PivotCamera3D.gd" id="5_hhntb"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_g858d"]
+radius = 0.1
+
+[sub_resource type="GDScript" id="GDScript_axc26"]
+script/source = "extends MeshInstance3D
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	$Label3D.text = str(get_parent().cellPosHovered)
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_x6wl6"]
+size = Vector3(0.1, 0.33, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_odc45"]
+size = Vector3(0.1, 0.33, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qkf5j"]
+transparency = 4
+albedo_color = Color(1, 1, 1, 0.431373)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cumxj"]
+material = SubResource("StandardMaterial3D_qkf5j")
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cbm3u"]
+transparency = 4
+albedo_color = Color(1, 1, 1, 0.235294)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xvuey"]
+size = Vector3(100, 0.05, 100)
+
+[node name="MapEditor" type="Node3D" node_paths=PackedStringArray("gridMap", "picker", "cellEditor", "floorColl", "itemList", "hoveredCellMarker", "firstMarker", "secondMarker")]
+script = ExtResource("1_g8iku")
+gridMap = NodePath("GridMap")
+picker = NodePath("Picker3D")
+cellEditor = NodePath("CellProperties/VBoxContainer")
+floorColl = NodePath("Floor")
+itemList = NodePath("ItemList")
+hoveredCellMarker = NodePath("HoveredCellMarker")
+firstMarker = NodePath("MarkerOne")
+secondMarker = NodePath("MarkerTwo")
+
+[node name="HoveredCellMarker" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_g858d")
+script = SubResource("GDScript_axc26")
+
+[node name="Label3D" type="Label3D" parent="HoveredCellMarker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.577788, 0)
+pixel_size = 0.008
+text = "TEST"
+
+[node name="MarkerOne" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_x6wl6")
+
+[node name="MarkerTwo" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_odc45")
+
+[node name="Picker3D" type="Node3D" parent="."]
+script = ExtResource("2_p3g0s")
+collisionMask = 8388608
+debugPath = true
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("1_lcqr3")
+cell_size = Vector3(0.33, 0.33, 0.33)
+
+[node name="Floor" type="StaticBody3D" parent="."]
+visible = false
+collision_layer = 8388608
+collision_mask = 8388608
+
+[node name="Higher" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+mesh = SubResource("PlaneMesh_cumxj")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_cbm3u")
+
+[node name="Current" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("PlaneMesh_cumxj")
+skeleton = NodePath("../..")
+
+[node name="Lower" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.33, 0)
+mesh = SubResource("PlaneMesh_cumxj")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_cbm3u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_xvuey")
+
+[node name="CellProperties" type="Control" parent="."]
+layout_mode = 3
+anchor_right = 0.25
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CellProperties" node_paths=PackedStringArray("gridMap", "applyButton", "useMarkersCheck", "coordinateX", "coordinateY", "coordinateZ", "tags")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_bmngl")
+gridMap = NodePath("../../GridMap")
+applyButton = NodePath("../Apply")
+useMarkersCheck = NodePath("../UseMarkers")
+coordinateX = NodePath("HBoxContainer/X")
+coordinateY = NodePath("HBoxContainer/Y")
+coordinateZ = NodePath("HBoxContainer/Z")
+tags = NodePath("Tags")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CellProperties/VBoxContainer"]
+layout_mode = 2
+
+[node name="X" type="LineEdit" parent="CellProperties/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "X"
+editable = false
+virtual_keyboard_type = 2
+
+[node name="Y" type="LineEdit" parent="CellProperties/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Y"
+editable = false
+virtual_keyboard_type = 2
+
+[node name="Z" type="LineEdit" parent="CellProperties/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Z"
+editable = false
+virtual_keyboard_type = 2
+
+[node name="Tags" type="LineEdit" parent="CellProperties/VBoxContainer"]
+layout_mode = 2
+
+[node name="LineEdit3" type="LineEdit" parent="CellProperties/VBoxContainer"]
+layout_mode = 2
+
+[node name="Apply" type="Button" parent="CellProperties"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.95
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+text = "Apply
+"
+
+[node name="UseMarkers" type="CheckBox" parent="CellProperties"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.95
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 0
+focus_mode = 0
+text = "Use Markers"
+
+[node name="ItemList" type="ItemList" parent="."]
+anchors_preset = -1
+anchor_left = 0.8
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+focus_mode = 0
+allow_reselect = true
+
+[node name="PivotCamera3D" type="Node3D" parent="."]
+script = ExtResource("5_hhntb")
+controlActions = {
+"rotate_down": "camera_down",
+"rotate_left": "camera_left",
+"rotate_right": "camera_right",
+"rotate_up": "camera_up",
+"zoom_in": "zoom_in",
+"zoom_out": "zoom_out"
+}
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 26.3603, 0)
+
+[connection signal="pressed" from="CellProperties/Apply" to="." method="apply_changes_to_selected_cells"]
