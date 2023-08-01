@@ -11,6 +11,8 @@ signal put_unit_in_combat(unit:Unit)
 signal put_unit_in_benched(unit:Unit)
 signal put_unit_in_removed(unit:Unit)
 
+signal unit_entered_the_board(unit:Unit)
+
 signal turn_cycled
 
 enum UnitStates {BENCHED, COMBAT, REMOVED}
@@ -86,11 +88,13 @@ func set_unit_state(unit:Unit, state:UnitStates):
 			put_unit_in_removed.emit(unit)
 			
 		UnitStates.BENCHED: 
-			unit.get_parent().remove_child(unit)
+			if unit.get_parent() == self: remove_child(unit)
+			elif unit.get_parent() != null: push_error("This unit was added as a child of some other node!")
 			put_unit_in_benched.emit(unit)
 			
 		UnitStates.COMBAT: 
 			add_child(unit)
+			unit_entered_the_board.emit(unit)
 			put_unit_in_combat.emit(unit)
 
 func get_unit_state(unit:Unit):

@@ -7,17 +7,11 @@ const NOT_SPAWN:int = -1
 @export var tags:Array[StringName]
 @export var terrainID:int = 0 ## What item from the library mesh will be used.
 @export var factionSpawnID:int = NOT_SPAWN ## Which faction in an array will get a spawn point here
-@export var specificUnitSpawn:Unit ## If set, a unit will be stored and spawned during the loading process
+@export var preplacedUnit:CharAttributes ## If set, a unit will be stored and spawned during the loading process
 
 var spawnForFaction:Faction
 var contents:Array[Node]
 var tileID:int
-
-@export_category("Set Unit")
-#@export var unitGenerate:bool
-@export var unitAttributes:CharAttributes
-#@export var racialAttrib:RacialAttributes
-#@export var classAttrib:ClassAttributes
 
 
 

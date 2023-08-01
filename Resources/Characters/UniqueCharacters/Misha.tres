@@ -28,11 +28,11 @@ info = {
 "sex": 0
 }
 personalityNumber = Array[int]([253, 255, 255])
-internalName = "Misha"
-displayName = "ERR_NONAME"
 attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
 abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([ExtResource("1_htvq7")])
 equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
+internalName = "Misha"
+displayName = "ERR_NONAME"
 baseStats = {
 "accuracy": 0,
 "actions": 1,

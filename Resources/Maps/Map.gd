@@ -41,7 +41,7 @@ func get_default_tags_for_ID(ID:int)->Array[String]:
 #			push_error("")
 		
 @export_category("Misc Contents")		
-@export var factionsPresent:Array[Faction] = [Ref.saveFile.playerFaction]
+@export var factionsPresent:Array[Faction] = [preload("res://Resources/Characters/Factions/PLAYER.tres")]
 
 @export var background:Texture
 

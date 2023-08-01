@@ -87,9 +87,9 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 @export var targetingAOESize:int
 
 @export var amountOfTargets:int = 1
-@export var targetingFilterNames:Array[String]:
+@export var targetingFilterNames:Array[StringName] = ["has_unit"]:
 	set(val):
-		assert(not val.is_empty())
+#		assert(not val.is_empty())
 		if val.all( func(method:String): return method.is_valid_identifier() ): targetingFilterNames = val
 #		elif not val is Array[String]: push_error("Invalid array type.")
 		else: push_error("Invalid filter found in the array.")

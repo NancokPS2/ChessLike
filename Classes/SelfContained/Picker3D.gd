@@ -46,7 +46,7 @@ func get_from_mouse(info:QueriedInfo):
 	rayParams.collision_mask = collisionMask
 	var collisionResult:Dictionary = world3d.direct_space_state.intersect_ray(rayParams)
 	if collisionResult.is_empty():
-		return false
+		return
 		
 	match info:
 		QueriedInfo.COLLIDER:

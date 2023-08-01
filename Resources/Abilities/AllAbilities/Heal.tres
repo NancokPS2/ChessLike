@@ -8,19 +8,22 @@ internalName = "heal"
 displayedName = "Heal"
 type = 2
 description = ""
+classRestrictions = Array[String]([])
 customVals = {
 "duration": 1,
 "power": 1.0
 }
 energyCost = 10
 turnDelayCost = 50
-classRestrictions = Array[String]([])
 triggerSignals = {}
 abilityFlags = Array[int]([3, 5])
 actionCost = 1
 moveCost = 0
 targetingShape = 3
-areaSize = 1
-abilityRange = 5
+targetingAreaSize = 1
+targetingRange = 0
+targetingAOEShape = 0
+targetingAOESize = 0
 amountOfTargets = 1
-filtersUsed = Array[String](["has_unit"])
+targetingFilterNames = Array[String]([])
+animationDuration = 0.0

@@ -208,10 +208,12 @@ func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=Map
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		var mouseIntersect:Vector3 = objectPicker.get_from_mouse(Picker3D.QueriedInfo.POSITION)
-		if mouseIntersect is Vector3: cellHovered = local_to_map(mouseIntersect)
+		var mouseIntersect = objectPicker.get_from_mouse(Picker3D.QueriedInfo.POSITION)
+		if mouseIntersect is Vector3: 
+			cellHovered = local_to_map(mouseIntersect)
+			cell_hovered.emit(cellHovered)
 		else: cellHovered = INVALID_CELL_COORDS
-		cell_hovered.emit(cellHovered)
+		
 		
 		if cellHovered != get_meta("LAST_HOVERED", INVALID_CELL_COORDS): new_cell_hovered.emit(cellHovered)
 		
