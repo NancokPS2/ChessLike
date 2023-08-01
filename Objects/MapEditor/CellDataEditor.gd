@@ -1,9 +1,6 @@
 extends VBoxContainer
 class_name CellDataEditor
 
-@export var gridMap:GridMap
-@export var mapUsed:Map
-
 @export var applyButton:Button
 @export var useMarkersCheck:CheckBox
 
@@ -13,35 +10,42 @@ class_name CellDataEditor
 @export var coordinateZ:LineEdit
 
 @export var tags:LineEdit
+@export var tileID:LineEdit
 
 var currentCell:Cell
-
-#func _ready() -> void:
-#	tags.text_submitted.connect(update_cell)
-	
-
-func get_cell_from_pos(pos:Vector3i)->Cell:
-	var cellDict := mapUsed.get_pos_to_cell_dictionary()
-	return cellDict[pos]
 	
 func load_cell(cell:Cell):
 	currentCell = cell
-	
+	if not currentCell is Cell:
+		coordinateX.text = ""
+		coordinateY.text = ""
+		coordinateZ.text = ""
+		tileID.text = ""
+		tags.text = ""
+		return
+		
 	coordinateX.text = str(currentCell.position.x)
 	coordinateY.text = str(currentCell.position.y)
 	coordinateZ.text = str(currentCell.position.z)
 	
+	tileID.text = str(currentCell.tileID)
+	
 	for tag in currentCell.tags:
 		tags.text += tag + ","
+
+
+	
 
 func update_cell(cell:Cell=currentCell):
 	if not currentCell is Cell: push_error("No cell has been selected."); return
 	var tagsDetected:Array[StringName] 
 	tagsDetected.assign( tags.text.split(",",false) )
 	cell.tags = tagsDetected
+	cell.tileID = int(tileID.text)
+
 	
-func save_map(path:String):
-	var newMap:=Map.new()
-	
+func validate_tile_id(text:String):
+	if not text.is_valid_int(): tileID.text = ""
+	pass
 	
 	

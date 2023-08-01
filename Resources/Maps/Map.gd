@@ -17,21 +17,30 @@ const DefaultCellTags:Dictionary = {
 	NO_ENTRY="NO_ENTRY", ## Impossible to enter
 	}
 
+@export_category("Meta")
 @export var displayName:String  
   
 ## Set to a Noise name to use that automatically.
 @export var internalName:StringName
 @export var description:String
+@export var icon:Texture = preload("res://UnusedStuff/assets/tiles/grass.png")
 
-@export var meshLibrary:MeshLibrary:# = preload("res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres")
-	get: return tileSet.meshLibrary
-	
-@export var tileSet:MapTileSet
+
+
+@export_category("Tile Set")
+#@export var tileSet:MapTileSet = preload("res://Resources/Maps/TileSets/Grassy.tres")
+@export var meshLibrary:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres")
+@export var tileSetTags:Dictionary = {0:["WALKABLE"],1:[""],2:[""],3:[""],4:[""],5:[""],6:[""],7:[""],8:[""],9:[""],10:[""],11:[""]} #cellID(int):CellTags(Array[String])
+func get_default_tags_for_ID(ID:int)->Array[String]:
+	var arr:Array[String]
+	arr.assign(tileSetTags[ID])
+	return arr
 #	set(val): 
 #		tileSet=val
 #		if not get_all_IDs().all(func(cellID:int): return tileSet.meshLibrary.get_item_list().has(cellID)):
 #			push_error("")
 		
+@export_category("Misc Contents")		
 @export var factionsPresent:Array[Faction] = [Ref.saveFile.playerFaction]
 
 @export var background:Texture
@@ -96,19 +105,23 @@ func generate_tags_from_tile_set():
 		var cellID:int = cellArray[index].terrainID
 		
 #		var tagsToAdd:Array = tileSetTags.get(cellID,[])
-		var tagsToAdd:Array = tileSet.get_tags_for_ID(cellID)
+		var tagsToAdd:Array = get_default_tags_for_ID(cellID)
 		cellArray[index].add_tag_array(tagsToAdd)
 	
 
 
-func add_cell(tileID:int, pos:Vector3i, tags:Array[StringName]):
+func add_constructed_cell(tileID:int, pos:Vector3i, tags:Array[StringName]):
 	var cell:=Cell.new()
 	cell.position = pos
 	cell.terrainID = tileID
 	cell.add_tag_array(tags)
 	cellArray.append(cell)
 
-func remove_terrain_cell(cell:Vector3i):
+func add_cell(cell:Cell):
+	cellArray.append(cell)
+	pass
+
+func remove_cell(cell:Vector3i):
 	cellArray = cellArray.filter(func(cellArr:Array): return cellArr[1]!=cell)
 
 func get_all_cell_tags(cell:Vector3i)->Array:
@@ -143,12 +156,13 @@ func get_pos_to_cell_dictionary()->Dictionary:
 
 func is_valid()->bool:
 	
+	#Ensure there are no duplicates
+	if has_duplicated_positions(): return false
+	
+	#Ensure that no cell uses a non existent tileID for the meshLibrary
 	var cellIDs:Array[int] = get_all_tileIDs()
 	var cellPositions:Array[Vector3i] = get_all_cell_positions()
-	
 	var cellMaxValue:int = meshLibrary.get_item_list().size()
-	
-	#Ensure that no cell defines a non existent TileID
 	for ID in cellIDs:
 		if ID >= cellMaxValue:
 			push_error("Invalid mesh ID on cellArray, maximum value for this meshLibrary is " + str(cellMaxValue) + ". The cell's ID is " + str(ID))
@@ -156,6 +170,13 @@ func is_valid()->bool:
 
 		
 	return true
+
+func has_duplicated_positions()->bool:
+	var foundPos:Array[Vector3i]
+	for cell in cellArray:
+		if not foundPos.has(cell.position): foundPos.append(cell.position)
+		else: push_error("Found duplicate position!"); return true
+	return false
 
 class TerrainGenerator extends RefCounted:
 	const NOISE_DEFAULT:FastNoiseLite = preload("res://Other/DefaultTerrainNoise.tres")

@@ -1,12 +1,22 @@
 extends Node3D
 class_name MapEditor
 
+signal map_loaded(map:Map)
+signal map_saved(map:Map)
+
+signal cell_hovered(cell:Cell)
+signal pos_hovered(pos:Vector3i)
+
+const DEFAULT_MAP_FOLDER:String = "user://SavedMaps/"
+
 @export_category("References")
 @export var gridMap:GridMap
 @export var picker:Picker3D
 @export var cellEditor:CellDataEditor
 @export var floorColl:StaticBody3D
 @export var itemList:ItemList
+@export var instructions:Label
+@export var savePath:LineEdit
 
 @export var hoveredCellMarker:MeshInstance3D
 @export var firstMarker:MeshInstance3D
@@ -26,6 +36,7 @@ class_name MapEditor
 	"INSPECT":"inspect",
 	"MARKER_ONE":"editor_place_marker_one",
 	"MARKER_TWO":"editor_place_marker_two",
+	"APPLY":"apply"
 }
 
 
@@ -42,9 +53,11 @@ var cellPosHovered:=Vector3i.ZERO:
 	set(val):
 		if val is Vector3i:
 			hoveredCellMarker.position = gridMap.map_to_local(val)
+			pos_hovered.emit(val)
 			if cellPosHovered != val:
 				var cellHovered:Cell = mapLoaded.get_cell_by_pos(val)
-				if cellHovered is Cell: cellEditor.load_cell( cellHovered )
+#				cellEditor.load_cell( cellHovered )
+				if cellHovered is Cell: cell_hovered.emit(cellHovered)
 			
 		cellPosHovered = val
 		
@@ -60,6 +73,8 @@ func _ready() -> void:
 	
 	picker.user = self
 	picker.forcedCamera = $PivotCamera3D.get_camera()
+	
+	update_instructions_list()
 	
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -87,19 +102,30 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	#Cell interaction
 	elif cellPosHovered is Vector3i:
+		var cellHovered:Cell = mapLoaded.get_cell_by_pos(cellPosHovered)
 		#Cell addition and removal
-		if event.is_action_pressed(actions.INSPECT):
-			cellEditor.load_cell(mapLoaded.get_cell_by_pos(cellPosHovered))
-		elif event.is_action_pressed(actions.PLACE):
+		if event.is_action_pressed(actions.PLACE):
 			add_cell(cellPosHovered)
+			cellPosHovered = cellPosHovered
+			
 		elif event.is_action_pressed(actions.REMOVE):
 			remove_cell(cellPosHovered)
+			cellPosHovered = cellPosHovered
 			
 		#Markers
 		elif event.is_action_pressed(actions.MARKER_ONE):
 			place_marker(cellPosHovered, true)
 		elif event.is_action_pressed(actions.MARKER_TWO):
 			place_marker(cellPosHovered, false)
+		
+		
+		elif cellHovered is Cell:
+			if event.is_action_pressed(actions.INSPECT):
+				cellPosHovered = cellPosHovered
+				
+			elif event.is_action_pressed(actions.APPLY):
+				apply_changes_to_selected_cells()
+				
 			
 		
 func change_floor(newFloor:int):
@@ -111,12 +137,20 @@ func change_floor(newFloor:int):
 	pass
 
 func add_cell(pos:Vector3i):
-	var newCell:=Cell.new()
-	newCell.position = pos
-	gridMap.set_cell_item(pos, currentItemID)
+	#If already exists, update it.
+	var cellFound:Cell = mapLoaded.get_cell_by_pos(pos)
+	if cellFound is Cell:
+		cellFound.tileID = currentItemID
+		
+	#Otherwise
+	else:
+		var newCell:=Cell.new()
+		newCell.position = pos
+		newCell.tileID = currentItemID
+		mapLoaded.add_cell(newCell)
+		gridMap.set_cell_item(pos, currentItemID)
 	
 func remove_cell(pos:Vector3i):
-	
 	gridMap.set_cell_item(pos, GridMap.INVALID_CELL_ITEM)
 	mapLoaded.cellArray.erase( mapLoaded.get_cell_by_pos(pos) )
 
@@ -125,6 +159,7 @@ func update_item_list():
 	print_debug( "Found these items: " + str(gridMap.mesh_library.get_item_list()) )
 	for item in gridMap.mesh_library.get_item_list():
 		var itemName:String = gridMap.mesh_library.get_item_name(item)
+		if itemName == "": itemName = "UNNAMED WITH ID: " + str(item)
 		itemList.add_item(itemName)
 
 func place_marker(pos:Vector3i, first:bool, show:bool=true):
@@ -146,6 +181,10 @@ func get_cells_from_markers()->Array[Vector3i]:
 	return returnedCells
 	pass
 
+func update_instructions_list():
+	for action in actions:
+		instructions.text += action + ": " + str( InputMap.action_get_events(actions[action])[0].as_text() ) + "\n"
+
 func apply_changes_to_selected_cells():
 	
 	var useMarkers:bool = get_node("%UseMarkers").button_pressed
@@ -159,3 +198,20 @@ func apply_changes_to_selected_cells():
 		if mapLoaded.get_cell_by_pos(cellPosHovered) is Cell:
 			cellEditor.update_cell(cellChosen)
 		pass
+
+func save_map(path:String):#path:String=DEFAULT_MAP_FOLDER+"MAP"
+
+	ResourceSaver.save(mapLoaded, path)
+	map_saved.emit(mapLoaded)
+	
+func load_map(path:String):
+	var mapToLoad:Map = load(path)
+	
+	if not mapToLoad is Map: push_error("Not a valid map."); return
+	gridMap.clear()
+
+	mapLoaded = mapToLoad
+	for cell in mapLoaded.cellArray:
+		gridMap.mesh_library = mapLoaded.meshLibrary
+		gridMap.set_cell_item(cell.position, cell.tileID)
+	map_loaded.emit(mapLoaded)
