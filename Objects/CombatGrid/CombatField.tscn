@@ -22,12 +22,13 @@ script/source = "extends Node3D
 @export var gridMap:GridMap
 
 func move_to_cell(cell:Vector3i, gridMap:GridMap=gridMap):
-	position = gridMap.map_to_local(cell)
+	position = get_parent().map_to_local(cell)
 	
 
 "
 
 [sub_resource type="BoxMesh" id="BoxMesh_fd05i"]
+size = Vector3(0.33, 0.33, 0.33)
 
 [sub_resource type="Environment" id="Environment_vl025"]
 background_mode = 1
@@ -37,14 +38,13 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 1.12
 reflected_light_source = 1
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "gridMap", "unitList", "menuCombat", "confirmationDialogue", "endTurnButton", "startCombatButton", "unitInfo")]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "gridMap", "unitHandler", "unitList", "confirmationDialogue", "startCombatButton", "unitInfo")]
 script = ExtResource("1_pjmtp")
 callQueue = NodePath("CallQueue")
 gridMap = NodePath("MovementGrid")
+unitHandler = NodePath("UnitHandler")
 unitList = NodePath("UI/UnitList/UpperList")
-menuCombat = NodePath("")
 confirmationDialogue = NodePath("UI/ConfirmationPopup")
-endTurnButton = NodePath("")
 startCombatButton = NodePath("UI/StartCombat")
 unitInfo = NodePath("UI/UnitPanel")
 
@@ -73,8 +73,10 @@ data = {
 script = ExtResource("4_wjtrp")
 metadata/_editor_floor_ = Vector3(0, 1, 0)
 
-[node name="CellHovered" type="Node3D" parent="MovementGrid"]
+[node name="CellHovered" type="Node3D" parent="MovementGrid" node_paths=PackedStringArray("gridMap")]
+transform = Transform3D(1, 0, 0, 0, 1.4, 0, 0, 0, 1, 0, 0, 0)
 script = SubResource("GDScript_jqqg5")
+gridMap = NodePath("..")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MovementGrid/CellHovered"]
 transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)

@@ -100,8 +100,6 @@ func _ready() -> void:
 	
 	
 	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
-	Events.UPDATE_UNIT_INFO.connect(Callable(unitList, "refresh_units"))
-	Events.UPDATE_UNIT_INFO.connect(Callable(unitInfo, "refresh_ui"))
 	
 #	Ref.mainNode = self
 	change_state(States.SETUP)
@@ -323,17 +321,16 @@ func load_map(mapUsed:Map = currentMap)->void:
 	# Load cells
 	gridMap.clear()
 	gridMap.mesh_library = mapUsed.meshLibrary
-	for cell in mapUsed.terrainCells:
+	for cell in mapUsed.cellArray:
 		gridMap.set_cell_item(cell.position,cell.tileID)
-	gridMap.initialize_cells(mapUsed)
+		
+		#Add any unit that should spawn in the cell
+		if cell.preplacedUnit is CharAttributes:
+			var newUnit:Unit = Unit.Generator.build_from_attributes(cell.preplacedUnit)
+			unitHandler.add_unit(newUnit, unitHandler.UnitStates.BENCHED)
+#	gridMap.initialize_cells(mapUsed)
 	
-	# Add units
-	for mapUnit in mapUsed.initialUnits:
-		var newUnit:Unit = Unit.Generator.build_from_attributes(mapUnit.attributes)
-		unitHandler.add_unit(newUnit, unitHandler.UnitStates.BENCHED)
-#		gridMap.position_object_3D(mapUnit.position, newUnit)
-#		allUnits.append(newUnit)
-#		add_child(newUnit)
+
 			
 	#Place spawn positions
 	var index:int=0
