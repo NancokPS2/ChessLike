@@ -6,21 +6,27 @@ const ResGroups:Array[String] = ["ABILITY", "CLASS", "FACTION", "RACE", "CHARACT
 
 
 func _init():#Loading of files
-	autoLoadResources = true
-	store_from_folder("res://Resources/Abilities/AllAbilities/","ABILITY")
-	store_from_folder("res://Resources/Characters/Classes/","CLASS")
-	store_from_folder("res://Resources/Characters/Races/","RACE")
-	store_from_folder("res://Resources/Characters/Factions/","FACTION")
-	store_from_folder("res://Resources/Characters/UniqueCharacters/","CHARACTER")
-	store_from_folder("res://Resources/Items/Weapons/","EQUIPMENT")
+	keepLoadedDefault = true
+	autoScanFolders = {
+		"res://Resources/Abilities/AllAbilities/":"ABILITY",
+		"res://Resources/Characters/Classes/":"CLASS",
+		"res://Resources/Characters/Races/":"RACE",
+		"res://Resources/Characters/Factions/":"FACTION",
+		"res://Resources/Characters/UniqueCharacters/":"CHARACTER",
+		"res://Resources/Items/Weapons/":"EQUIPMENT",
+		
+	}
+#	store_from_folder("res://Resources/Abilities/AllAbilities/","ABILITY")
+#	store_from_folder("res://Resources/Characters/Classes/","CLASS")
+#	store_from_folder("res://Resources/Characters/Races/","RACE")
+#	store_from_folder("res://Resources/Characters/Factions/","FACTION")
+#	store_from_folder("res://Resources/Characters/UniqueCharacters/","CHARACTER")
+#	store_from_folder("res://Resources/Items/Weapons/","EQUIPMENT")
 	
-	super._init()
-	
-func _get_identifier(filePath:String)->String:
-	var res:Resource = load(filePath)
+func _get_identifier(res:Resource)->String:
 	var identifier = res.get("internalName")
 	if identifier is String: return identifier 
-	else: push_error("No internalName defined in resource."); return ""
+	else: push_error("No internalName defined in resource on path: " + str(res.resource_path)); return ""
 #	load_abilities("res://Resources/Abilities/AllAbilities/")
 #	load_classes("res://Resources/Characters/Classes/")
 #	load_races("res://Resources/Characters/Races/")

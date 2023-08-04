@@ -1,12 +1,13 @@
 extends Node
 class_name ResourceManager
 
+const cachePath:String = "user://cache/main.txt"
 
-
+#Folders whose contents will be automatically added when this node is ready
 @export var autoScanFolders:Dictionary = {} #Directory:group
 
 ## Automatically replaces paths with the file when added to a group
-@export var autoLoadResources:bool
+@export var keepLoadedDefault:bool = true
 
 ## Keeps any requested resources loaded for later. Forced if autoLoadResources is true. Careful with memory usage.
 #@export var keepResourcesLoaded:bool:
@@ -21,33 +22,47 @@ var pools:Dictionary
 
 
 #Loading
-func _init():#Loading of files
+func _enter_tree() -> void:#Loading of files
 	for folder in autoScanFolders:
 		var group:String = autoScanFolders[folder]
 		store_from_folder(folder,group)
 	pass
 
-func store_from_folder(folderPath:String,group:String):
+func store_from_folder(folderPath:String,group:String, keepLoaded:bool=keepLoadedDefault):
 	var files:PackedStringArray = DirAccess.get_files_at(folderPath)
 	for fileName in files:
-		store_single_resource(folderPath+fileName, group)
+		store_single_resource(folderPath+fileName, group, keepLoaded)
 	
-func store_single_resource(filePath:String,group:String):
-	var fileName:String = filePath.get_file()
-	var identifier:String = _get_identifier(filePath)
+func store_single_resource(filePath:String,group:String, keepLoaded:bool=keepLoadedDefault):
+#	var fileName:String = filePath.get_file()
+	var resLoaded:Resource = load(filePath)
+	
+	var identifier:String = _get_identifier(resLoaded)
+	
 	if identifier == "": push_error("Empty or invalid identifier. File path: {0} | Identifier: {1} | Group: {2}".format([filePath, identifier, group])); return
 	
 	#Ensure the group exists in resources
 	if not resources.has(group): resources[group] = {}
 	
 	#Add it to the list of the corresponding group
+	if keepLoaded:
+		resources[group][identifier] = resLoaded
+	else:
+		resources[group][identifier] = filePath
 	
-	resources[group][identifier] = filePath
-	
-	if autoLoadResources:
-		resources[group][identifier] = get_resource(identifier, group)
 #	resources[group][fileName] = fileName
 	
+	
+func regenerate_cache():
+	var cache:=ConfigFile.new()
+	resources.clear()
+	
+	for folder in autoScanFolders:
+		var group:String = autoScanFolders[folder]
+		store_from_folder(folder,group)
+	
+	
+	pass
 ## Attempts to retrieve a resource with the given identifier and keeps it loaded.
 func get_resource(identifier:String,group:String)->Resource:#If useCategory is true
 #	if identifier == "":
@@ -58,8 +73,11 @@ func get_resource(identifier:String,group:String)->Resource:#If useCategory is t
 #		return null
 		
 	if resources.has(group) and resources[group].has(identifier):
-		if resources[group][identifier] is String:#If it has not been loaded yet, do so now.
+		
+		#If it has not been loaded yet, do so now.
+		if resources[group][identifier] is String:
 			resources[group][identifier] = load(resources[group][identifier])
+			
 		return resources[group][identifier]
 			
 	else: 
@@ -68,8 +86,8 @@ func get_resource(identifier:String,group:String)->Resource:#If useCategory is t
 	
 
 ## Used when registering a Resource to the main Dictionary
-func _get_identifier(fileName:String)->String:
-	return fileName
+func _get_identifier(resource:Resource)->String:
+	return resource.resource_path
 
 	
 func add_to_pool(identifier:String, group:String, targetPool:String):
