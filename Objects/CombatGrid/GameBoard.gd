@@ -82,7 +82,8 @@ func _enter_tree() -> void:
 #			units_changed.emit(unitsInCombat)
 #
 #	get_tree().node_added.connect(registerUnit)
-	Events.UPDATE_UNIT_INFO.connect(update_menus_to_unit)
+#	Events.UPDATE_UNIT_INFO.connect(update_menus_to_unit)
+	pass
 	
 	
 	
@@ -99,7 +100,7 @@ func _ready() -> void:
 	startCombatButton.pressed.connect(startCombatButton.queue_free,CONNECT_DEFERRED)
 	
 	
-	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
+#	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
 	
 #	Ref.mainNode = self
 	change_state(States.SETUP)
@@ -124,7 +125,7 @@ func queue_ability():
 	
 func testing():
 	change_state(States.COMBAT)
-#	unitHandler.actingUnit = get_tree().get_nodes_in_group(Const.Groups.UNIT)[0]
+#	unitHandler.actingUnit = get_tree().get_nodes_in_group(Const.ObjectGroups.UNIT)[0]
 	unitHandler.actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
 	
 #	unitList.refresh_units([unitHandler.actingUnit])
@@ -192,7 +193,7 @@ func on_cell_clicked(cell:Vector3i):
 		unit_clicked.emit(unitInCell)
 		
 	#Is it empty
-	if gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS) == []: 
+	if gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS, true) == []: 
 		assert( gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS).is_empty() )
 		cell_clicked_empty.emit()
 	
@@ -293,7 +294,7 @@ func update_menus_to_unit(unit:Unit=unitHandler.unitHandler.selectedUnit):
 #	var unitArr:Array[Unit]
 #	unitArr = allUnits
 ##	var units:Array[Unit]
-##	units.assign( get_tree().get_nodes_in_group(Const.Groups.UNIT) )
+##	units.assign( get_tree().get_nodes_in_group(Const.ObjectGroups.UNIT) )
 #	if combatOnly:
 #		unitArr = unitArr.filter(func(unit): return unit.get_parent()==self)
 #	if factionFilter != "":
@@ -321,32 +322,37 @@ func load_map(mapUsed:Map = currentMap)->void:
 	# Load cells
 	gridMap.clear()
 	gridMap.mesh_library = mapUsed.meshLibrary
+	gridMap.initialize_cells_from_map(mapUsed)
+	
 	for cell in mapUsed.cellArray:
-		gridMap.set_cell_item(cell.position,cell.tileID)
 		
 		#Add any unit that should spawn in the cell
 		if cell.preplacedUnit is CharAttributes:
 			var newUnit:Unit = Unit.Generator.build_from_attributes(cell.preplacedUnit)
+			#Add
 			unitHandler.add_unit(newUnit, unitHandler.UnitStates.BENCHED)
-#	gridMap.initialize_cells(mapUsed)
-	
-
+			unitHandler.spawn_unit(newUnit, cell.position)
+			
+	gridMap.update_pathing(mapUsed)
+	gridMap.update_object_positions()
 			
 	#Place spawn positions
 	var index:int=0
-	for faction in mapUsed.factions:
-		var spawnCells:Array[Vector3i] 
-		spawnCells.assign(mapUsed.spawnLocations[index])
+	for faction in mapUsed.factionsPresent:
+		#Mark the cells
+		var spawnCells:Array[Vector3i] = mapUsed.get_faction_spawns(faction) 
 		gridMap.mark_cells(spawnCells, index+1, false)
-		if faction is Faction: 
-			gridMap.tag_cells(spawnCells, SPAWN_TAG + faction.internalName)
-			print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
-		else: push_error("Faction is null!")
+		
+		if not faction is Faction: push_error("Faction is null!"); continue
+		
+		#Add the tags
+		gridMap.tag_cells(spawnCells, SPAWN_TAG + faction.internalName)
+		print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
+			
 		index+=1
 	
 		
-	gridMap.update_pathing(mapUsed)
-	gridMap.update_object_positions()
+
 #	Events.UPDATE_UNIT_INFO.emit()
 	
 #	for spawnArray in mapUsed.spawnLocations:
