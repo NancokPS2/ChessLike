@@ -38,7 +38,7 @@ var requiredAnimationName:String = "STANDING":
 
 
 func _init() -> void:
-	add_to_group(Const.Groups.UNIT,true)
+	add_to_group(Const.ObjectGroups.UNIT,true)
 
 func _ready() -> void:
 	assert(board is GameBoard)
@@ -52,6 +52,7 @@ func _ready() -> void:
 	abil.user = self
 	print(attributes.abilities)
 #	position = board.gridMap.get_top_of_cell(get_current_cell())
+
 
 func get_current_cell()->Vector3i:
 	var cell:Vector3i = board.gridMap.local_to_map(position)

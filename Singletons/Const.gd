@@ -34,7 +34,7 @@ enum genders{MALE,FEMALE,OTHER,UNKNOWN}
 
 enum races{HUMAN,POXT,VIVISTAR,MANTADA}
 
-const Groups:Dictionary = {
+const ObjectGroups:Dictionary = {
 	UNIT="UNIT",
 	OBSTACLES="OBSTACLES",
 }
