@@ -40,9 +40,12 @@ func get_default_tags_for_ID(ID:int)->Array[String]:
 #		if not get_all_IDs().all(func(cellID:int): return tileSet.meshLibrary.get_item_list().has(cellID)):
 #			push_error("")
 		
-@export_category("Misc Contents")		
+@export_category("Factions")		
 @export var factionsPresent:Array[Faction] = [preload("res://Resources/Characters/Factions/PLAYER.tres")]
+@export var spawnLocations:Dictionary #faction:[spawns]
 
+
+@export_category("Misc Contents")		
 @export var background:Texture
 
 @export var cellArray:Array[Cell] 
@@ -118,16 +121,24 @@ func add_constructed_cell(tileID:int, pos:Vector3i, tags:Array[StringName]):
 	cellArray.append(cell)
 
 func add_cell(cell:Cell):
+#	var newCell:=Cell.new()
+#	newCell.position = pos
 	cellArray.append(cell)
 	pass
 
-func remove_cell(cell:Vector3i):
-	cellArray = cellArray.filter(func(cellArr:Array): return cellArr[1]!=cell)
+func remove_cell(cell:Cell):
+	cellArray.erase(cell)
 
-func get_all_cell_tags(cell:Vector3i)->Array:
-	var result:Array = cellArray.filter(func(cellArr:Array): return cellArr[1]==cell)[0]
-	assert(result.size()==3 and not result[2].is_empty())
-	return result[2] as Array
+func remove_cell_by_pos(pos:Vector3i):
+#	cellArray = cellArray.filter(func(cell:Cell): return cell.position!=pos)
+	remove_cell( get_cell_by_pos(pos) )
+
+func get_all_cell_tags_by_pos(pos:Vector3i)->Array:
+	var cell:Cell = get_cell_by_pos(pos)
+	if cell is Cell: return cell.tags
+	else: push_error("Could not find a cell in that position."); return []
+	
+#	var result:Array = cellArray.filter(func(cellArr:Array): return cellArr[1]==cell)[0]
 
 func get_all_cell_positions()->Array[Vector3i]:
 	var cells:Array[Vector3i]
@@ -153,6 +164,24 @@ func get_pos_to_cell_dictionary()->Dictionary:
 	for cell in cellArray:
 		dict[cell.position] = cell
 	return dict
+
+
+
+func get_faction_spawns(faction:Faction)->Array[Vector3i]:
+	assert(faction in factionsPresent, "This faction isn't present in this map!")
+	if factionsPresent.is_empty(): push_error("No factions present in this map."); return []
+	
+	var factionIndex:int = factionsPresent.find(faction)
+	if not spawnLocations.get(factionIndex,false): 
+		push_error("No spawn location has been set for faction {0} at index {1}.".format([faction.internalName, factionIndex]) )
+		return []
+	
+	var returnedSpawns:Array[Vector3i] = spawnLocations[factionIndex]
+	
+	return returnedSpawns
+
+func set_faction_spawns(index:int, cells:Array[Vector3i]):
+	spawnLocations[index] = cells
 
 func is_valid()->bool:
 	
@@ -190,7 +219,7 @@ class TerrainGenerator extends RefCounted:
 		
 
 	func simple_noise_generation(mapUsed:Map, size:Vector3i, noiseUsed:FastNoiseLite, seed:int=0):
-		assert(mapUsed.cellArray.is_empty(), "A map that expects generation should not have predefined cells.")
+#		assert(mapUsed.cellArray.is_empty(), "A map that expects generation should not have predefined cells.")
 		mapUsed.cellArray.clear()
 		mapUsed.spawnLocations.clear()
 		noiseUsed.seed = seed
@@ -213,7 +242,11 @@ class TerrainGenerator extends RefCounted:
 				newCell.position = Vector3i(x, height, z)
 				
 				var tagsUsed:Array[StringName] = [DefaultCellTags.WALKABLE]
+				
+				#Add tags
 				newCell.add_tag_array(tagsUsed)
+				#Add the cell
+				mapUsed.add_cell(newCell)
 				
 #				tagsUsed.assign(tags[tileID])
 #				mapUsed.add_cell(tileID, Vector3i(x,height,z), tagsUsed)
@@ -224,12 +257,15 @@ class TerrainGenerator extends RefCounted:
 		
 		#Spawn positions
 		var copyOfCells:Array[Cell] = mapUsed.cellArray.duplicate()
+		var index:int=0
 		for faction in mapUsed.maxFactions:
-			var thisFaction:Array = []
+			var thisFaction:Array[Vector3i]
 			for x in mapUsed.spawnsPerFaction:
 				thisFaction.append(copyOfCells.pop_back().position)
-			mapUsed.spawnLocations.append(thisFaction)
-			
+			mapUsed.set_faction_spawns(index, thisFaction)
+			index += 1
+		
+		assert(mapUsed.spawnLocations.size() == mapUsed.maxFactions, "The should be as many sets of spawn tiles as there are factions.")	
 		assert(mapUsed.cellArray.size() >= size.x*size.z)
 		
 
