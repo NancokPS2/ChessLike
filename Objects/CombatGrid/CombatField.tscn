@@ -87,10 +87,6 @@ mesh = SubResource("BoxMesh_fd05i")
 anchors_preset = -1
 anchor_right = 0.305
 anchor_bottom = 0.211
-offset_left = 810.0
-offset_top = 232.0
-offset_right = 809.64
-offset_bottom = 232.272
 
 [node name="UI" type="CanvasLayer" parent="."]
 
