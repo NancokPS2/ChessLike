@@ -130,7 +130,8 @@ func add_passive_effect(passive:PassiveEffect):
 func get_faction()->Faction:
 	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
 	if not faction is Faction: push_error("No faction found with identifier " + factionIdentifier); return null
-	assert(faction.existingUnits.has(self))
+	if not faction.existingUnits.has(self): push_warning("This unit references a faction that it is not a part of.")
+	
 	return faction
 
 

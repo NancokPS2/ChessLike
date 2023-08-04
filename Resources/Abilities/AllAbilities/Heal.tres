@@ -25,5 +25,5 @@ targetingRange = 0
 targetingAOEShape = 0
 targetingAOESize = 0
 amountOfTargets = 1
-targetingFilterNames = Array[String]([])
+targetingFilterNames = Array[StringName]([])
 animationDuration = 0.0

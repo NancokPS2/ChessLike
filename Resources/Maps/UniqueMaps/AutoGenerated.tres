@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="Map" load_steps=6 format=3 uid="uid://j821q6l4aqof"]
+[gd_resource type="Resource" script_class="Map" load_steps=7 format=3 uid="uid://j821q6l4aqof"]
 
 [ext_resource type="Texture2D" uid="uid://b2lycop6s72kd" path="res://UnusedStuff/assets/tiles/grass.png" id="1_pouan"]
 [ext_resource type="Script" path="res://Resources/Maps/CellResource.gd" id="1_svdbt"]
 [ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="2_40q2k"]
+[ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="2_ixtou"]
 [ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="3_uqg5l"]
 
 [sub_resource type="Resource" id="Resource_w3urc"]
@@ -33,10 +34,11 @@ tileSetTags = {
 10: [""],
 11: [""]
 }
-factionsPresent = null
+factionsPresent = Array[Resource("res://Resources/Characters/Faction.gd")]([ExtResource("2_ixtou")])
+spawnLocations = {}
 cellArray = Array[ExtResource("1_svdbt")]([SubResource("Resource_w3urc")])
 assignSpawns = false
-generateTerrain = false
+generateTerrain = true
 noiseName = &"NOISE_DEFAULT"
 noiseSeed = 0
 wantedSize = Vector3i(15, 15, 15)

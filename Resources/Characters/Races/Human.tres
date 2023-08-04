@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1")
-description = ""
+description = "TEST"
 spriteFolder = "res://Assets/Units/characters/human/"
 sexWeight = {
 "Female": 1,

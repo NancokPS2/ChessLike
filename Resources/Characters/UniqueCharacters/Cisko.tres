@@ -1,32 +1,57 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" script_class="CharAttributes" load_steps=4 format=3 uid="uid://cji673ttohmwp"]
 
-[ext_resource path="res://Resources/Characters/Attributes/CharacterAttributes.gd" type="Script" id=1]
+[ext_resource type="Resource" uid="uid://buhfkyea0fbb1" path="res://Resources/Characters/Classes/Grunt.tres" id="1_51x61"]
+[ext_resource type="Script" path="res://Resources/Characters/Attributes/CharacterAttributes.gd" id="1_fi0a0"]
+[ext_resource type="Resource" uid="uid://cxuex5gycd3sp" path="res://Resources/Characters/Races/Human.tres" id="1_w1gtl"]
 
 [resource]
-script = ExtResource( 1 )
-internalName = "Cisko"
+script = ExtResource("1_fi0a0")
+raceAttributes = ExtResource("1_w1gtl")
+classAttributes = ExtResource("1_51x61")
+factionIdentifier = "PLAYER"
+equipment = {
+"ACC1": "",
+"ACC2": "",
+"ACC3": "",
+"ARMOR": "",
+"L_HAND": "",
+"R_HAND": ""
+}
+info = {
+"className": "Unemployed",
+"factionIdentifier": "",
+"firstName": "Cisko",
+"lastName": "",
+"nickName": "Nick",
+"raceName": "no race?",
+"sex": "Unknown"
+}
+personalityNumber = Array[int]([255, 255, 255])
+attributeResources = Array[Resource("res://Resources/Characters/Attributes/AttributesBase.gd")]([])
+abilities = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
+equipmentSlots = Array[String](["ARMOR", "L_HAND", "R_HAND", "ACC1", "ACC2", "ACC3"])
+internalName = ""
 displayName = "ERR_NONAME"
-stats = {
+baseStats = {
 "accuracy": 0,
 "actions": 1,
 "actionsMax": 1,
-"agility": 0,
+"agility": 100,
 "defense": 0,
-"delay": 0,
 "dodge": 0,
 "energy": 30,
 "energyMax": 30,
 "health": 100,
 "healthMax": 100,
-"maxTurnDelay": 100,
-"mind": 0,
-"moveDistance": 0,
+"mind": 100,
+"moveDistance": 10,
 "movementType": 0,
 "moves": 1,
 "movesMax": 1,
 "special": 0,
-"strength": 0,
-"turnDelay": 0
+"strength": 100,
+"turnDelay": 0,
+"turnDelayMax": 100
 }
 statModifiers = {
 "accuracy": 1.0,
@@ -38,23 +63,6 @@ statModifiers = {
 "mind": 1.0,
 "moveDistance": 1.0,
 "special": 1.0,
-"strength": 1.0
-}
-unitRace = "DEFAULT"
-unitClass = "GRUNT"
-unitFaction = "DEFAULT"
-info = {
-"className": "Unemployed",
-"firstName": "Cisko",
-"lastName": "",
-"nickName": "Cisko",
-"sex": 0
-}
-equipment = {
-"ACC1": "",
-"ACC2": "",
-"ACC3": "",
-"ARMOR": "",
-"L_HAND": "pocketpistol",
-"R_HAND": "dagger"
+"strength": 1.0,
+"turnDelayMax": 1.0
 }

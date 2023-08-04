@@ -1,5 +1,9 @@
 extends Ability
 
+
+func get_user_race():
+	return user.attributes.raceAttributes.internalName
+	pass
 	
 func _use(targets:Array[Vector3i]):
 	for target in get_units(targets):
