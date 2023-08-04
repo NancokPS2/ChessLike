@@ -16,11 +16,9 @@ signal unit_entered_the_board(unit:Unit)
 signal turn_cycled
 
 enum UnitStates {BENCHED, COMBAT, REMOVED}
-enum UnitDataFields {STATE}
 
-const DEFAULT_UNIT_DATA:Dictionary = {
-	UnitDataFields.STATE : UnitStates.REMOVED
-	}
+enum UnitDataFields {STATE}
+const DEFAULT_UNIT_DATA:Array = [UnitStates.REMOVED, null, null, null]
 
 @export_category("References")
 @export var board:GameBoard = Ref.board
@@ -35,8 +33,11 @@ var unitDict:Dictionary #Unit:Data
 
 func add_unit(unit:Unit, state:UnitStates = UnitStates.REMOVED):
 	if not unitDict.has(unit): 
-		unitDict[unit] = DEFAULT_UNIT_DATA
-		unitDict[UnitDataFields.STATE] = state
+		unitDict[unit] = DEFAULT_UNIT_DATA.duplicate() as Array
+		print(unitDict)
+		var unitData:Array = unitDict[unit]
+		unitData[UnitDataFields.STATE] = state
+		assert(unitDict[unit][UnitDataFields.STATE] == state)
 		added_unit_to_list.emit(unit)
 	
 	else: push_error("This unit is already in the list.")
@@ -46,8 +47,15 @@ func spawn_unit(unit:Unit, where:Vector3i):
 	assert( unit.get_parent() == self or unit.get_parent() == null, "Units should only be a child of this node." )
 	assert( unit.get_parent() != self, "This unit already was already added" )
 	
-	#Set it to combat, this adds it
+	
 	set_unit_state(unit, UnitStates.COMBAT)
+	unit.move_to_cell(board.gridMap, where)
+	add_child(unit)
+	
+	#Update the gridMap
+	board.gridMap.update_object_positions()
+	
+	unit_entered_the_board.emit(unit)
 	
 #func is_cell_spawn_point(cell:Vector3i):
 #	if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitToSpawn.attributes.get_faction().internalName):
@@ -84,17 +92,15 @@ func set_unit_state(unit:Unit, state:UnitStates):
 	
 	match state:
 		UnitStates.REMOVED: 
-			unit.get_parent().remove_child(unit)
+#			unit.get_parent().remove_child(unit)
 			put_unit_in_removed.emit(unit)
 			
 		UnitStates.BENCHED: 
-			if unit.get_parent() == self: remove_child(unit)
-			elif unit.get_parent() != null: push_error("This unit was added as a child of some other node!")
+#			if unit.get_parent() == self: remove_child(unit)
+#			elif unit.get_parent() != null: push_error("This unit was added as a child of some other node!")
 			put_unit_in_benched.emit(unit)
 			
 		UnitStates.COMBAT: 
-			add_child(unit)
-			unit_entered_the_board.emit(unit)
 			put_unit_in_combat.emit(unit)
 
 func get_unit_state(unit:Unit):
