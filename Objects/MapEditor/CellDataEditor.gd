@@ -31,7 +31,7 @@ func load_cell(cell:Cell):
 	tileID.text = str(currentCell.tileID)
 	
 	for tag in currentCell.tags:
-		tags.text += tag + ","
+		tags.text = tag + ","
 
 
 	
