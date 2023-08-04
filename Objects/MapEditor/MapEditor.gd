@@ -147,6 +147,7 @@ func add_cell(pos:Vector3i):
 		var newCell:=Cell.new()
 		newCell.position = pos
 		newCell.tileID = currentItemID
+		newCell.tags = [Map.DefaultCellTags.WALKABLE]
 		mapLoaded.add_cell(newCell)
 		gridMap.set_cell_item(pos, currentItemID)
 	

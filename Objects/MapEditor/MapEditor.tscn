@@ -118,7 +118,7 @@ initial_position = 1
 size = Vector2i(400, 400)
 min_size = Vector2i(400, 400)
 content_scale_size = Vector2i(800, 600)
-ok_button_text = "Open"
+ok_button_text = "Abrir"
 dialog_hide_on_ok = true
 file_mode = 0
 access = 1
@@ -131,7 +131,6 @@ anchor_bottom = 1.0
 grow_vertical = 2
 
 [node name="Cell Properties" type="VBoxContainer" parent="CellProperties" node_paths=PackedStringArray("applyButton", "useMarkersCheck", "coordinateX", "coordinateY", "coordinateZ", "tags", "tileID")]
-visible = false
 layout_mode = 2
 script = ExtResource("3_bmngl")
 applyButton = NodePath("Apply")
@@ -187,6 +186,7 @@ focus_mode = 0
 text = "Apply"
 
 [node name="Map Properties" type="VBoxContainer" parent="CellProperties" node_paths=PackedStringArray("displayName", "internalName", "description", "changeMeshLibBtn", "fileSelector")]
+visible = false
 layout_mode = 2
 script = ExtResource("5_wnqtk")
 displayName = NodePath("MapName")
@@ -293,10 +293,17 @@ controlActions = {
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 26.3603, 0)
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = -1
+anchor_left = 0.25
+anchor_right = 0.8
+anchor_bottom = 1.0
+stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(633, 648)
+render_target_update_mode = 4
 
 [connection signal="cell_hovered" from="." to="CellProperties/Cell Properties" method="load_cell"]
 [connection signal="map_loaded" from="." to="CellProperties/Map Properties" method="load_map"]
