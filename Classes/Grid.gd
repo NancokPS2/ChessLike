@@ -58,7 +58,8 @@ func _ready() -> void:
 ## Updates all object positions in the Grid
 func update_pathing(map:Map):
 	#TODO: This should not take ALL used cells (?)
-#	initialize_cells(map)
+#	initialize_cells_from_map(map)
+	assert(not cellDict.is_empty())
 	pathing = GridPathing.new(self,map)
 	update_object_positions()
 
@@ -66,20 +67,25 @@ func update_pathing(map:Map):
 func update_object_positions():
 	#Remove all but tags
 	for cell in cellDict:
-		cellDict[cell] = cellDict[cell].filter(func(cont): return not cont is StringName )
+		cellDict[cell] = cellDict[cell].filter(func(cont): return cont is StringName )
 		assert(not cellDict.values().is_empty(), "There appears to not even be tags in this map. Ensure they are not being filtered.")
-	
+
 	
 	assert(not cellDict.is_empty())
-	var allValidNodes:Array = []
-	for group in Const.Groups: allValidNodes += get_tree().get_nodes_in_group(Const.Groups[group])
 	
+	#Find all nodes to be registered
+	var allValidNodes:Array = []
+	for group in Const.ObjectGroups: 
+		allValidNodes += get_tree().get_nodes_in_group(Const.ObjectGroups[group])
+	
+	#Register them to cellDict
 	for node in allValidNodes:
 		assert(node.get("position")!=null)
 		var cellPos:Vector3i = local_to_map(node.position)
 		
 		if not cellDict.has(cellPos): push_error("The object is outside the grid!")
 		else: cellDict[cellPos].append(node)
+	assert(not allValidNodes.is_empty())
 
 ## Returns all cells in cellDict as Array[Vector3i]
 func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
@@ -105,8 +111,20 @@ func get_marked_cells():
 func is_cell_marked(cellPos:Vector3i):
 	return subGridMap.get_cell_item(cellPos) != INVALID_CELL_ITEM 
 
-## Puts tags on the cells, if override is true, it resets any previously defined cell
-#func initialize_cells(map:Map, override:bool=false):
+## Registers all cells in the map to it's cellDict as well as their tags. Override is true, it resets any previously defined cell
+func initialize_cells_from_map(map:Map, override:bool=false):
+	
+	for cell in map.cellArray:
+		
+		if not cellDict.has(cell.position) or override:
+			var tagHolder:Array 
+			tagHolder.assign(map.get_all_cell_tags_by_pos(cell.position))
+			cellDict[cell.position] = tagHolder
+			
+			assert(cellDict[cell.position] != [])
+			for cellAr in cellDict.values(): assert(not cellAr.is_typed()) 
+			
+			set_cell_item(cell.position, cell.tileID)
 #	var cellArrays = map.terrainCells
 #	for cell in map.get_all_cell_positions():
 #		if not cellDict.has(cell) or override:
@@ -184,8 +202,8 @@ func align_to_grid(object:Object):
 	object.translation = map_to_local(gridPos)
 	
 func position_object_3D(cell:Vector3i, object:Node3D):
+	#Position them
 	object.position = map_to_local(cell)
-	add_child(object)
 	placed_object.emit(cell, object)
 	update_object_positions()
 
