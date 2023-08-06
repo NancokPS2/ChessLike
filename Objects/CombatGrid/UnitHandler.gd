@@ -5,6 +5,7 @@ signal added_unit_to_list(unit:Unit)
 signal removed_unit_from_list(unit:Unit)
 signal updated_combat_roster(unitList:Array[Unit])
 
+signal unit_acting(unit:Unit)
 signal selected_unit(unit:Unit)
 
 signal put_unit_in_combat(unit:Unit)
@@ -26,9 +27,14 @@ const DEFAULT_UNIT_DATA:Array = [UnitStates.REMOVED, null, null, null]
 @export var unitDisplayManager:UnitDisplayManager
 @export var endTurnButton:Button
 
-var actingUnit:Unit
+var actingUnit:Unit:
+	set(val):
+		actingUnit = val
+		unit_acting.emit(actingUnit)
+		
 
-var selectedUnit:Unit
+var selectedUnit:Unit:
+	set = select_unit
 
 var unitDict:Dictionary #Unit:Data
 #var unitDict:Array[Unit]
@@ -58,14 +64,6 @@ func spawn_unit(unit:Unit, where:Vector3i):
 	
 	unit_entered_the_board.emit(unit)
 	
-#func is_cell_spawn_point(cell:Vector3i):
-#	if gridMap.get_cell_tags(cell,true).has(SPAWN_TAG + unitToSpawn.attributes.get_faction().internalName):
-#		pass
-#	pass
-	
-	
-	
-
 func select_unit(unit:Unit):
 	selectedUnit = unit
 	selected_unit.emit(unit)
