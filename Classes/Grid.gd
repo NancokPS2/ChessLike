@@ -238,7 +238,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		else: cellHovered = INVALID_CELL_COORDS
 		
 		
-		if cellHovered != get_meta("LAST_HOVERED", INVALID_CELL_COORDS): new_cell_hovered.emit(cellHovered)
+		if cellHovered != get_meta("LAST_HOVERED", INVALID_CELL_COORDS): 
+			new_cell_hovered.emit(cellHovered)
 		
 		set_meta("LAST_HOVERED", cellHovered)
 	

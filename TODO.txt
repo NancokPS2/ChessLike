@@ -155,4 +155,5 @@ Actual TODO:
 	
 	-AbilityMovement WIP
 	
+	-Change MovementGrid.update_objects to use a pseudo cache in the way of meta values.
 	

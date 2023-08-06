@@ -1,3 +1,5 @@
+VBoxContainer
+Button
 SubViewport
 SubViewportContainer
 Label
@@ -5,8 +7,6 @@ TextureRect
 HBoxContainer
 TextEdit
 FileDialog
-Button
-VBoxContainer
 TabContainer
 LineEdit
 Label3D

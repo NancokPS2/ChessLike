@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://xeum2r6b38cn"]
+[gd_scene load_steps=18 format=3 uid="uid://xeum2r6b38cn"]
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
 [ext_resource type="Script" path="res://Classes/SelfContained/CallQueue.gd" id="2_72vpm"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://Classes/Grid.gd" id="4_wjtrp"]
 [ext_resource type="PackedScene" uid="uid://jtp2wbymwre0" path="res://Objects/CombatGrid/AbilityHandler/TargetableMarker.tscn" id="5_k8bha"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
-[ext_resource type="PackedScene" uid="uid://b87fywkitlex8" path="res://Objects/CombatGrid/AbilityHandler/TargetingMarker.tscn" id="6_vd3yi"]
 [ext_resource type="PackedScene" uid="uid://v4tex8ioydyg" path="res://Objects/CombatGrid/AbilityHandler/AOEMarker.tscn" id="7_ijnn5"]
 [ext_resource type="Script" path="res://Classes/SelfContained/Interface/ConfirmationPopup.gd" id="7_j8kol"]
 [ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
@@ -58,7 +57,6 @@ script = ExtResource("2_72vpm")
 [node name="AbilityHandler" type="Node" parent="." node_paths=PackedStringArray("abilityButtonList", "gridMap")]
 script = ExtResource("4_1l28h")
 targetableMarker = ExtResource("5_k8bha")
-targetingMarker = ExtResource("6_vd3yi")
 AOEMarker = ExtResource("7_ijnn5")
 abilityButtonList = NodePath("../UI/VBoxContainer/Abilities")
 gridMap = NodePath("../MovementGrid")
@@ -169,8 +167,8 @@ transform = Transform3D(0.965926, 1.13133e-08, -0.258819, 0.258819, -4.2222e-08,
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Misc"]
 environment = SubResource("Environment_vl025")
 
-[connection signal="selected_unit" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
 [connection signal="selected_unit" from="UnitHandler" to="UI/UnitList/UpperList" method="set_unit_selected"]
+[connection signal="unit_acting" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
 [connection signal="cell_clicked" from="MovementGrid" to="." method="on_cell_clicked"]
 [connection signal="cell_clicked" from="MovementGrid" to="AbilityHandler" method="select_cell"]
 [connection signal="cell_hovered" from="MovementGrid" to="MovementGrid/CellHovered" method="move_to_cell"]

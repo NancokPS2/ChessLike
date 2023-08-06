@@ -5,7 +5,7 @@ var weapon:EquipmentWeapon
 
 func _use(targets:Array[Vector3i]):
 	var _weapon = get_weapon()
-	for target in get_units(targets):
+	for target in targeting_get_units_in_cells(targets):
 		target.change_stat("health", -calculate_damage(target, _weapon))
 	
 

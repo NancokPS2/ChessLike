@@ -90,7 +90,7 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 @export var moveCost:int = 0
 
 @export_group("Targeting")
-@export var targetingShape:Array[Vector3i] = TARGETING_SHAPE_ADJACENT #The area which the user can target
+@export var targetingShape:Array[Vector3i] = TARGETING_SHAPE_STAR_ONE #The area which the user can target
 @export var targetingAOEShape:Array[Vector3i] = TARGETING_SHAPE_SELF #The area relative to the targeted point that it will affect
 @export var targetingRotates:bool = false #If true, the targetingShape will be rotated to match the user's facing.
 

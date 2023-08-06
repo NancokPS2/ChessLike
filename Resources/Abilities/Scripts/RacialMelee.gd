@@ -6,8 +6,8 @@ func get_user_race():
 	pass
 	
 func _use(targets:Array[Vector3i]):
-	for target in get_units(targets):
-#		var unit:Unit = user.board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
+	for target in targeting_get_units_in_cells(targets):
+#		var unit:Unit = user.board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT)
 		target.attributes.stat_change("health", -10)
 
 

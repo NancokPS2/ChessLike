@@ -4,7 +4,7 @@ class_name AbilityDamage
 	
 func _use(targets:Array[Vector3i]):
 	for target in targets:
-		var unit:Unit = user.board.gridMap.search_in_tile(target, MovementGrid.Searches.UNIT)
+		var unit:Unit = user.board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT)
 		unit.attributes.stats.health -= 10
 
 #func use(target:Unit):

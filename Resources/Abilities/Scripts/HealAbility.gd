@@ -6,7 +6,7 @@ func get_description():
 	return "Heals for {0}% of max health of the target.".format([str(customVals["power"]*100)])
 
 func _use(targets:Array[Vector3i]):
-	for unit in get_units(targets):
+	for unit in targeting_get_units_in_cells(targets):
 		unit.attributes.stats.health += unit.attributes.stats.healthMax * customVals["power"]
 
 #func use(target:Unit):
