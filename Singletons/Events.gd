@@ -11,6 +11,9 @@ signal BOARD_COMBAT_STATE_EXITED(state:GameBoard.States)
 
 signal ABILITY_USED(ability:Ability)
 
+signal CONFIRM_UNIVERSAL
+signal CANCEL_UNIVERSAL
+
 func _init() -> void:
 #	for state in GameBoard.States.keys():
 #		var enterSignal:String = state+"_enter"
@@ -31,6 +34,11 @@ func _ready() -> void:
 #	slowTimer.start(0.2)
 	slowTimer.timeout.connect(emit_signal.bind("UPDATE_UNIT_INFO"))
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("apply"):
+		CONFIRM_UNIVERSAL.emit()
+	elif event.is_action_pressed("cancel"):
+		CANCEL_UNIVERSAL.emit()
 ##States
 #signal SETUP_enter
 #signal SETUP_exit
