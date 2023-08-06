@@ -56,14 +56,14 @@ func _ready() -> void:
 
 func get_current_cell()->Vector3i:
 	var cell:Vector3i = board.gridMap.local_to_map(position)
-#	assert(board.gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT, true).has(self))
+#	assert(board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true).has(self))
 	return cell
 
 func start_turn():
 	attributes.stats.turnDelay = attributes.stats.turnDelayMax
 	attributes.stats.actions = attributes.stats.actionsMax
 	attributes.stats.moves = attributes.stats.movesMax
-	emit_signal("turn_started")
+	turn_started.emit()
 
 func end_turn():
 	emit_signal("turn_ended")
