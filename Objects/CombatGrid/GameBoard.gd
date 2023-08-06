@@ -3,17 +3,13 @@ class_name GameBoard
 
 ## Started from Ref.start_combat(map)
 
-signal unit_clicked(unit:Unit)
-signal cell_clicked(cell:Vector3i)
-signal cell_clicked_empty(cell:Vector3i)
-
 const SPAWN_TAG:StringName = "FACTION_SPAWN_"
 
 enum States {SETUP,COMBAT,PAUSE,END}
 
 enum CombatStates {
-	C_IDLE,#Nothing is happening, actions are displayed
-	C_ANIMATING,#Awaiting for a cell to be chosen in order to move to it
+	C_IDLE, ##Nothing is happening, actions are displayed
+	C_ANIMATING, ##An animation is playing, disable most controls.
 	C_ABILITY_TARGETING,
 	C_FACING_SELECT,
 	C_OFF_TURN
@@ -33,13 +29,11 @@ enum CombatStates {
 
 @export var gridMap:MovementGrid
 @export var unitHandler:UnitHandler
+@export var abilityHandler:AbilityHandler
 
 @export var unitList:UnitDisplayManager
 @export var menuCombat:NestedMenu
 @export var confirmationDialogue:ConfirmationPopup
-
-@export var endTurnButton:Button
-@export var startCombatButton:Button
 
 @export var unitInfo:UnitDisplay
 
@@ -96,9 +90,6 @@ func _ready() -> void:
 	
 #	endTurnButton.pressed.connect(turn_cycle)
 	
-	startCombatButton.pressed.connect(change_state.bind(States.COMBAT))
-	startCombatButton.pressed.connect(startCombatButton.queue_free,CONNECT_DEFERRED)
-	
 	
 #	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
 	
@@ -112,12 +103,7 @@ func _ready() -> void:
 	
 func run_stack():
 	change_combat_state(CombatStates.C_ANIMATING)
-	
-#	for tween in actionStack:
-#		tween.play()
-#		await tween.finished
-#
-#	actionStack.clear()
+	callQueue.run_queue()
 
 func queue_ability():
 	pass
@@ -146,24 +132,32 @@ func change_state(newState:States):
 	if newState != state:#Handle exiting the current state
 		Events.BOARD_STATE_EXITED.emit(state)
 		Events.BOARD_STATE_ENTERED.emit(newState)
-
+	
+	match newState:
+		States.COMBAT:
+			if not unitHandler.actingUnit is Unit: unitHandler.actingUnit = unitHandler.turn_get_next_unit()
+	
 	state = newState#Change the recorded state
 	
 	#Enabling/Disabling nodes
-	for group in States.keys():
-		for node in get_tree().get_nodes_in_group(group):
-			node.process_mode = Node.PROCESS_MODE_DISABLED
-			node.visible = false
-
-	for node in get_tree().get_nodes_in_group(newStateName):
-		node.process_mode = Node.PROCESS_MODE_INHERIT
-		node.visible = true
+#	for group in States.keys():
+#		for node in get_tree().get_nodes_in_group(group):
+#			node.process_mode = Node.PROCESS_MODE_DISABLED
+#			node.visible = false
+#
+#	for node in get_tree().get_nodes_in_group(newStateName):
+#		node.process_mode = Node.PROCESS_MODE_INHERIT
+#		node.visible = true
 			
 
 func change_combat_state(newState:CombatStates):
 	if combatState != newState:#State has been changed
 		Events.BOARD_COMBAT_STATE_EXITED.emit(combatState)
 		Events.BOARD_COMBAT_STATE_ENTERED.emit(newState)
+		
+	match newState:
+		_: pass
+		
 	combatState = newState
 	
 				
@@ -185,21 +179,21 @@ func _process(delta: float) -> void:
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
 	$Debug.text = gridMap.get_cell_debug_text(cell)
-	
-	
-	var unitInCell:Unit = gridMap.search_in_tile(cell, MovementGrid.Searches.UNIT)
-	#A cell with a unit was clicked
-	if unitInCell is Unit: 
-		unit_clicked.emit(unitInCell)
-		
-	#Is it empty
-	if gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS, true) == []: 
-		assert( gridMap.search_in_tile(cell, MovementGrid.Searches.ALL_OBJECTS).is_empty() )
-		cell_clicked_empty.emit()
+#
+#
+#	var unitInCell:Unit = gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT)
+#	#A cell with a unit was clicked
+#	if unitInCell is Unit: 
+#		unit_clicked.emit(unitInCell)
+#
+#	#Is it empty
+#	if gridMap.search_in_cell(cell, MovementGrid.Searches.ALL_OBJECTS, true) == []: 
+#		assert( gridMap.search_in_cell(cell, MovementGrid.Searches.ALL_OBJECTS).is_empty() )
+#		cell_clicked_empty.emit()
 	
 	#There was something, so it isn't empty.
-	else:
-		cell_clicked.emit(cell)
+#	else:
+#		cell_clicked.emit(cell)
 		
 	#Debug pathing
 	if unitHandler.selectedUnit is Unit and unitHandler.selectedUnit.get_parent() == self:
@@ -211,7 +205,7 @@ func on_cell_clicked(cell:Vector3i):
 	match state:
 		States.SETUP:
 			Events.UPDATE_UNIT_INFO.emit()
-#			var unit:Unit = gridMap.search_in_tile(cell, gridMap.Searches.UNIT)
+#			var unit:Unit = gridMap.search_in_cell(cell, gridMap.Searches.UNIT)
 #			if unit is Unit: unitList.unitSelected = unit
 			
 			#Unit spawn logic.

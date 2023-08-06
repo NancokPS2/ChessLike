@@ -4,6 +4,9 @@ class_name MovementGrid
 #Not suitable for using actual tiles as they are be overwritten with most methods present here
 
 signal cell_clicked(cellPos:Vector3i)
+signal cell_clicked_empty(cellPos:Vector3i)
+signal cell_clicked_with_unit(cellPos:Vector3i)
+signal unit_clicked(unit:Unit)
 signal marked_cell_clicked(cellPos:Vector3i)
 signal cell_hovered(cellPos:Vector3i)
 signal new_cell_hovered(cellPos:Vector3i) ## Only fires when a different cell is moused over
@@ -85,7 +88,7 @@ func update_object_positions():
 		
 		if not cellDict.has(cellPos): push_error("The object is outside the grid!")
 		else: cellDict[cellPos].append(node)
-	assert(not allValidNodes.is_empty())
+	if allValidNodes.is_empty(): push_warning("The map is empty at this point, is this intended?")
 
 ## Returns all cells in cellDict as Array[Vector3i]
 func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
@@ -140,9 +143,9 @@ func initialize_cells_from_map(map:Map, override:bool=false):
 #			#print(cellDict[cell])
 	
 
-## Alias of search_in_tile(where:Vector3i, Searches.TAGS, true)
+## Alias of search_in_cell(where:Vector3i, Searches.TAGS, true)
 func get_cell_tags(cell:Vector3i, getAll:bool=true)->Array:
-	return search_in_tile(cell, Searches.TAG, getAll)
+	return search_in_cell(cell, Searches.TAG, getAll)
 
 func tag_cells(cells:Array[Vector3i], tag:String):
 	for cell in cells:
@@ -150,7 +153,7 @@ func tag_cells(cells:Array[Vector3i], tag:String):
 	
 
 ## Searches for something in the given tile, returns false if it can't find anything
-func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=false):
+func search_in_cell(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=false):
 	if not cellDict.has(where): push_error(str(where) + " is not a valid cell."); return null
 	match what:
 		Searches.UNIT:
@@ -159,12 +162,14 @@ func search_in_tile(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 			else:
 				for obj in cellDict[where]: if obj is Unit: return obj
 				
-#		Searches.OBSTACLE:
-#			if getAll:
+		Searches.OBSTACLE:
+			push_error("OBSTACLE searches are not implemented.")
+			if getAll: 
 #				return cellDict[where].filter(func(obj): return true if obj is null else false)
-#				pass
-#			for obj in cellDict[where]:
+				return []
+			else: 
 #				if obj is Object: return obj
+				return null			
 				
 		Searches.ANYTHING:
 			if not cellDict[where].is_empty(): return cellDict[where][0]
@@ -188,9 +193,9 @@ func get_cell_debug_text(cell:Vector3i)->String:
 	var text:String
 	
 	text += str(cell) + "\n"
-	text += "Units: " + str(search_in_tile(cell,Searches.UNIT,true)) + "\n"
-	text += "Obstacles: " + str(search_in_tile(cell,Searches.OBSTACLE,true)) + "\n"
-	text += "Tags: " + str(search_in_tile(cell,Searches.TAG,true)) + "\n"
+	text += "Units: " + str(search_in_cell(cell,Searches.UNIT,true)) + "\n"
+	text += "Obstacles: " + str(search_in_cell(cell,Searches.OBSTACLE,true)) + "\n"
+	text += "Tags: " + str(search_in_cell(cell,Searches.TAG,true)) + "\n"
 	return text
 
 func set_items_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
@@ -240,14 +245,24 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("primary_click"):
 		var mouseIntersect = objectPicker.get_from_mouse(Picker3D.QueriedInfo.POSITION)
 		
-		#If nothing was clicked, end here
-		if not mouseIntersect is Vector3: 
-			return
-			
-		else:
+		#If it is a Vector3 
+		if mouseIntersect is Vector3: 
 			mouseIntersect = local_to_map(mouseIntersect)
 			cell_clicked.emit(mouseIntersect)
 			if is_cell_marked(mouseIntersect): marked_cell_clicked.emit(mouseIntersect)
+			
+			var cellContents:Array = search_in_cell(mouseIntersect, Searches.ALL_OBJECTS, true)
+			#If empty, signal as much
+			if cellContents.is_empty(): 
+				cell_clicked_empty.emit(mouseIntersect)
+				#Otherwise, check for what is there.
+			else:
+				for cont in cellContents:
+					if cont is Unit:
+						cell_clicked_with_unit.emit(mouseIntersect)
+						unit_clicked.emit(cont)
+						break
+			
 	
 class GridPathing extends Node:
 	const VisualMeshRotations:Dictionary ={
