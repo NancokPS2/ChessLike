@@ -38,14 +38,13 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 1.12
 reflected_light_source = 1
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "gridMap", "unitHandler", "unitList", "confirmationDialogue", "startCombatButton", "unitInfo")]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "gridMap", "unitHandler", "unitList", "confirmationDialogue", "unitInfo")]
 script = ExtResource("1_pjmtp")
 callQueue = NodePath("CallQueue")
 gridMap = NodePath("MovementGrid")
 unitHandler = NodePath("UnitHandler")
 unitList = NodePath("UI/UnitList/UpperList")
 confirmationDialogue = NodePath("UI/ConfirmationPopup")
-startCombatButton = NodePath("UI/StartCombat")
 unitInfo = NodePath("UI/UnitPanel")
 
 [node name="UnitHandler" type="Node" parent="." node_paths=PackedStringArray("board", "unitDisplayManager")]
@@ -61,7 +60,7 @@ script = ExtResource("4_1l28h")
 targetableMarker = ExtResource("5_k8bha")
 targetingMarker = ExtResource("6_vd3yi")
 AOEMarker = ExtResource("7_ijnn5")
-abilityButtonList = NodePath("../UI/Abilities")
+abilityButtonList = NodePath("../UI/VBoxContainer/Abilities")
 gridMap = NodePath("../MovementGrid")
 
 [node name="MovementGrid" type="GridMap" parent="." groups=["COMBAT", "SETUP"]]
@@ -124,7 +123,21 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_j8kol")
 
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+anchors_preset = -1
+anchor_right = 0.2
+anchor_bottom = 0.631
+
+[node name="Abilities" type="VBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EndTurn" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "END_TURN"
+
 [node name="StartCombat" type="Button" parent="UI"]
+editor_description = "Changes the $Board state and then deletes itself."
 anchors_preset = -1
 anchor_left = 0.85
 anchor_top = 0.6
@@ -132,13 +145,6 @@ anchor_right = 1.0
 anchor_bottom = 0.75
 text = "START_COMBAT"
 metadata/_edit_use_anchors_ = true
-
-[node name="Abilities" type="VBoxContainer" parent="UI"]
-anchors_preset = -1
-anchor_right = 0.2
-anchor_bottom = 0.6
-offset_right = -0.32
-offset_bottom = -0.176003
 
 [node name="Misc" type="Node" parent="."]
 
@@ -163,11 +169,14 @@ transform = Transform3D(0.965926, 1.13133e-08, -0.258819, 0.258819, -4.2222e-08,
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Misc"]
 environment = SubResource("Environment_vl025")
 
-[connection signal="unit_clicked" from="." to="UnitHandler" method="select_unit"]
 [connection signal="selected_unit" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
 [connection signal="selected_unit" from="UnitHandler" to="UI/UnitList/UpperList" method="set_unit_selected"]
 [connection signal="cell_clicked" from="MovementGrid" to="." method="on_cell_clicked"]
 [connection signal="cell_clicked" from="MovementGrid" to="AbilityHandler" method="select_cell"]
 [connection signal="cell_hovered" from="MovementGrid" to="MovementGrid/CellHovered" method="move_to_cell"]
-[connection signal="new_cell_hovered" from="MovementGrid" to="AbilityHandler" method="update_targeting_visuals" binds= [true]]
+[connection signal="new_cell_hovered" from="MovementGrid" to="AbilityHandler" method="on_new_cell_hovered"]
+[connection signal="unit_clicked" from="MovementGrid" to="UnitHandler" method="select_unit"]
 [connection signal="unit_selected" from="UI/UnitList/UpperList" to="UnitHandler" method="select_unit"]
+[connection signal="pressed" from="UI/VBoxContainer/EndTurn" to="UnitHandler" method="end_turn_attempt"]
+[connection signal="pressed" from="UI/StartCombat" to="UI/StartCombat" method="queue_free" flags=3]
+[connection signal="pressed" from="UI/StartCombat" to="." method="change_state" binds= [1]]
