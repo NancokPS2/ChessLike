@@ -92,57 +92,46 @@ var stats:Dictionary = baseStats
 	"turnDelayMax":1.0,
 }
 
-func stat_change(stat:String, changeAmount:int):
-	assert(changeAmount is int)
+
+func set_stat(stat:String, newValue:int, base:bool = false):
 #	if not (changeAmount is int or changeAmount is float): push_error("Invalid value type."); return
 	if not stats.has(stat): push_error("Non existent stat."); return
+	var statVarName = "baseStats" if base else "stats"
 	
 	match stat:
 		StatNames.HEALTH:
-			stats[stat] += changeAmount
-			stats[stat] = clamp(stats[stat], -999, stats[StatNames.HEALTH_MAX] )
+			newValue = clamp(newValue, -999, stats[StatNames.HEALTH_MAX] )
 			
 		StatNames.ENERGY:
-			stats[stat] += changeAmount
-			stats[stat] = clamp(stats[stat], -999, stats[StatNames.ENERGY_MAX] )
+			newValue = clamp(newValue, -999, stats[StatNames.ENERGY_MAX] )
 
 		StatNames.TURN_DELAY:
-			stats[stat] += changeAmount
-			stats[stat] = clamp(stats[stat], -999, stats[StatNames.TURN_DELAY_MAX] )
-
-		StatNames.STRENGTH:
-			stats[stat] += changeAmount
-			
-		StatNames.AGILITY:
-			stats[stat] += changeAmount
-			
-		StatNames.MIND:
-			stats[stat] += changeAmount
-			
-		StatNames.SPECIAL:
-			stats[stat] += changeAmount
-			
-		StatNames.MOVE_DISTANCE:
-			stats[stat] += changeAmount
-			
-		StatNames.ACCURACY:
-			stats[stat] += changeAmount
-			
-		StatNames.TURN_DELAY:
-			stats[stat] += changeAmount
-			stats[stat] = clamp(stats[stat], -999, stats[StatNames.TURN_DELAY_MAX] )
+			newValue = clamp(newValue, -999, stats[StatNames.TURN_DELAY_MAX] )
 
 		StatNames.ACTIONS:
-			stats[stat] += changeAmount
-			stats[stat] = clamp(stats[stat], 0, stats[StatNames.ACTIONS_MAX] )
+			newValue = clamp(newValue, 0, stats[StatNames.ACTIONS_MAX] )
 
 		StatNames.MOVES:
-			stats[stat] += changeAmount
-			stats[stat] = clamp(stats[stat], 0, stats[StatNames.MOVES_MAX] )
+			newValue = clamp(newValue, 0, stats[StatNames.MOVES_MAX] )
 			
 		_:
 			push_error("Cannot handle this stat from this method!")
+			
+	get(statVarName)[stat] = newValue
 	stat_changed.emit(stat)
+
+func change_stat(stat:String, amount:int, base:bool = false):
+#	if not (changeAmount is int or changeAmount is float): push_error("Invalid value type."); return
+	if not stats.has(stat): push_error("Non existent stat."); return
+	
+	set_stat(stat, get_stat(stat)+amount, base)
+
+func get_stat(stat:String, base:bool = false):
+	if not stats.has(stat): push_error("Non existent stat."); return
+	var statVarName = "baseStats" if base else "stats"
+	
+	return get(statVarName)[stat]
+	
 
 #func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
 #	#Add stats

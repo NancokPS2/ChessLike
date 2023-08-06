@@ -70,7 +70,7 @@ enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3}
 @export var personalityNumber:Array[int]=[255,255,255]
 var personalityColor:Color:
 	get:
-		if personalityNumber.size()!=3 or personalityNumber.max()>255: push_error("Corrupted personalityNumber!"); return Color()
+		if personalityNumber.size()!=3 or personalityNumber.max()>255: push_error("Corrupted personalityNumber!"); return Color.TRANSPARENT
 		var red:int = personalityNumber[0]
 		var green:int = personalityNumber[1]
 		var blue:int = personalityNumber[2]
@@ -99,11 +99,6 @@ func _init() -> void:
 #	assert(not attributeResources.is_empty())
 #	combine_attributes()
 	equipment_changed.connect(equipment_update_abilities)
-	
-
-
-	
-
 	
 func randomize_names(firstNames:Array[String], nickNames:Array[String], lastNames:Array[String]):
 	info["firstName"] = firstNames.pick_random() as String
