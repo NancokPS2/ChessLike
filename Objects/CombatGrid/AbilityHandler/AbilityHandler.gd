@@ -19,7 +19,7 @@ enum MarkerTypes {
 }
 
 @export var targetableMarker:PackedScene
-@export var targetingMarker:PackedScene
+#@export var targetingMarker:PackedScene
 @export var AOEMarker:PackedScene
 
 @export_category("References")
@@ -46,16 +46,24 @@ func start_ability_targeting(ability:Ability):
 	ability_started.emit(ability)
 	
 func end_ability_targeting():
-	currentState = States.INACTIVE
-	ability_finished.emit(selectedAbility)
+	#Update the list of abilities from the user.
+	update_ability_list(selectedAbility.user)
 	
+	#Unset related variables
 	selectedAbility = null
 	chosenTargets.clear()
+
+	#Change to inactive state
+	currentState = States.INACTIVE
+	ability_finished.emit(selectedAbility)	
+	
 	
 	##Marks the cells that the user can target
 func select_ability(ability:Ability):
 	selectedAbility = ability
 	ability_selected.emit(ability)
+	
+	start_ability_targeting(ability)
 	
 	update_targeting_visuals(ability.user.get_current_cell(), MarkerTypes.TARGETABLE)
 	
@@ -121,6 +129,7 @@ func update_targeting_visuals(newOrigin:Vector3i, AOEMode:bool)->Array[Vector3i]
 			targetedCells = get_targetable_cells(selectedAbility)
 			update_markers(targetedCells, MarkerTypes.TARGETABLE)
 		
+		print(targetedCells)
 		return targetedCells
 	else:
 		return [] as Array[Vector3i]
@@ -141,8 +150,11 @@ func update_markers(cells:Array[Vector3i], type:MarkerTypes):
 	#Place it down in the cells
 	var newRefs:Array[Node3D]
 	for cell in cells:
+		#Add the cell
 		var marker:Node3D = cellMarkerUsed.instantiate()
 		marker.position = gridMap.map_to_local(cell)
+		add_child(marker)
+		
 		#Save a reference
 		newRefs.append(marker)
 	
@@ -154,7 +166,7 @@ func clear_markers(type:MarkerTypes):
 	for marker in refs: marker.queue_free()
 	
 	
-func update_ability_list(unit:Unit, list:Control):
+func update_ability_list(unit:Unit, list:Control=abilityButtonList):
 	for ability in unit.attributes.abilities:
 		var button:=AbilityButton.new()
 		var buttonName:String
@@ -170,9 +182,11 @@ func update_ability_list(unit:Unit, list:Control):
 		list.add_child(button)
 
 func on_new_cell_hovered(cellPos:Vector3i):
+#	print("hover")
 	match currentState:
 		States.TARGETING:
-			#Update the affected area as the mouse moves.
+#			if cellPos != MovementGrid.INVALID_CELL_COORDS: breakpoint
+			#Update the affeected area as the mouse moves.
 			update_targeting_visuals(cellPos, true)
 	pass
 	
