@@ -13,6 +13,7 @@ signal put_unit_in_removed(unit:Unit)
 
 signal unit_entered_the_board(unit:Unit)
 
+signal turn_end_attempted(succesful:bool)
 signal turn_cycled
 
 enum UnitStates {BENCHED, COMBAT, REMOVED}
@@ -23,6 +24,7 @@ const DEFAULT_UNIT_DATA:Array = [UnitStates.REMOVED, null, null, null]
 @export_category("References")
 @export var board:GameBoard = Ref.board
 @export var unitDisplayManager:UnitDisplayManager
+@export var endTurnButton:Button
 
 var actingUnit:Unit
 
@@ -45,11 +47,10 @@ func add_unit(unit:Unit, state:UnitStates = UnitStates.REMOVED):
 func spawn_unit(unit:Unit, where:Vector3i):
 	assert( unitDict.has(unit), "This unit was not added trough add_unit()" )
 	assert( unit.get_parent() == self or unit.get_parent() == null, "Units should only be a child of this node." )
-	assert( unit.get_parent() != self, "This unit already was already added" )
 	
 	
 	set_unit_state(unit, UnitStates.COMBAT)
-	unit.move_to_cell(board.gridMap, where)
+	board.gridMap.position_object_3D(where, unit)
 	add_child(unit)
 	
 	#Update the gridMap
@@ -75,18 +76,6 @@ func remove_unit(unit:Unit):
 		removed_unit_from_list.emit(unit)
 	pass
 
-#func update_unit_container(faction:Faction=Ref.saveFile.playerFaction):
-#	assert(faction is Faction)
-#	var units:Array[Unit] = filter_units_by_faction(faction)
-#	for unit in units:
-#		var button:=UnitButton.new()
-#		button.unit = unit
-#		unitContainer.add_child(button)
-#
-#
-#		pass
-#	pass
-
 func set_unit_state(unit:Unit, state:UnitStates):
 	unitDict[unit][UnitDataFields.STATE] = state
 	
@@ -108,12 +97,16 @@ func get_unit_state(unit:Unit):
 
 
 func get_all_units()->Array[Unit]:
-	return unitDict.keys()
+	var returnal:Array[Unit]
+	returnal.assign(unitDict.keys())
+	return returnal
 	
 func get_all_factions()->Array[Faction]:
 	var factionList:Array[Faction]
 	for unit in get_all_units():
-		factionList.append( unit.attributes.get_faction() )
+		var faction:Faction = unit.attributes.get_faction()
+		if not factionList.has(faction): 
+			factionList.append(faction)
 	return factionList
 	
 func filter_units_by_state(state:UnitStates=UnitStates.COMBAT, units:Array[Unit] = get_all_units())->Array[Unit]:
@@ -141,19 +134,28 @@ func turn_get_units_sorted_by_delay(state:=UnitStates.COMBAT)->Array[Unit]:
 	return unitArr
 
 func turn_get_next_unit(state:=UnitStates.COMBAT)->Unit:
-	return turn_get_units_sorted_by_delay(state)[0]
+	return turn_get_units_sorted_by_delay(state).front()
 	
 func turn_apply_delays(state:=UnitStates.COMBAT):
+	#Take the delay from the actingUnit
 	var currDelay:int = actingUnit.attributes.stats["turnDelay"]
 	assert(currDelay == actingUnit.attributes.stats["turnDelay"])
+	
+	#Apply it to ALL units in the chosen state, including the actingUnit.
 	for unit in filter_units_by_state(state): 
 		unit.attributes.apply_turn_delay(currDelay)
 	
 func turn_cycle():
-	actingUnit.end_turn()
+	#Apply turn delays
 	turn_apply_delays()
+	
+	#Select the next actingUnit
 	actingUnit = turn_get_next_unit()
+	
+	#Run their start of turn (restore some resources like moves)
 	actingUnit.start_turn()
+	
+	#Cycle complete
 	turn_cycled.emit()
 
 
@@ -161,11 +163,11 @@ func turn_cycle():
 
 class UnitFilters extends RefCounted:
 #True if there's a unit there
-	static func has_unit(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else false
+	static func has_unit(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT) is Unit else false
 	#True if there's not a unit
-	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT) is Unit else true
+	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT) is Unit else true
 	#True if the tile has nothing in it
-	static func empty_tile(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.ANYTHING) == null else false
+	static func empty_tile(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.ANYTHING) == null else false
 	
 	static func is_ally(cell:Vector3i, user:Unit): 
 		var targetUnit:Unit = Ref.grid.search_int_tile(cell, MovementGrid.Searches.UNIT)
@@ -177,12 +179,32 @@ class UnitFilters extends RefCounted:
 		else:
 			return false
 	
-	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else false
+	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else false
 	
-	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_tile(cell,MovementGrid.Searches.UNIT,true).has(user) else true
+	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else true
 
 class SpawnHandler extends Node:
 	var factions:Array[Faction]
 	var spawnPos
 	pass
 	
+
+
+func end_turn_attempt(cancel:bool=false) -> void:
+	if actingUnit is Unit:
+		
+		
+		#If an attempt was just made, confirm it
+		if get_meta("_TURN_END_ATTEMPTED", false):
+			turn_cycle()
+			
+			#Reset the attempt so it can be confirmed again next turn end
+			set_meta("_TURN_END_ATTEMPTED", false)
+			turn_end_attempted.emit(true)
+		
+		else:
+			#An attempt was made, next time it will succeed
+			set_meta("_TURN_END_ATTEMPTED", true)
+			turn_end_attempted.emit(false)
+	else:
+		push_error("No unit is acting, cannot end turns.")
