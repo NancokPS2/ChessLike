@@ -5,7 +5,7 @@
 [node name="TargetingMarker" type="Node3D"]
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 modulate = Color(0.752941, 0.764706, 0, 1)
 axis = 1
-no_depth_test = true
 texture = ExtResource("1_sfom6")

@@ -5,7 +5,8 @@
 [node name="TargetingMarker" type="Node3D"]
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-modulate = Color(1, 1, 1, 0.32549)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+modulate = Color(1, 0, 0, 0.823529)
 axis = 1
 no_depth_test = true
 texture = ExtResource("1_sqlrl")
