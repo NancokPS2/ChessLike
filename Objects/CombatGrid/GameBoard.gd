@@ -179,28 +179,10 @@ func _process(delta: float) -> void:
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
 	$Debug.text = gridMap.get_cell_debug_text(cell)
-#
-#
-#	var unitInCell:Unit = gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT)
-#	#A cell with a unit was clicked
-#	if unitInCell is Unit: 
-#		unit_clicked.emit(unitInCell)
-#
-#	#Is it empty
-#	if gridMap.search_in_cell(cell, MovementGrid.Searches.ALL_OBJECTS, true) == []: 
-#		assert( gridMap.search_in_cell(cell, MovementGrid.Searches.ALL_OBJECTS).is_empty() )
-#		cell_clicked_empty.emit()
-	
-	#There was something, so it isn't empty.
-#	else:
-#		cell_clicked.emit(cell)
-		
-	#Debug pathing
+
 	if unitHandler.selectedUnit is Unit and unitHandler.selectedUnit.get_parent() == self:
 		var origin:Vector3i = unitHandler.selectedUnit.get_current_cell()
 		gridMap.pathing.get_unit_path(unitHandler.selectedUnit, origin, cell)
-		
-	
 		
 	match state:
 		States.SETUP:
