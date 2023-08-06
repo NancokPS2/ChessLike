@@ -9,14 +9,12 @@ signal ability_finished(ability:Ability)
 
 enum States {
 	INACTIVE, ## Non-functional
-	CHOOSING, ## DEPRECATED
-	TARGETING, ## Update targeting visuals
+	TARGETING, ## Update targeting visuals when a cell is hovered
 	CONFIRMING, ## Target chosen, stop updating targeting
 	USING ## Usage in progress
 	}
 enum MarkerTypes {
 	TARGETABLE,
-	TARGETING,
 	AOE
 }
 
@@ -33,43 +31,55 @@ var currentState:States = States.INACTIVE
 
 var selectedAbility:Ability
 
-var validTargets:Array[Vector3i]
+var chosenTargets:Array[Vector3i]
+
+func _ready() -> void:
+	Events.CANCEL_UNIVERSAL
+	Ability.new().callQueue = Ref.board.callQueue
+	
+
+
 
 func start_ability_targeting(ability:Ability):
 	selectedAbility = ability
 	currentState = States.TARGETING
 	ability_started.emit(ability)
 	
+func end_ability_targeting():
+	currentState = States.INACTIVE
+	ability_finished.emit(selectedAbility)
+	
+	selectedAbility = null
+	chosenTargets.clear()
+	
+	##Marks the cells that the user can target
 func select_ability(ability:Ability):
 	selectedAbility = ability
 	ability_selected.emit(ability)
+	
 	update_targeting_visuals(ability.user.get_current_cell(), MarkerTypes.TARGETABLE)
 	
-func hover_ability_button(button:AbilityButton):
+func select_cell(cell:Vector3i):
+	if currentState == States.TARGETING:
+		currentState = States.CONFIRMING
+		
+		#Set the valid targets and update visuals for a final time, this also returns the cells that where valid
+		chosenTargets = update_targeting_visuals(cell, true)
+	
+func on_hover_ability_button(button:AbilityButton):
 	ability_button_hovered.emit(button)
 
-	## Cells that the user can target, if AOEMode is true it will be based on 
-	## The AOE Area of the ability instead of the ability's targeting range.
-func get_cells_targeted(targetedCell:Vector3i, ability:Ability, AOEMode:bool)->Array[Vector3i]:
-	var cells:Array[Vector3i] = gridMap.get_typed_cellDict_array()
+	## Cells that the user can target
+func get_targetable_cells(ability:Ability)->Array[Vector3i]:
+#	var cells:Array[Vector3i] = gridMap.get_typed_cellDict_array()
 	
-	var shape:Ability.TargetingShapes
-	var range:int
+	var shape = ability.targetingShape.duplicate()
+	var userCell:Vector3i = ability.user.get_current_cell()
 	
-	if AOEMode: 
-		shape = ability.targetingAOEShape
-		range = ability.targetingAOESize
-	else: 
-		shape = ability.targetingShape
-		range = ability.targetingRange
-
-	#Cell filter by cell shape
+	#Select cells based on the shape
 	var filteredCells:Array[Vector3i]
-	match shape:
-		Ability.TargetingShapes.STAR:
-			for cell in cells:
-				var manhattanDistance:int = abs(targetedCell.x - cell.x) + abs(targetedCell.y - cell.y) + abs(targetedCell.z - cell.z)
-				if manhattanDistance <= range: filteredCells.append(cell)
+	for cellPos in shape:
+		filteredCells.append(userCell + cellPos)
 	
 	#Filter by ability filters
 	for filter in ability.filters:
@@ -79,43 +89,45 @@ func get_cells_targeted(targetedCell:Vector3i, ability:Ability, AOEMode:bool)->A
 	filteredCells.filter(ability._custom_filter)
 	return filteredCells
 
+	## Cells that the ability will affect based on the targeted Cell
+func get_targeted_cells(targetedCell:Vector3i, ability:Ability)->Array[Vector3i]:
+	
+	var shape:Array[Vector3i] = ability.targetingAOEShape
+	if ability.targetingRotates: shape = ability.targeting_get_rotated_to_cell(shape, targetedCell) 
+	
+	#Select cells based on the shape
+	var filteredCells:Array[Vector3i]
+	for cellPos in shape:
+		filteredCells.append(targetedCell + cellPos)
+	
+	#Filter by ability filters
+	for filter in ability.filters:
+		filteredCells.filter(filter.bind(ability.user))
+	
+	#Apply custom ability filter
+	filteredCells.filter(ability._custom_filter)
+	return filteredCells
+	
+
 func update_targeting_visuals(newOrigin:Vector3i, AOEMode:bool)->Array[Vector3i]:
 	if currentState == States.TARGETING:
 		var targetedCells:Array[Vector3i]
 		
 		if AOEMode: 
-			targetedCells = get_cells_targeted(newOrigin, selectedAbility, true)
-			update_markers(targetedCells, MarkerTypes.TARGETING)
+			targetedCells = get_targeted_cells(newOrigin, selectedAbility)
+			update_markers(targetedCells, MarkerTypes.AOE)
 			
 		else: 
-			targetedCells = get_cells_targeted(newOrigin, selectedAbility, false)
+			targetedCells = get_targetable_cells(selectedAbility)
 			update_markers(targetedCells, MarkerTypes.TARGETABLE)
 		
 		return targetedCells
 	else:
 		return [] as Array[Vector3i]
 	
-func select_cell(cell:Vector3i):
-	if currentState == States.TARGETING:
-		currentState = States.CONFIRMING
-		
-		#Set the valid targets and update visuals for a final time
-		validTargets = update_targeting_visuals(cell, true)
-		
-		
-		if abilityConfirmButton is Button:
-			abilityConfirmButton.pressed.connect(confirm_ability, CONNECT_ONE_SHOT)
-		else:
-			push_error("Cannot find a button for confirming!")
-		
-func confirm_ability():
-	currentState = States.CONFIRMING
-	selectedAbility.warn_units([])
-	
+
 		
 
-	
-	
 func update_markers(cells:Array[Vector3i], type:MarkerTypes):
 	#Clear other refs of this kind
 	clear_markers(type)
@@ -124,7 +136,6 @@ func update_markers(cells:Array[Vector3i], type:MarkerTypes):
 	var cellMarkerUsed:PackedScene
 	match type:
 		MarkerTypes.TARGETABLE: cellMarkerUsed = targetableMarker
-		MarkerTypes.TARGETING: cellMarkerUsed = targetingMarker
 		MarkerTypes.AOE: cellMarkerUsed = AOEMarker
 			
 	#Place it down in the cells
@@ -154,10 +165,36 @@ func update_ability_list(unit:Unit, list:Control):
 		#Selection
 		button.pressed.connect(select_ability.bind(ability))
 		#Hovering
-		button.mouse_entered.connect(hover_ability_button.bind(button))
+		button.mouse_entered.connect(on_hover_ability_button.bind(button))
 		
 		list.add_child(button)
 
+func on_new_cell_hovered(cellPos:Vector3i):
+	match currentState:
+		States.TARGETING:
+			#Update the affected area as the mouse moves.
+			update_targeting_visuals(cellPos, true)
+	pass
+	
+func on_cancel():
+	match currentState:
+		States.TARGETING: 
+			currentState = States.INACTIVE
+			end_ability_targeting()
+	
+func on_confirm():
+	match currentState:
+		States.TARGETING:
+			if not chosenTargets.is_empty():
+				currentState = States.CONFIRMING
+				selectedAbility.queue_call(chosenTargets)
+				
+			else:
+				push_warning("Cannot confirm targeting without targets.")
+				
+	pass
+
 class AbilityButton extends Button:
+	
 	var ability:Ability
 	
