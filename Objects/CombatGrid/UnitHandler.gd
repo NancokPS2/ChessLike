@@ -17,6 +17,8 @@ signal unit_entered_the_board(unit:Unit)
 signal turn_end_attempted(succesful:bool)
 signal turn_cycled
 
+
+
 enum UnitStates {BENCHED, COMBAT, REMOVED}
 
 enum UnitDataFields {STATE}
@@ -134,18 +136,20 @@ func turn_get_units_sorted_by_delay(state:=UnitStates.COMBAT)->Array[Unit]:
 func turn_get_next_unit(state:=UnitStates.COMBAT)->Unit:
 	return turn_get_units_sorted_by_delay(state).front()
 	
-func turn_apply_delays(state:=UnitStates.COMBAT):
+func turn_advance_time(state:=UnitStates.COMBAT):
 	#Take the delay from the actingUnit
-	var currDelay:int = actingUnit.attributes.stats["turnDelay"]
-	assert(currDelay == actingUnit.attributes.stats["turnDelay"])
+	var currDelay:float = actingUnit.attributes.get_stat(AttributesBase.StatNames.TURN_DELAY)
+	assert( currDelay == actingUnit.attributes.get_stat(AttributesBase.StatNames.TURN_DELAY) )
 	
 	#Apply it to ALL units in the chosen state, including the actingUnit.
 	for unit in filter_units_by_state(state): 
 		unit.attributes.apply_turn_delay(currDelay)
+		
+	board.time_advanced.emit(currDelay)
 	
 func turn_cycle():
 	#Apply turn delays
-	turn_apply_delays()
+	turn_advance_time()
 	
 	#Select the next actingUnit
 	actingUnit = turn_get_next_unit()
