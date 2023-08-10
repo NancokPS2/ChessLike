@@ -2,10 +2,20 @@ extends Node
 class_name AbilityHandler
 
 signal ability_button_hovered(button:Button)
-signal ability_selected(ability:Ability)
-signal ability_started(ability:Ability)
-signal ability_targeting(ability:Ability)
-signal ability_finished(ability:Ability)
+signal selected_ability(ability:Ability) ##The button for an ability was pressed
+signal selected_ability_with_name(abilName:String)
+
+signal ability_targeting_started(ability:Ability)
+signal ability_targeting_ended(ability:Ability)
+
+
+
+signal ability_queued(ability:Ability)
+
+signal targeted_units(units:Array[Unit], ability:Ability)
+signal targeted_cells(cells:Array[Vector3i], ability:Ability)
+
+
 
 enum States {
 	INACTIVE, ## Non-functional
@@ -15,12 +25,14 @@ enum States {
 	}
 enum MarkerTypes {
 	TARGETABLE,
-	AOE
+	AOE,
+	CHOSEN_TARGET
 }
 
 @export var targetableMarker:PackedScene
 #@export var targetingMarker:PackedScene
 @export var AOEMarker:PackedScene
+@export var chosenTargetMarker:PackedScene
 
 @export_category("References")
 @export var abilityButtonList:Control
@@ -31,19 +43,26 @@ var currentState:States = States.INACTIVE
 
 var selectedAbility:Ability
 
-var chosenTargets:Array[Vector3i]
+var chosenTargets:Array[Vector3i]:
+	set(val):
+		chosenTargets = val
+		if not chosenTargets.is_empty():
+			update_chosen_targets()
+			
+
+var callQueue = CallQueue.new()
 
 func _ready() -> void:
-	Events.CANCEL_UNIVERSAL
-	Ability.new().callQueue = Ref.board.callQueue
-	
-
+	Events.CANCEL_UNIVERSAL.connect(on_cancel)
+	Events.CONFIRM_UNIVERSAL.connect(on_confirm)
+	Ability.new().abilityHandler = self
 
 
 func start_ability_targeting(ability:Ability):
 	selectedAbility = ability
 	currentState = States.TARGETING
-	ability_started.emit(ability)
+	
+	ability_targeting_started.emit(ability)
 	
 func end_ability_targeting():
 	#Update the list of abilities from the user.
@@ -51,21 +70,75 @@ func end_ability_targeting():
 	
 	#Unset related variables
 	selectedAbility = null
-	chosenTargets.clear()
+	chosenTargets = []
+	
+	for marker in MarkerTypes:
+		update_markers([], marker)
+	
 
 	#Change to inactive state
 	currentState = States.INACTIVE
-	ability_finished.emit(selectedAbility)	
+	ability_targeting_ended.emit(selectedAbility)	
 	
 	
 	##Marks the cells that the user can target
 func select_ability(ability:Ability):
 	selectedAbility = ability
-	ability_selected.emit(ability)
+	selected_ability.emit(ability)
+	selected_ability_with_name.emit(ability.displayedName)
 	
+	#Start targeting
 	start_ability_targeting(ability)
 	
+	#Update the targetable cells
 	update_targeting_visuals(ability.user.get_current_cell(), MarkerTypes.TARGETABLE)
+	
+func preview_ability_effects(ability:Ability=selectedAbility, targets:Array[Vector3i]=chosenTargets):
+	print("{0} ability will do something!".format([ability.displayedName]))
+	pass
+	
+func queue_ability_call(ability:Ability, targets:Array[Vector3i], preClear:bool=true):
+	if preClear: callQueue.clear_queue()
+	callQueue.add_queued(ability.use)
+	callQueue.set_queued_arguments([targets])
+	callQueue.set_queued_post_wait(ability.animationDuration)
+	
+	var userCell:Vector3i = ability.user.get_current_cell()
+	
+	#Signal what will be targeted.
+	signal_about_targets(ability, targets)
+	
+	#Warn every unit
+	for unit in gridMap.multi_search_in_cells(targets, gridMap.Searches.UNIT):
+		ability.warn_unit(unit)
+		#Check all of their abilities
+#		for unitAbility in unit.attributes.abilities:
+#
+#			if unitAbility is Ability: 
+#				#If it can react, queue it before
+#				if unitAbility.reacts_to_ability(ability):
+#					callQueue.add_queued(unitAbility,0)
+#					callQueue.set_queued_arguments([userCell],0)
+#					callQueue.set_queued_post_wait(unitAbility.animationDuration)
+#
+#			else: push_error("NON ability detected in this array!")
+			
+	
+	ability_queued.emit(ability)
+	pass
+
+func signal_about_targets(abilityUsed:Ability, targets:Array[Vector3i]):
+	var cellsTargeted:Array[Vector3i]
+	var unitsTargeted:Array[Unit]
+	
+	for cellTargeted in targets:
+		cellsTargeted.append(cellTargeted)
+		
+		unitsTargeted.append_array( gridMap.search_in_cell(cellTargeted, MovementGrid.Searches.UNIT, true) )
+	
+	targeted_units.emit(unitsTargeted, abilityUsed)
+	targeted_cells.emit(cellsTargeted, abilityUsed)
+	
 	
 func select_cell(cell:Vector3i):
 	if currentState == States.TARGETING:
@@ -116,6 +189,8 @@ func get_targeted_cells(targetedCell:Vector3i, ability:Ability)->Array[Vector3i]
 	filteredCells.filter(ability._custom_filter)
 	return filteredCells
 	
+func update_chosen_targets():
+	update_markers(chosenTargets, MarkerTypes.CHOSEN_TARGET)
 
 func update_targeting_visuals(newOrigin:Vector3i, AOEMode:bool)->Array[Vector3i]:
 	if currentState == States.TARGETING:
@@ -146,6 +221,7 @@ func update_markers(cells:Array[Vector3i], type:MarkerTypes):
 	match type:
 		MarkerTypes.TARGETABLE: cellMarkerUsed = targetableMarker
 		MarkerTypes.AOE: cellMarkerUsed = AOEMarker
+		MarkerTypes.CHOSEN_TARGET: cellMarkerUsed = chosenTargetMarker
 			
 	#Place it down in the cells
 	var newRefs:Array[Node3D]
@@ -193,7 +269,6 @@ func on_new_cell_hovered(cellPos:Vector3i):
 func on_cancel():
 	match currentState:
 		States.TARGETING: 
-			currentState = States.INACTIVE
 			end_ability_targeting()
 	
 func on_confirm():
@@ -211,4 +286,8 @@ func on_confirm():
 class AbilityButton extends Button:
 	
 	var ability:Ability
+	
+class AbilityQueue extends CallQueue:
+	
+	pass
 	
