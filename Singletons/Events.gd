@@ -34,7 +34,7 @@ func _ready() -> void:
 #	slowTimer.start(0.2)
 	slowTimer.timeout.connect(emit_signal.bind("UPDATE_UNIT_INFO"))
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("apply"):
 		CONFIRM_UNIVERSAL.emit()
 	elif event.is_action_pressed("cancel"):
