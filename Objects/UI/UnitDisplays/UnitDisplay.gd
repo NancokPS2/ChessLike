@@ -2,6 +2,7 @@ extends Panel
 class_name UnitDisplay
 
 signal clicked_unit(unit:Unit)
+signal refreshed
 
 const NORMAL_COLOR:=Color(1,1,1,1)
 const NEGATIVE_COLOR:=Color(1,0.5,0.5,1)
@@ -9,13 +10,8 @@ const POSITIVE_COLOR:=Color(0.5,1,0.5,1)
 
 var unitRef:Unit:
 	set(val):
-		if unitRef is Unit: push_error("This display already had a unitRef, swapping them is not supported yet.")
+		if unitRef is Unit: push_error("This display already had a unitRef, swapping them is not supported yet???")
 		unitRef = val
-		if unitRef is Unit:
-#			stats = unitRef.attributes.stats
-#			info = unitRef.attributes.info
-#			refresh_ui()
-			pass
 
 @onready var tween = get_tree().create_tween().set_loops()
 
@@ -76,43 +72,60 @@ func refresh_ui(useBaseStats:bool=false):
 	if unitRef is Unit:
 		stats = unitRef.get("attributes").baseStats.duplicate()
 		info = unitRef.get("attributes").info.duplicate()
-		var keyUsed:String = "baseStats" if useBaseStats else "stats"
 		
-		if nameLabel: nameLabel.text = unitRef.attributes.info["nickName"]
+		if nameLabel: 
+			nameLabel.text = unitRef.attributes.info["nickName"]
 		
-		if classLabel: classLabel.text = unitRef.attributes.info["className"]
+		if classLabel: 
+			classLabel.text = unitRef.attributes.info["className"]
 		
-		if healthLabel: healthLabel.text = str(unitRef.attributes[keyUsed]["health"]) + " / " + str(unitRef.attributes[keyUsed]["healthMax"])
-		if healthMeter: healthMeter.value = unitRef.attributes[keyUsed]["health"]; healthMeter.max_value = unitRef.attributes[keyUsed]["healthMax"]
+		if healthLabel: 
+			healthLabel.text = str(unitRef.attributes.get_stat(AttributesBase.StatNames.HEALTH, useBaseStats)) + " / " + str(unitRef.attributes.get_stat(AttributesBase.StatNames.HEALTH_MAX, useBaseStats))
+			
+		if healthMeter: 
+			healthMeter.value = unitRef.attributes.get_stat(AttributesBase.StatNames.HEALTH, useBaseStats) 
+			healthMeter.max_value = unitRef.attributes.get_stat(AttributesBase.StatNames.HEALTH_MAX, useBaseStats)
 		
-		if energyLabel: energyLabel.text = str(unitRef.attributes[keyUsed]["energy"]) + " / " + str(unitRef.attributes[keyUsed]["energyMax"])
-		if energyMeter: energyMeter.value = unitRef.attributes[keyUsed]["energy"]; energyMeter.max_value = unitRef.attributes[keyUsed]["energyMax"]
+		if energyLabel: 
+			energyLabel.text = str(unitRef.attributes.get_stat(AttributesBase.StatNames.ENERGY, useBaseStats)) + " / " + str(unitRef.attributes.get_stat(AttributesBase.StatNames.ENERGY_MAX, useBaseStats))
+		if energyMeter: 
+			energyMeter.value = unitRef.attributes.get_stat(AttributesBase.StatNames.ENERGY, useBaseStats)
+			energyMeter.max_value = unitRef.attributes.get_stat(AttributesBase.StatNames.ENERGY_MAX, useBaseStats)
 		
-		if delayLabel: delayLabel.text = "Delay: " + str(unitRef.attributes[keyUsed]["turnDelay"])
+		if delayLabel: 
+			delayLabel.text = "Delay: " + str(unitRef.attributes.get_stat(AttributesBase.StatNames.TURN_DELAY, useBaseStats))
 		
 		if strengthLabel: 
-			strengthLabel.text = unitRef.attributes.stats["strength"]
-			var color:Color
-			if unitRef.attributes.stats.strength < unitRef.attributes[keyUsed].strength: color = NEGATIVE_COLOR
-			elif unitRef.attributes.stats.strength > unitRef.attributes[keyUsed].strength: color = POSITIVE_COLOR
-			else: color = NORMAL_COLOR
-			strengthLabel.add_theme_color_override("font_color", color)
+			set_colored_value_on_label(strengthLabel, 
+			unitRef.attributes.get_stat(AttributesBase.StatNames.STRENGTH, useBaseStats),
+			unitRef.attributes.get_stat(AttributesBase.StatNames.STRENGTH, true)
+			)
 			
 		if agilityLabel: 
-			agilityLabel.text = unitRef.attributes.stats["agility"]
-			var color:Color
-			if unitRef.attributes.stats.agility < unitRef.attributes[keyUsed].agility: color = NEGATIVE_COLOR
-			elif unitRef.attributes.stats.agility > unitRef.attributes[keyUsed].agility: color = POSITIVE_COLOR
-			else: color = NORMAL_COLOR
-			agilityLabel.add_theme_color_override("font_color", color)
+			set_colored_value_on_label(agilityLabel, 
+			unitRef.attributes.get_stat(AttributesBase.StatNames.AGILITY, useBaseStats),
+			unitRef.attributes.get_stat(AttributesBase.StatNames.AGILITY, true)
+			)
+			
 			
 		if mindLabel: 
-			mindLabel.text = unitRef.attributes.stats["mind"]
-			var color:Color
-			if unitRef.attributes.stats.mind < unitRef.attributes[keyUsed].mind: color = NEGATIVE_COLOR
-			elif unitRef.attributes.stats.mind > unitRef.attributes[keyUsed].mind: color = POSITIVE_COLOR
-			else: color = NORMAL_COLOR
-			mindLabel.add_theme_color_override("font_color", color)
+			set_colored_value_on_label(mindLabel, 
+			unitRef.attributes.get_stat(AttributesBase.StatNames.MIND, useBaseStats),
+			unitRef.attributes.get_stat(AttributesBase.StatNames.MIND, true)
+			)
+			
+		refreshed.emit()
+
+func set_colored_value_on_label(label:Label, value:float, normalValue:float):
+	var color:Color
+	if value < normalValue: 
+		color = NEGATIVE_COLOR
+	elif value > normalValue: 
+		color = POSITIVE_COLOR
+	else: 
+		color = NORMAL_COLOR
+	label.text = str(value)
+	label.add_theme_color_override("font_color", color)
 
 func animated_glow(enabled:bool):
 	if enabled:
@@ -121,4 +134,4 @@ func animated_glow(enabled:bool):
 		tween.stop()
 		
 func emit_unit():
-	emit_signal("clicked_unit", unitRef)
+	clicked_unit.emit(unitRef)
