@@ -1,20 +1,23 @@
 extends Resource
 class_name Ability
+##Types of use:
+##	Passive: 
+##Use _passive_proc to define an effect, usually should target the user. 
+##It triggers periodically when the passiveTickSignal in the user is emitted
 
-signal ability_finalized
-#const AbilityFlags = {
-#	"PASSIVE":1<<16,#Ability should not be selectable during combat
-#	"HOSTILE":1<<1,#Attacks and other ill intended abilities
-#	"FRIENDLY":1<<2,#Healing and buffs or otherwise helpful abilities
-#	"INDIRECT":1<<3,#Indirect abilities should not trigger reactions that target the user
-#	"HEALING":1<<4,#Recovers health
-#	"NO_HIT_OBSTACLE":1<<5,#Does not affect objects
-#	"NO_HIT_FRIENDLY":1<<6,#Does not affect allies
-#	"NO_HIT_ENEMY":1<<7,#Does not affect enemies
-#	"NO_HIT_UNIT":1<<6 + 1<<7,#No friendlies nor allies
-#	"ONLY_HIT_TILES":1<<5 + 1<<6 + 1<<7,#Combine all other NO_HIT flags
-#
-#}
+##	Reaction: 
+##Use _reaction_proc to define an effect, triggers when was_targeted is emitted from the user. 
+##The incoming ability that targets the user of this ability must have the tags defined in
+
+
+signal usability_status(code:int)
+enum UsabilityStatuses {
+	OK,
+	INSUFFICIENT_ACTIONS,
+	INSUFFICIENT_MOVES,
+	INSUFFICIENT_ENERGY,
+	CUSTOM_FAILED
+}
 
 enum AbilityFlags {
 	PASSIVE,#Ability should not be selectable during combat
@@ -23,6 +26,9 @@ enum AbilityFlags {
 	FRIENDLY,#Healing and buffs or otherwise helpful abilities
 	INDIRECT,#Indirect abilities should not trigger reactions that target the user
 	HEALING,#Recovers health
+	IS_REACTION,#To avoid infinite loops, reactions should not trigger reactions.
+	AFFECT_UNITS,
+	AFFECT_TILES,
 #	NO_HIT_OBSTACLE,#Does not affect objects
 #	NO_HIT_FRIENDLY,#Does not affect allies
 #	NO_HIT_ENEMY,#Does not affect enemies
@@ -43,7 +49,9 @@ const TARGETING_SHAPE_CONE_ONE:Array[Vector3i]=[Vector3i.FORWARD, Vector3i.FORWA
 const TARGETING_SHAPE_BARRIER:Array[Vector3i]=[Vector3i.FORWARD, Vector3i.FORWARD+Vector3i.LEFT, Vector3i.FORWARD+Vector3i.RIGHT]
 
 
-static var callQueue:CallQueue
+const INFINITE_DURATION:int = -1
+
+static var abilityHandler:AbilityHandler
 
 var user:Unit:
 	set(val):
@@ -51,7 +59,13 @@ var user:Unit:
 			Utility.SignalFuncs.disconnect_signals_from(self, user)
 			board = user.board
 			user = val
-			connect_triggers()
+			
+			#Reaction connection
+			user.was_targeted.connect(reaction_on_was_targeted)
+			
+			#Passive connection
+			Signal(user,passiveTickSignal).connect(_passive_proc)
+			user.board.time_advanced.connect(passive_delay_progress)
 		else: user = val
 
 ## Set alongside it's unit
@@ -74,18 +88,28 @@ var board:GameBoard:
 
 var miscOptions:Dictionary#Used to get extra parameters from the player
 #Example: {"Head":Const.bodyParts.HEAD}
+@export_group("Effects")
+@export var abilityFlags:Array[AbilityFlags]
+@export var statChanges:Dictionary #statName:change as float
 
-#@export (Array,String) var classRestrictions #If not empty, only characters with the given class can use it
+
+@export_group("Passive Triggering")#Passives trigger at scheduled intervals
+@export var passiveDurationTick:int
+@export var passiveDurationDelay:float
+@export var passiveTickSignal:StringName = "turn_started" ##passiveDurationTick will advance whenever this is triggered and the passive will take effect
+
+@export_group("Reaction Triggering")#Reactions trigger when targeted by specific types of abilities
+@export var reactionTriggeringFlags:Array[AbilityFlags]#Which must be present to work
+@export var reactionExcludingFlags:Array[AbilityFlags] = [AbilityFlags.IS_REACTION]#Which will prevent the proccing of this reaction
+@export var procPriority:int
+@export var reactionOptionalTriggerSignals:Array[StringName]
+
 @export_group("Restrictions")
 @export var classRestrictions:Array[String]
 
-@export_group("Main values")
-@export var customVals:Dictionary = {"power":1.0, "duration":1 as int}
+@export_group("Costs")
 @export var energyCost:int
 @export var turnDelayCost:int
-@export var triggerSignals:Dictionary #user.signal:self.method()
-#Example: {"acted":"use"}
-@export var abilityFlags:Array[AbilityFlags]
 @export var actionCost:int = 1
 @export var moveCost:int = 0
 
@@ -111,18 +135,28 @@ var filters:Array[Callable]:
 			filters.append(Callable(Filters,filter))
 		return filters
 
-
-#func equip(newUser:Node):
 func get_description():
 	return description
 
+
+
 func is_usable()->bool:
-	var stats = user.attributes.stats
+	var stats:CharAttributes = user.attributes
 	
-	if stats.actions < actionCost: return false
-	elif stats.moves < moveCost: return false
-	elif not _custom_can_use():  return false
+	if stats.get_stat(stats.StatNames.ACTIONS) < actionCost:
+		usability_status.emit(UsabilityStatuses.INSUFFICIENT_ACTIONS)
+		return false
+	elif stats.get_stat(stats.StatNames.MOVES) < moveCost: 
+		usability_status.emit(UsabilityStatuses.INSUFFICIENT_MOVES)
+		return false
+	elif stats.get_stat(stats.StatNames.ENERGY) < energyCost:
+		usability_status.emit(UsabilityStatuses.INSUFFICIENT_ENERGY)
+		return false
+	elif not _custom_can_use():  
+		usability_status.emit(UsabilityStatuses.CUSTOM_FAILED)
+		return false
 	
+	usability_status.emit(UsabilityStatuses.OK)
 	return true
 	pass
 
@@ -178,16 +212,38 @@ func targeting_get_rotated_to_cell(shape:Array[Vector3i], targetCell:Vector3i)->
 	
 	return targetShapeHolder
 	
+	
+#REACTIONS
+func reaction_to_ability(ability:Ability):
+	for flag in reactionTriggeringFlags:
+		if flag in ability.abilityFlags: return true
+	return false
 
-func connect_triggers():
-	if not user is Unit:#Ensure someone has equipped it
-		push_error("Tried to perform this ability's setup, but no one has equipped it yet."); return
+func reaction_on_was_targeted(ability:Ability):
+	if reaction_to_ability(ability):
+		_reaction_proc(ability)
+	
 		
-	for signa in triggerSignals:
-		var methodName:String = triggerSignals[signa]
-		var errorCode = connect(signa, Callable(self, methodName))
-		assert(errorCode == OK)
+func _reaction_proc(ability:Ability):
+	print_debug("Dummy reaction proc triggered.")
 
+#PASSIVES
+
+func passive_delay_progress(time:float):
+	passiveDurationDelay -= time
+	pass
+
+func passive_proc():
+	if passiveDurationTick != INFINITE_DURATION: passiveDurationTick -= 1
+	_passive_proc()
+
+func _passive_proc():
+	print_debug("Dummy passive proc triggered.")
+	pass
+	
+func passive_expire():
+	assert(passiveDurationDelay <= 0 or passiveDurationTick <= 0, "This expired without any duration running out!")
+	pass
 
 #func filter_targetable_cells(cells:Array[Vector3i], shape:TargetingShapes=targetingShape)->Array[Vector3i]:
 #	var userCell:Vector3i = user.get_current_cell()
@@ -230,28 +286,24 @@ func connect_triggers():
 #	tween.tween_callback(use.bind(targets)).set_delay(0.2)
 #	tween.pause()
 #	return tween
-func queue_call(targets:Array[Vector3i]):
-	#Filter any unwanted targets.
-	warn_units(targets)
-
-	#Create call
-	callQueue.add_queued(use)
-	callQueue.set_queued_arguments([targets])
-	callQueue.set_queued_post_wait(animationDuration)
 	
 ## Checks for units in the cells and warns them of an upcoming attack.
-func warn_units(targets:Array[Vector3i]):
-	var units:Array[Unit]
-	
-	for target in targets:
-		units.assign(board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT, true))
+func warn_unit(unit:Unit):
+#	var units:Array[Unit]
+#
+#	for target in targets:
+#		units.assign(board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT, true))
 		
-	for unit in units: unit.was_targeted.emit(self)
+	unit.was_targeted.emit(self)
+	
+func proc_costs():
+	user.attributes.change_stat(AttributesBase.StatNames.MOVES, -moveCost)
+	user.attributes.change_stat(AttributesBase.StatNames.ACTIONS, -actionCost)
+	user.attributes.change_stat(AttributesBase.StatNames.ENERGY, -energyCost)
+	user.attributes.change_stat(AttributesBase.StatNames.TURN_DELAY, -turnDelayCost)
 	
 func use( targets:Array[Vector3i] ):
-	user.attributes.stats.moves -= moveCost
-	user.attributes.stats.actions -= actionCost
-	user.attributes.stats.turnDelay += turnDelayCost
+	proc_costs()
 	
 #	targets = filter_targets(targets)
 	#The warning happens in get_tween(), no need for this.
@@ -263,8 +315,6 @@ func use( targets:Array[Vector3i] ):
 	
 	
 	_use(targets)
-	Events.UPDATE_UNIT_INFO.emit()
-	Events.ABILITY_USED.emit(self)
 	
 func _use(target:Array[Vector3i]):
 	print( user.info.nickName + " cannot punch. Because testing.")
@@ -301,7 +351,16 @@ class Filters extends RefCounted:
 	
 	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else true
 
-class Effects extends RefCounted:
+class PassiveEffects extends RefCounted:
+	@export var triggeringSignals:Array[StringName]:
+		set(val):
+			triggeringSignals = val
+			
+	@export var durationTick:int
+	@export var durationDelay:float
+	@export var tickSignal:StringName ##durationTick will advance whenever this is triggered
+	
+	
 	
 	func deal_damage(targets:Array[Unit]):
 		
