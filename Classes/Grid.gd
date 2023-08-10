@@ -189,6 +189,15 @@ func search_in_cell(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 		
 	return null
 
+func multi_search_in_cell(where:Array[Vector3i], what:Searches):
+	var results = null
+	for cell in where:
+		if results == null:
+			results = search_in_cell(cell, what, true)
+		else:
+			results.append( search_in_cell(cell, what, true) )
+	return results
+
 func get_cell_debug_text(cell:Vector3i)->String:
 	var text:String
 	
