@@ -3,7 +3,7 @@ class_name AttributesBase
 
 signal attributes_updated
 
-signal stat_changed(stat:String)
+signal stat_changed(stat:String, oldValue:float, newValue:float)
 
 enum MovementTypes {
 	WALK, #Simple ground movement
@@ -76,7 +76,7 @@ const StatNames:Dictionary = {
 	"movementType":0
 }
 
-var stats:Dictionary = baseStats
+var stats:Dictionary = baseStats.duplicate()
 
 @export var statModifiers:Dictionary ={
 	"maxHealth":1.0,
@@ -117,8 +117,8 @@ func set_stat(stat:String, newValue:int, base:bool = false):
 		_:
 			push_error("Cannot handle this stat from this method!")
 			
+	stat_changed.emit(stat, get(statVarName)[stat], newValue)
 	get(statVarName)[stat] = newValue
-	stat_changed.emit(stat)
 
 func change_stat(stat:String, amount:int, base:bool = false):
 #	if not (changeAmount is int or changeAmount is float): push_error("Invalid value type."); return
