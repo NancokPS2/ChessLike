@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://xeum2r6b38cn"]
+[gd_scene load_steps=19 format=3 uid="uid://xeum2r6b38cn"]
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
 [ext_resource type="Script" path="res://Classes/SelfContained/CallQueue.gd" id="2_72vpm"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
 [ext_resource type="PackedScene" uid="uid://v4tex8ioydyg" path="res://Objects/CombatGrid/AbilityHandler/AOEMarker.tscn" id="7_ijnn5"]
 [ext_resource type="Script" path="res://Classes/SelfContained/Interface/ConfirmationPopup.gd" id="7_j8kol"]
+[ext_resource type="PackedScene" uid="uid://b87fywkitlex8" path="res://Objects/CombatGrid/AbilityHandler/ChosenTargetMarker.tscn" id="7_jw7vw"]
 [ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
 [ext_resource type="Script" path="res://Classes/SelfContained/PivotCamera3D.gd" id="7_tkxj7"]
 [ext_resource type="Material" uid="uid://cod0ku6487d5t" path="res://Assets/Meshes/Map/YellowCellMaterial.tres" id="7_tta73"]
@@ -58,6 +59,7 @@ script = ExtResource("2_72vpm")
 script = ExtResource("4_1l28h")
 targetableMarker = ExtResource("5_k8bha")
 AOEMarker = ExtResource("7_ijnn5")
+chosenTargetMarker = ExtResource("7_jw7vw")
 abilityButtonList = NodePath("../UI/VBoxContainer/Abilities")
 gridMap = NodePath("../MovementGrid")
 
@@ -144,6 +146,12 @@ anchor_bottom = 0.75
 text = "START_COMBAT"
 metadata/_edit_use_anchors_ = true
 
+[node name="Ability in use" type="Label" parent="UI"]
+anchors_preset = -1
+anchor_left = 0.2
+anchor_right = 0.5
+anchor_bottom = 0.035
+
 [node name="Misc" type="Node" parent="."]
 
 [node name="PivotCamera3D" type="Node3D" parent="Misc"]
@@ -169,6 +177,7 @@ environment = SubResource("Environment_vl025")
 
 [connection signal="selected_unit" from="UnitHandler" to="UI/UnitList/UpperList" method="set_unit_selected"]
 [connection signal="unit_acting" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
+[connection signal="selected_ability_with_name" from="AbilityHandler" to="UI/Ability in use" method="set_text"]
 [connection signal="cell_clicked" from="MovementGrid" to="." method="on_cell_clicked"]
 [connection signal="cell_clicked" from="MovementGrid" to="AbilityHandler" method="select_cell"]
 [connection signal="cell_hovered" from="MovementGrid" to="MovementGrid/CellHovered" method="move_to_cell"]

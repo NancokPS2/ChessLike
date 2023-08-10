@@ -15,7 +15,6 @@ signal turn_ended
 
 const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 
-
 @export var saveName:String
 @export var attributes:CharAttributes = CharAttributes.new(): #UnitAttributes (stats)
 	set(val):
@@ -52,7 +51,6 @@ func _ready() -> void:
 	abil.user = self
 	print(attributes.abilities)
 #	position = board.gridMap.get_top_of_cell(get_current_cell())
-
 
 func get_current_cell()->Vector3i:
 	var cell:Vector3i = board.gridMap.local_to_map(position)
@@ -159,6 +157,7 @@ class Body extends Node3D:
 
 	func free_limb_attachments(limbToFree:String):
 		for child in limbRefs[limbToFree].get_children():
+			if limbRefs.values().has(child): push_warning("Another valid limbRef is a child of  this limb.")
 			remove_child(child)#Remove it's children
 			#child.queue_free()#And delete them
 
