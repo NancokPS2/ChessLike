@@ -1,8 +1,9 @@
+Label
+Node
 VBoxContainer
 Button
 SubViewport
 SubViewportContainer
-Label
 TextureRect
 HBoxContainer
 TextEdit
@@ -24,7 +25,6 @@ Node3D
 GridMap
 Timer
 Sprite3D
-Node
 CallQueue
 ConfirmationPopup
 PropertyRegistry
