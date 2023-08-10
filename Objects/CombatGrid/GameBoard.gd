@@ -3,6 +3,8 @@ class_name GameBoard
 
 ## Started from Ref.start_combat(map)
 
+signal time_advanced(amount:float)
+
 const SPAWN_TAG:StringName = "FACTION_SPAWN_"
 
 enum States {SETUP,COMBAT,PAUSE,END}
@@ -68,15 +70,6 @@ func _init() -> void:
 	
 	
 func _enter_tree() -> void:
-	#Add unit when it enters the tree
-#	var registerUnit:Callable = func(node): 
-#		if node is Unit and node.get_parent() == self: 
-#			unitsInCombat.append(node)
-#			if not allUnits.has(node): allUnits.append(node)
-#			units_changed.emit(unitsInCombat)
-#
-#	get_tree().node_added.connect(registerUnit)
-#	Events.UPDATE_UNIT_INFO.connect(update_menus_to_unit)
 	pass
 	
 	
@@ -84,16 +77,6 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	#Setup
 	gridMap = Ref.grid
-	
-#	units_changed.connect(Callable(unitList,"refresh_units"))
-#	gridMap.cell_clicked.connect(on_cell_clicked)
-	
-#	endTurnButton.pressed.connect(turn_cycle)
-	
-	
-#	Signal(Events,"C_ABILITY_TARGETING_exit").connect(set.bind("abilityInUse", null))
-	
-#	Ref.mainNode = self
 	change_state(States.SETUP)
 	
 	
@@ -114,16 +97,6 @@ func testing():
 #	unitHandler.actingUnit = get_tree().get_nodes_in_group(Const.ObjectGroups.UNIT)[0]
 	unitHandler.actingUnit.position = gridMap.map_to_local(Vector3i.ZERO)
 	
-#	unitList.refresh_units([unitHandler.actingUnit])
-#	abilityInUse = $Unit.attributes.abilities[0]
-#	change_combat_state(CombatStates.C_ABILITY_TARGETING)
-#	gridMap.mark_cells([Vector3.ZERO])
-#	menuCombat = $UI/CombatMenu
-#	update_menus_to_unit($Unit)
-	#State change buttons
-#	$UI/ActingMenu/Move.button_up.connect( change_combat_state.bind(CombatStates.MOVING) )
-#	$UI/ActingMenu/Act.button_up.connect( change_combat_state.bind(CombatStates.ACTING) )
-#	$UI/ActingMenu/EndTurn.button_up.connect( change_combat_state.bind(CombatStates.FACING) )
 
 
 func change_state(newState:States):
