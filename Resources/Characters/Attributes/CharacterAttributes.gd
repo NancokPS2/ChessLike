@@ -93,7 +93,6 @@ var user:Unit:
 		if user is Unit:
 			user.ready.connect(combine_attributes_base_stats,CONNECT_ONE_SHOT)
 		
-var passiveEffects:Array[PassiveEffect]
 
 func _init() -> void:
 #	assert(not attributeResources.is_empty())
@@ -111,16 +110,13 @@ func randomize_personality(energyMin:int=0, energyMax:int=255, goodMin:int=0, go
 	personalityNumber[2] = randi_range(lawMin,clamp(lawMax,1,255))
 	
 func apply_turn_delay(delay:int):
+	
 	#Reduce delay
-	stats.turnDelay -= delay
+	change_stat("turnDelay",-delay)
 	
 	#If it ended up below 0, apply the remaining amount to the max.
 	if stats.turnDelay <= 0:
 		stats.turnDelay = stats.turnDelayMax - abs(stats.turnDelay)
-		
-func add_passive_effect(passive:PassiveEffect):
-	passiveEffects.append(passive)
-	passive.setup(user)
 
 func get_faction()->Faction:
 	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
@@ -180,7 +176,6 @@ class Generator extends RefCounted:
 #		inventory = _inventory
 #		attributes = _attributes
 #
-
 	
 	
 	
