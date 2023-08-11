@@ -43,7 +43,7 @@ func _ready() -> void:
 	assert(board is GameBoard)
 	add_child(bodyNode)
 	
-	#TESTING
+	#TEMP
 	await get_tree().process_frame 
 	var abil:Ability = load("res://Resources/Abilities/AllAbilities/Heal.tres")
 	assert(abil is Ability)
