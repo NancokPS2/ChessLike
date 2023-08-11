@@ -99,8 +99,8 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 @export var passiveTickSignal:StringName = "turn_started" ##passiveDurationTick will advance whenever this is triggered and the passive will take effect
 
 @export_group("Reaction Triggering")#Reactions trigger when targeted by specific types of abilities
-@export var reactionTriggeringFlags:Array[AbilityFlags]#Which must be present to work
-@export var reactionExcludingFlags:Array[AbilityFlags] = [AbilityFlags.IS_REACTION]#Which will prevent the proccing of this reaction
+@export var reactionTriggeringFlags:Array[AbilityFlags]#Flags which must be present to work
+@export var reactionExcludingFlags:Array[AbilityFlags] = [AbilityFlags.IS_REACTION]#Flags which will prevent the proccing of this reaction
 @export var procPriority:int
 @export var reactionOptionalTriggerSignals:Array[StringName]
 
@@ -214,14 +214,16 @@ func targeting_get_rotated_to_cell(shape:Array[Vector3i], targetCell:Vector3i)->
 	
 	
 #REACTIONS
-func reaction_to_ability(ability:Ability):
-	for flag in reactionTriggeringFlags:
-		if flag in ability.abilityFlags: return true
-	return false
+func reaction_reacts_to_ability(ability:Ability)->bool:
+	var status:bool = false
+	if reactionTriggeringFlags.any(func(flag): return flag in ability.abilityFlags): status = true
+	if reactionExcludingFlags.any(func(flag): return flag in ability.abilityFlags): status = false		
+	return status
 
 func reaction_on_was_targeted(ability:Ability):
-	if reaction_to_ability(ability):
-		_reaction_proc(ability)
+	if reaction_reacts_to_ability(ability):
+		var targets:Array[Vector3i] = [ability.user.get_current_cell()]
+		abilityHandler.queue_ability_call(self, targets, ability, false)
 	
 		
 func _reaction_proc(ability:Ability):
@@ -235,7 +237,8 @@ func passive_delay_progress(time:float):
 
 func passive_proc():
 	if passiveDurationTick != INFINITE_DURATION: passiveDurationTick -= 1
-	_passive_proc()
+	use([])
+	
 
 func _passive_proc():
 	print_debug("Dummy passive proc triggered.")
@@ -304,7 +307,7 @@ func proc_costs():
 	
 func use( targets:Array[Vector3i] ):
 	proc_costs()
-	
+	print_debug(user.attributes.info.nickName + " used " + displayedName + " on cells " + str(targets))
 #	targets = filter_targets(targets)
 	#The warning happens in get_tween(), no need for this.
 #	for target in targets:
@@ -315,11 +318,18 @@ func use( targets:Array[Vector3i] ):
 	
 	
 	_use(targets)
+	for target in targets:
+		_per_cell_effect(target)
 	
 func _use(target:Array[Vector3i]):
-	print( user.info.nickName + " cannot punch. Because testing.")
+	print( user.info.nickName + " tried something. But it didn't do anything.")
 	pass
 
+func _per_cell_effect(cell:Vector3i):
+	pass
+
+func get_unit_in_cell(cell:Vector3i)->Unit:
+	return board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT)
 
 func _custom_can_use() -> bool:#Virtual function, prevents usage if false
 	return true

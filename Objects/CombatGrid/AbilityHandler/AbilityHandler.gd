@@ -39,7 +39,10 @@ enum MarkerTypes {
 @export var gridMap:MovementGrid
 var abilityConfirmButton:Button
 
-var currentState:States = States.INACTIVE
+var currentState:States = States.INACTIVE:
+	set(val):
+		currentState = val
+		print_debug("Changed to state: " + States.find_key(currentState))
 
 var selectedAbility:Ability
 
@@ -72,12 +75,8 @@ func end_ability_targeting():
 	selectedAbility = null
 	chosenTargets = []
 	
-	for marker in MarkerTypes:
+	for marker in MarkerTypes.values():
 		update_markers([], marker)
-	
-
-	#Change to inactive state
-	currentState = States.INACTIVE
 	ability_targeting_ended.emit(selectedAbility)	
 	
 	
@@ -97,20 +96,27 @@ func preview_ability_effects(ability:Ability=selectedAbility, targets:Array[Vect
 	print("{0} ability will do something!".format([ability.displayedName]))
 	pass
 	
-func queue_ability_call(ability:Ability, targets:Array[Vector3i], preClear:bool=true):
+func queue_ability_call(ability:Ability, targets:Array[Vector3i], reactionTo:Ability = null, preClear:bool = true):
 	if preClear: callQueue.clear_queue()
-	callQueue.add_queued(ability.use)
-	callQueue.set_queued_arguments([targets])
+	
+	#Depending if it is a reaction or not
+	if reactionTo is Ability:
+		callQueue.add_queued(ability.use, callQueue.queue.find(reactionTo))
+	else:
+		callQueue.add_queued(ability.use)
+		
+	callQueue.set_queued_arguments([targets])#Keep it an Array with an Array[Vector3i] inside
 	callQueue.set_queued_post_wait(ability.animationDuration)
 	
 	var userCell:Vector3i = ability.user.get_current_cell()
 	
 	#Signal what will be targeted.
-	signal_about_targets(ability, targets)
+#	signal_about_targets(ability, targets)
 	
 	#Warn every unit
-	for unit in gridMap.multi_search_in_cells(targets, gridMap.Searches.UNIT):
-		ability.warn_unit(unit)
+	for unit in gridMap.multi_search_in_cell(targets, gridMap.Searches.UNIT):
+#		ability.warn_unit(unit)
+		unit.was_targeted.emit(ability)
 		#Check all of their abilities
 #		for unitAbility in unit.attributes.abilities:
 #
@@ -142,7 +148,7 @@ func signal_about_targets(abilityUsed:Ability, targets:Array[Vector3i]):
 	
 func select_cell(cell:Vector3i):
 	if currentState == States.TARGETING:
-		currentState = States.CONFIRMING
+#		currentState = States.CONFIRMING
 		
 		#Set the valid targets and update visuals for a final time, this also returns the cells that where valid
 		chosenTargets = update_targeting_visuals(cell, true)
@@ -254,6 +260,7 @@ func update_ability_list(unit:Unit, list:Control=abilityButtonList):
 		button.pressed.connect(select_ability.bind(ability))
 		#Hovering
 		button.mouse_entered.connect(on_hover_ability_button.bind(button))
+		button.focus_mode = Control.FOCUS_NONE
 		
 		list.add_child(button)
 
@@ -270,17 +277,24 @@ func on_cancel():
 	match currentState:
 		States.TARGETING: 
 			end_ability_targeting()
+			
+		States.CONFIRMING:
+			chosenTargets = []
 	
 func on_confirm():
 	match currentState:
 		States.TARGETING:
 			if not chosenTargets.is_empty():
+				queue_ability_call(selectedAbility, chosenTargets)
 				currentState = States.CONFIRMING
-				selectedAbility.queue_call(chosenTargets)
-				
+
 			else:
 				push_warning("Cannot confirm targeting without targets.")
-				
+		
+		States.CONFIRMING:
+			callQueue.run_queue()
+			end_ability_targeting()
+			currentState = States.INACTIVE
 	pass
 
 class AbilityButton extends Button:
