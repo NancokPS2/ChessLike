@@ -23,6 +23,7 @@ func add_queued(call:Callable, atIndex:int=queue.size()):
 	newCall.callable = call
 	newCall.postWait = defaultInterval
 	queue.insert(atIndex, newCall)
+	assert(not queue.is_empty())
 	
 	##Sets arguments to a callable, targets the last one added by default
 func set_queued_arguments(arguments:Array, index:int = -1):
@@ -100,8 +101,12 @@ func _run_loop():
 		return
 	
 	#Perform the call
-	queuedCallRef.callable.callv(queuedCallRef.arguments)
+#	queuedCallRef.callable.callv(queuedCallRef.arguments) #callv NOT WORKING
+	queuedCallRef.callable = queuedCallRef.callable.bindv(queuedCallRef.arguments)
+	queuedCallRef.callable.call()
+
 	call_performed.emit()
+	print_debug("Performed call for method " +  queuedCallRef.callable.get_method() + " with arguments " + str(queuedCallRef.arguments))
 	_queueProgress+=1
 	
 	#Abort if there's no more to call
