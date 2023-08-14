@@ -13,16 +13,19 @@ signal targeting(what:Vector3i, withWhat:Ability)
 signal turn_started
 signal turn_ended
 
+
 const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 
 @export var saveName:String
 @export var attributes:CharAttributes = CharAttributes.new(): #UnitAttributes (stats)
 	set(val):
+		if attributes is CharAttributes: push_warning("This unit already has attributes set. It is not recommended to swap them like this.")
 		attributes = val
 		if attributes is CharAttributes: 
 			attributes.user = self
 			assert(attributes.user == self)
 			bodyNode.modelNode = attributes.model.instantiate()
+			attributes.stat_changed.connect(on_stat_changed)
 
 @onready var board:GameBoard = Ref.board
 			
@@ -35,6 +38,8 @@ var requiredAnimationName:String = "STANDING":
 		if bodyNode is Body:
 			bodyNode.animationRef.play(requiredAnimationName)
 
+@export_category("References")
+@export var numbers:Label3D
 
 func _init() -> void:
 	add_to_group(Const.ObjectGroups.UNIT,true)
@@ -69,6 +74,12 @@ func end_turn():
 func get_passive_effects():
 	pass
 
+func on_stat_changed(statName:String, oldVal:float, newVal:float):
+	var floatingNumbers:=StatChangeNumbers.new(statName, oldVal-newVal)
+	add_child(floatingNumbers)
+		
+#	if statName == AttributesBase.StatNames.HEALTH or statName == AttributesBase.StatNames.HEALTH_MAX:
+		
 
 
 class Generator:
@@ -176,3 +187,55 @@ class Body extends Node3D:
 
 	static func is_limb_name_valid(limbName:String)->bool:
 		return limbName in Parts
+
+class StatChangeNumbers extends Label3D:
+	
+	var baseValue:float
+	var baseColor:=Color.WHITE
+	var positiveColor:=Color.GREEN
+	var negativeColor:=Color.RED
+	
+	var movementFinal:Vector3 = Vector3.UP * 2
+	var movementDuration:float = 1
+	var modulationFinal:=Color.WHITE
+	var modulationDuration:float = 1
+	
+	func _init(_text:String, _value:float) -> void:
+		modulate = Color.TRANSPARENT
+		billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		no_depth_test = true
+		
+		text = _text + " "
+#		if _value < 0: text += "-"
+		text += str(_value)
+	
+	func _ready() -> void:
+		update_color()
+		pop()
+	
+	func update_color():
+		var value:float = text.to_float()
+		
+		var offset:float = value / baseValue
+		
+		var color:Color
+		if offset > 1: 
+			color = positiveColor
+		elif offset < 1: 
+			color = negativeColor
+		else: 
+			color = baseColor
+			
+		modulate = color 
+		
+	func pop():
+#		var newLabel:Label = labelRef.duplicate(DUPLICATE_SCRIPTS + DUPLICATE_SIGNALS)
+		top_level = true
+		modulate = Color.TRANSPARENT
+		
+		var tween:Tween = create_tween().set_parallel(true)
+		tween.tween_property(self, "position", movementFinal, movementDuration)
+		tween.tween_property(self, "modulate", Color.WHITE, modulationDuration)
+		tween.tween_callback(queue_free)
+		
+		tween.play()
