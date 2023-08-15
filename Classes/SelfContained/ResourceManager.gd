@@ -35,6 +35,7 @@ func store_from_folder(folderPath:String,group:String, keepLoaded:bool=keepLoade
 	
 func store_single_resource(filePath:String,group:String, keepLoaded:bool=keepLoadedDefault):
 #	var fileName:String = filePath.get_file()
+	if not filePath.get_extension() == "tres": push_error("Extension must be tres but it is " + filePath.get_extension()); return
 	var resLoaded:Resource = load(filePath)
 	
 	var identifier:String = _get_identifier(resLoaded)
