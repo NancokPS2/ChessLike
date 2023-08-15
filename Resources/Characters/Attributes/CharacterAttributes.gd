@@ -5,6 +5,13 @@ signal equipment_changed(newItem:Item)
 
 enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3}
 
+const InfoNames:Dictionary = {
+	FIRST_NAME="firstName",
+	NICK_NAME="nickName",
+	LAST_NAME="lastName",
+	RACE_NAME="raceName"
+}
+
 #Resources
 @export var raceAttributes:RacialAttributes:
 	set(val):
@@ -65,6 +72,9 @@ enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3}
 	"factionIdentifier":"",
 	"sex":"Unknown"
 }
+
+func get_info(infoName:String):
+	return info[infoName]
 
 #12 bitsPersonality index r:energetic g:good b:lawful
 @export var personalityNumber:Array[int]=[255,255,255]
