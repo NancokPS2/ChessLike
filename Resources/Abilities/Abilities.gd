@@ -90,7 +90,8 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 #Example: {"Head":Const.bodyParts.HEAD}
 @export_group("Effects")
 @export var abilityFlags:Array[AbilityFlags]
-@export var statChanges:Dictionary #statName:change as float
+@export var effects:Array[AbilityEffect]
+
 
 
 @export_group("Passive Triggering")#Passives trigger at scheduled intervals
@@ -136,7 +137,10 @@ var filters:Array[Callable]:
 		return filters
 
 func get_description():
-	return description
+	var desc:String = description + "\n"
+	for effect in effects:
+		desc+=effect.get_description() + "\n"
+	return desc
 
 
 
@@ -237,7 +241,7 @@ func passive_delay_progress(time:float):
 
 func passive_proc():
 	if passiveDurationTick != INFINITE_DURATION: passiveDurationTick -= 1
-	use([])
+	use()
 	
 
 func _passive_proc():
@@ -305,24 +309,24 @@ func proc_costs():
 	user.attributes.change_stat(AttributesBase.StatNames.ENERGY, -energyCost)
 	user.attributes.change_stat(AttributesBase.StatNames.TURN_DELAY, -turnDelayCost)
 	
-func use( targets:Array[Vector3i] ):
+func use( targetingInfo:=AbilityTargetingInfo.new() ):
 	proc_costs()
-	print_debug(user.attributes.info.nickName + " used " + displayedName + " on cells " + str(targets))
+	print_debug(user.attributes.info.nickName + " used " + displayedName + " on cells " + str(targetingInfo.cellsTargeted))
 #	targets = filter_targets(targets)
 	#The warning happens in get_tween(), no need for this.
 #	for target in targets:
 #		var possibleUnit:Unit = board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT)
 #		if possibleUnit is Unit:
 #			possibleUnit.was_targeted.emit(self)
-			
+
+	for effect in effects:
+		effect.use(targetingInfo)
 	
+	_use(targetingInfo)
+
 	
-	_use(targets)
-	for target in targets:
-		_per_cell_effect(target)
-	
-func _use(target:Array[Vector3i]):
-	print( user.info.nickName + " tried something. But it didn't do anything.")
+func _use(targetingInfo:=AbilityTargetingInfo.new()):
+	print( user.attributes.get_info(CharAttributes.InfoNames.NICK_NAME) + " tried something. But it didn't do anything.")
 	pass
 
 func _per_cell_effect(cell:Vector3i):
@@ -361,18 +365,15 @@ class Filters extends RefCounted:
 	
 	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else true
 
-class PassiveEffects extends RefCounted:
-	@export var triggeringSignals:Array[StringName]:
-		set(val):
-			triggeringSignals = val
-			
-	@export var durationTick:int
-	@export var durationDelay:float
-	@export var tickSignal:StringName ##durationTick will advance whenever this is triggered
+#class PassiveEffects extends RefCounted:
+#	@export var triggeringSignals:Array[StringName]:
+#		set(val):
+#			triggeringSignals = val
+#
+#	@export var durationTick:int
+#	@export var durationDelay:float
+#	@export var tickSignal:StringName ##durationTick will advance whenever this is triggered
 	
+## Should be created by AbilityHandler
 	
-	
-	func deal_damage(targets:Array[Unit]):
 		
-		pass
-	pass
