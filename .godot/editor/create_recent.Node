@@ -1,3 +1,6 @@
+LabelComponentValueColorizer3D
+LabelComponentPopper3D
+Label3D
 Label
 Node
 VBoxContainer
@@ -10,7 +13,6 @@ TextEdit
 FileDialog
 TabContainer
 LineEdit
-Label3D
 CheckBox
 MeshInstance3D
 DirectionalLight3D
@@ -29,4 +31,3 @@ CallQueue
 ConfirmationPopup
 PropertyRegistry
 PassiveEffect
-Camera3D

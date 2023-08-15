@@ -1,8 +1,6 @@
 extends Resource
 class_name Item
 
-const WeaponAttackuseAbilityScript:Script = preload("res://Resources/Abilities/Scripts/WeaponAttack.gd")
-
 #const equipmentTypes = Const.equipmentTypes
 
 #@export (equipmentTypes) var type

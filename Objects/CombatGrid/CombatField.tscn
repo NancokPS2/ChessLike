@@ -179,7 +179,7 @@ environment = SubResource("Environment_vl025")
 [connection signal="unit_acting" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
 [connection signal="selected_ability_with_name" from="AbilityHandler" to="UI/Ability in use" method="set_text"]
 [connection signal="cell_clicked" from="MovementGrid" to="." method="on_cell_clicked"]
-[connection signal="cell_clicked" from="MovementGrid" to="AbilityHandler" method="select_cell"]
+[connection signal="cell_clicked" from="MovementGrid" to="AbilityHandler" method="on_cell_clicked"]
 [connection signal="cell_hovered" from="MovementGrid" to="MovementGrid/CellHovered" method="move_to_cell"]
 [connection signal="new_cell_hovered" from="MovementGrid" to="AbilityHandler" method="on_new_cell_hovered"]
 [connection signal="unit_clicked" from="MovementGrid" to="UnitHandler" method="select_unit"]

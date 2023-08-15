@@ -17,12 +17,6 @@ enum CombatStates {
 	C_OFF_TURN
 	}
 
-#var cellDict:Dictionary:
-#	set(val):
-#		pass
-#	get:
-#		if gridMap: return gridMap.cellDict
-#		else: push_error("No gridMap has been set."); return {}
 	
 
 
