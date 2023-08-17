@@ -1,52 +1,59 @@
-extends Panel
+extends Label
 class_name Tooltip
 
-@export var dimensions:Vector2 = Vector2(80,40):
-	set(value):
-		dimensions = value
-		custom_minimum_size = dimensions
-		if label: label.custom_minimum_size = dimensions
-@export var assignedNode:Control:
-	set(value):
-		assignedNode = value
-		connect_signals()
-@export var text:String:
-	set(value):
-		if label: 
-			text = value
-			label.text = text
-			update_dimensions()
+const DEFAULT_STYLEBOX_COLOR:Color = Color.WEB_GRAY
+
+@export var defaultStyleBox:bool = true:
+	set(val):
+		defaultStyleBox = val
+		if defaultStyleBox:
+			add_theme_stylebox_override("normal", TooltipStyleBoxPreset.new())
+
+
+@export var focusSource:Control:
+	set(val):
+		if focusSource is Control:
+			if focusSource.focus_entered.is_connected(activate):
+				focusSource.focus_entered.disconnect(activate)
+				focusSource.focus_exited.disconnect(activate)
+				
+			if focusSource.mouse_entered.is_connected(activate):
+				focusSource.mouse_entered.disconnect(activate)
+				focusSource.mouse_exited.disconnect(activate)
 			
-var label:=Label.new()
+		focusSource = val
+		
+		if focusSource is Control:
+			if activateOnFocus:
+				focusSource.focus_entered.connect(activate.bind(true))
+				focusSource.focus_exited.connect(activate.bind(false))
+			if activateOnHover:
+				focusSource.mouse_entered.connect(activate.bind(true))
+				focusSource.mouse_exited.connect(activate.bind(false))
+
+@export var activateOnFocus:bool = false
+@export var activateOnHover:bool = true
 
 func _ready() -> void:
-	mouse_filter = MOUSE_FILTER_IGNORE; label.mouse_filter = MOUSE_FILTER_IGNORE
-	custom_minimum_size = dimensions; label.custom_minimum_size = dimensions
-	label.reset_size(); reset_size()
+	activate(false)
+	mouse_filter = MOUSE_FILTER_IGNORE
+	focus_mode = Control.FOCUS_NONE
+	top_level = true
+	reset_size()
 	
-	label.text = text
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	add_child(label)
-	label.size = Vector2(get_viewport_rect().size.x/3, label.get_line_height()*label.get_line_count())
-	size = label.size
-	
-	if assignedNode is Control:
-		connect_signals()
+	if not focusSource is Control and get_parent() is Control:
+		focusSource = get_parent()
 	else:
-		push_error("Non-Control node assigned!")
+		focusSource = focusSource
+	
 
-func connect_signals():
-	assignedNode.mouse_entered.connect(appear.bind(true))
-	assignedNode.mouse_exited.connect(appear.bind(false))
-
-func appear(value):
+func activate(value):
 	visible = value
 #	set_process(value)
-	
-func update_dimensions():
-	dimensions = Vector2(dimensions.x, label.get_line_count() * label.get_line_height()) 
 
 func _process(delta: float) -> void:
-	global_position = get_global_mouse_position()
+	global_position = get_global_mouse_position() + Vector2.ONE*16
 
-
+class TooltipStyleBoxPreset extends StyleBoxFlat:
+	func _init() -> void:
+		bg_color = DEFAULT_STYLEBOX_COLOR
