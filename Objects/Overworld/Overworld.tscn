@@ -1,6 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://b28bw15oqeds5"]
+[gd_scene load_steps=5 format=3 uid="uid://b28bw15oqeds5"]
 
 [ext_resource type="Script" path="res://Objects/Overworld/Overworld.gd" id="1_yoem1"]
+[ext_resource type="Texture2D" uid="uid://bskeod7cpbu4v" path="res://Assets/UI/ButtonUI.png" id="2_t2py3"]
+[ext_resource type="Script" path="res://Objects/Overworld/MapScreenOverworld.gd" id="3_e7pgi"]
+[ext_resource type="Texture2D" uid="uid://c1swclroqmlbc" path="res://Assets/UI/GenericUIBackground.png" id="4_tg41s"]
 
-[node name="Overworld" type="Node2D"]
+[node name="Overworld" type="Control" node_paths=PackedStringArray("mapScreen")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_yoem1")
+mapScreen = NodePath("MapScreen")
+
+[node name="MapScreen" type="TextureRect" parent="." node_paths=PackedStringArray("editorHolder")]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_t2py3")
+script = ExtResource("3_e7pgi")
+selectionAction = &"primary_click"
+deletionAction = &"secondary_click"
+additionAction = &"ui_select"
+editorHolder = NodePath("../Control")
+defaultTexture = ExtResource("4_tg41s")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 0.158854
+anchor_bottom = 1.0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
