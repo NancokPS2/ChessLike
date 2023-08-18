@@ -1,11 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b28bw15oqeds5"]
+[gd_scene load_steps=7 format=3 uid="uid://b28bw15oqeds5"]
 
 [ext_resource type="Script" path="res://Objects/Overworld/Overworld.gd" id="1_yoem1"]
 [ext_resource type="Texture2D" uid="uid://bskeod7cpbu4v" path="res://Assets/UI/ButtonUI.png" id="2_t2py3"]
 [ext_resource type="Script" path="res://Objects/Overworld/MapScreenOverworld.gd" id="3_e7pgi"]
 [ext_resource type="Texture2D" uid="uid://c1swclroqmlbc" path="res://Assets/UI/GenericUIBackground.png" id="4_tg41s"]
+[ext_resource type="Texture2D" uid="uid://y8uf372v4e10" path="res://Assets/Units/classIcons/Base.png" id="5_uho8d"]
+[ext_resource type="Script" path="res://Classes/SelfContained/Interface/ControlPopup.gd" id="6_oi3f6"]
 
-[node name="Overworld" type="Control" node_paths=PackedStringArray("mapScreen")]
+[node name="Overworld" type="Control" node_paths=PackedStringArray("mapScreen", "popUp")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,11 +16,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_yoem1")
 mapScreen = NodePath("MapScreen")
+popUp = NodePath("ControlPopup")
 
 [node name="MapScreen" type="TextureRect" parent="." node_paths=PackedStringArray("editorHolder")]
 custom_minimum_size = Vector2(256, 256)
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_left = 0.16
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -28,12 +32,48 @@ script = ExtResource("3_e7pgi")
 selectionAction = &"primary_click"
 deletionAction = &"secondary_click"
 additionAction = &"ui_select"
+editorEnabled = false
 editorHolder = NodePath("../Control")
 defaultTexture = ExtResource("4_tg41s")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1
-anchor_right = 0.158854
+anchor_right = 0.16
 anchor_bottom = 1.0
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("5_uho8d")
+
+[node name="ControlPopup" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_right = 0.109
+anchor_bottom = 0.265
+offset_right = -0.568008
+offset_bottom = 0.279984
+script = ExtResource("6_oi3f6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlPopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="ControlPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button3" type="Button" parent="ControlPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button2" type="Button" parent="ControlPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="marker_added" from="MapScreen" to="MapScreen" method="extra_marker_setup"]
+[connection signal="marker_selected" from="MapScreen" to="." method="on_marker_selected"]

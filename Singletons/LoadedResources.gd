@@ -26,7 +26,7 @@ func _init():#Loading of files
 func _get_identifier(res:Resource)->String:
 	var identifier = res.get("internalName")
 	if identifier is String: return identifier 
-	else: push_error("No internalName defined in resource on path: " + str(res.resource_path)); return ""
+	else: push_error("No internalName defined in resource on path: " + str(res.resource_path)); return NO_IDENTIFIER
 #	load_abilities("res://Resources/Abilities/AllAbilities/")
 #	load_classes("res://Resources/Characters/Classes/")
 #	load_races("res://Resources/Characters/Races/")
