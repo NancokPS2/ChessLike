@@ -1,16 +1,17 @@
-Control
 VBoxContainer
+Button
+ControlPopup
+Sprite2D
+Control
 Container
 MapScreen
 TextureRect
-Sprite2D
 Tooltip
 LabelComponentValueColorizer3D
 LabelComponentPopper3D
 Label3D
 Label
 Node
-Button
 SubViewport
 SubViewportContainer
 HBoxContainer
@@ -29,4 +30,3 @@ StaticBody3D
 CollisionShape3D
 Node3D
 GridMap
-Timer
