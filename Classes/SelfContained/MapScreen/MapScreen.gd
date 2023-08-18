@@ -23,6 +23,9 @@ var editorRef:MapScreenEditor:
 		editorRef = val
 		if editorRef is MapScreenEditor:
 			editorRef.connect_to_map_screen(self)
+			
+var aStarRef:=AStar2D.new()
+var lastMarkerSelected:MapScreenMarker
 
 @export_category("Actions")
 @export var selectionAction:StringName = "ui_select"
@@ -40,6 +43,12 @@ var editorRef:MapScreenEditor:
 @export var connectionLineColor:Color = Color.RED
 @export var connectionLineWidth:float = 2
 @export var connectionLineDash:float = 4
+@export var centerMarkerTexture:bool:
+	set(val):
+		centerMarkerTexture = val
+		MapScreenMarker.new().centerTexture = centerMarkerTexture
+			
+		
 
 #func _ready() -> void:
 #	for markerData in storedMarkers:
@@ -57,6 +66,7 @@ func _init() -> void:
 	var redrawFunc:=func(_marker): queue_redraw()
 	marker_added.connect(redrawFunc)
 	marker_deleted.connect(redrawFunc)
+
 	
 func _ready() -> void:
 	if editorEnabled:
@@ -75,6 +85,7 @@ func add_marker(marker:MapScreenMarker, where:Vector2):
 	if not marker.texture is Texture: marker.texture = defaultTexture
 	
 	marker.position = where
+	marker.pivot_offset = marker.size / 2 if centerMarkerTexture else Vector2.ZERO
 	
 	marker.gui_input.connect(on_marker_gui_input.bind(marker))
 	
@@ -139,11 +150,12 @@ func update_connection_visuals():
 	
 func on_marker_gui_input(event:InputEvent, marker:MapScreenMarker):
 	if event.is_action_pressed(selectionAction): 
+		lastMarkerSelected = marker
 		marker_selected.emit(marker)
 		marker_selected_data.emit(marker.customData)
 		marker_selected_string.emit(marker.stringData)
 		
-	elif event.is_action_pressed(deletionAction):  
+	elif event.is_action_pressed(deletionAction) and editorEnabled:  
 		remove_marker(marker)
 		marker_deleted.emit(marker)
 	
@@ -164,7 +176,7 @@ func save_markers(path:String=DEFAULT_SAVE_PATH, markers:Array[MapScreenMarker]=
 	
 	var configFile:=ConfigFile.new()
 	for marker in markers:
-		for propertyName in MapScreenMarker.SAVABLE_PROPERTIES:
+		for propertyName in MapScreenMarker.SAVEABLE_PROPERTIES:
 			configFile.set_value(marker.identifier, propertyName, marker.get(propertyName))
 	
 	configFile.save(path)
@@ -182,30 +194,58 @@ func load_markers(path:String=DEFAULT_SAVE_PATH, preClear:bool=true):
 	if errorCode != OK: push_error("Failed to load file with code " + str(errorCode)); return []
 	
 	assert(not configFile.get_sections().is_empty())
-#	assert(configFile.get_section_keys(configFile.get_sections()[0]).size() == MapScreenMarker.SAVABLE_PROPERTIES.size(), "There is a discrepancy in the amount of keys saved." )
+#	assert(configFile.get_section_keys(configFile.get_sections()[0]).size() == MapScreenMarker.SAVEABLE_PROPERTIES.size(), "There is a discrepancy in the amount of keys saved." )
 	
 	for identifier in configFile.get_sections():
 		var newMarker:=MapScreenMarker.new()
-		for propertyName in MapScreenMarker.SAVABLE_PROPERTIES:
+		for propertyName in MapScreenMarker.SAVEABLE_PROPERTIES:
 			newMarker.set(propertyName, configFile.get_value(identifier, propertyName, null))
 			
-#		var markPos:Vector2 = configFile.get_value(identifier, STORED_MARKER_KEYS[0])
-#		var markIdent:String = configFile.get_value(identifier, STORED_MARKER_KEYS[1])
-#		var markString:String = configFile.get_value(identifier, STORED_MARKER_KEYS[2])
-#		var markMinSize:Vector2 = configFile.get_value(identifier, STORED_MARKER_KEYS[3])
-#		var markTex:Texture = configFile.get_value(identifier, STORED_MARKER_KEYS[4])
-#		var markDisabled:bool = configFile.get_value(identifier, STORED_MARKER_KEYS[5])
-#		var markDisabledTex:Texture = configFile.get_value(identifier, STORED_MARKER_KEYS[6])
-#		var markConnect:Array[String] = configFile.get_value(identifier, STORED_MARKER_KEYS[7])
-		
-#		var newMarker:MapScreenMarker = add_marker(markPos, markIdent, markString, markMinSize, markTex)
-#		newMarker.isDisabled = markDisabled
-#		newMarker.disabledTexture = markDisabledTex
-#		newMarker.connectedTo = markConnect
 		markersLoaded.append(newMarker)
 		
 	for marker in markersLoaded:
 		add_marker(marker, marker.position)
+		
+	pathing_update()
+
+func pathing_update():
+	aStarRef.clear()
+	
+	#Addition
+	for marker in markerRefs.values():
+		var idUsed:int = aStarRef.get_available_point_id()
+		aStarRef.add_point(idUsed, marker.position + marker.pivot_offset)
+		marker.aStarID = idUsed
+		print_debug("Added point with ID {0} for marker {1} on position {2}".format([idUsed, marker.identifier, marker.position]))
+		
+	#Connection
+	for marker in markerRefs.values() as Array[MapScreenMarker]:
+		for connectedMarker in marker.connectedTo as Array[String]:
+			aStarRef.connect_points(marker.aStarID, get_marker_by_identifier(connectedMarker).aStarID )
+			print_debug("Connected {0} to {1}".format([marker.identifier, get_marker_by_identifier(connectedMarker).identifier]))
+		
+
+func pathing_get_path_to_marker(from:MapScreenMarker, to:MapScreenMarker)->PackedVector2Array:
+	if aStarRef.get_point_count() != markerRefs.size(): pathing_update()
+	return aStarRef.get_point_path(from.aStarID, to.aStarID)
+
+func pathing_move_node2d_to_marker(what:Node2D, from:MapScreenMarker, to:MapScreenMarker, timePerPoint:float=1):
+	var tween:=create_tween()
+	var path:PackedVector2Array = pathing_get_path_to_marker(from, to)
+	
+	for vec in path:
+		tween.tween_property(what, "position", vec+position, timePerPoint)
+		print_debug("Plotted course to point " + str(vec))
+	
+	
+	tween.play()
+	
+
+		
+	pass
+	
+func get_markers_from_points():
+	pass
 
 class MapScreenMarker extends TextureRect:
 	
@@ -213,7 +253,7 @@ class MapScreenMarker extends TextureRect:
 	signal enabled(me:MapScreenMarker)
 	
 	const META_LABEL_REF:String = "LABEL_REFERENCE"
-	const SAVABLE_PROPERTIES:Array[String] = [
+	const SAVEABLE_PROPERTIES:Array[String] = [
 		"position",
 		"identifier",
 		"displayText",
@@ -224,10 +264,12 @@ class MapScreenMarker extends TextureRect:
 		"disabledTexture",
 		"connectedTo",
 		"customData",
-		"metaData"
+		"metaData",
+		"visible"
 		]
 	
-	
+	static var centerTexture:bool
+			
 	static var defaultTexture:Texture
 	
 	var identifier:String
@@ -238,6 +280,9 @@ class MapScreenMarker extends TextureRect:
 	var disabledTexture:Texture
 	var connectedTo:Array[String]
 	var normalTexture:Texture
+	var aStarID:int:
+		set(val):
+			aStarID = val
 	
 	var metaData:Dictionary
 	static func construct(_identifier:String, _displayText:String="Unnamed", _normalTexture:Texture=null, _custom_minimum_size:=Vector2.ZERO)->MapScreenMarker:
@@ -308,6 +353,7 @@ class MapScreenMarker extends TextureRect:
 			set_meta(META_LABEL_REF, label)
 			add_child(label)
 	
+
 #	signal selected(me:MapScreenMarker)
 #	signal deleted(me:MapScreenMarker)
 #
@@ -358,10 +404,11 @@ class MapScreenEditor extends Node:
 		
 		switchSide.text = "Move to other side."
 		var moveUIFunc:=func():
-			if UIRef.anchor_left == 0:
-				UIRef.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+			if hudParent.anchor_left == 0:
+				hudParent.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
 			else:
-				UIRef.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+				hudParent.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+			hudParent.custom_minimum_size = Vector2.RIGHT*250
 		switchSide.pressed.connect(moveUIFunc)
 		
 		
@@ -382,7 +429,7 @@ class MapScreenEditor extends Node:
 		for child in UIRef.get_children(): child.queue_free()
 		
 		#Add the fields
-		for propertyName in MapScreenMarker.SAVABLE_PROPERTIES:
+		for propertyName in MapScreenMarker.SAVEABLE_PROPERTIES:
 			var newField:=LineEdit.new()
 			newField.set_anchors_preset(Control.PRESET_FULL_RECT)
 			
@@ -410,19 +457,24 @@ class MapScreenEditor extends Node:
 	func set_marker_property(newText:String, lineEdit:LineEdit):
 		var propertyName:String = lineEdit.placeholder_text
 		var value = markerSelected.get(propertyName)
-		var propertyType:Variant.Type = typeof(value)
+		var propertyType:Variant.Type = typeof(value) as Variant.Type
 		
-		match propertyType:
-			TYPE_INT:
-				value = newText.to_int()
+		
+		if propertyType == TYPE_INT:
+			value = newText.to_int()
+		
+		elif value is Texture:
+			var textureLoaded:Texture = load(newText)
+			if textureLoaded is Texture:
+				value = textureLoaded
+			else:
+				push_error("No Texture could be found at the provided path.")
 				
-			TYPE_VECTOR2:
-				value = Vector2(newText.get_slice(",",0).lstrip("(").to_float(), newText.get_slice(",",1).to_float())
-				mapScreen.queue_redraw()
-				lineEdit.update_minimum_size()
+		elif propertyType == TYPE_VECTOR2:
+			value = Vector2(newText.get_slice(",",0).lstrip("(").to_float(), newText.get_slice(",",1).to_float())
+			mapScreen.queue_redraw()
+			lineEdit.update_minimum_size()
 			
-			
-		
 		markerSelected.set(propertyName, value)
 		pass
 	
