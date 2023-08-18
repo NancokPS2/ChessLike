@@ -3,6 +3,16 @@ class_name Tooltip
 
 const DEFAULT_STYLEBOX_COLOR:Color = Color.WEB_GRAY
 
+const TextureAnchors:Dictionary = {
+	LEFT = Rect2(-1,0,0,1),
+	TOP = Rect2(0,-1,1,0),
+	RIGHT = Rect2(1,0,2,1),
+	BOTTOM = Rect2(0,1,1,2),
+	COVERING = Rect2(0,0,1,1)
+}
+@export var texture:Texture
+@export var textureAnchors:Rect2 = TextureAnchors.TOP
+
 @export var defaultStyleBox:bool = true:
 	set(val):
 		defaultStyleBox = val
@@ -34,12 +44,15 @@ const DEFAULT_STYLEBOX_COLOR:Color = Color.WEB_GRAY
 @export var activateOnFocus:bool = false
 @export var activateOnHover:bool = true
 
+var textureRectRef:=TextureRect.new()
+
 func _ready() -> void:
 	activate(false)
 	mouse_filter = MOUSE_FILTER_IGNORE
 	focus_mode = Control.FOCUS_NONE
 	top_level = true
 	reset_size()
+	place_texture()
 	
 	if not focusSource is Control and get_parent() is Control:
 		focusSource = get_parent()
@@ -50,6 +63,17 @@ func _ready() -> void:
 func activate(value):
 	visible = value
 #	set_process(value)
+
+func place_texture(anchors:Rect2 = textureAnchors):
+	if textureRectRef.get_parent() != self: add_child(textureRectRef)
+	textureRectRef.texture = texture
+	textureRectRef.anchor_left = anchors.position.x
+	textureRectRef.anchor_top = anchors.position.y
+	textureRectRef.anchor_right = anchors.size.x
+	textureRectRef.anchor_bottom = anchors.size.y
+	
+	pass
+	
 
 func _process(delta: float) -> void:
 	global_position = get_global_mouse_position() + Vector2.ONE*16
