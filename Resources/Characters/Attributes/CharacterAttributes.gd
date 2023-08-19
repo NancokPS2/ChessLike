@@ -96,12 +96,7 @@ var favoriteColor:Color:
 		return Color((stats.strength/999+100), (stats.agility/999+100), (stats.mind/999+100))
 
 #General
-var user:Unit:
-	set(val):
-		user = val
-		for ability in abilities: ability.user = user
-		if user is Unit:
-			user.ready.connect(combine_attributes_base_stats,CONNECT_ONE_SHOT)
+
 		
 
 func _init() -> void:
@@ -119,7 +114,7 @@ func randomize_personality(energyMin:int=0, energyMax:int=255, goodMin:int=0, go
 	personalityNumber[1] = randi_range(goodMin,clamp(goodMax,1,255))
 	personalityNumber[2] = randi_range(lawMin,clamp(lawMax,1,255))
 	
-func apply_turn_delay(delay:int):
+func apply_turn_delay(delay:float):
 	
 	#Reduce delay
 	change_stat("turnDelay",-delay)
@@ -135,27 +130,20 @@ func get_faction()->Faction:
 	
 	return faction
 
-
-
-func equipment_equip(what:Equipment, slot:EquipSlots):
+func set_equipment(what:Equipment, slot:EquipSlots):
 	if not what is Equipment: push_error("Not Equipment"); return
 	else: equipment[slot] = what
 	
-func equipment_get_item(slot:EquipSlots):
-	var item:Item = equipment[slot]
+func get_equipment(slot:EquipSlots):
+	var item:Equipment = equipment[slot]
 	return item if item is Item else null
-	
 	
 func equipment_update_abilities():
 	#Get the attack ability for weapons or other on_use items
 	for item in equipment.values():
-		assert(item is Item)
-		var ability:Ability = item.get_abilities(self)
-		if ability is Ability and not abilities.has(ability): abilities.append(ability)
-		
-		#
-		for itemAbil in item.abilityList:
-			if not itemAbil.has(ability): abilities.append(ability)
+		assert(item is Equipment)
+		for ability in item.abilities:
+			add_ability(ability)
 		
 	#Ensure it has no null values
 	assert(abilities.find(null) == -1)

@@ -2,7 +2,6 @@ extends Resource
 class_name AttributesBase
 
 signal attributes_updated
-
 signal stat_changed(stat:String, oldValue:float, newValue:float)
 
 enum MovementTypes {
@@ -38,6 +37,13 @@ const StatNames:Dictionary = {
 	MOVES_MAX = "movesMax",
 	MOVEMENT_TYPE ="movementType",
 	}
+
+var user:Unit:
+	set(val):
+		user = val
+		for ability in abilities: ability.user = user
+		if user is Unit:
+			user.ready.connect(combine_attributes_base_stats,CONNECT_ONE_SHOT)
 
 
 @export var attributeResources:Array[AttributesBase]
@@ -77,6 +83,7 @@ const StatNames:Dictionary = {
 }
 
 var stats:Dictionary = baseStats.duplicate()
+var tempModList:Array[AttributesBaseTemporaryMod]
 
 @export var statModifiers:Dictionary ={
 	"maxHealth":1.0,
@@ -126,33 +133,46 @@ func change_stat(stat:String, amount:int, base:bool = false):
 	
 	set_stat(stat, get_stat(stat)+amount, base)
 
-func get_stat(stat:String, base:bool = false):
-	if not stats.has(stat): push_error("Non existent stat."); return
+func get_stat(stat:String, base:bool = false)->float:
+	if not stats.has(stat): push_error("Non existent stat."); return 0
 	var statVarName = "baseStats" if base else "stats"
 	
-	return get(statVarName)[stat]
 	
+	var value:float = get(statVarName)[stat]
+	for temp in tempModList:
+		value += temp.offset
+		value *= temp.modifier
+	return value
 
-#func combine_attributes(attribArray:Array[AttributesBase] = attributeResources):
-#	#Add stats
-#	for stat in stats:
-#		var statSum:int = stats[stat]
-#		#Sum from each attribute
-#		for attrib in attribArray:
-#			statSum += attrib.stats[stat] 
-#
-#		stats[stat] = statSum / ( max(attribArray.size(),1) )
-#
-#	#Equipment slots
-#	for attrib in attribArray:
-#		for slot in attrib.equipmentSlots:
-#			if not equipmentSlots.has(slot): equipmentSlots.append(slot)
-#
-#	#Abilities
-#	for attrib in attribArray:
-#		for ability in attrib.abilities:
-#			if not abilities.has(ability): abilities.append(ability)
-#	attributes_updated.emit()
+func set_stat_temporary_mod(stat:String, offset:float, modifier:float = 1, types:Array[String] = []):
+	var tempMod:=AttributesBaseTemporaryMod.new()
+	tempMod.offset = offset
+	tempMod.modifier = modifier
+	tempMod.stat = stat
+	tempMod.types = types
+	tempMod.freeing.connect(remove_stat_temporary_mod)
+	
+	tempModList.append(tempMod)
+	return tempMod
+
+func remove_stat_temporary_mod(mod:AttributesBaseTemporaryMod):
+	tempModList.erase(mod)
+	
+func remove_stat_temporary_mod_of_type(types:Array[String]):
+	for type in types:
+		tempModList = tempModList.filter(
+			func(mod:AttributesBaseTemporaryMod):
+				return not mod.types.has(type)
+				)
+
+		
+
+
+func add_ability(ability:Ability):
+	if abilities.has(ability): push_error("Already added."); return
+	abilities.append(ability)
+	ability.user = user
+		
 
 func combine_attributes_base_stats(attribArray:Array[AttributesBase] = attributeResources, includeSelf:bool=false):
 	var _attribArray:Array[AttributesBase] = attribArray.duplicate()
@@ -185,3 +205,17 @@ func combine_attributes_base_stats(attribArray:Array[AttributesBase] = attribute
 		for ability in attrib.abilities:
 			if not abilities.has(ability): abilities.append(ability)
 	attributes_updated.emit()
+
+class AttributesBaseTemporaryMod extends Resource:
+#	signal freeing(me:AttributesBaseTemporaryMod)
+	
+	var killSignal:Signal:
+		set(val):
+			killSignal = val
+#			freeing.emit(self)
+			killSignal.connect(free)
+			
+	var types:Array[String]
+	var stat:String
+	var offset:float
+	var modifier:float
