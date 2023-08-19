@@ -8,5 +8,5 @@ func extra_marker_setup(marker:MapScreenMarker):
 	
 	
 	var toolTip = Tooltip.new()
-	toolTip.text = marker
+	toolTip.text = marker.displayText
 	pass
