@@ -150,6 +150,7 @@ func turn_advance_time(state:=UnitStates.COMBAT):
 func turn_cycle():
 	#Apply turn delays
 	turn_advance_time()
+	actingUnit.end_turn()
 	
 	#Select the next actingUnit
 	actingUnit = turn_get_next_unit()
