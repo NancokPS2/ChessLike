@@ -13,6 +13,7 @@ signal targeting(what:Vector3i, withWhat:Ability)
 signal turn_started
 signal turn_ended
 
+signal time_passed(time:float)
 
 const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 
@@ -43,6 +44,7 @@ var requiredAnimationName:String = "STANDING":
 
 func _init() -> void:
 	add_to_group(Const.ObjectGroups.UNIT,true)
+	
 
 func _ready() -> void:
 	assert(board is GameBoard)
@@ -69,7 +71,7 @@ func start_turn():
 	turn_started.emit()
 
 func end_turn():
-	emit_signal("turn_ended")
+	turn_ended.emit()
 
 func get_passive_effects():
 	pass
@@ -77,7 +79,9 @@ func get_passive_effects():
 func on_stat_changed(statName:String, oldVal:float, newVal:float):
 	var floatingNumbers:=StatChangeNumbers.new(statName, oldVal-newVal)
 	add_child(floatingNumbers)
-		
+	
+	if statName == attributes.StatNames.TURN_DELAY:
+		time_passed.emit(oldVal - newVal)
 #	if statName == AttributesBase.StatNames.HEALTH or statName == AttributesBase.StatNames.HEALTH_MAX:
 		
 
