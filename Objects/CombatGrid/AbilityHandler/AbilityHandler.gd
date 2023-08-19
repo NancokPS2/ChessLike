@@ -44,7 +44,16 @@ var currentState:States = States.INACTIVE:
 		currentState = val
 		print_debug("Changed to state: " + States.find_key(currentState))
 
-var selectedAbility:Ability
+var selectedAbility:Ability:
+	set(ability):
+		selectedAbility = ability
+		if not selectedAbility is Ability: return
+		
+		selected_ability.emit(ability)
+		selected_ability_with_name.emit(ability.displayedName)
+		#Update the targetable cells
+		targetableCells = get_targetable_cells(selectedAbility)
+		update_markers(targetableCells, MarkerTypes.TARGETABLE)
 
 var chosenTargets:Array[Vector3i]:
 	set(val):
@@ -77,37 +86,26 @@ func end_ability_targeting():
 		update_markers([], marker)
 	ability_targeting_ended.emit(selectedAbility)	
 	
-	
-	##Marks the cells that the user can target
-func select_ability(ability:Ability):
-	selectedAbility = ability
-	selected_ability.emit(ability)
-	selected_ability_with_name.emit(ability.displayedName)
-	
-	#Start targeting
-	start_ability_targeting(ability)
-	
-	#Update the targetable cells
-	targetableCells = get_targetable_cells(selectedAbility)
-	update_markers(targetableCells, MarkerTypes.TARGETABLE)
 #	update_targeting_visuals(ability.user.get_current_cell(), MarkerTypes.TARGETABLE)
 	
 func preview_ability_effects(ability:Ability=selectedAbility, targets:Array[Vector3i]=chosenTargets):
 	print("{0} ability will do something!".format([ability.displayedName]))
 	pass
 	
-func queue_ability_call(ability:Ability, targets:Array[Vector3i], reactionTo:Ability = null, preClear:bool = true):
-	if preClear: callQueue.clear_queue()
-	
+func get_targeting_from_cells(ability:Ability, cells:Array[Vector3i])->AbilityTargetingInfo:
 	var targetInfo:=AbilityTargetingInfo.new()
 	var units:Array[Unit]
-	units.assign(gridMap.multi_search_in_cell(targets, MovementGrid.Searches.UNIT))
+	units.assign(gridMap.multi_search_in_cell(cells, MovementGrid.Searches.UNIT))
 #	var cells:Array[Vector3i] = targets
 	targetInfo.gridRef = gridMap
 	targetInfo.ability = ability
 	targetInfo.unitsTargeted = units
-	targetInfo.cellsTargeted = targets
+	targetInfo.cellsTargeted = cells
 	targetInfo.user = ability.user
+	return targetInfo
+	
+func queue_ability_call(ability:Ability, targeting:AbilityTargetingInfo, reactionTo:Ability = null, preClear:bool = true):
+	if preClear: callQueue.clear_queue()
 	
 	#Depending if it is a reaction or not
 	if reactionTo is Ability:
@@ -115,16 +113,13 @@ func queue_ability_call(ability:Ability, targets:Array[Vector3i], reactionTo:Abi
 	else:
 		callQueue.add_queued(ability.use)
 		
-	callQueue.set_queued_arguments([targetInfo])#Keep it an Array with an Array[Vector3i] inside
+	callQueue.set_queued_arguments([targeting])#Keep it an Array with an Array[Vector3i] inside
 	callQueue.set_queued_post_wait(ability.animationDuration)
 	
 	var userCell:Vector3i = ability.user.get_current_cell()
 	
-	#Signal what will be targeted.
-#	signal_about_targets(ability, targets)
-	
 	#Warn every unit
-	for unit in gridMap.multi_search_in_cell(targets, gridMap.Searches.UNIT):
+	for unit in targeting.unitsTargeted:
 #		ability.warn_unit(unit)
 		unit.was_targeted.emit(ability)
 		#Check all of their abilities
@@ -143,17 +138,17 @@ func queue_ability_call(ability:Ability, targets:Array[Vector3i], reactionTo:Abi
 	ability_queued.emit(ability)
 	pass
 
-func signal_about_targets(abilityUsed:Ability, targets:Array[Vector3i]):
-	var cellsTargeted:Array[Vector3i]
-	var unitsTargeted:Array[Unit]
-	
-	for cellTargeted in targets:
-		cellsTargeted.append(cellTargeted)
-		
-		unitsTargeted.append_array( gridMap.search_in_cell(cellTargeted, MovementGrid.Searches.UNIT, true) )
-	
-	targeted_units.emit(unitsTargeted, abilityUsed)
-	targeted_cells.emit(cellsTargeted, abilityUsed)
+#func signal_about_targets(abilityUsed:Ability, targets:Array[Vector3i]):
+#	var cellsTargeted:Array[Vector3i]
+#	var unitsTargeted:Array[Unit]
+#
+#	for cellTargeted in targets:
+#		cellsTargeted.append(cellTargeted)
+#
+#		unitsTargeted.append_array( gridMap.search_in_cell(cellTargeted, MovementGrid.Searches.UNIT, true) )
+#
+#	targeted_units.emit(unitsTargeted, abilityUsed)
+#	targeted_cells.emit(cellsTargeted, abilityUsed)
 	
 	
 #func select_cell(cell:Vector3i):
@@ -267,7 +262,7 @@ func update_ability_list(unit:Unit, list:Control=abilityButtonList):
 		button.disabled = not ability.is_usable()
 		button.ability = ability
 		#Selection
-		button.pressed.connect(select_ability.bind(ability))
+		button.pressed.connect(start_ability_targeting.bind(ability))
 		#Hovering
 		button.mouse_entered.connect(on_hover_ability_button.bind(button))
 		button.focus_mode = Control.FOCUS_NONE
@@ -304,7 +299,7 @@ func on_confirm():
 	match currentState:
 		States.TARGETING:
 			if not chosenTargets.is_empty():
-				queue_ability_call(selectedAbility, chosenTargets)
+				queue_ability_call(selectedAbility, get_targeting_from_cells(selectedAbility, chosenTargets))
 				currentState = States.CONFIRMING
 				
 				update_markers([], MarkerTypes.TARGETABLE)
@@ -315,8 +310,8 @@ func on_confirm():
 		
 		States.CONFIRMING:
 			callQueue.run_queue()
-			end_ability_targeting()
 			update_ability_list(selectedAbility.user)
+			end_ability_targeting()
 			currentState = States.INACTIVE
 	pass
 
