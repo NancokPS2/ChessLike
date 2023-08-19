@@ -302,8 +302,11 @@ class MapScreenMarker extends TextureRect:
 	
 	func _ready() -> void:
 		#If no normalTexture has been set, use whatever is the current one when readied.
-		if not normalTexture is Texture and texture is Texture and texture != disabledTexture:
-			normalTexture = texture
+#		if not normalTexture is Texture and texture is Texture and texture != disabledTexture:
+#			normalTexture = texture
+		
+		texture = normalTexture
+		assert(texture is Texture)
 		
 		#If there is text to display, add a label for it.
 		if displayText:
