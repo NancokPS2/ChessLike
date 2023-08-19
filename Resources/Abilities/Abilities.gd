@@ -1,16 +1,10 @@
 extends Resource
 class_name Ability
-##Types of use:
-##	Passive: 
-##Use _passive_proc to define an effect, usually should target the user. 
-##It triggers periodically when the passiveTickSignal in the user is emitted
-
-##	Reaction: 
-##Use _reaction_proc to define an effect, triggers when was_targeted is emitted from the user. 
-##The incoming ability that targets the user of this ability must have the tags defined in
-
 
 signal usability_status(code:int)
+signal assigned_user(unit:Unit)
+
+
 enum UsabilityStatuses {
 	OK,
 	INSUFFICIENT_ACTIONS,
@@ -59,14 +53,10 @@ var user:Unit:
 			Utility.SignalFuncs.disconnect_signals_from(self, user)
 			board = user.board
 			user = val
+		else: 
+			user = val
 			
-			#Reaction connection
-			user.was_targeted.connect(reaction_on_was_targeted)
-			
-			#Passive connection
-			Signal(user,passiveTickSignal).connect(_passive_proc)
-			user.board.time_advanced.connect(passive_delay_progress)
-		else: user = val
+		assigned_user.emit(user)
 
 ## Set alongside it's unit
 var board:GameBoard:
@@ -84,26 +74,10 @@ var board:GameBoard:
 @export var type:AbilityTypes #Where it should appear in the menus
 @export_multiline var description:String:
 	get = get_description
-#@export (MovementGrid.mapShapes) var targetingShape
 
-var miscOptions:Dictionary#Used to get extra parameters from the player
-#Example: {"Head":Const.bodyParts.HEAD}
 @export_group("Effects")
 @export var abilityFlags:Array[AbilityFlags]
 @export var effects:Array[AbilityEffect]
-
-
-
-@export_group("Passive Triggering")#Passives trigger at scheduled intervals
-@export var passiveDurationTick:int
-@export var passiveDurationDelay:float
-@export var passiveTickSignal:StringName = "turn_started" ##passiveDurationTick will advance whenever this is triggered and the passive will take effect
-
-@export_group("Reaction Triggering")#Reactions trigger when targeted by specific types of abilities
-@export var reactionTriggeringFlags:Array[AbilityFlags]#Flags which must be present to work
-@export var reactionExcludingFlags:Array[AbilityFlags] = [AbilityFlags.IS_REACTION]#Flags which will prevent the proccing of this reaction
-@export var procPriority:int
-@export var reactionOptionalTriggerSignals:Array[StringName]
 
 @export_group("Restrictions")
 @export var classRestrictions:Array[String]
@@ -122,9 +96,7 @@ var miscOptions:Dictionary#Used to get extra parameters from the player
 @export var amountOfTargets:int = 1 #How many cells the user can target (the AOE will be applied to each one separately)
 @export var targetingFilterNames:Array[StringName] = ["has_unit"]:
 	set(val):
-#		assert(not val.is_empty())
 		if val.all( func(method:String): return method.is_valid_identifier() ): targetingFilterNames = val
-#		elif not val is Array[String]: push_error("Invalid array type.")
 		else: push_error("Invalid filter found in the array.")
 		
 @export_group("Visuals")
@@ -139,9 +111,8 @@ var filters:Array[Callable]:
 func get_description():
 	var desc:String = description + "\n"
 	for effect in effects:
-		desc+=effect.get_description() + "\n"
+		desc += effect.get_description() + "\n"
 	return desc
-
 
 
 func is_usable()->bool:
@@ -217,40 +188,6 @@ func targeting_get_rotated_to_cell(shape:Array[Vector3i], targetCell:Vector3i)->
 	return targetShapeHolder
 	
 	
-#REACTIONS
-func reaction_reacts_to_ability(ability:Ability)->bool:
-	var status:bool = false
-	if reactionTriggeringFlags.any(func(flag): return flag in ability.abilityFlags): status = true
-	if reactionExcludingFlags.any(func(flag): return flag in ability.abilityFlags): status = false		
-	return status
-
-func reaction_on_was_targeted(ability:Ability):
-	if reaction_reacts_to_ability(ability):
-		var targets:Array[Vector3i] = [ability.user.get_current_cell()]
-		abilityHandler.queue_ability_call(self, targets, ability, false)
-	
-		
-func _reaction_proc(ability:Ability):
-	print_debug("Dummy reaction proc triggered.")
-
-#PASSIVES
-
-func passive_delay_progress(time:float):
-	passiveDurationDelay -= time
-	pass
-
-func passive_proc():
-	if passiveDurationTick != INFINITE_DURATION: passiveDurationTick -= 1
-	use()
-	
-
-func _passive_proc():
-	print_debug("Dummy passive proc triggered.")
-	pass
-	
-func passive_expire():
-	assert(passiveDurationDelay <= 0 or passiveDurationTick <= 0, "This expired without any duration running out!")
-	pass
 
 #func filter_targetable_cells(cells:Array[Vector3i], shape:TargetingShapes=targetingShape)->Array[Vector3i]:
 #	var userCell:Vector3i = user.get_current_cell()
@@ -281,18 +218,7 @@ func passive_expire():
 #		newTargets = newTargets.filter(filter)
 #
 #	return newTargets
-			
-		
-#func get_tween(targets:Array[Vector3i])->Tween:
-#	#Filter any unwanted targets.
-#	targets = filter_targets(targets)
-#	warn_units(targets)
-#
-#	#Create a tween for each attack
-#	var tween:Tween = user.create_tween()
-#	tween.tween_callback(use.bind(targets)).set_delay(0.2)
-#	tween.pause()
-#	return tween
+
 	
 ## Checks for units in the cells and warns them of an upcoming attack.
 func warn_unit(unit:Unit):
@@ -309,7 +235,7 @@ func proc_costs():
 	user.attributes.change_stat(AttributesBase.StatNames.ENERGY, -energyCost)
 	user.attributes.change_stat(AttributesBase.StatNames.TURN_DELAY, -turnDelayCost)
 	
-func use( targetingInfo:=AbilityTargetingInfo.new() ):
+func use( targetingInfo:AbilityTargetingInfo ):
 	proc_costs()
 	print_debug(user.attributes.info.nickName + " used " + displayedName + " on cells " + str(targetingInfo.cellsTargeted))
 #	targets = filter_targets(targets)
@@ -327,9 +253,6 @@ func use( targetingInfo:=AbilityTargetingInfo.new() ):
 	
 func _use(targetingInfo:=AbilityTargetingInfo.new()):
 	print( user.attributes.get_info(CharAttributes.InfoNames.NICK_NAME) + " tried something. But it didn't do anything.")
-	pass
-
-func _per_cell_effect(cell:Vector3i):
 	pass
 
 func get_unit_in_cell(cell:Vector3i)->Unit:
