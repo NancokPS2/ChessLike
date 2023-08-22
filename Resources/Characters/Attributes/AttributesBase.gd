@@ -20,6 +20,7 @@ const StatNames:Dictionary = {
 	TURN_DELAY = "turnDelay",
 	ACTIONS = "actions",
 	MOVES = "moves",
+	JUMP_HEIGHT = "jump_height",
 	#Primary
 	HEALTH_MAX = "healthMax",
 	ENERGY_MAX = "energyMax",
@@ -64,6 +65,7 @@ var user:Unit:
 	"turnDelay":0,
 	"actions":1,
 	"moves":1,
+	"jump_height":1,
 	#Primary
 	"healthMax":100,
 	"energyMax":30,
@@ -213,7 +215,7 @@ class AttributesBaseTemporaryMod extends Resource:
 		set(val):
 			killSignal = val
 #			freeing.emit(self)
-			killSignal.connect(free)
+			killSignal.connect(Callable(self, "free"))
 			
 	var types:Array[String]
 	var stat:String
