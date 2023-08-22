@@ -254,6 +254,7 @@ func clear_markers(type:MarkerTypes):
 	
 	
 func update_ability_list(unit:Unit, list:Control=abilityButtonList):
+	if not unit is Unit: push_error("No actingUnit set."); return
 	for ability in unit.attributes.abilities:
 		var button:=AbilityButton.new()
 		var buttonName:String
