@@ -1,0 +1,31 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://d3fi42yaijpi"]
+
+[ext_resource type="Script" path="res://Resources/Abilities/Effects/AbilityEffectTeleport.gd" id="1_jnscg"]
+[ext_resource type="Script" path="res://Resources/Abilities/Scripts/AbilityMove.gd" id="2_haihk"]
+
+[sub_resource type="Resource" id="Resource_lj7yt"]
+script = ExtResource("1_jnscg")
+
+[resource]
+script = ExtResource("2_haihk")
+jumpHeight = -2147483648
+passableTags = Array[String](["WALKABLE"])
+impassableTags = Array[String](["NO_ENTRY", "UNTARGETABLE"])
+movementBonus = 0
+internalName = "teleport"
+displayedName = "Teleport"
+type = 0
+description = ""
+abilityFlags = Array[int]([])
+effects = Array[Resource("res://Resources/Abilities/AbilityEffect.gd")]([SubResource("Resource_lj7yt")])
+classRestrictions = Array[String]([])
+energyCost = 0
+turnDelayCost = 0
+actionCost = 1
+moveCost = 0
+targetingShape = Array[Vector3i]([Vector3i(0, 0, 0), Vector3i(-1, 0, 0), Vector3i(1, 0, 0), Vector3i(0, 0, 1), Vector3i(0, 0, -1)])
+targetingAOEShape = Array[Vector3i]([Vector3i(0, 0, 0)])
+targetingRotates = false
+amountOfTargets = 1
+targetingFilterNames = Array[StringName]([&"has_unit"])
+animationDuration = 0.0
