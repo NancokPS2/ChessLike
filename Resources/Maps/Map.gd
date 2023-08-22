@@ -1,7 +1,7 @@
 extends Resource
 class_name Map
 
-
+const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
 
 const DefaultCellTags:Dictionary = {
 	WALKABLE="WALKABLE", ## All units (dirt, path)
@@ -41,14 +41,14 @@ func get_default_tags_for_ID(ID:int)->Array[String]:
 #			push_error("")
 		
 @export_category("Factions")		
-@export var factionsPresent:Array[Faction] = [preload("res://Resources/Characters/Factions/PLAYER.tres")]
+@export var factionsPresent:Array[Faction] = [load("res://Resources/Characters/Factions/PLAYER.tres")]
 @export var spawnLocations:Dictionary #faction:[spawns]
 
 
 @export_category("Misc Contents")		
 @export var background:Texture
 
-@export var cellArray:Array[Cell] 
+@export var cellArray:Array[Cell]
 # [
 #	[0,Vector3i.ZERO,["WALKABLE"]],
 #	[0,Vector3i.RIGHT,["WALKABLE"]],
@@ -64,13 +64,33 @@ func get_default_tags_for_ID(ID:int)->Array[String]:
 
 @export_group("Auto Generation")
 @export var assignSpawns:bool
-@export var generateTerrain:bool = false
+@export var generateTerrain:bool = false:
+	set(val):
+		generateTerrain = val
+		auto_generation()
 @export var noiseName:StringName = "NOISE_DEFAULT"
 @export var noiseSeed:int = 0
 @export var wantedSize:Vector3i = Vector3i.ONE*15
 @export_range(1,8) var maxFactions:int = 2
 @export_range(1,10) var spawnsPerFaction:int = 6
 
+var cellMapPos:Dictionary
+var cellMapPos2D:Dictionary
+
+
+func update_cell_maps():
+	cellMapPos.clear()
+	cellMapPos2D.clear()
+	for cell in cellArray:
+		cellMapPos[cell.position] = cell
+		cellMapPos2D[Vector2i(cell.position.x, cell.position.z)] = cell
+		
+func get_cell_by_pos(vector:Vector3i)->Cell:
+	return cellMapPos.get(vector, null)
+
+func get_cell_by_pos_2d(vector:Vector2i)->Cell:
+	return cellMapPos2D.get(vector, null)
+	
 
 #func get_faction_spawns(factions:Array[Faction])->Dictionary:
 #	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
@@ -86,7 +106,10 @@ func auto_generation():
 		var generator:=TerrainGenerator.new()
 		if generator.get(noiseName) is FastNoiseLite:
 			generator.simple_noise_generation(self, wantedSize, generator.get(noiseName), noiseSeed) 
-		else: push_error("Not a valid noise constant.")
+		else: 
+			push_error("Not a valid noise constant.")
+		
+		update_cell_maps()
 		
 
 ## Should be ran after auto_generation. Fixes the height of the units and generates unfinished ones
@@ -153,11 +176,6 @@ func get_all_tileIDs()->Array[int]:
 		if not IDs.has(currID):
 			IDs.append(currID)
 	return IDs
-		
-func get_cell_by_pos(pos:Vector3i)->Cell:
-	for cell in cellArray:
-		if cell.position == pos: return cell
-	return null
 		
 func get_pos_to_cell_dictionary()->Dictionary:
 	var dict:Dictionary
@@ -272,9 +290,12 @@ class TerrainGenerator extends RefCounted:
 
 
 			
-		pass
-class CellMath extends RefCounted:
+
 	
-	static func get_manhattan_distance(posA:Vector3i, posB:Vector3i)->int:
-		var manhattanDistance:int = abs(posA.x - posB.x) + abs(posA.y - posB.y) + abs(posA.z - posB.z)
-		return manhattanDistance
+static func get_manhattan_distance(posA:Vector3i, posB:Vector3i)->int:
+	var manhattanDistance:int = abs(posA.x - posB.x) + abs(posA.y - posB.y) + abs(posA.z - posB.z)
+	return manhattanDistance
+	
+static func get_mahattan_distance_2d(posA:Vector3i, posB:Vector3i)->int:
+	var manhattanDistance:int = abs(posA.x - posB.x) + abs(posA.z - posB.z)
+	return manhattanDistance

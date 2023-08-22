@@ -10,6 +10,7 @@ signal unit_clicked(unit:Unit)
 signal marked_cell_clicked(cellPos:Vector3i)
 signal cell_hovered(cellPos:Vector3i)
 signal new_cell_hovered(cellPos:Vector3i) ## Only fires when a different cell is moused over
+signal cell_changed(cellPos:Vector3i)
 
 signal placed_object(cell:Vector3i, object:Object)
 
@@ -25,7 +26,16 @@ enum MapShapes{STAR,CONE,SINGLE,ALL}
 
 
 ## Stores all the information of every cell Vector3:Array
-var cellDict:Dictionary = {}
+## Format: Vector3i:Array (with nodes and strings)
+var currentMap:Map:
+	set(val):
+		currentMap = val
+		if currentMap is Map:
+#			currentMap.update_cell_maps()
+			cellDict = currentMap.cellMapPos
+			mesh_library = currentMap.meshLibrary
+			
+var cellDict:Dictionary
 var objectPicker:=Picker3D.new()
 var pathing:GridPathing
 
@@ -57,6 +67,8 @@ func _ready() -> void:
 	
 	print_debug(mesh_library.get_item_list())
 
+func get_cell_by_vec(pos:Vector3i)->Cell:
+	return cellDict.get(pos,null)
 
 ## Updates all object positions in the Grid
 func update_pathing(map:Map):
@@ -64,92 +76,65 @@ func update_pathing(map:Map):
 #	initialize_cells_from_map(map)
 	assert(not cellDict.is_empty())
 	pathing = GridPathing.new(self,map)
-	update_object_positions()
+	update_cell_contents()
 
 ## Used to register units and obstacles.
-func update_object_positions():
+func update_cell_contents():
 	#Remove all but tags
-	for cell in cellDict:
-		cellDict[cell] = cellDict[cell].filter(func(cont): return cont is StringName )
-		assert(not cellDict.values().is_empty(), "There appears to not even be tags in this map. Ensure they are not being filtered.")
+	for cellRes in cellDict.values():
+		cellRes.clear(Cell.ClearFlags.UNITS + Cell.ClearFlags.OBSTACLES)
 
-	
 	assert(not cellDict.is_empty())
 	
 	#Find all nodes to be registered
 	var allValidNodes:Array = []
 	for group in Const.ObjectGroups: 
 		allValidNodes += get_tree().get_nodes_in_group(Const.ObjectGroups[group])
+	if allValidNodes.is_empty(): push_warning("No valid nodes could be found."); return
 	
 	#Register them to cellDict
 	for node in allValidNodes:
-		assert(node.get("position")!=null)
+		assert(node is Node3D)
 		var cellPos:Vector3i = local_to_map(node.position)
+		if not cellDict.has(cellPos): push_error("The object is outside the defined grid!" + str(cellPos)); continue
 		
-		if not cellDict.has(cellPos): push_error("The object is outside the grid!")
-		else: cellDict[cellPos].append(node)
-	if allValidNodes.is_empty(): push_warning("The map is empty at this point, is this intended?")
-
-## Returns all cells in cellDict as Array[Vector3i]
-func get_typed_cellDict_array(array:Array = cellDict.keys())->Array[Vector3i]:
-	var returnal:Array[Vector3i]
-	returnal.assign(array)
-	return returnal
+		get_cell_by_vec(cellPos).add_object(node)
+		
+	
 
 func printer(variant):
 	print(variant)
-	
-
 
 	
-func mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.TARGETING, autoClear:bool=true):
+func marked_mark_cells(cells:Array[Vector3i], tileID:CellIDs = CellIDs.TARGETING, autoClear:bool=true):
 	if autoClear: subGridMap.clear()
 	for cell in cells:
 		subGridMap.set_cell_item(cell,tileID)
 	print_debug(subGridMap.get_used_cells())
 		
-func get_marked_cells():
+func marked_get_cells():
 	return subGridMap.get_used_cells()
 	
-func is_cell_marked(cellPos:Vector3i):
+func marked_is_cell_marked(cellPos:Vector3i):
 	return subGridMap.get_cell_item(cellPos) != INVALID_CELL_ITEM 
 
 ## Registers all cells in the map to it's cellDict as well as their tags. Override is true, it resets any previously defined cell
-func initialize_cells_from_map(map:Map, override:bool=false):
-	
+func set_cells_from_map(map:Map, override:bool=false):
+	clear()
 	for cell in map.cellArray:
-		
-		if not cellDict.has(cell.position) or override:
-			var tagHolder:Array 
-			tagHolder.assign(map.get_all_cell_tags_by_pos(cell.position))
-			cellDict[cell.position] = tagHolder
-			
-			assert(cellDict[cell.position] != [])
-			for cellAr in cellDict.values(): assert(not cellAr.is_typed()) 
-			
-			set_cell_item(cell.position, cell.tileID)
-#	var cellArrays = map.terrainCells
-#	for cell in map.get_all_cell_positions():
-#		if not cellDict.has(cell) or override:
-#
-#			#Type conversion from Array[String] to Array
-#			var cellTags:Array 
-#			cellTags.assign( map.get_all_cell_tags(cell) )
-#
-#			#Addition
-##			assert(not cellTags.is_typed())
-#			cellDict[cell] = cellTags
-#			assert(not cellDict[cell].is_typed())
-#			#print(cellDict[cell])
-	
+		set_cell_item(cell.position, cell.tileID)
+
+func set_cells_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
+	for pos in cells:
+		set_cell_item(Vector3i(pos),objetctID)
 
 ## Alias of search_in_cell(where:Vector3i, Searches.TAGS, true)
-func get_cell_tags(cell:Vector3i, getAll:bool=true)->Array:
-	return search_in_cell(cell, Searches.TAG, getAll)
+func get_cell_tags(cell:Vector3i)->Array:
+	return get_cell_by_vec(cell).tags
 
 func tag_cells(cells:Array[Vector3i], tag:String):
 	for cell in cells:
-		cellDict[cell].append(tag)
+		get_cell_by_vec(cell).add_tag(tag)
 	
 
 ## Searches for something in the given tile, returns false if it can't find anything
@@ -158,35 +143,32 @@ func search_in_cell(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 	match what:
 		Searches.UNIT:
 			if getAll:
-				return cellDict[where].filter(func(obj): return obj is Unit)
+				return cellDict[where].unitsContained as Array[Unit]
 			else:
-				for obj in cellDict[where]: if obj is Unit: return obj
+				return cellDict[where].unitsContained.back() as Unit
 				
 		Searches.OBSTACLE:
 			push_error("OBSTACLE searches are not implemented.")
 			if getAll: 
 #				return cellDict[where].filter(func(obj): return true if obj is null else false)
-				return []
+				return cellDict[where].obstaclesContained as Array[Obstacle]
 			else: 
 #				if obj is Object: return obj
-				return null			
-				
-		Searches.ANYTHING:
-			if not cellDict[where].is_empty(): return cellDict[where][0]
+				return cellDict[where].obstaclesContained.back() as Obstacle
 		
 		Searches.TAG:
 			if getAll:
-				return cellDict[where].filter(func(obj): return true if obj is String else false)
+				return cellDict[where].tags as Array[StringName]
 			else:
-				for obj in cellDict[where]: if obj is String: return obj
+				return cellDict[where].tags.back() as StringName
 				
 		Searches.ALL_OBJECTS:
 			if getAll:
-				return cellDict[where].filter(func(obj): return obj is Unit) #or obj is Obstacle)
+				return cellDict[where].unitsContained as Array[Unit] + cellDict[where].obstaclesContained as Array[Node3D]
 			else:
-				for obj in cellDict[where]: if obj is Unit: return obj
+				return (cellDict[where].unitsContained as Array[Unit] + cellDict[where].obstaclesContained as Array[Node3D]).back()
 		_: push_error("Invalid Search, OBSTACLE not yet implemented either.")
-		
+	push_error("Unexpected error in search.")
 	return null
 
 func multi_search_in_cell(where:Array[Vector3i], what:Searches):
@@ -198,19 +180,6 @@ func multi_search_in_cell(where:Array[Vector3i], what:Searches):
 			results.append( search_in_cell(cell, what, true) )
 	return results
 
-func get_cell_debug_text(cell:Vector3i)->String:
-	var text:String
-	
-	text += str(cell) + "\n"
-	text += "Units: " + str(search_in_cell(cell,Searches.UNIT,true)) + "\n"
-	text += "Obstacles: " + str(search_in_cell(cell,Searches.OBSTACLE,true)) + "\n"
-	text += "Tags: " + str(search_in_cell(cell,Searches.TAG,true)) + "\n"
-	return text
-
-func set_items_from_array(cells:Array[Vector3],objetctID:int):#Sets all cells in the array to the chosen ID
-	for pos in cells:
-		set_cell_item(Vector3i(pos),objetctID)
-
 func align_to_grid(object:Object):
 	var gridPos:Vector3i = local_to_map(object.position)
 	object.translation = map_to_local(gridPos)
@@ -219,24 +188,26 @@ func position_object_3D(cell:Vector3i, object:Node3D):
 	#Position them
 	object.position = map_to_local(cell)
 	placed_object.emit(cell, object)
-	update_object_positions()
+	update_cell_contents()
 
-func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=MapShapes.STAR, facing:int=SIDE_TOP)->Array:
-	var returnedTiles:Array
-	match shape:
-		MapShapes.SINGLE:#Only return the origin
-			returnedTiles.append(origin)
-			
-		MapShapes.STAR:#Return all within a certain tiled distance
-			for tile in validTiles:
-				if abs(tile.x - origin.x) + abs(tile.y - origin.y) + abs(tile.z - origin.z) <= size:
-					returnedTiles.append(tile)
-		
-		MapShapes.ALL:#Return all valid tiles
-			returnedTiles = validTiles
-	return returnedTiles
+#func get_cells_in_shape(validTiles:Array,origin:Vector3,size:int=1,shape:int=MapShapes.STAR, facing:int=SIDE_TOP)->Array:
+#	var returnedTiles:Array
+#	match shape:
+#		MapShapes.SINGLE:#Only return the origin
+#			returnedTiles.append(origin)
+#
+#		MapShapes.STAR:#Return all within a certain tiled distance
+#			for tile in validTiles:
+#				if abs(tile.x - origin.x) + abs(tile.y - origin.y) + abs(tile.z - origin.z) <= size:
+#					returnedTiles.append(tile)
+#
+#		MapShapes.ALL:#Return all valid tiles
+#			returnedTiles = validTiles
+#	return returnedTiles
 
-
+func get_cell_debug_text(cellPos:Vector3i)->String:
+	return get_cell_by_vec(cellPos).get_debug_text()
+	
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -259,7 +230,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if mouseIntersect is Vector3: 
 			mouseIntersect = local_to_map(mouseIntersect)
 			cell_clicked.emit(mouseIntersect)
-			if is_cell_marked(mouseIntersect): marked_cell_clicked.emit(mouseIntersect)
+			if marked_is_cell_marked(mouseIntersect): marked_cell_clicked.emit(mouseIntersect)
 			
 			var cellContents:Array = search_in_cell(mouseIntersect, Searches.ALL_OBJECTS, true)
 			#If empty, signal as much
