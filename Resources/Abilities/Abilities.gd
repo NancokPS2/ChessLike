@@ -53,21 +53,26 @@ var user:Unit:
 			Utility.SignalFuncs.disconnect_signals_from(self, user)
 			board = user.board
 			user = val
+			
+			if user.is_node_ready(): _user_ready()
+			else: user.ready.connect(_user_ready)
+			
+			assigned_user.emit(user)
 		else: 
 			user = val
-			
-		assigned_user.emit(user)
+		
+		
+		
 
 ## Set alongside it's unit
-var board:GameBoard:
-	get: 
-		if user is Unit and user.board is GameBoard:
-			return user.get("board")
-		else:
-			push_error(str(user)+ " may not be a Unit or lacks a board.")
-			return null
+var board:GameBoard
+#
+#		if user is Unit and user.board is GameBoard:
+#			return user.get("board")
+#		else:
+#			push_error(str(user)+ " may not be a Unit or lacks a board.")
+#			return null
 
-#@export var mainValue:float
 @export_group("Identification")
 @export var internalName:String = ""
 @export var displayedName:String
@@ -89,7 +94,8 @@ var board:GameBoard:
 @export var moveCost:int = 0
 
 @export_group("Targeting")
-@export var targetingShape:Array[Vector3i] = TARGETING_SHAPE_STAR_ONE #The area which the user can target
+@export var targetingShape:Array[Vector3i] = TARGETING_SHAPE_STAR_ONE:
+	get = get_targeting_shape #The area which the user can target
 @export var targetingAOEShape:Array[Vector3i] = TARGETING_SHAPE_SELF #The area relative to the targeted point that it will affect
 @export var targetingRotates:bool = false #If true, the targetingShape will be rotated to match the user's facing.
 
@@ -108,12 +114,25 @@ var filters:Array[Callable]:
 			filters.append(Callable(Filters,filter))
 		return filters
 
+func _init() -> void:
+	assigned_user.connect(_on_assigned_user)
+
+#Overridable
+func _user_ready():
+	pass
+
+#Overridable
+func _on_assigned_user(who:Unit):
+	pass
+
 func get_description():
 	var desc:String = description + "\n"
 	for effect in effects:
 		desc += effect.get_description() + "\n"
 	return desc
 
+func get_targeting_shape():
+	return targetingShape
 
 func is_usable()->bool:
 	var stats:CharAttributes = user.attributes
