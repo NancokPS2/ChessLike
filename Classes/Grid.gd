@@ -68,7 +68,10 @@ func _ready() -> void:
 	print_debug(mesh_library.get_item_list())
 
 func get_cell_by_vec(pos:Vector3i)->Cell:
-	return cellDict.get(pos,null)
+	var cell:Cell = cellDict.get(pos,null)
+	assert(cell.position == pos)
+	return cell
+	
 
 ## Updates all object positions in the Grid
 func update_pathing(map:Map):

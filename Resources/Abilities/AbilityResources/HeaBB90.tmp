@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="Ability" load_steps=4 format=3 uid="uid://mxqwj66ysueu"]
+
+[ext_resource type="Script" path="res://Resources/Abilities/Effects/AbilityEffectHeal.gd" id="1_cqdks"]
+[ext_resource type="Script" path="res://Resources/Abilities/Abilities.gd" id="2_a71oj"]
+
+[sub_resource type="Resource" id="Resource_gxfjd"]
+script = ExtResource("1_cqdks")
+healAmount = 0.0
+
+[resource]
+script = ExtResource("2_a71oj")
+internalName = "heal"
+displayedName = "Heal"
+type = 2
+description = ""
+abilityFlags = Array[int]([3, 5])
+effects = Array[Resource("res://Resources/Abilities/AbilityEffect.gd")]([SubResource("Resource_gxfjd")])
+passiveDurationTick = 0
+passiveDurationDelay = 0.0
+passiveTickSignal = &"turn_started"
+reactionTriggeringFlags = Array[int]([])
+reactionExcludingFlags = Array[int]([6])
+procPriority = 0
+reactionOptionalTriggerSignals = Array[StringName]([])
+classRestrictions = Array[String]([])
+energyCost = 10
+turnDelayCost = 50
+actionCost = 1
+moveCost = 0
+targetingShape = Array[Vector3i]([Vector3i(0, 0, 0), Vector3i(-1, 0, 0), Vector3i(1, 0, 0), Vector3i(0, 0, 1), Vector3i(0, 0, -1)])
+targetingAOEShape = Array[Vector3i]([Vector3i(0, 0, 0)])
+targetingRotates = false
+amountOfTargets = 1
+targetingFilterNames = Array[StringName]([])
+animationDuration = 0.0

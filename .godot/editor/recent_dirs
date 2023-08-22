@@ -1,3 +1,4 @@
+res://Resources/Abilities/AllAbilities
 res://Resources/Characters/UniqueCharacters
 res://Resources/Maps/UniqueMaps
 res://UnusedStuff
@@ -11,7 +12,6 @@ res://Assets/Meshes/Map
 res://Other/Shaders
 res://Assets/UI/ThemeElements
 res://Assets
-res://Resources/Abilities/AllAbilities
 res://Objects/UI
 H:/Programs/Blender
 res://

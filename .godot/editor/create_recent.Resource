@@ -1,3 +1,4 @@
+Ability
 CharAttributes
 Map
 SaveFile
@@ -5,5 +6,4 @@ FastNoiseLite
 NoiseTexture2D
 StyleBoxTexture
 Theme
-Ability
 ClassAttributes

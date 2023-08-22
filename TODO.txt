@@ -156,5 +156,6 @@ Actual TODO:
 	-AbilityMovement WIP
 	-Change MovementGrid.update_objects to use a pseudo cache in the way of meta values.
 	
+	-When lowering turn delay during a turn cycle. It should not make the value loop UNTIL a unit is chosen.
 	-MapScreenEditor needs to add the buttons for saving and loading.
 	
