@@ -62,7 +62,7 @@ func spawn_unit(unit:Unit, where:Vector3i):
 	add_child(unit)
 	
 	#Update the gridMap
-	board.gridMap.update_object_positions()
+	board.gridMap.update_cell_contents()
 	
 	unit_entered_the_board.emit(unit)
 	
