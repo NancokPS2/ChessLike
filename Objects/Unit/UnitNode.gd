@@ -51,8 +51,7 @@ func _ready() -> void:
 	add_child(bodyNode)
 	
 	#TEMP
-	await get_tree().process_frame 
-	var abil:Ability = load("res://Resources/Abilities/AllAbilities/Heal.tres")
+	var abil:Ability = load("res://Resources/Abilities/AbilityResources/Heal.tres")
 	assert(abil is Ability)
 	attributes.abilities.append(abil)
 	abil.user = self
@@ -78,8 +77,9 @@ func get_passive_effects():
 	pass
 
 func on_stat_changed(statName:String, oldVal:float, newVal:float):
-	var floatingNumbers:=StatChangeNumbers.new(statName, oldVal-newVal)
-	add_child(floatingNumbers)
+#	var floatingNumbers:=StatChangeNumbers.new(statName, oldVal-newVal)
+#	add_child(floatingNumbers)
+	StatChangeNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
 	
 	if statName == attributes.StatNames.TURN_DELAY:
 		time_passed.emit(oldVal - newVal)
@@ -200,8 +200,8 @@ class StatChangeNumbers extends Label3D:
 	var positiveColor:=Color.GREEN
 	var negativeColor:=Color.RED
 	
-	var movementFinal:Vector3 = Vector3.UP * 2
-	var movementDuration:float = 1
+	var movementFinal:Vector3 = Vector3.UP
+	var movementDuration:float = 0.5
 	var modulationFinal:=Color.WHITE
 	var modulationDuration:float = 1
 	
@@ -235,12 +235,17 @@ class StatChangeNumbers extends Label3D:
 		
 	func pop():
 #		var newLabel:Label = labelRef.duplicate(DUPLICATE_SCRIPTS + DUPLICATE_SIGNALS)
-		top_level = true
+#		top_level = true
 		modulate = Color.TRANSPARENT
 		
 		var tween:Tween = create_tween().set_parallel(true)
 		tween.tween_property(self, "position", movementFinal, movementDuration)
 		tween.tween_property(self, "modulate", Color.WHITE, modulationDuration)
-		tween.tween_callback(queue_free)
+		tween.chain().tween_callback(queue_free)
 		
 		tween.play()
+
+	static func create_n_pop(where:Node, text:String, value:float):
+		var newNums:=StatChangeNumbers.new(text,value)
+		where.add_child(newNums)
+		newNums.pop()
