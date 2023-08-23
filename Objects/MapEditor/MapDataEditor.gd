@@ -3,7 +3,7 @@ class_name MapDataEditor
 
 enum FileSelectionModes {MESH_LIBRARY}
 
-@export var applyButton:Button
+@export var mapEditor:MapEditor
 @export var fileSelectionMode:FileSelectionModes
 
 @export_category("Fields")
@@ -23,7 +23,7 @@ func _ready() -> void:
 	changeMeshLibBtn.pressed.connect(set.bind("fileSelectionMode", FileSelectionModes.MESH_LIBRARY))
 	changeMeshLibBtn.pressed.connect(fileSelector.show)
 	
-func load_map(map:Map):
+func load_map(map:Map=mapEditor.mapLoaded):
 	currentMap = map
 	if not currentMap is Map: push_error("Tried to load a non-Map value."); return
 		
