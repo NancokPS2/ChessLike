@@ -31,7 +31,7 @@ var currentMap:Map:
 	set(val):
 		currentMap = val
 		if currentMap is Map:
-#			currentMap.update_cell_maps()
+			currentMap.update_cell_maps()
 			cellDict = currentMap.cellMapPos
 			mesh_library = currentMap.meshLibrary
 			
