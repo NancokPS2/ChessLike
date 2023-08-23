@@ -82,8 +82,13 @@ func update_cell_maps():
 	cellMapPos.clear()
 	cellMapPos2D.clear()
 	for cell in cellArray:
+		assert(not cell.position in cellMapPos)
+		
 		cellMapPos[cell.position] = cell
 		cellMapPos2D[Vector2i(cell.position.x, cell.position.z)] = cell
+		
+	assert(cellMapPos.size() == cellArray.size())
+	assert(cellMapPos2D.size() == cellArray.size())
 		
 func get_cell_by_pos(vector:Vector3i)->Cell:
 	return cellMapPos.get(vector, null)
