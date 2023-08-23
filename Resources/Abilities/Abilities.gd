@@ -54,8 +54,8 @@ var user:Unit:
 			board = user.board
 			user = val
 			
-			if user.is_node_ready(): _user_ready()
-			else: user.ready.connect(_user_ready)
+			if user.is_node_ready(): user_ready()
+			else: user.ready.connect(user_ready)
 			
 			assigned_user.emit(user)
 		else: 
@@ -108,6 +108,9 @@ var board:GameBoard
 @export_group("Visuals")
 @export var animationDuration:float
 		
+var readied:bool:
+	get = is_ready
+		
 var filters:Array[Callable]:
 	get:
 		for filter in targetingFilterNames:
@@ -116,10 +119,16 @@ var filters:Array[Callable]:
 
 func _init() -> void:
 	assigned_user.connect(_on_assigned_user)
-
+	
+func user_ready():
+	readied = true
+	_user_ready()
 #Overridable
 func _user_ready():
 	pass
+
+func is_ready():
+	return readied
 
 #Overridable
 func _on_assigned_user(who:Unit):
@@ -128,7 +137,7 @@ func _on_assigned_user(who:Unit):
 func get_description():
 	var desc:String = description + "\n"
 	for effect in effects:
-		desc += effect.get_description() + "\n"
+		desc += effect._get_description() + "\n"
 	return desc
 
 func get_targeting_shape():
