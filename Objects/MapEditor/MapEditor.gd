@@ -201,8 +201,21 @@ func apply_changes_to_selected_cells():
 		pass
 
 func save_map(path:String):#path:String=DEFAULT_MAP_FOLDER+"MAP"
-
-	ResourceSaver.save(mapLoaded, path)
+	#Ensure there are no duplicates.
+	var queuedToErase:Array[Cell]
+	var foundPositions:Array[Vector3i]
+	for cell in mapLoaded.cellArray:
+		foundPositions.append(cell.position)
+		if foundPositions.count(cell.position) != 1:
+			push_error("Found more than one cell at position {0}, last duplicate will be removed at the end of this loop.".format([cell.position]))
+			queuedToErase.append(cell)
+	for cell in queuedToErase:
+		mapLoaded.cellArray.erase(cell)
+		
+	
+	var error:int = ResourceSaver.save(mapLoaded, path)
+	if error != OK: push_error("Failed save with code " + str(error))
+		
 	map_saved.emit(mapLoaded)
 	
 func load_map(path:String):
