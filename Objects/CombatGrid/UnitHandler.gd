@@ -199,10 +199,12 @@ func end_turn_attempt(cancel:bool=false) -> void:
 		
 		#If an attempt was just made, confirm it
 		if get_meta("_TURN_END_ATTEMPTED", false):
-			turn_cycle()
 			
 			#Reset the attempt so it can be confirmed again next turn end
 			set_meta("_TURN_END_ATTEMPTED", false)
+			
+			turn_cycle()
+			
 			turn_end_attempted.emit(true)
 		
 		else:
