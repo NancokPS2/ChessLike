@@ -168,10 +168,20 @@ func get_targetable_cells(ability:Ability)->Array[Vector3i]:
 	var shape = ability.targetingShape.duplicate()
 	var userCell:Vector3i = ability.user.get_current_cell()
 	
+	
 	#Select cells based on the shape
 	var filteredCells:Array[Vector3i]
 	for cellPos in shape:
-		filteredCells.append(userCell + cellPos)
+		var cellWantedAt:Vector3i = userCell + cellPos
+		
+		#Use the 2D map of the gridMap to find the cell on this x,z coordinate.
+		var cellAcquired:Cell = gridMap.get_cell_by_vec_2d( Vector2i(cellWantedAt.x, cellWantedAt.z) )
+		
+		#Use it's position.
+		if cellAcquired is Cell: filteredCells.append(cellAcquired.position)
+
+	#Then, remove non-existent cells
+	filteredCells.filter(func(cell:Vector3i): return gridMap.has_cell(cell))
 	
 	#Filter by ability filters
 	for filter in ability.filters:
