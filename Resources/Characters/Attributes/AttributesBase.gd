@@ -73,7 +73,7 @@ var user:Unit:
 	"agility":100,
 	"mind":100,
 	"special":0,
-	"moveDistance":10,
+	"moveDistance":3,
 	"defense":0,
 	"dodge":0,
 	"accuracy":0,
@@ -171,9 +171,9 @@ func remove_stat_temporary_mod_of_type(types:Array[String]):
 
 
 func add_ability(ability:Ability):
-	if abilities.has(ability): push_error("Already added."); return
-	abilities.append(ability)
-	ability.user = user
+	if not abilities.has(ability): abilities.append(ability) #push_error("Already added."); return
+	if ability.user != self: ability.user = user
+	
 		
 
 func combine_attributes_base_stats(attribArray:Array[AttributesBase] = attributeResources, includeSelf:bool=false):
