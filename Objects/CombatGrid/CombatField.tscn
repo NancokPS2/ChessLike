@@ -149,6 +149,7 @@ size_flags_vertical = 3
 
 [node name="EndTurn" type="Button" parent="UI/VBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 text = "END_TURN"
 
 [node name="StartCombat" type="Button" parent="UI"]

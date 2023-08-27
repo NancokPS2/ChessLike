@@ -156,6 +156,10 @@ Actual TODO:
 	-AbilityMovement WIP
 	-Change MovementGrid.update_objects to use a pseudo cache in the way of meta values.
 	
+	-Place get_reachable_cells method from AbilityMove.gd in MovementGrid and call it from there.
+	-Numbers that pop up during stat changes should sort themselves to avoid overlapping
+	
 	-When lowering turn delay during a turn cycle. It should not make the value loop UNTIL a unit is chosen.
 	-MapScreenEditor needs to add the buttons for saving and loading.
+	-AbilityMove.gd:15 has it's custom targeting temporarily disabled
 	

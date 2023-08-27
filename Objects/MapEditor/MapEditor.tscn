@@ -185,10 +185,11 @@ layout_mode = 2
 focus_mode = 0
 text = "Apply"
 
-[node name="Map Properties" type="VBoxContainer" parent="CellProperties" node_paths=PackedStringArray("displayName", "internalName", "description", "changeMeshLibBtn", "fileSelector")]
+[node name="Map Properties" type="VBoxContainer" parent="CellProperties" node_paths=PackedStringArray("mapEditor", "displayName", "internalName", "description", "changeMeshLibBtn", "fileSelector")]
 visible = false
 layout_mode = 2
 script = ExtResource("5_wnqtk")
+mapEditor = NodePath("../..")
 displayName = NodePath("MapName")
 internalName = NodePath("MapInternalName")
 description = NodePath("MapDescription")
@@ -219,6 +220,10 @@ size_flags_horizontal = 3
 text = "Change MeshLibrary"
 alignment = 0
 vertical_icon_alignment = 0
+
+[node name="Apply" type="Button" parent="CellProperties/Map Properties"]
+layout_mode = 2
+text = "Apply"
 
 [node name="FileSelection" type="FileDialog" parent="CellProperties/Map Properties"]
 title = "UNDEFINED"
@@ -307,10 +312,12 @@ render_target_update_mode = 4
 
 [connection signal="cell_hovered" from="." to="CellProperties/Cell Properties" method="load_cell"]
 [connection signal="map_loaded" from="." to="CellProperties/Map Properties" method="load_map"]
+[connection signal="map_saved" from="." to="CellProperties/Map Properties" method="update_map"]
 [connection signal="file_selected" from="SaveDialogue" to="." method="save_map"]
 [connection signal="file_selected" from="LoadDialogue" to="." method="load_map"]
 [connection signal="text_changed" from="CellProperties/Cell Properties/TileID" to="CellProperties/Cell Properties" method="validate_tile_id"]
 [connection signal="pressed" from="CellProperties/Cell Properties/Apply" to="." method="apply_changes_to_selected_cells"]
+[connection signal="pressed" from="CellProperties/Map Properties/Apply" to="CellProperties/Map Properties" method="update_map"]
 [connection signal="file_selected" from="CellProperties/Map Properties/FileSelection" to="CellProperties/Map Properties" method="on_file_selected"]
 [connection signal="pressed" from="HBoxContainer/Save" to="SaveDialogue" method="set_visible" binds= [true]]
 [connection signal="pressed" from="HBoxContainer/Load" to="LoadDialogue" method="set_visible" binds= [true]]
