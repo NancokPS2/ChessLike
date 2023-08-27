@@ -27,7 +27,14 @@ func _user_ready():
 	if jumpHeight == USER_JUMP: jumpHeight = user.attributes.get_stat(AttributesBase.StatNames.JUMP_HEIGHT)	
 	
 func update_targeting_shape():
-	targetingShape = get_reachable_cells()
+	targetingShape = board.gridMap.get_cells_in_expansive(
+		user.get_current_cell(),
+		user.attributes.get_stat(AttributesBase.StatNames.MOVE_DISTANCE),
+		user.attributes.get_stat(AttributesBase.StatNames.JUMP_HEIGHT),
+		passableTags,
+		impassableTags
+		)
+		
 	
 #func get_reachable_cells()->Array[Vector3i]:
 #	if not user or not is_ready(): return []

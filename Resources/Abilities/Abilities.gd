@@ -50,17 +50,14 @@ static var abilityHandler:AbilityHandler
 var user:Unit:
 	set(val):
 		if user is Unit:
-			Utility.SignalFuncs.disconnect_signals_from(self, user)
-			board = user.board
 			user = val
-			
+			board = user.board
 			if user.is_node_ready(): user_ready()
 			else: user.ready.connect(user_ready)
-			
-			assigned_user.emit(user)
 		else: 
 			user = val
-		
+			
+		assigned_user.emit(user)
 		
 		
 
@@ -96,8 +93,10 @@ var board:GameBoard
 @export_group("Targeting")
 @export var targetingShape:Array[Vector3i] = TARGETING_SHAPE_STAR_ONE:
 	get = get_targeting_shape #The area which the user can target
+	
 @export var targetingAOEShape:Array[Vector3i] = TARGETING_SHAPE_SELF #The area relative to the targeted point that it will affect
 @export var targetingRotates:bool = false #If true, the targetingShape will be rotated to match the user's facing.
+
 
 @export var amountOfTargets:int = 1 #How many cells the user can target (the AOE will be applied to each one separately)
 @export var targetingFilterNames:Array[StringName] = ["has_unit"]:
@@ -107,8 +106,9 @@ var board:GameBoard
 		
 @export_group("Visuals")
 @export var animationDuration:float
+
 		
-var readied:bool:
+var readied:bool=false:
 	get = is_ready
 		
 var filters:Array[Callable]:
@@ -122,9 +122,12 @@ func _init() -> void:
 	
 func user_ready():
 	readied = true
+
 	_user_ready()
+	
 #Overridable
 func _user_ready():
+	print_debug("Not defined.")
 	pass
 
 func is_ready():
