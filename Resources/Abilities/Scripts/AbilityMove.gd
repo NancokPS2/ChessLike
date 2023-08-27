@@ -12,64 +12,76 @@ const TARGETABLE_FROM_METHOD:Array[Vector3i] = []
 static var debugMode:bool = true
 var aStar:GridPathing
 
-func get_targeting_shape():
-	return get_reachable_cells()
-	
-func get_reachable_cells()->Array[Vector3i]:
-	var userCell:Vector3i = user.get_current_cell()
-	
-	var moveDistance:int = user.attributes.get_stat(AttributesBase.StatNames.MOVE_DISTANCE) + movementBonus
-	
-	var reachableCells:Array[Vector3i] = [userCell]
-	for step in range(moveDistance):
-		for cell in reachableCells:
-			#Get nearby adjacent and valid cells
-			var roundOfCells:Array[Vector3i] = filter_cells_by_tags( get_adjacent_to(cell, jumpHeight) )
-			
-			#Add any that have not been added before.
-			for foundCell in roundOfCells:
-				if not reachableCells.has(foundCell): reachableCells.append(foundCell)
 
-	
-	return reachableCells
+#func get_targeting_shape()->Array[Vector3i]:
+#	return get_reachable_cells()
+#	if not readied: 
+#		return targetingShape
+#	else: 
+#		assert(user is Unit)
+#		return get_reachable_cells()
 
-
-## Gets cells that are considered adjacent with a height tolerance.
-func get_adjacent_to(cellPos:Vector3i, maxHeightDifference:int)->Array[Vector3i]:
-	var cellPosArray:Array[Vector3i] = []
-	var cells:Array[Cell]
-	cells.append( board.gridMap.currentMap.get_cell_by_pos_2d(Vector2i(cellPos.x-1, cellPos.z)) )
-	cells.append( board.gridMap.currentMap.get_cell_by_pos_2d(Vector2i(cellPos.x+1, cellPos.z)) )
-	cells.append( board.gridMap.currentMap.get_cell_by_pos_2d(Vector2i(cellPos.x, cellPos.z+1)) )
-	cells.append( board.gridMap.currentMap.get_cell_by_pos_2d(Vector2i(cellPos.x, cellPos.z-1)) )
-	
-	for cell in cells:
-		if cell is Cell and abs(cell.position.y - cellPos.y) <= maxHeightDifference: 
-			cellPosArray.append(cell.position)
-	
-	return cellPosArray
-	
-
-##Filter by tags
-func filter_cells_by_tags(cellsToFilter:Array[Vector3i])->Array[Vector3i]:
-	var cells = cellsToFilter.duplicate()
-	
-#	cells.filter(func(x:Cell): return x is Cell)
-	assert(not null in cells)
-	
-	#Filter from tags
-	cells.filter(func(x:Cell): 
-		return x.tags.any( func(tag:String): 
-			return tag in passableTags and not tag in impassableTags
-			)
-		)
-	return cells
-	
-	
 func _user_ready():
+	user.turn_started.connect(update_targeting_shape)
 	aStar = GridPathing.new(board.gridMap, board.currentMap, debugMode)
-	if jumpHeight == USER_JUMP: jumpHeight = user.attributes.get_stat(AttributesBase.StatNames.JUMP_HEIGHT)
-	pass
+	if jumpHeight == USER_JUMP: jumpHeight = user.attributes.get_stat(AttributesBase.StatNames.JUMP_HEIGHT)	
+	
+func update_targeting_shape():
+	targetingShape = get_reachable_cells()
+	
+#func get_reachable_cells()->Array[Vector3i]:
+#	if not user or not is_ready(): return []
+#	var userCell:Vector3i = user.get_current_cell()
+#	var moveDistance:int = user.attributes.get_stat(AttributesBase.StatNames.MOVE_DISTANCE) + movementBonus
+#
+#	var reachableCells:Array[Vector3i] = [userCell]
+#	for step in range(moveDistance):
+#		for cell in reachableCells:
+#			#Get nearby adjacent and valid cells
+#			var roundOfCells:Array[Vector3i] = filter_cells_by_tags( get_adjacent_to(cell, jumpHeight) )
+#
+#			#Add any that have not been added before.
+#			for foundCell in roundOfCells:
+#				if not reachableCells.has(foundCell): 
+#					reachableCells.append(foundCell)
+#
+#
+#	return reachableCells
+#
+#
+### Gets cells that are considered adjacent with a height tolerance.
+#func get_adjacent_to(cellPos:Vector3i, maxHeightDifference:int)->Array[Vector3i]:
+#	var cellPosArray:Array[Vector3i] = []
+#	var cells:Array[Cell]
+#	cells.append( board.gridMap.get_cell_by_vec_2d(Vector2i(cellPos.x-1, cellPos.z)) )
+#	cells.append( board.gridMap.get_cell_by_vec_2d(Vector2i(cellPos.x+1, cellPos.z)) )
+#	cells.append( board.gridMap.get_cell_by_vec_2d(Vector2i(cellPos.x, cellPos.z+1)) )
+#	cells.append( board.gridMap.get_cell_by_vec_2d(Vector2i(cellPos.x, cellPos.z-1)) )
+#
+#	for cell in cells:
+#		if cell is Cell and abs(cell.position.y - cellPos.y) <= maxHeightDifference: 
+#			cellPosArray.append(cell.position)
+#
+#	return cellPosArray
+#
+#
+###Filter by tags
+#func filter_cells_by_tags(cellsToFilter:Array[Vector3i])->Array[Vector3i]:
+#	var cells:Array[Vector3i] = cellsToFilter.duplicate()
+#
+##	cells.filter(func(x:Cell): return x is Cell)
+#	assert(not null in cells)
+#
+#	#Filter from tags
+#	cells.filter(func(x:Cell): 
+#		return x.tags.any( func(tag:String): 
+#			return tag in passableTags and not tag in impassableTags
+#			)
+#		)
+#	return cells
+	
+	
+
 	
 class GridPathing extends AStar3D:
 	

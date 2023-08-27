@@ -72,6 +72,36 @@ func get_cell_by_vec(pos:Vector3i)->Cell:
 	assert(cell.position == pos)
 	return cell
 	
+func get_cell_by_vec_2d(pos:Vector2i)->Cell:
+	return currentMap.get_cell_by_pos_2d(pos)
+	
+func get_cells_in_expansive(origin:Vector3i, steps:int, maxHeightDifference:int, validTags:Array[String], invalidTags:Array[String])->Array[Cell]:
+	var cells:Array[Cell] = [get_cell_by_vec(origin)]
+	var cellsToExpand:Array[Cell]
+	for step in steps:
+		# = get_cells_adjacent_to(get_cell_by_vec(origin), maxHeightDifference)
+		for cell in cells:
+			
+		for cell in cellsToExpand:
+			cells.append_array(get_cells_adjacent_to(cell.position, maxHeightDifference))
+	#WIP
+	#TODO
+	
+func get_cells_adjacent_to(origin:Vector3i, maxHeightDifference:int)->Array[Cell]:
+	var cells:Array[Cell]
+	cells.append( get_cell_by_vec_2d(Vector2i(origin.x-1, origin.z)) )
+	cells.append( get_cell_by_vec_2d(Vector2i(origin.x+1, origin.z)) )
+	cells.append( get_cell_by_vec_2d(Vector2i(origin.x, origin.z+1)) )
+	cells.append( get_cell_by_vec_2d(Vector2i(origin.x, origin.z-1)) )
+	
+	#Filter by height difference
+	cells = cells.filter(func(cell:Cell):
+		return cell is Cell and abs(cell.position.y - origin.y) <= maxHeightDifference
+		)
+	return cells
+	
+func has_cell(cell:Vector3i):
+	return true if cellDict.has(cell) else false
 
 ## Updates all object positions in the Grid
 func update_pathing(map:Map):
@@ -142,13 +172,15 @@ func tag_cells(cells:Array[Vector3i], tag:String):
 
 ## Searches for something in the given tile, returns false if it can't find anything
 func search_in_cell(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=false):
-	if not cellDict.has(where): push_error(str(where) + " is not a valid cell."); return null
+	if not cellDict.has(where): 
+#		push_error(str(where) + " is not a valid cell.")
+		return null
 	match what:
 		Searches.UNIT:
 			if getAll:
 				return cellDict[where].unitsContained as Array[Unit]
 			else:
-				return cellDict[where].unitsContained.back() as Unit
+				return null if cellDict[where].unitsContained.is_empty() else cellDict[where].unitsContained.back() as Unit
 				
 		Searches.OBSTACLE:
 			push_error("OBSTACLE searches are not implemented.")
@@ -157,19 +189,19 @@ func search_in_cell(where:Vector3i, what:Searches=Searches.UNIT, getAll:bool=fal
 				return cellDict[where].obstaclesContained as Array[Obstacle]
 			else: 
 #				if obj is Object: return obj
-				return cellDict[where].obstaclesContained.back() as Obstacle
+				return null if cellDict[where].obstaclesContained.is_empty() else cellDict[where].obstaclesContained.back() as Obstacle
 		
 		Searches.TAG:
 			if getAll:
 				return cellDict[where].tags as Array[StringName]
 			else:
-				return cellDict[where].tags.back() as StringName
+				return null if cellDict[where].tags.is_empty() else cellDict[where].tags.back() as StringName
 				
 		Searches.ALL_OBJECTS:
 			if getAll:
 				return cellDict[where].unitsContained as Array[Unit] + cellDict[where].obstaclesContained as Array[Node3D]
 			else:
-				return (cellDict[where].unitsContained as Array[Unit] + cellDict[where].obstaclesContained as Array[Node3D]).back()
+				return null if cellDict[where].unitsContained.is_empty() and cellDict[where].obstaclesContained.is_empty() else (cellDict[where].unitsContained as Array[Unit] + cellDict[where].obstaclesContained as Array[Node3D]).back()
 		_: push_error("Invalid Search, OBSTACLE not yet implemented either.")
 	push_error("Unexpected error in search.")
 	return null
