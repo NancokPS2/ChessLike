@@ -49,13 +49,13 @@ func _init() -> void:
 func _ready() -> void:
 	assert(board is GameBoard)
 	add_child(bodyNode)
+	for ability in attributes.abilities:
+		attributes.add_ability(ability)
 	
 	#TEMP
 	var abil:Ability = load("res://Resources/Abilities/AbilityResources/Heal.tres")
 	assert(abil is Ability)
-	attributes.abilities.append(abil)
-	abil.user = self
-	print(attributes.abilities)
+	attributes.add_ability(abil)
 #	position = board.gridMap.get_top_of_cell(get_current_cell())
 
 func get_current_cell()->Vector3i:
@@ -65,9 +65,10 @@ func get_current_cell()->Vector3i:
 	return cell
 
 func start_turn():
-	attributes.stats.turnDelay = attributes.stats.turnDelayMax
-	attributes.stats.actions = attributes.stats.actionsMax
-	attributes.stats.moves = attributes.stats.movesMax
+	attributes.set_stat(AttributesBase.StatNames.TURN_DELAY, attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX))
+	attributes.set_stat(AttributesBase.StatNames.ACTIONS, attributes.get_stat(AttributesBase.StatNames.ACTIONS_MAX))
+	attributes.set_stat(AttributesBase.StatNames.MOVES, attributes.get_stat(AttributesBase.StatNames.MOVES_MAX))
+	assert(1==1)
 	turn_started.emit()
 
 func end_turn():
@@ -77,9 +78,9 @@ func get_passive_effects():
 	pass
 
 func on_stat_changed(statName:String, oldVal:float, newVal:float):
-#	var floatingNumbers:=StatChangeNumbers.new(statName, oldVal-newVal)
-#	add_child(floatingNumbers)
-	StatChangeNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
+	var floatingNumbers:StatChangeNumbers = StatChangeNumbers.new(tr(statName), oldVal-newVal)
+	add_child(floatingNumbers)
+#	StatChangeNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
 	
 	if statName == attributes.StatNames.TURN_DELAY:
 		time_passed.emit(oldVal - newVal)
