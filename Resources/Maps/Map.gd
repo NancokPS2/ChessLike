@@ -82,13 +82,23 @@ func update_cell_maps():
 	cellMapPos.clear()
 	cellMapPos2D.clear()
 	for cell in cellArray:
-		assert(not cell.position in cellMapPos)
+		assert( cell is Cell and not cell.position in cellMapPos)
 		
 		cellMapPos[cell.position] = cell
 		cellMapPos2D[Vector2i(cell.position.x, cell.position.z)] = cell
 		
 	assert(cellMapPos.size() == cellArray.size())
 	assert(cellMapPos2D.size() == cellArray.size())
+	assert(cellMapPos.values() == cellMapPos2D.values())
+	var mappedCells:Array[Cell]
+	mappedCells.assign(cellArray)
+	
+	if not ( all_cells_exist_in_2d( mappedCells ) or all_cells_exist( mappedCells ) ):
+		push_error("Invalid cell detected!")
+		breakpoint
+#	assert(all_cells_exist_in_2d( mappedCells ))
+#	assert(all_cells_exist( mappedCells ))
+	
 		
 func get_cell_by_pos(vector:Vector3i)->Cell:
 	return cellMapPos.get(vector, null)
@@ -96,7 +106,19 @@ func get_cell_by_pos(vector:Vector3i)->Cell:
 func get_cell_by_pos_2d(vector:Vector2i)->Cell:
 	return cellMapPos2D.get(vector, null)
 	
-
+func all_cells_exist(cells:Array[Cell])->bool:
+	for cell in cells:
+		if not get_cell_by_pos(cell.position) is Cell:
+			push_error("Cell at position is not valid " + str(cell.position))
+			return false
+	return true
+	
+func all_cells_exist_in_2d(cells:Array[Cell]):
+	for cell in cells:
+		if not get_cell_by_pos_2d(Vector2i(cell.position.x, cell.position.z)) is Cell:
+			push_error("Cell at position is not valid " + str(cell.position))
+			return false
+	return true
 #func get_faction_spawns(factions:Array[Faction])->Dictionary:
 #	if factions.size() > spawnLocations.size(): push_error("{0} factions where provided, but this map only has space for {1}.".format( str(factions.size()) + str(spawnLocations.size()) ) )
 #	var spawns:Array[Array] = spawnLocations
