@@ -107,6 +107,7 @@ func change_state(newState:States):
 		States.COMBAT:
 			if not unitHandler.actingUnit is Unit: 
 				unitHandler.actingUnit = unitHandler.turn_get_next_unit()
+				unitHandler.actingUnit.start_turn()
 				assert(unitHandler.actingUnit is Unit)
 	
 	state = newState#Change the recorded state
