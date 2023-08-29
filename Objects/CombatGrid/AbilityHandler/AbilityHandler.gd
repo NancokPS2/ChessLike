@@ -297,8 +297,9 @@ func on_new_cell_hovered(cellPos:Vector3i):
 func on_cell_clicked(cell:Vector3i):
 	match currentState:
 		States.TARGETING:
-			chosenTargets = get_targeted_cells(cell, selectedAbility)
-			update_markers(chosenTargets, MarkerTypes.CHOSEN_TARGET)
+			if cell in targetableCells:
+				chosenTargets = get_targeted_cells(cell, selectedAbility)
+				update_markers(chosenTargets, MarkerTypes.CHOSEN_TARGET)
 	pass
 	
 func on_cancel():
