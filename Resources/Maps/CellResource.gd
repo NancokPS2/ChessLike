@@ -91,3 +91,9 @@ static func find_cell_with_position(cells:Array[Cell], wantedPos:Vector3i)->Cell
 	for cell in cells:
 		if cell.position == wantedPos: return cell
 	return null
+
+static func get_position_map(cellArr:Array[Cell])->Array[Vector3i]:
+	var vecArr:Array[Vector3i]
+	vecArr.assign(cellArr.map(func(cell:Cell): return cell.position))
+	return vecArr
+	pass
