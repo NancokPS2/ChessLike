@@ -27,13 +27,19 @@ func _user_ready():
 	if jumpHeight == USER_JUMP: jumpHeight = user.attributes.get_stat(AttributesBase.StatNames.JUMP_HEIGHT)	
 	
 func update_targeting_shape():
-	targetingShape = board.gridMap.get_cells_in_expansive(
+	var cells:Array[Cell] = board.gridMap.get_cells_in_expansive(
 		user.get_current_cell(),
 		user.attributes.get_stat(AttributesBase.StatNames.MOVE_DISTANCE),
 		user.attributes.get_stat(AttributesBase.StatNames.JUMP_HEIGHT),
 		passableTags,
 		impassableTags
 		)
+	
+	print_debug(targetingShape)
+	targetingShape.clear()
+	targetingShape.assign(cells.map(func(cell:Cell): return cell.position)) 
+	assert(targetingShape.all(func(vec:Vector3i): board.gridMap.has_cell(vec)), "This shape includes on-existent cells.")
+	print_debug(targetingShape)
 		
 	
 #func get_reachable_cells()->Array[Vector3i]:
