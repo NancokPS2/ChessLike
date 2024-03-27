@@ -86,7 +86,6 @@ func end_ability_targeting():
 		update_markers([], marker)
 	ability_targeting_ended.emit(selectedAbility)	
 	
-#	update_targeting_visuals(ability.user.get_current_cell(), MarkerTypes.TARGETABLE)
 	
 func preview_ability_effects(ability:Ability=selectedAbility, targets:Array[Vector3i]=chosenTargets):
 	print("{0} ability will do something!".format([ability.displayedName]))
@@ -120,43 +119,12 @@ func queue_ability_call(ability:Ability, targeting:AbilityTargetingInfo, reactio
 	
 	#Warn every unit
 	for unit in targeting.unitsTargeted:
-#		ability.warn_unit(unit)
 		unit.was_targeted.emit(ability)
-		#Check all of their abilities
-#		for unitAbility in unit.attributes.abilities:
-#
-#			if unitAbility is Ability: 
-#				#If it can react, queue it before
-#				if unitAbility.reacts_to_ability(ability):
-#					callQueue.add_queued(unitAbility,0)
-#					callQueue.set_queued_arguments([userCell],0)
-#					callQueue.set_queued_post_wait(unitAbility.animationDuration)
-#
-#			else: push_error("NON ability detected in this array!")
-			
+
 	
 	ability_queued.emit(ability)
 	pass
 
-#func signal_about_targets(abilityUsed:Ability, targets:Array[Vector3i]):
-#	var cellsTargeted:Array[Vector3i]
-#	var unitsTargeted:Array[Unit]
-#
-#	for cellTargeted in targets:
-#		cellsTargeted.append(cellTargeted)
-#
-#		unitsTargeted.append_array( gridMap.search_in_cell(cellTargeted, MovementGrid.Searches.UNIT, true) )
-#
-#	targeted_units.emit(unitsTargeted, abilityUsed)
-#	targeted_cells.emit(cellsTargeted, abilityUsed)
-	
-	
-#func select_cell(cell:Vector3i):
-#	if currentState == States.TARGETING:
-##		currentState = States.CONFIRMING
-#
-#		#Set the valid targets and update visuals for a final time, this also returns the cells that where valid
-#		chosenTargets = update_targeting_visuals(cell, true)
 	
 func on_hover_ability_button(button:AbilityButton):
 	ability_button_hovered.emit(button)
@@ -165,7 +133,7 @@ func on_hover_ability_button(button:AbilityButton):
 func get_targetable_cells(ability:Ability)->Array[Vector3i]:
 #	var cells:Array[Vector3i] = gridMap.get_typed_cellDict_array()
 	
-	var shape = ability.targetingShape.duplicate()
+	var shape:Array[Vector3i] = ability.targetingShape.duplicate()
 	var userCell:Vector3i = ability.user.get_current_cell()
 	
 	
@@ -179,16 +147,21 @@ func get_targetable_cells(ability:Ability)->Array[Vector3i]:
 		
 		#Use it's position.
 		if cellAcquired is Cell: filteredCells.append(cellAcquired.position)
+		else: breakpoint
 
+#	assert(filteredCells.size()>2)
 	#Then, remove non-existent cells
 	filteredCells.filter(func(cell:Vector3i): return gridMap.has_cell(cell))
 	
+	assert(filteredCells.size()>2)
 	#Filter by ability filters
 	for filter in ability.filters:
 		filteredCells.filter(filter.bind(ability.user))
 	
 	#Apply custom ability filter
 	filteredCells.filter(ability._custom_filter)
+	
+	assert(filteredCells.size()>2)
 	return filteredCells
 
 	## Cells that the ability will affect based on the targeted Cell
@@ -284,15 +257,10 @@ func update_ability_list(unit:Unit, list:Control=abilityButtonList):
 		list.add_child(button)
 
 func on_new_cell_hovered(cellPos:Vector3i):
-#	print("hover")
 	match currentState:
 		States.TARGETING:
-#			if cellPos != MovementGrid.INVALID_CELL_COORDS: breakpoint
-			#Update the affected area as the mouse moves.
 			update_markers( get_targeted_cells(cellPos, selectedAbility), MarkerTypes.AOE )
-			
-#			update_targeting_visuals(cellPos, true)
-	pass
+
 	
 func on_cell_clicked(cell:Vector3i):
 	match currentState:

@@ -1,3 +1,6 @@
+FactionSystemMember
+TurnSystemUser
+TurnSystem
 Button
 VBoxContainer
 ControlPopup
@@ -28,5 +31,3 @@ ItemList
 Picker3D
 StaticBody3D
 CollisionShape3D
-Node3D
-GridMap

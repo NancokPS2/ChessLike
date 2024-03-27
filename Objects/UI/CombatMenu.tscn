@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b885kcos1b8at"]
 
-[ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="1_dq3qi"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/NestedMenu.gd" id="1_dq3qi"]
 
 [node name="CombatMenu" type="VBoxContainer"]
 anchors_preset = -1

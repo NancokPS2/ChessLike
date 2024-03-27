@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://d31dxshvny3k8"]
 
-[ext_resource type="Script" path="res://Classes/ButtonStateChange.gd" id="1"]
+[ext_resource type="Script" path="res://Scripts/ButtonStateChange.gd" id="1"]
 [ext_resource type="Script" path="res://Objects/UI/CombatConfirmation.gd" id="2"]
 
 [node name="Popup" type="Popup" groups=["SETUP"]]

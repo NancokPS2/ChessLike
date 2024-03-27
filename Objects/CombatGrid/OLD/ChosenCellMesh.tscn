@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[sub_resource type="PlaneMesh" id=2]
-
-[node name="ChosenCellVisual" type="MeshInstance"]
-transform = Transform( 0.16, 0, 0, 0, 1, 0, 0, 0, 0.16, 0, 0.715041, 0 )
-mesh = SubResource( 2 )

@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
-[ext_resource type="Script" path="res://Classes/SelfContained/TextLabelFancy.gd" id="2_y5ujn"]
-[ext_resource type="Script" path="res://Classes/SelfContained/Interface/NestedMenu.gd" id="3_knxv8"]
-[ext_resource type="Script" path="res://Classes/SelfContained/PropertyRegistry.gd" id="4_2x0q2"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/TextLabelFancy.gd" id="2_y5ujn"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/NestedMenu.gd" id="3_knxv8"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/PropertyRegistry.gd" id="4_2x0q2"]
 [ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="5_otyu1"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="5_tcqr4"]
 [ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="7_dqme3"]

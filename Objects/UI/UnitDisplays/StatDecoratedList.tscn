@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://l6u416bklps4"]
 
-[ext_resource type="Script" path="res://Classes/SelfContained/Interface/DecoratedList.gd" id="1_uwvj0"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/DecoratedList.gd" id="1_uwvj0"]
 
 [node name="DecoratedList" type="VBoxContainer"]
 anchors_preset = -1

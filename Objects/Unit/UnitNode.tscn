@@ -1,6 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bef5g7mx5f3sj"]
+[gd_scene load_steps=8 format=3 uid="uid://bef5g7mx5f3sj"]
 
 [ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="1_7ft5o"]
+[ext_resource type="Script" path="res://Scripts/Composition/TurnSystem/UserTurnSystem.gd" id="2_olbqs"]
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/FactionIdentificationSystem.gd" id="3_gu2re"]
 
 [sub_resource type="Animation" id="1"]
 resource_name = "Idle"
@@ -94,6 +96,8 @@ _data = {
 
 [node name="Unit" type="Node3D" groups=["UNIT"]]
 script = ExtResource("1_7ft5o")
+saveName = null
+refTurnSystemUser = null
 
 [node name="VFX" type="AnimationPlayer" parent="."]
 libraries = {
@@ -119,3 +123,9 @@ double_sided = false
 fixed_size = true
 text = "MYNAME"
 width = 320.0
+
+[node name="TurnSystemUser" type="Node" parent="."]
+script = ExtResource("2_olbqs")
+
+[node name="FactionSystemMember" type="Node" parent="."]
+script = ExtResource("3_gu2re")

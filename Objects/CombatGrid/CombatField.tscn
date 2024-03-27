@@ -1,22 +1,23 @@
-[gd_scene load_steps=22 format=3 uid="uid://xeum2r6b38cn"]
+[gd_scene load_steps=23 format=3 uid="uid://xeum2r6b38cn"]
 
 [ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
-[ext_resource type="Script" path="res://Classes/SelfContained/CallQueue.gd" id="2_72vpm"]
+[ext_resource type="Script" path="res://Scripts/Composition/TurnSystem/TurnSystem.gd" id="2_4qad4"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/UnitHandler.gd" id="2_geir4"]
 [ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="2_nmaf4"]
 [ext_resource type="Script" path="res://Objects/CombatGrid/AbilityHandler/AbilityHandler.gd" id="4_1l28h"]
-[ext_resource type="Script" path="res://Classes/Grid.gd" id="4_wjtrp"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/CallQueue.gd" id="4_qcmis"]
 [ext_resource type="PackedScene" uid="uid://jtp2wbymwre0" path="res://Objects/CombatGrid/AbilityHandler/TargetableMarker.tscn" id="5_k8bha"]
 [ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
 [ext_resource type="PackedScene" uid="uid://v4tex8ioydyg" path="res://Objects/CombatGrid/AbilityHandler/AOEMarker.tscn" id="7_ijnn5"]
-[ext_resource type="Script" path="res://Classes/SelfContained/Interface/ConfirmationPopup.gd" id="7_j8kol"]
 [ext_resource type="PackedScene" uid="uid://b87fywkitlex8" path="res://Objects/CombatGrid/AbilityHandler/ChosenTargetMarker.tscn" id="7_jw7vw"]
 [ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
-[ext_resource type="Script" path="res://Classes/SelfContained/PivotCamera3D.gd" id="7_tkxj7"]
 [ext_resource type="Material" uid="uid://cod0ku6487d5t" path="res://Assets/Meshes/Map/YellowCellMaterial.tres" id="7_tta73"]
-[ext_resource type="Script" path="res://Classes/SelfContained/StolenCamScript.gd" id="8_5hr6c"]
-[ext_resource type="Script" path="res://Classes/SelfContained/Interface/ToolTip.gd" id="11_du2m6"]
-[ext_resource type="Script" path="res://Classes/SelfContained/MapScreen/MapScreen.gd" id="17_bep01"]
+[ext_resource type="Script" path="res://Scripts/MovementGrid.gd" id="10_1460e"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/ToolTip.gd" id="14_28oey"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/ConfirmationPopup.gd" id="15_2l4d5"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="16_74vgu"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/StolenCamScript.gd" id="17_faqk1"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/MapScreen/MapScreen.gd" id="18_lqauf"]
 
 [sub_resource type="GDScript" id="GDScript_jqqg5"]
 script/source = "extends Node3D
@@ -42,14 +43,19 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 1.12
 reflected_light_source = 1
 
-[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "gridMap", "unitHandler", "unitList", "confirmationDialogue", "unitInfo")]
+[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "gridMap", "unitHandler", "abilityHandler", "unitList", "confirmationDialogue", "unitInfo", "refTurnSystem")]
 script = ExtResource("1_pjmtp")
 callQueue = NodePath("CallQueue")
 gridMap = NodePath("MovementGrid")
 unitHandler = NodePath("UnitHandler")
+abilityHandler = NodePath("AbilityHandler")
 unitList = NodePath("UI/UnitList/UpperList")
 confirmationDialogue = NodePath("UI/ConfirmationPopup")
 unitInfo = NodePath("UI/UnitPanel")
+refTurnSystem = NodePath("TurnSystem")
+
+[node name="TurnSystem" type="Node" parent="."]
+script = ExtResource("2_4qad4")
 
 [node name="UnitHandler" type="Node" parent="." node_paths=PackedStringArray("board", "unitDisplayManager")]
 script = ExtResource("2_geir4")
@@ -57,7 +63,7 @@ board = NodePath("..")
 unitDisplayManager = NodePath("../UI/UnitList/UpperList")
 
 [node name="CallQueue" type="Node" parent="."]
-script = ExtResource("2_72vpm")
+script = ExtResource("4_qcmis")
 
 [node name="AbilityHandler" type="Node" parent="." node_paths=PackedStringArray("abilityButtonList", "gridMap")]
 script = ExtResource("4_1l28h")
@@ -73,7 +79,7 @@ cell_size = Vector3(0.33, 0.33, 0.33)
 data = {
 "cells": PackedInt32Array(0, 0, 0, 65535, 65535, 0, 131071, 65535, 0, 131071, 0, 0, 131071, 1, 0, 131070, 0, 0, 131070, 65535, 0, 131070, 1, 0)
 }
-script = ExtResource("4_wjtrp")
+script = ExtResource("10_1460e")
 metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="CellHovered" type="Node3D" parent="MovementGrid" node_paths=PackedStringArray("gridMap")]
@@ -121,7 +127,7 @@ offset_right = 29.0
 offset_bottom = -485.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_k0mn6")
 text = "ASS"
-script = ExtResource("11_du2m6")
+script = ExtResource("14_28oey")
 
 [node name="ConfirmationPopup" type="Control" parent="UI"]
 visible = false
@@ -136,7 +142,7 @@ offset_right = -0.120056
 offset_bottom = 0.0879517
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("7_j8kol")
+script = ExtResource("15_2l4d5")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
 anchors_preset = -1
@@ -171,7 +177,7 @@ anchor_bottom = 0.035
 [node name="Misc" type="Node" parent="."]
 
 [node name="PivotCamera3D" type="Node3D" parent="Misc"]
-script = ExtResource("7_tkxj7")
+script = ExtResource("16_74vgu")
 controlActions = {
 "rotate_down": "camera_down",
 "rotate_left": "camera_left",
@@ -183,7 +189,7 @@ controlActions = {
 
 [node name="Camera3D" type="Camera3D" parent="Misc"]
 transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
-script = ExtResource("8_5hr6c")
+script = ExtResource("17_faqk1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Misc"]
 transform = Transform3D(0.965926, 1.13133e-08, -0.258819, 0.258819, -4.2222e-08, 0.965926, 0, -1, -4.37114e-08, 0, 4, 0)
@@ -194,7 +200,7 @@ environment = SubResource("Environment_vl025")
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("17_bep01")
+script = ExtResource("18_lqauf")
 
 [connection signal="selected_unit" from="UnitHandler" to="UI/UnitList/UpperList" method="set_unit_selected"]
 [connection signal="unit_acting" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
