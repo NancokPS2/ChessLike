@@ -2,7 +2,7 @@ extends Node
 
 
 #Constants
-enum bodyParts {HEAD,TORSO,
+enum EntityBodyParts {HEAD,TORSO,
 UPP_ARM_R,UPP_ARM_L,
 LOW_ARM_R,LOW_ARM_L,
 HAND_R,HAND_L,
@@ -11,21 +11,24 @@ LOW_LEG_R,LOW_LEG_L,
 FOOT_R,FOOT_L}
 
 
-enum directions{UP,RIGHT,DOWN,LEFT}
-
-enum directionsIso{U_LEFT,U_RIGHT,D_LEFT,D_RIGHT}
-
-const equipmentSlots = {ARMOR="ARMOR",L_HAND="L_HAND",R_HAND="R_HAND",ACC1="ACC1",ACC2="ACC2",ACC3="ACC3"}
+enum EntityEquipmentSlots {
+	ARMOR,
+	L_HAND,
+	R_HAND, 
+	ACC1, 
+	ACC2, 
+	ACC3
+	}
 
 #enum equipmentTypes{WEAPON,CONSUMABLE,ARMOR,ACCESSORY}
 
-enum movementTypes{IGNORE,WALK,FLY,TELEPORT} #IGNORE is only meant to be used by races and classes, it will prevent them from overriding movement
+enum EntityMovementTypes{IGNORE,WALK,FLY,TELEPORT} #IGNORE is only meant to be used by races and classes, it will prevent them from overriding movement
 
-enum abilityTags{ATTACK,HEAL,DEBUFF,BUFF,INNATE,ENERGY_USE,ACTIVE}
+enum AbilityTypes{ATTACK,HEAL,DEBUFF,BUFF,INNATE,ENERGY_USE,ACTIVE}
 
-enum abilityParameters{TARGET_UNIT,TARGET_CONE,CHOOSE_WEAPON}
+enum AbilityParameters{TARGET_UNIT,TARGET_CONE,CHOOSE_WEAPON}
 
-enum attackFlags{HALF_ARMOR,IGNORE_ARMOR,WEAK_VS_ARMOR,CANNOT_COUNTER,FALL_OFF}
+enum AbilityAttackFlags{HALF_ARMOR,IGNORE_ARMOR,WEAK_VS_ARMOR,CANNOT_COUNTER,FALL_OFF}
 
 
 enum areaShapes{STAR,CONE,LINE,CROSS}

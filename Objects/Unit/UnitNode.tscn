@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="1_7ft5o"]
 [ext_resource type="Script" path="res://Scripts/Composition/TurnSystem/UserTurnSystem.gd" id="2_olbqs"]
-[ext_resource type="Script" path="res://Scripts/Composition/Entity/FactionIdentificationSystem.gd" id="3_gu2re"]
 
 [sub_resource type="Animation" id="1"]
 resource_name = "Idle"
@@ -94,6 +93,16 @@ _data = {
 "Took Damage": SubResource("3")
 }
 
+[sub_resource type="GDScript" id="GDScript_71bry"]
+script/source = "extends Node
+class_name IdentificationSystemFaction
+
+
+
+func _enter_tree() -> void:
+	add_to_group(IdentificationSystem.COMP_FACTION_MEMBER)
+"
+
 [node name="Unit" type="Node3D" groups=["UNIT"]]
 script = ExtResource("1_7ft5o")
 saveName = null
@@ -128,4 +137,4 @@ width = 320.0
 script = ExtResource("2_olbqs")
 
 [node name="FactionSystemMember" type="Node" parent="."]
-script = ExtResource("3_gu2re")
+script = SubResource("GDScript_71bry")

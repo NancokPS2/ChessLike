@@ -9,3 +9,9 @@ res://Scripts/Board.gd
 res://Resources/Maps/CellResource.gd
 res://Scripts/Composition/Entity.gd
 res://Scripts/Composition/Entity/IdentificationSystem.gd
+res://Scripts/Composition/Entity/FactionIdentificationSystem.gd
+res://Scripts/Composition/Entity/VisualComponent.gd
+res://Scripts/MovementGrid.gd
+res://Resources/Maps/Map.gd
+res://Scripts/Composition/Entity/Entity.gd
+res://Singletons/Global.gd
