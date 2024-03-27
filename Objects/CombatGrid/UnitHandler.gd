@@ -14,9 +14,6 @@ signal put_unit_in_removed(unit:Unit)
 
 signal unit_entered_the_board(unit:Unit)
 
-signal turn_end_attempted(succesful:bool)
-signal turn_cycled
-
 
 
 enum UnitStates {BENCHED, COMBAT, REMOVED}
@@ -127,40 +124,6 @@ func filter_units_by_faction(faction:Faction, units:Array[Unit] = get_all_units(
 			return unit.attributes.get_faction() == faction
 			)
 
-#TURN
-func turn_get_units_sorted_by_delay(state:=UnitStates.COMBAT)->Array[Unit]:
-	var unitArr:Array[Unit] = filter_units_by_state(state)
-	unitArr.sort_custom( func(a:Unit,b:Unit): return a.attributes.stats["turnDelay"] < b.attributes.stats["turnDelay"] )
-	return unitArr
-
-func turn_get_next_unit(state:=UnitStates.COMBAT)->Unit:
-	return turn_get_units_sorted_by_delay(state).front()
-	
-func turn_advance_time(state:=UnitStates.COMBAT):
-	#Take the delay from the actingUnit
-	var currDelay:float = actingUnit.attributes.get_stat(AttributesBase.StatNames.TURN_DELAY)
-	assert( currDelay == actingUnit.attributes.get_stat(AttributesBase.StatNames.TURN_DELAY) )
-	
-	#Apply it to ALL units in the chosen state, including the actingUnit.
-	for unit in filter_units_by_state(state): 
-		unit.attributes.apply_turn_delay(currDelay)
-		
-	board.time_advanced.emit(currDelay)
-	
-func turn_cycle():
-	#Apply turn delays
-	turn_advance_time()
-	actingUnit.end_turn()
-	
-	#Select the next actingUnit
-	actingUnit = turn_get_next_unit()
-	
-	#Run their start of turn (restore some resources like moves)
-	actingUnit.start_turn()
-	
-	#Cycle complete
-	turn_cycled.emit()
-
 
 
 
@@ -191,25 +154,3 @@ class SpawnHandler extends Node:
 	var spawnPos
 	pass
 	
-
-
-func end_turn_attempt(cancel:bool=false) -> void:
-	if actingUnit is Unit:
-		
-		
-		#If an attempt was just made, confirm it
-		if get_meta("_TURN_END_ATTEMPTED", false):
-			
-			#Reset the attempt so it can be confirmed again next turn end
-			set_meta("_TURN_END_ATTEMPTED", false)
-			
-			turn_cycle()
-			
-			turn_end_attempted.emit(true)
-		
-		else:
-			#An attempt was made, next time it will succeed
-			set_meta("_TURN_END_ATTEMPTED", true)
-			turn_end_attempted.emit(false)
-	else:
-		push_error("No unit is acting, cannot end turns.")

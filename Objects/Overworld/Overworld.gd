@@ -1,6 +1,8 @@
 extends Control
 class_name Overworld
 
+const DEFAULT_MAP:String = "res://Resources/Maps/UniqueMaps/DEFAULT.tres"
+
 enum PopupModes {
 	MARKER
 }
@@ -24,11 +26,13 @@ func _ready() -> void:
 	mapScreen.add_marker(markerTWO, Vector2(300,120))
 	mapScreen.add_marker(marker3, Vector2(500, 32))
 
-#	mapScreen.save_markers()
-	mapScreen.load_markers(mapScreen.DEFAULT_SAVE_PATH)
+	mapScreen.save_markers()
+#	mapScreen.load_markers(mapScreen.DEFAULT_SAVE_PATH)
 	
 	
 	mapScreen.pathing_move_node2d_to_marker($Sprite2D, mapScreen.get_marker_by_identifier("TEST"), mapScreen.get_marker_by_identifier("TEST3"))
+	
+	load_combat_map(DEFAULT_MAP)
 
 func load_combat_map(mapPath:String):
 	var map:Map = load(mapPath)

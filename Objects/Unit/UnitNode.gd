@@ -39,8 +39,11 @@ var requiredAnimationName:String = "STANDING":
 		if bodyNode is Body:
 			bodyNode.animationRef.play(requiredAnimationName)
 
-@export_category("References")
-@export var numbers:Label3D
+@export_group("References","ref")
+@export var refNumbers:Label3D
+@export var refTurnSystemUser:TurnSystemUser
+@export var refIdentificationSystemMember:IdentificationSystemMember
+
 
 func _init() -> void:
 	add_to_group(Const.ObjectGroups.UNIT,true)
@@ -51,6 +54,10 @@ func _ready() -> void:
 	add_child(bodyNode)
 	for ability in attributes.abilities:
 		attributes.add_ability(ability)
+	
+	#Set initial reference values
+	refTurnSystemUser.turnMaxDelay = attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX)
+	refIdentificationSystemMember.factionBelonging = attributes.factionIdentifier
 	
 	#TEMP
 	var abil:Ability = load("res://Resources/Abilities/AbilityResources/Heal.tres")
@@ -78,9 +85,12 @@ func get_passive_effects():
 	pass
 
 func on_stat_changed(statName:String, oldVal:float, newVal:float):
-	var floatingNumbers:StatChangeNumbers = StatChangeNumbers.new(tr(statName), oldVal-newVal)
-	add_child(floatingNumbers)
-#	StatChangeNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
+	var floatingrefNumbers:StatChangerefNumbers = StatChangerefNumbers.new(tr(statName), oldVal-newVal)
+	add_child(floatingrefNumbers)
+#	StatChangerefNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
+	
+	if statName == attributes.StatNames.TURN_DELAY_MAX:
+		refTurnSystemUser.turnMaxDelay = newVal
 	
 	if statName == attributes.StatNames.TURN_DELAY:
 		time_passed.emit(oldVal - newVal)
@@ -194,7 +204,7 @@ class Body extends Node3D:
 	static func is_limb_name_valid(limbName:String)->bool:
 		return limbName in Parts
 
-class StatChangeNumbers extends Label3D:
+class StatChangerefNumbers extends Label3D:
 	
 	var baseValue:float
 	var baseColor:=Color.WHITE
@@ -247,6 +257,6 @@ class StatChangeNumbers extends Label3D:
 		tween.play()
 
 	static func create_n_pop(where:Node, text:String, value:float):
-		var newNums:=StatChangeNumbers.new(text,value)
+		var newNums:=StatChangerefNumbers.new(text,value)
 		where.add_child(newNums)
 		newNums.pop()

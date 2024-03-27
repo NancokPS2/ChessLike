@@ -1,10 +1,11 @@
-res://Resources/Abilities/AllAbilities
+res://Scripts
+res://Singletons
+res://addons/ecs
 res://Resources/Characters/UniqueCharacters
 res://Resources/Maps/UniqueMaps
 res://UnusedStuff
 res://Objects/UI/UnitDisplays
 res://Resources/Maps/TileSets
-res://Singletons
 res://Resources/SaveFile
 res://Other
 res://Assets/Meshes/Map/MeshLibs
