@@ -166,11 +166,11 @@ func is_usable()->bool:
 	return true
 	pass
 
-func targeting_get_units_in_cells(cells:Array[Vector3i])->Array[Unit]:
-	var targets:Array[Unit] 
-	for cell in cells:
-		targets.assign(user.board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true))
-	return targets
+#func targeting_get_units_in_cells(cells:Array[Vector3i])->Array[Unit]:
+	#var targets:Array[Unit] 
+	#for cell in cells:
+		#targets.assign(user.board.gridMap.search_in_cell(cell, Board.Searches.UNIT, true))
+	#return targets
 	
 func targeting_get_relative_from_user(cellPos:Vector3i)->Vector3i:
 	var userCell:Vector3i = user.get_current_cell()
@@ -256,7 +256,7 @@ func warn_unit(unit:Unit):
 #	var units:Array[Unit]
 #
 #	for target in targets:
-#		units.assign(board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT, true))
+#		units.assign(board.gridMap.search_in_cell(target, Board.Searches.UNIT, true))
 		
 	unit.was_targeted.emit(self)
 	
@@ -272,7 +272,7 @@ func use( targetingInfo:AbilityTargetingInfo ):
 #	targets = filter_targets(targets)
 	#The warning happens in get_tween(), no need for this.
 #	for target in targets:
-#		var possibleUnit:Unit = board.gridMap.search_in_cell(target, MovementGrid.Searches.UNIT)
+#		var possibleUnit:Unit = board.gridMap.search_in_cell(target, Board.Searches.UNIT)
 #		if possibleUnit is Unit:
 #			possibleUnit.was_targeted.emit(self)
 
@@ -286,8 +286,8 @@ func _use(targetingInfo:=AbilityTargetingInfo.new()):
 	print( user.attributes.get_info(CharAttributes.InfoNames.NICK_NAME) + " tried something. But it didn't do anything.")
 	pass
 
-func get_unit_in_cell(cell:Vector3i)->Unit:
-	return board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT)
+#func get_unit_in_cell(cell:Vector3i)->Unit:
+	#return board.gridMap.search_in_cell(cell, Board.Searches.UNIT)
 
 func _custom_can_use() -> bool:#Virtual function, prevents usage if false
 	return true
@@ -299,14 +299,14 @@ func _custom_filter(_target:Vector3i)->bool:
 class Filters extends RefCounted:
 	
 	#True if there's a unit there
-	static func has_unit(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT) is Unit else false
+	static func has_unit(cell:Vector3i, _user:Unit): return true if Board.search_in_cell(cell,Board.Searches.UNIT) is Unit else false
 	#True if there's not a unit
-	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT) is Unit else true
+	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Board.search_in_cell(cell,Board.Searches.UNIT) is Unit else true
 	#True if the tile has nothing in it
-	static func empty_tile(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.ANYTHING) == null else false
+	static func empty_tile(cell:Vector3i, _user:Unit): return true if Board.search_in_cell(cell,Board.Searches.ANYTHING) == null else false
 	
 	static func is_ally(cell:Vector3i, user:Unit): 
-		var targetUnit:Unit = Ref.grid.search_int_tile(cell, MovementGrid.Searches.UNIT)
+		var targetUnit:Unit = Board.search_int_tile(cell, Board.Searches.UNIT)
 		if targetUnit is Unit and user.attributes.get_faction().is_friendly_with(targetUnit.attributes.get_faction()):
 			return true
 		elif not targetUnit is Unit: 
@@ -315,9 +315,9 @@ class Filters extends RefCounted:
 		else:
 			return false
 	
-	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else false
+	static func has_self(cell:Vector3i, user:Unit): return true if Board.search_in_cell(cell,Board.Searches.UNIT,true).has(user) else false
 	
-	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else true
+	static func not_has_self(cell:Vector3i, user:Unit): return false if Board.search_in_cell(cell,Board.Searches.UNIT,true).has(user) else true
 
 #class PassiveEffects extends RefCounted:
 #	@export var triggeringSignals:Array[StringName]:

@@ -23,7 +23,6 @@ enum CombatStates {
 @export_group("References")
 @export var callQueue:CallQueue
 
-@export var gridMap:MovementGrid
 @export var unitHandler:UnitHandler
 @export var abilityHandler:AbilityHandler
 
@@ -39,10 +38,10 @@ enum CombatStates {
 @export_group("Map")
 @export var currentMap:Map:
 	set(val):
-		gridMap.currentMap = val
+		Board.currentMap = val
 	get:
-		return gridMap.currentMap
-#		assert(currentMap is Map and gridMap is MovementGrid) 
+		return Board.currentMap
+#		assert(currentMap is Map and Board is MovementGrid) 
 			
 			
 var state:int
@@ -59,17 +58,6 @@ var abilityInUse:Ability
 var targetedCells:Array[Vector3i]
 var actionStack:Array[Tween]
 
-func _init() -> void:
-	Ref.board = self
-	
-func _ready() -> void:
-	#Setup
-	gridMap = Ref.grid
-	change_state(States.SETUP)
-	
-	##TEMP
-	load_map(load("res://Resources/Maps/UniqueMaps/SmallTesting.tres"))
-#	testing()
 
 func run_stack():
 	change_combat_state(CombatStates.C_ANIMATING)
@@ -79,8 +67,8 @@ func change_state(newState:States):
 	var currentStateName:String = States.find_key(state)
 	var newStateName:String = States.find_key(newState)
 	if newState != state:#Handle exiting the current state
-		Events.BOARD_STATE_EXITED.emit(state)
-		Events.BOARD_STATE_ENTERED.emit(newState)
+		Event.BOARD_STATE_EXITED.emit(state)
+		Event.BOARD_STATE_ENTERED.emit(newState)
 	
 	match newState:
 		States.COMBAT:
@@ -90,8 +78,8 @@ func change_state(newState:States):
 
 func change_combat_state(newState:CombatStates):
 	if combatState != newState:#State has been changed
-		Events.BOARD_COMBAT_STATE_EXITED.emit(combatState)
-		Events.BOARD_COMBAT_STATE_ENTERED.emit(newState)
+		Event.BOARD_COMBAT_STATE_EXITED.emit(combatState)
+		Event.BOARD_COMBAT_STATE_ENTERED.emit(newState)
 		
 	match newState:
 		_: pass
@@ -116,16 +104,16 @@ func _process(delta: float) -> void:
 
 ## IMPORTANT for usage!!!
 func on_cell_clicked(cell:Vector3i):
-	$Debug.text = gridMap.get_cell_debug_text(cell)
+	$Debug.text = Board.get_cell_debug_text(cell)
 
 	if unitHandler.selectedUnit is Unit and unitHandler.selectedUnit.get_parent() == self:
 		var origin:Vector3i = unitHandler.selectedUnit.get_current_cell()
-		gridMap.pathing.get_unit_path(unitHandler.selectedUnit, origin, cell)
+		Board.pathing.get_unit_path(unitHandler.selectedUnit, origin, cell)
 		
 	match state:
 		States.SETUP:
-			Events.UPDATE_UNIT_INFO.emit()
-#			var unit:Unit = gridMap.search_in_cell(cell, gridMap.Searches.UNIT)
+			Event.UPDATE_UNIT_INFO.emit()
+#			var unit:Unit = Board.search_in_cell(cell, Board.Searches.UNIT)
 #			if unit is Unit: unitList.unitSelected = unit
 			
 			#Unit spawn logic.
@@ -134,14 +122,14 @@ func on_cell_clicked(cell:Vector3i):
 			if unitHandler.selectedUnit is Unit:
 				var unitToSpawn:Unit = unitHandler.selectedUnit
 				#The selected cell has the correct tag.
-				if gridMap.get_cell_by_vec(cell).tags.has(SPAWN_TAG + unitToSpawn.attributes.get_faction().internalName):
+				if Board.get_cell_by_vec(cell).tags.has(SPAWN_TAG + unitToSpawn.attributes.get_faction().internalName):
 					#The unit was not removed and may be added
 					if unitHandler.get_unit_state(unitToSpawn) != UnitHandler.UnitStates.REMOVED:
 						#Add it if not added already.
 						unitHandler.spawn_unit(unitToSpawn, cell)
 						#Position it
-						gridMap.position_object_3D(cell, unitList.unitSelected)
-#						unitList.unitSelected.position = gridMap.map_to_local(cell)
+						Board.position_object_3D(cell, unitList.unitSelected)
+#						unitList.unitSelected.position = Board.map_to_local(cell)
 				
 				
 			pass
@@ -152,7 +140,7 @@ func on_cell_clicked(cell:Vector3i):
 				#An ability has been selected
 				CombatStates.C_ABILITY_TARGETING:
 					assert(abilityInUse is Ability)
-					if gridMap.is_cell_marked(cell):
+					if Board.is_cell_marked(cell):
 						
 						#Mark cells ready for targeting
 						if targetedCells.size() < abilityInUse.amountOfTargets:
@@ -202,73 +190,8 @@ func update_menus_to_unit(unit:Unit=unitHandler.unitHandler.selectedUnit):
 	menuCombat.change_current_menu("MENU")
 	unitInfo.unitRef = unit
 	unitInfo.refresh_ui()
-#	Events.emit_signal("UPDATE_UNIT_INFO")
+#	Event.emit_signal("UPDATE_UNIT_INFO")
 	
-#func get_units(combatOnly:bool=true, factionFilter:String = "")->Array[Unit]:
-#	var unitArr:Array[Unit]
-#	unitArr = allUnits
-##	var units:Array[Unit]
-##	units.assign( get_tree().get_nodes_in_group(Const.ObjectGroups.UNIT) )
-#	if combatOnly:
-#		unitArr = unitArr.filter(func(unit): return unit.get_parent()==self)
-#	if factionFilter != "":
-#		unitArr = unitArr.filter(func(unit): return unit.attributes.get_faction().internalName == factionFilter)
-#
-#	return unitArr
-	
-#func get_present_factions(inCombatOnly:bool)->Array[Faction]:
-#	var units:Array[Unit] = get_units(inCombatOnly)
-#	var factionList:Array[Faction]
-#	for unit in units:
-#		if not factionList.has(unit.attributes.get_faction()):
-#			factionList.append(unit.attributes.get_faction())
-#	return factionList
-
-
-
-func load_map(mapUsed:Map = currentMap)->void:
-	assert(mapUsed is Map and gridMap is MovementGrid) 
-	
-	currentMap = mapUsed
-
-	if not mapUsed.is_valid(): push_error("Could not validate map!")
-	
-	# Load cells
-	gridMap.set_cells_from_map(mapUsed)
-	
-	for cell in mapUsed.cellArray:
-		
-		#Add any unit that should spawn in the cell
-		if cell.preplacedUnit is CharAttributes:
-			var newUnit:Unit = Unit.Generator.build_from_attributes(cell.preplacedUnit)
-			#Add
-			unitHandler.add_unit(newUnit, unitHandler.UnitStates.BENCHED)
-			unitHandler.spawn_unit(newUnit, cell.position)
-			
-	gridMap.update_pathing(mapUsed)
-			
-	#Place spawn positions
-	var index:int=0
-	for faction in mapUsed.factionsPresent:
-		#Mark the cells
-		var spawnCells:Array[Vector3i] = mapUsed.get_faction_spawns(faction) 
-		gridMap.marked_mark_cells(spawnCells, index+1, false)
-		
-		if not faction is Faction: push_error("Faction is null!"); continue
-		
-		#Add the tags
-		gridMap.tag_cells(spawnCells, SPAWN_TAG + faction.internalName)
-		print_debug("Prepared cells " + str(spawnCells) + " for faction: " + faction.internalName)
-			
-		index+=1
-	
-		
-
-#	Events.UPDATE_UNIT_INFO.emit()
-	
-#	for spawnArray in mapUsed.spawnLocations:
-#		if mapUsed.spawnLocations.size() > 8: push_error("Too many Arrays! Can only support up to 8.")
-#
 	
 class SetupController extends Control:
 	var board:GameBoard

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TerrainCell" load_steps=3 format=3 uid="uid://dffh2mmggm0vj"]
+
+[ext_resource type="Script" path="res://Resources/Maps/TerrainCell.gd" id="1_awkvb"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_inijv"]
+height = 1.0
+
+[resource]
+script = ExtResource("1_awkvb")
+display_name = "Ground"
+flags = Array[int]([0, 3, 2])
+mesh = SubResource("CapsuleMesh_inijv")

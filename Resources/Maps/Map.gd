@@ -1,21 +1,17 @@
 extends Resource
 class_name Map
 
-const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
+enum GenerationMode {
+	None,
+	Surface,
+	Caves,
+}
+@export var background: Texture
 
-#const DefaultCellTags:Dictionary = {
-	#WALKABLE="WALKABLE", ## All units (dirt, path)
-	#EMPTY="EMPTY", ## Flying only (chasms)
-	#LIQUID="LIQUID", ## All except non-swimming walkers (water)
-	#UNSTABLE="UNSTABLE", ## All except heavy walkers (mud)
-	#DENSE="DENSE", ## Only heavy walkers (water current, brambles)
-	#HARD="HARD", ## Fall damage is increased on this kind of tile (rock)
-	#SOFT="SOFT", ## Fall damage is negated on this kind of tile (slime, water, hay)
-	#NO_AIR="NO_AIR", ## All but flying and hovering (strong wind)
-	#ELEVATOR="ELEVATOR", ## Walkers ignore terrain differences (ladder)
-	#UNTARGETABLE="UNTARGETABLE", ## Units may not willingly move into these (lava)
-	#NO_ENTRY="NO_ENTRY", ## Impossible to enter
-	#}
+@export_category("Cells")
+@export var cell_terrain_resources: Array[TerrainCell]
+@export var cell_positions: Array[Vector4i]
+@export var cell_faction_spawn: Array[Vector4i]
 
 @export_category("Meta")
 @export var display_name: String  
@@ -23,43 +19,86 @@ const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
 @export var description: String
 @export var icon: Texture = preload("res://UnusedStuff/assets/tiles/grass.png")
 
+@export_category("Auto Generation")
+@export var generation_mode: GenerationMode
+@export var generation_size: Vector3i
+@export var generation_height: int
+@export var generation_seed: int
+@export var generation_noise: FastNoiseLite
 
 
-@export_category("Tile Set")
-#@export var tileSet:MapTileSet = preload("res://Resources/Maps/TileSets/Grassy.tres")
-@export var meshLibrary:MeshLibrary = preload("res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres")
-@export var tileSetTags:Dictionary = {0:["WALKABLE"],1:[""],2:[""],3:[""],4:[""],5:[""],6:[""],7:[""],8:[""],9:[""],10:[""],11:[""]} #cellID(int):CellTags(Array[String])
-func get_default_tags_for_ID(ID:int)->Array[String]:
-	var arr:Array[String]
-	arr.assign(tileSetTags[ID])
-	return arr
-#	set(val): 
-#		tileSet=val
-#		if not get_all_IDs().all(func(cellID:int): return tileSet.meshLibrary.get_item_list().has(cellID)):
-#			push_error("")
+var mesh_library_cache: MeshLibrary
+
+func update_mesh_library():
+	var mesh_lib := MeshLibrary.new()
+	for cell: TerrainCell in cell_terrain_resources:
+		var index: int = 0
 		
-@export_category("Factions")		
-@export var factions_present: Array[StringName]
-@export var factions_spawn_locations: Array[Array] #Vector3i
+		mesh_lib.create_item( index )
+		mesh_lib.set_item_name(index, cell.display_name)
+		
+		if not cell.mesh:
+			var auto_mesh := BoxMesh.new()
+			auto_mesh.size = Board.cell_size
+			mesh_lib.set_item_mesh(index, auto_mesh)
+		else:
+			mesh_lib.set_item_mesh(index, cell.mesh)
+		
+		if not cell.shape:
+			var auto_shape := BoxShape3D.new()
+			auto_shape.size = Board.cell_size * 0.95
+			mesh_lib.set_item_shapes(index, [auto_shape, Transform3D.IDENTITY])
+		else:
+			mesh_lib.set_item_shapes(index, [cell.shape, Transform3D.IDENTITY])
+		
+		index += 1
+		
+	mesh_library_cache = mesh_lib
 
 
 
-@export_category("Misc Contents")		
-@export var background:Texture
-
-@export var cellArray:Array[Cell]
 
 
-@export_group("Auto Generation")
-@export var assignSpawns:bool
-@export var generateTerrain:bool = false
-@export var noiseName:StringName = "NOISE_DEFAULT"
-@export var noiseSeed:int = 0
-@export var wantedSize:Vector3i = Vector3i.ONE*15
-@export_range(1,8) var maxFactions:int = 2
-@export_range(1,10) var spawnsPerFaction:int = 6
-
-var cellMapPos:Dictionary
-var cellMapPos2D:Dictionary
-
+func get_all_cell_positions() -> Array[Vector3i]:
+	var output: Array[Vector3i]
+	for pos: Vector4i in cell_positions:
+		output.append(Vector3i(pos.x, pos.y, pos.z))
+	return output
 	
+	
+func get_faction_ids() -> Array[int]:
+	var present_ids: Dictionary
+	for spawn: Vector4i in cell_faction_spawn:
+		present_ids[spawn.w] = true
+		
+	var arr: Array[int]
+	arr.assign(present_ids.keys())
+	return arr
+	
+
+func get_faction_capacity() -> int:
+	return get_faction_ids().size()
+	
+
+func get_terrain_cell_at_pos(pos: Vector3i) -> TerrainCell:
+	var terrain_cell_index: int
+	
+	for vector: Vector4i in cell_positions:
+		if vector.x == pos.x and vector.y == pos.y and vector.z == pos.z:
+			return cell_terrain_resources[vector.w]
+	
+	return null
+				
+
+func is_faction_spawns_valid() -> bool:	
+	var cell_pos_arr: Array[Vector3i] = get_all_cell_positions()
+	for spawn: Vector4i in cell_faction_spawn:
+		var position: Vector3i = Vector3i(spawn.x, spawn.y, spawn.z)
+		#var spawn_id: int = spawn.z
+		
+		if not position in cell_pos_arr:
+			push_error("Spawn mismatch at position " + str(position))
+			return false
+	return true
+		
+

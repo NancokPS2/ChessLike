@@ -19,7 +19,7 @@ config/icon="res://icon.png"
 Global="*res://Singletons/Global.gd"
 ResLoad="*res://Singletons/LoadedResources.gd"
 Event="*res://Singletons/Events.gd"
-Board="*res://Scripts/MovementGrid.gd"
+Board="*res://Singletons/Board/PositionGrid.gd"
 
 [dotnet]
 
@@ -27,7 +27,7 @@ project/assembly_name="ChessLike"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/kanban_tasks/plugin.cfg", "res://addons/object_state_machine/plugin.cfg")
+enabled=PackedStringArray("res://addons/kanban_tasks/plugin.cfg")
 
 [filesystem]
 
@@ -184,4 +184,5 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
+shader_compiler/shader_cache/enabled=false
 environment/default_environment="res://default_env.tres"

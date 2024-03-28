@@ -18,83 +18,71 @@ signal time_passed(time:float)
 const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
 
 @export var saveName:String
-@export var attributes:CharAttributes = CharAttributes.new(): #UnitAttributes (stats)
-	set(val):
-		if attributes is CharAttributes: push_warning("This unit already has attributes set. It is not recommended to swap them like this.")
-		attributes = val
-		if attributes is CharAttributes: 
-			attributes.user = self
-			assert(attributes.user == self)
-			bodyNode.modelNode = attributes.model.instantiate()
-			attributes.stat_changed.connect(on_stat_changed)
 
-@onready var board:GameBoard = Ref.board
-			
-var bodyNode:=Body.new()
-var facing:int = 0#Temp value
-#var attributes:UnitAttributes
-var requiredAnimationName:String = "STANDING":
-	set(val):
-		requiredAnimationName = val
-		if bodyNode is Body:
-			bodyNode.animationRef.play(requiredAnimationName)
+var components: Dictionary
 
-@export_group("References","ref")
-@export var refNumbers:Label3D
-@export var refTurnSystemUser:TurnSystemUser
-@export var refIdentificationSystemMember:IdentificationSystemMember
+func _init():
+	child_entered_tree.connect(on_child_entered_tree)
 
-
-func _init() -> void:
-	add_to_group(Const.ObjectGroups.UNIT,true)
+func get_component(component_name: String) -> Node:
+	return components.get(component_name, null)
 	
 
-func _ready() -> void:
-	assert(board is GameBoard)
-	add_child(bodyNode)
-	for ability in attributes.abilities:
-		attributes.add_ability(ability)
+func on_child_entered_tree(node: Node):
+	var comp_name: String = node.get("COMPONENT_NAME")
 	
-	#Set initial reference values
-	refTurnSystemUser.turnMaxDelay = attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX)
-	refIdentificationSystemMember.factionBelonging = attributes.factionIdentifier
+	if not comp_name is String:
+		return
 	
-	#TEMP
-	var abil:Ability = load("res://Resources/Abilities/AbilityResources/Heal.tres")
-	assert(abil is Ability)
-	attributes.add_ability(abil)
-#	position = board.gridMap.get_top_of_cell(get_current_cell())
+	components[comp_name] = node
 
-func get_current_cell()->Vector3i:
-	var cell:Vector3i = board.gridMap.local_to_map(position)
-	assert(self in board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true))
-#	assert(board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true).has(self))
-	return cell
-
-func start_turn():
-	attributes.set_stat(AttributesBase.StatNames.TURN_DELAY, attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX))
-	attributes.set_stat(AttributesBase.StatNames.ACTIONS, attributes.get_stat(AttributesBase.StatNames.ACTIONS_MAX))
-	attributes.set_stat(AttributesBase.StatNames.MOVES, attributes.get_stat(AttributesBase.StatNames.MOVES_MAX))
-	assert(1==1)
-	turn_started.emit()
-
-func end_turn():
-	turn_ended.emit()
-
-func get_passive_effects():
-	pass
-
-func on_stat_changed(statName:String, oldVal:float, newVal:float):
-	var floatingrefNumbers:StatChangerefNumbers = StatChangerefNumbers.new(tr(statName), oldVal-newVal)
-	add_child(floatingrefNumbers)
-#	StatChangerefNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
+#func _init() -> void:
+	#add_to_group(Const.ObjectGroups.UNIT,true)
 	
-	if statName == attributes.StatNames.TURN_DELAY_MAX:
-		refTurnSystemUser.turnMaxDelay = newVal
-	
-	if statName == attributes.StatNames.TURN_DELAY:
-		time_passed.emit(oldVal - newVal)
-#	if statName == AttributesBase.StatNames.HEALTH or statName == AttributesBase.StatNames.HEALTH_MAX:
+
+#func _ready() -> void:
+	#add_child(bodyNode)
+	#for ability in attributes.abilities:
+		#attributes.add_ability(ability)
+	#
+	##Set initial reference values
+	#refTurnSystemUser.turnMaxDelay = attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX)
+	#refIdentificationSystemMember.factionBelonging = attributes.factionIdentifier
+	#
+	##TEMP
+	#var abil:Ability = load("res://Resources/Abilities/AbilityResources/Heal.tres")
+	#assert(abil is Ability)
+	#attributes.add_ability(abil)
+#
+#func get_current_cell()->Vector3i:
+	#var cell:Vector3i = board.gridMap.local_to_map(position)
+	#assert(self in board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true))
+##	assert(board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true).has(self))
+	#return cell
+#
+#func start_turn():
+	#attributes.set_stat(AttributesBase.StatNames.TURN_DELAY, attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX))
+	#attributes.set_stat(AttributesBase.StatNames.ACTIONS, attributes.get_stat(AttributesBase.StatNames.ACTIONS_MAX))
+	#attributes.set_stat(AttributesBase.StatNames.MOVES, attributes.get_stat(AttributesBase.StatNames.MOVES_MAX))
+	#assert(1==1)
+	#turn_started.emit()
+#
+#func end_turn():
+	#turn_ended.emit()
+#
+#func get_passive_effects():
+	#pass
+#
+#func on_stat_changed(statName:String, oldVal:float, newVal:float):
+	#var floatingrefNumbers:StatChangerefNumbers = StatChangerefNumbers.new(tr(statName), oldVal-newVal)
+	#add_child(floatingrefNumbers)
+##	StatChangerefNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
+	#
+	#if statName == attributes.StatNames.TURN_DELAY_MAX:
+		#refTurnSystemUser.turnMaxDelay = newVal
+	#
+	#if statName == attributes.StatNames.TURN_DELAY:
+		#time_passed.emit(oldVal - newVal)
 		
 
 

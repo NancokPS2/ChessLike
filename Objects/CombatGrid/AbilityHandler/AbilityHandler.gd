@@ -36,7 +36,6 @@ enum MarkerTypes {
 
 @export_category("References")
 @export var abilityButtonList:Control
-@export var gridMap:MovementGrid
 var abilityConfirmButton:Button
 
 var currentState:States = States.INACTIVE:
@@ -52,8 +51,8 @@ var selectedAbility:Ability:
 		selected_ability.emit(ability)
 		selected_ability_with_name.emit(ability.displayedName)
 		#Update the targetable cells
-		targetableCells = get_targetable_cells(selectedAbility)
-		update_markers(targetableCells, MarkerTypes.TARGETABLE)
+		targetableTerrainCells = get_targetable_cells(selectedAbility)
+		update_markers(targetableTerrainCells, MarkerTypes.TARGETABLE)
 
 var chosenTargets:Array[Vector3i]:
 	set(val):
@@ -61,13 +60,13 @@ var chosenTargets:Array[Vector3i]:
 		if not chosenTargets.is_empty():
 			update_chosen_targets()
 			
-var targetableCells:Array[Vector3i]
+var targetableTerrainCells:Array[Vector3i]
 
 var callQueue = CallQueue.new()
 
 func _ready() -> void:
-	Events.CANCEL_UNIVERSAL.connect(on_cancel)
-	Events.CONFIRM_UNIVERSAL.connect(on_confirm)
+	Event.CANCEL_UNIVERSAL.connect(on_cancel)
+	Event.CONFIRM_UNIVERSAL.connect(on_confirm)
 	Ability.new().abilityHandler = self
 
 
@@ -94,9 +93,8 @@ func preview_ability_effects(ability:Ability=selectedAbility, targets:Array[Vect
 func get_targeting_from_cells(ability:Ability, cells:Array[Vector3i])->AbilityTargetingInfo:
 	var targetInfo:=AbilityTargetingInfo.new()
 	var units:Array[Unit]
-	units.assign(gridMap.multi_search_in_cell(cells, MovementGrid.Searches.UNIT))
+	units.assign(Board.multi_search_in_cell(cells, Board.Searches.UNIT))
 #	var cells:Array[Vector3i] = targets
-	targetInfo.gridRef = gridMap
 	targetInfo.ability = ability
 	targetInfo.unitsTargeted = units
 	targetInfo.cellsTargeted = cells
@@ -115,7 +113,7 @@ func queue_ability_call(ability:Ability, targeting:AbilityTargetingInfo, reactio
 	callQueue.set_queued_arguments([targeting])#Keep it an Array with an Array[Vector3i] inside
 	callQueue.set_queued_post_wait(ability.animationDuration)
 	
-	var userCell:Vector3i = ability.user.get_current_cell()
+	var userTerrainCell:Vector3i = ability.user.get_current_cell()
 	
 	#Warn every unit
 	for unit in targeting.unitsTargeted:
@@ -129,77 +127,77 @@ func queue_ability_call(ability:Ability, targeting:AbilityTargetingInfo, reactio
 func on_hover_ability_button(button:AbilityButton):
 	ability_button_hovered.emit(button)
 
-	## Cells that the user can target
+	## TerrainCells that the user can target
 func get_targetable_cells(ability:Ability)->Array[Vector3i]:
-#	var cells:Array[Vector3i] = gridMap.get_typed_cellDict_array()
+#	var cells:Array[Vector3i] = Board.get_typed_cellDict_array()
 	
 	var shape:Array[Vector3i] = ability.targetingShape.duplicate()
-	var userCell:Vector3i = ability.user.get_current_cell()
+	var userTerrainCell:Vector3i = ability.user.get_current_cell()
 	
 	
 	#Select cells based on the shape
-	var filteredCells:Array[Vector3i]
+	var filteredTerrainCells:Array[Vector3i]
 	for cellPos in shape:
-		var cellWantedAt:Vector3i = userCell + cellPos
+		var cellWantedAt:Vector3i = userTerrainCell + cellPos
 		
-		#Use the 2D map of the gridMap to find the cell on this x,z coordinate.
-		var cellAcquired:Cell = gridMap.get_cell_by_vec_2d( Vector2i(cellWantedAt.x, cellWantedAt.z) )
+		#Use the 2D map of the Board to find the cell on this x,z coordinate.
+		var cellAcquired:TerrainCell = Board.get_cell_by_vec_2d( Vector2i(cellWantedAt.x, cellWantedAt.z) )
 		
 		#Use it's position.
-		if cellAcquired is Cell: filteredCells.append(cellAcquired.position)
+		if cellAcquired is TerrainCell: filteredTerrainCells.append(cellAcquired.position)
 		else: breakpoint
 
-#	assert(filteredCells.size()>2)
+#	assert(filteredTerrainCells.size()>2)
 	#Then, remove non-existent cells
-	filteredCells.filter(func(cell:Vector3i): return gridMap.has_cell(cell))
+	filteredTerrainCells.filter(func(cell:Vector3i): return Board.has_cell(cell))
 	
-	assert(filteredCells.size()>2)
+	assert(filteredTerrainCells.size()>2)
 	#Filter by ability filters
 	for filter in ability.filters:
-		filteredCells.filter(filter.bind(ability.user))
+		filteredTerrainCells.filter(filter.bind(ability.user))
 	
 	#Apply custom ability filter
-	filteredCells.filter(ability._custom_filter)
+	filteredTerrainCells.filter(ability._custom_filter)
 	
-	assert(filteredCells.size()>2)
-	return filteredCells
+	assert(filteredTerrainCells.size()>2)
+	return filteredTerrainCells
 
-	## Cells that the ability will affect based on the targeted Cell
-func get_targeted_cells(targetedCell:Vector3i, ability:Ability)->Array[Vector3i]:
+	## TerrainCells that the ability will affect based on the targeted TerrainCell
+func get_targeted_cells(targetedTerrainCell:Vector3i, ability:Ability)->Array[Vector3i]:
 	
 	var shape:Array[Vector3i] = ability.targetingAOEShape
-	if ability.targetingRotates: shape = ability.targeting_get_rotated_to_cell(shape, targetedCell) 
+	if ability.targetingRotates: shape = ability.targeting_get_rotated_to_cell(shape, targetedTerrainCell) 
 	
 	#Select cells based on the shape
-	var filteredCells:Array[Vector3i]
+	var filteredTerrainCells:Array[Vector3i]
 	for cellPos in shape:
-		filteredCells.append(targetedCell + cellPos)
+		filteredTerrainCells.append(targetedTerrainCell + cellPos)
 	
 	#Filter by ability filters
 	for filter in ability.filters:
-		filteredCells.filter(filter.bind(ability.user))
+		filteredTerrainCells.filter(filter.bind(ability.user))
 	
 	#Apply custom ability filter
-	filteredCells.filter(ability._custom_filter)
-	return filteredCells
+	filteredTerrainCells.filter(ability._custom_filter)
+	return filteredTerrainCells
 	
 func update_chosen_targets():
 	update_markers(chosenTargets, MarkerTypes.CHOSEN_TARGET)
 
 #func update_targeting_visuals(newOrigin:Vector3i, AOEMode:bool)->Array[Vector3i]:
 #	if currentState == States.TARGETING:
-#		var targetedCells:Array[Vector3i]
+#		var targetedTerrainCells:Array[Vector3i]
 #
 #		if AOEMode: 
-#			targetedCells = get_targeted_cells(newOrigin, selectedAbility)
-#			update_markers(targetedCells, MarkerTypes.AOE)
+#			targetedTerrainCells = get_targeted_cells(newOrigin, selectedAbility)
+#			update_markers(targetedTerrainCells, MarkerTypes.AOE)
 #
 #		else: 
-#			targetedCells = get_targetable_cells(selectedAbility)
-#			update_markers(targetedCells, MarkerTypes.TARGETABLE)
+#			targetedTerrainCells = get_targetable_cells(selectedAbility)
+#			update_markers(targetedTerrainCells, MarkerTypes.TARGETABLE)
 #
-#		print(targetedCells)
-#		return targetedCells
+#		print(targetedTerrainCells)
+#		return targetedTerrainCells
 #	else:
 #		return [] as Array[Vector3i]
 	
@@ -222,7 +220,7 @@ func update_markers(cells:Array[Vector3i], type:MarkerTypes):
 	for cell in cells:
 		#Add the cell
 		var marker:Node3D = cellMarkerUsed.instantiate()
-		marker.position = gridMap.map_to_local(cell)
+		marker.position = Board.map_to_local(cell)
 		add_child(marker)
 		
 		#Save a reference
@@ -265,7 +263,7 @@ func on_new_cell_hovered(cellPos:Vector3i):
 func on_cell_clicked(cell:Vector3i):
 	match currentState:
 		States.TARGETING:
-			if cell in targetableCells:
+			if cell in targetableTerrainCells:
 				chosenTargets = get_targeted_cells(cell, selectedAbility)
 				update_markers(chosenTargets, MarkerTypes.CHOSEN_TARGET)
 	pass

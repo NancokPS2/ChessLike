@@ -12,7 +12,7 @@ signal put_unit_in_combat(unit:Unit)
 signal put_unit_in_benched(unit:Unit)
 signal put_unit_in_removed(unit:Unit)
 
-signal unit_entered_the_board(unit:Unit)
+signal unit_entered_the_Board(unit:Unit)
 
 
 
@@ -22,7 +22,6 @@ enum UnitDataFields {STATE}
 const DEFAULT_UNIT_DATA:Array = [UnitStates.REMOVED, null, null, null]
 
 @export_category("References")
-@export var board:GameBoard = Ref.board
 @export var unitDisplayManager:UnitDisplayManager
 @export var endTurnButton:Button
 
@@ -55,13 +54,13 @@ func spawn_unit(unit:Unit, where:Vector3i):
 	
 	
 	set_unit_state(unit, UnitStates.COMBAT)
-	board.gridMap.position_object_3D(where, unit)
+	Board.gridMap.position_object_3D(where, unit)
 	add_child(unit)
 	
 	#Update the gridMap
-	board.gridMap.update_cell_contents()
+	Board.gridMap.update_cell_contents()
 	
-	unit_entered_the_board.emit(unit)
+	unit_entered_the_Board.emit(unit)
 	
 func select_unit(unit:Unit):
 	selectedUnit = unit
@@ -129,14 +128,14 @@ func filter_units_by_faction(faction:Faction, units:Array[Unit] = get_all_units(
 
 class UnitFilters extends RefCounted:
 #True if there's a unit there
-	static func has_unit(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT) is Unit else false
+	static func has_unit(cell:Vector3i, _user:Unit): return true if Board.search_in_cell(cell,Board.Searches.UNIT) is Unit else false
 	#True if there's not a unit
-	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT) is Unit else true
+	static func not_has_unit(cell:Vector3i, _user:Unit): return false if Board.search_in_cell(cell,Board.Searches.UNIT) is Unit else true
 	#True if the tile has nothing in it
-	static func empty_tile(cell:Vector3i, _user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.ANYTHING) == null else false
+	static func empty_tile(cell:Vector3i, _user:Unit): return true if Board.search_in_cell(cell,Board.Searches.ANYTHING) == null else false
 	
 	static func is_ally(cell:Vector3i, user:Unit): 
-		var targetUnit:Unit = Ref.grid.search_int_tile(cell, MovementGrid.Searches.UNIT)
+		var targetUnit:Unit = Board.search_int_tile(cell, Board.Searches.UNIT)
 		if targetUnit is Unit and user.attributes.get_faction().is_friendly_with(targetUnit.attributes.get_faction()):
 			return true
 		elif not targetUnit is Unit: 
@@ -145,9 +144,9 @@ class UnitFilters extends RefCounted:
 		else:
 			return false
 	
-	static func has_self(cell:Vector3i, user:Unit): return true if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else false
+	static func has_self(cell:Vector3i, user:Unit): return true if Board.search_in_cell(cell,Board.Searches.UNIT,true).has(user) else false
 	
-	static func not_has_self(cell:Vector3i, user:Unit): return false if Ref.grid.search_in_cell(cell,MovementGrid.Searches.UNIT,true).has(user) else true
+	static func not_has_self(cell:Vector3i, user:Unit): return false if Board.search_in_cell(cell,Board.Searches.UNIT,true).has(user) else true
 
 class SpawnHandler extends Node:
 	var factions:Array[Faction]

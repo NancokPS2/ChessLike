@@ -1,117 +1,25 @@
-[gd_scene load_steps=10 format=3 uid="uid://b0pg2mr7smdvo"]
+[gd_scene load_steps=5 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
-[ext_resource type="Script" path="res://Scripts/SelfContained/TextLabelFancy.gd" id="2_y5ujn"]
-[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/NestedMenu.gd" id="3_knxv8"]
-[ext_resource type="Script" path="res://Scripts/SelfContained/PropertyRegistry.gd" id="4_2x0q2"]
-[ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="5_otyu1"]
-[ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="5_tcqr4"]
-[ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="7_dqme3"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Debug/Tester.gd" id="2_5iw2b"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ldgjk"]
-albedo_color = Color(1, 0, 0, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fno0i"]
+albedo_color = Color(0.0235294, 0.258824, 1, 0.45098)
 
-[sub_resource type="ImmediateMesh" id="ImmediateMesh_nof6g"]
+[sub_resource type="BoxMesh" id="BoxMesh_6jevn"]
+material = SubResource("StandardMaterial3D_fno0i")
 
-[node name="Control" type="Control"]
-layout_mode = 3
-anchor_right = 0.455
-anchor_bottom = 0.41
-offset_right = -167.16
-offset_bottom = -97.68
+[node name="Control" type="Node3D"]
 script = ExtResource("1_87xmo")
 
-[node name="FancyLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = 451.0
-offset_top = 321.0
-offset_right = 491.0
-offset_bottom = 344.0
-text = "ASSSSSSSSSSSSSSSSSSSSSSS MASTER"
-script = ExtResource("2_y5ujn")
-flashingEnabled = true
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, -0.51237, 4.63242, 6.51277)
 
-[node name="Sprite2D" type="Sprite2D" parent="FancyLabel"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_6jevn")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 
-[node name="NestedButtonMenu" type="VBoxContainer" parent="UI"]
-anchors_preset = -1
-anchor_right = 0.339687
-anchor_bottom = 0.997185
-offset_right = -0.32
-offset_bottom = -0.176003
-script = ExtResource("3_knxv8")
-metadata/_edit_use_anchors_ = true
-
-[node name="Main" type="Control" parent="UI/NestedButtonMenu"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="UI/NestedButtonMenu/Main"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "ASS"
-
-[node name="Other" type="Control" parent="UI/NestedButtonMenu"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="UI/NestedButtonMenu/Other"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "OtherASS"
-
-[node name="MeshInst" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ldgjk")
-mesh = SubResource("ImmediateMesh_nof6g")
-
-[node name="Timer" type="Timer" parent="."]
-autostart = true
-
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0, 0, 0, 1)
-
-[node name="PropertyRegistry" type="Node" parent="."]
-script = ExtResource("4_2x0q2")
-mode = 2
-saveFolder = "user://RegistryOutput/"
-sourceScripts = Array[Script]([ExtResource("5_tcqr4"), ExtResource("5_otyu1")])
-propertyTypeFilter = 0
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 1
-anchor_left = 0.00560224
-anchor_top = 1.77976
-anchor_right = 1.66942
-anchor_bottom = 3.81538
-offset_right = 0.0159988
-offset_bottom = 0.0159988
-metadata/_edit_use_anchors_ = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="TextureRect" type="TextureRect" parent="Control/HBoxContainer"]
-layout_mode = 2
-texture = ExtResource("7_dqme3")
-
-[node name="Label" type="Label" parent="Control/HBoxContainer"]
-layout_mode = 2
-text = "STRENGTH"
-
-[node name="Label2" type="Label" parent="Control/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "100"
-
-[connection signal="timeout" from="Timer" to="." method="update_rect"]
+[node name="Tester" type="Node3D" parent="."]
+script = ExtResource("2_5iw2b")
+raycast_point_a = Vector3(5.6, 0.4, 3.95)

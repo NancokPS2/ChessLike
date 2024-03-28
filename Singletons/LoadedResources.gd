@@ -6,7 +6,7 @@ const ResGroups:Array[String] = ["ABILITY", "CLASS", "FACTION", "RACE", "CHARACT
 
 
 func _init():#Loading of files
-	keepLoadedDefault = true
+	keep_loaded_default = true
 	autoScanFolders = {
 		"res://Resources/Abilities/AllAbilities/":"ABILITY",
 		"res://Resources/Characters/Classes/":"CLASS",

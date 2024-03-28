@@ -9,7 +9,7 @@ const ALL_POOLS:String = "_RESOURCEMANAGER_INTERNAL_ALL_POOLS_"
 @export var autoScanFolders:Dictionary = {} #Directory:group
 
 ## Automatically replaces paths with the file when added to a group
-@export var keepLoadedDefault:bool = true
+@export var keep_loaded_default:bool = true
 
 ## Keeps any requested resources loaded for later. Forced if autoLoadResources is true. Careful with memory usage.
 #@export var keepResourcesLoaded:bool:
@@ -30,40 +30,44 @@ func _enter_tree() -> void:#Loading of files
 		store_from_folder(folder,group)
 	pass
 
-func store_from_folder(folderPath:String,group:String, keepLoaded:bool=keepLoadedDefault):
+func store_from_folder(folderPath:String,group:String, keep_loaded:bool=keep_loaded_default):
 	var files:PackedStringArray = DirAccess.get_files_at(folderPath)
 	for fileName in files:
-		store_single_resource(folderPath+fileName, group, keepLoaded)
+		store_single_resource(folderPath+fileName, group, keep_loaded)
 	
-func store_single_resource(filePath:String,group:String, keepLoaded:bool=keepLoadedDefault):
-#	var fileName:String = filePath.get_file()
-	if not filePath.get_extension() == "tres": push_error("Extension must be tres but it is " + filePath.get_extension()); return
-	var resLoaded:Resource = load(filePath)
+func store_single_resource(file_path:String,group:String, keep_loaded:bool = keep_loaded_default):
+#	var fileName:String = file_path.get_file()
+	if not file_path.get_extension() == "tres": push_error("Extension must be tres but it is " + file_path.get_extension()); return
+	var res_loaded:Resource = load(file_path)
 	
-	var identifier:String = _get_identifier(resLoaded)
+	if not res_loaded:
+		push_error("Could not load: " + file_path)
+		return
+	
+	var identifier:String = _get_identifier(res_loaded)
 	
 	assert(identifier is String)
 	if identifier == NO_IDENTIFIER: 
-		push_warning("No identifier could be set, pooling in unidentified section. File path: {0} | Identifier: {1} | Group: {2}".format([filePath, identifier, group])) 
-		store_single_resource_unidentified(filePath, group, keepLoaded)
+		push_warning("No identifier could be set, pooling in unidentified section. File path: {0} | Identifier: {1} | Group: {2}".format([file_path, identifier, group])) 
+		store_single_resource_unidentified(file_path, group, keep_loaded)
 	
 	#Ensure the group exists in resources
 	if not resources.has(group): resources[group] = {}
 	
 	#Add it to the list of the corresponding group
-	if keepLoaded:
-		resources[group][identifier] = resLoaded
+	if keep_loaded:
+		resources[group][identifier] = res_loaded
 	else:
-		resources[group][identifier] = filePath
+		resources[group][identifier] = file_path
 	
 #	resources[group][fileName] = fileName
 
-func store_single_resource_unidentified(filePath:String, group:String, keepLoaded:bool=keepLoadedDefault):	
+func store_single_resource_unidentified(file_path:String, group:String, keep_loaded:bool=keep_loaded_default):	
 	if not resourcesUnidentified.has(group): resourcesUnidentified[group] = []
-	if keepLoaded:
-		resourcesUnidentified[group] = load(filePath)
+	if keep_loaded:
+		resourcesUnidentified[group] = load(file_path)
 	else:
-		resourcesUnidentified[group] = filePath
+		resourcesUnidentified[group] = file_path
 
 func reload_from_folders():
 #	var cache:=ConfigFile.new()

@@ -5,52 +5,18 @@ signal equipment_changed(newItem:Item)
 
 enum EquipSlots {ARMOR, L_HAND, R_HAND, ACC1, ACC2, ACC3}
 
-const InfoNames:Dictionary = {
-	FIRST_NAME="firstName",
-	NICK_NAME="nickName",
-	LAST_NAME="lastName",
-	RACE_NAME="raceName"
-}
-
 #Resources
 @export var raceAttributes:RacialAttributes:
-	set(val):
-		if raceAttributes is RacialAttributes: attributeResources.erase(raceAttributes)
-		raceAttributes = val
-		attributeResources.append(val)
-		info.raceName = raceAttributes.displayName
-#		assert(user)
-#		assert(not user)
-#		if classAttributes != null:
-#			combine_attributes_base_stats()
 	get:
 		for attrib in attributeResources:
 			if attrib is RacialAttributes: return attrib
 		return raceAttributes
 		
 @export var classAttributes:ClassAttributes:
-	set(val):
-		if classAttributes is ClassAttributes: attributeResources.erase(classAttributes)
-		classAttributes = val
-		attributeResources.append(val)
-		info.className = classAttributes.displayName
-#		assert(user)
-#		assert(not user)
-#		if raceAttributes != null:
-#			combine_attributes_base_stats()
 	get:
 		for attrib in attributeResources:
 			if attrib is ClassAttributes: return attrib
 		return classAttributes
-
-		
-#@export var inventory:Inventory = Inventory.new()
-#var inventoryManager:=InventoryManager.new(self, inventory)
-
-@export var factionIdentifier:String:
-	set(val):
-		factionIdentifier = val
-#		if not get_faction() is Faction: push_error("No faction found with identifier " + factionIdentifier)
 
 #Equipment
 @export var equipment:Dictionary = {
@@ -122,13 +88,6 @@ func apply_turn_delay(delay:float):
 	#If it ended up below 0, apply the remaining amount to the max.
 	if stats.turnDelay <= 0:
 		stats.turnDelay = stats.turnDelayMax - abs(stats.turnDelay)
-
-func get_faction()->Faction:
-	var faction:Faction = ResLoad.get_resource(factionIdentifier,"FACTION")
-	if not faction is Faction: push_error("No faction found with identifier " + factionIdentifier); return null
-	if not faction.existingUnits.has(self): push_warning("This unit references a faction that it is not a part of.")
-	
-	return faction
 
 func set_equipment(what:Equipment, slot:EquipSlots):
 	if not what is Equipment: push_error("Not Equipment"); return
