@@ -39,6 +39,9 @@ const DIAGONAL_CELLS: Array[Vector3i] = [
 const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
 const MAX_HEIGHT: int = 40
 
+## Stores references to objects added to the GridMap
+var cell_object_dict: Dictionary
+## Stores metadata of cells
 var cell_data: Dictionary
 var cell_hovered: Vector3i
 
@@ -74,11 +77,20 @@ const DEFAULT_GROUND_FLAGS: Array[CellFlags] = [
 	CellFlags.FOOTING, CellFlags.OPAQUE, CellFlags.COVER, CellFlags.IMPASSABLE
 ]
 
-
 func _ready() -> void:
 	var map_to_use: Map = load(DEFAULT_MAP_PATH)
 	assert(map_to_use is Map)
 	build_from_map(map_to_use)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_released("primary_click"):
+		var camera: Camera3D = get_viewport().get_camera_3d()
+		var ray_params := PhysicsRayQueryParameters3D.create(camera.global_position, camera.project_ray_normal(get_viewport().get_mouse_position()) * 1000)
+		var pos: Vector3 = get_world_3d().direct_space_state.intersect_ray(ray_params).get("position", Vector3(INVALID_CELL_COORDS))
+		
+		if pos != Vector3(INVALID_CELL_COORDS):
+			Event.BOARD_CELL_SELECTED.emit( local_to_map(pos) )
 
 
 func build_from_map(map: Map):
@@ -98,7 +110,7 @@ func build_from_map(map: Map):
 		
 		## Due to the use a MeshLibrary, the mesh is fetched trough the ID of the terrain in the Map
 		var terrain_index: int = cell_def.w
-		set_cell_item_special(cell_pos, terrain_index)
+		set_cell_item_node(cell_pos, terrain_index)
 		
 		
 		
@@ -121,7 +133,45 @@ func data_set(coordinate: Vector3i, flag_key: CellDataKeys, data):
 	
 func data_get(coordinate: Vector3i, flag_key: CellDataKeys, default = null):
 	var key: String = CellDataKeys.find_key(flag_key)
-	return cell_data.get(coordinate, {}).get(key, default)
+	var value = cell_data.get(coordinate, {}).get(key, default)
+	return value
+	
+	
+func set_cell_item_node(cell: Vector3i, item_id: int):
+	## Item deletion
+	if item_id == INVALID_CELL_ITEM:
+		var existing_item: Node = cell_object_dict.get(cell, null)
+		if is_instance_valid(existing_item):
+			existing_item.queue_free()
+			
+		cell_object_dict.erase(cell)
+	
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh_library.get_item_mesh(item_id)
+	
+	var collision_shape := CollisionShape3D.new()
+	collision_shape.shape = mesh_library.get_item_shapes(item_id)[0]
+	
+	
+	var item := StaticBody3D.new()
+	var flags: Array[CellFlags] = data_get(cell, CellDataKeys.FLAGS, [])
+	item.collision_layer = get_flag_collisions(flags)
+	item.position = map_to_local(cell)
+	item.add_child(mesh_instance)
+	item.add_child(collision_shape)
+	
+	add_child(item)
+	
+	## If an object is present, delete it.
+	var existing_item: Node = cell_object_dict.get(cell, null)
+	if is_instance_valid(existing_item):
+		existing_item.queue_free()
+		
+	cell_object_dict[cell] = item
+
+
+func get_cell_item_node(cell: Vector3i) -> Node:
+	return cell_object_dict.get(cell, null)
 	
 
 func get_flag_collision_bit(flag: CellFlags) -> int:
@@ -133,6 +183,10 @@ func get_flag_collisions(flags: Array[CellFlags]) -> int:
 	for flag: CellFlags in flags:
 		output = output | get_flag_collision_bit(flag)
 	return output
+	
+	
+func get_cell_flags(cell: Vector3i) -> Array[CellFlags]:
+	return data_get(cell, CellDataKeys.FLAGS, [])
 	
 
 func get_cells_in_area(origin: Vector3i, type: AreaTypes, direction: Vector3i, size: int, height_tolerance: int = 0) -> Array[Vector3i]:
@@ -179,35 +233,7 @@ func get_cells_in_area(origin: Vector3i, type: AreaTypes, direction: Vector3i, s
 				## Check that it is a valid spot
 				if not is_cell_in_board(coord):
 					continue
-				if get_manhattan_distance(coord, origin) < size:
-					continue
-				if coord in output:
-					continue
-				
-				output.append(coord)
-				
-				## For every adjacent coord 
-				for adjacent: Vector3i in ADJACENT_CELLS:
-				
-					if adjacent in output:
-						continue
-				
-					to_check.append(
-						adjacent
-					)
-					
-		AreaTypes.FLOOD_2D:
-			## Start from a cell
-			var to_check: Array[Vector3i] = [origin]
-			
-			#While there are cells to check
-			while not to_check.is_empty(): 
-				var coord: Vector3i = to_check.pop_back()
-				
-				## Check that it is a valid spot
-				if not is_cell_in_board(coord):
-					continue
-				if PositionGrid.get_manhattan_distance(coord, origin, true, false, true) < size:
+				if get_manhattan_distance(coord, origin) > size:
 					continue
 				if coord in output:
 					continue
@@ -225,15 +251,30 @@ func get_cells_in_area(origin: Vector3i, type: AreaTypes, direction: Vector3i, s
 					)
 			
 	for vector: Vector3i in output:
-		assert(output.count(vector) > 1, "Duplicate vector!")
+		assert(output.count(vector) == 1, "Duplicate vectors!")
 	
 	return output
 
 
-func get_cells_in_line(origin: Vector3i, destination: Vector3i, coll_mask: int, penetration: int = 0) -> Array[Vector3i]:
+## Uses a Raycast to check if a cell is visible from another cell.
+func get_cells_in_line(origin: Vector3i, destination: Vector3i, penetration: int = 1, flags_blocking: Array[CellFlags] = [CellFlags.OPAQUE]) -> Array[Vector3i]:
 	var output: Array[Vector3i] = []
 	var origin_local: Vector3 = map_to_local(origin)
 	var target_locals: Array[Vector3] = [map_to_local(destination)]
+	var coll_mask: int = get_flag_collisions(flags_blocking)
+	
+	#TODO
+	var mesh_1 := MeshInstance3D.new()
+	mesh_1.mesh = BoxMesh.new()
+	mesh_1.mesh.size = Vector3.ONE * 0.1
+	mesh_1.global_position = origin_local
+	add_child(mesh_1)
+	
+	var mesh_2 := MeshInstance3D.new()
+	mesh_2.mesh = BoxMesh.new()
+	mesh_2.mesh.size = Vector3.ONE * 0.1
+	mesh_2.global_position = target_locals[0]
+	add_child(mesh_2)
 	
 	for target: Vector3 in target_locals:
 		var ray_params := PhysicsRayQueryParameters3D.create(origin_local, target)
@@ -262,27 +303,20 @@ func get_cells_in_line(origin: Vector3i, destination: Vector3i, coll_mask: int, 
 	
 	return output
 
-func get_edges_of_cell(cell: Vector3i) -> Array[Vector3]:
-	var cell_origin: Vector3 = map_to_local(cell)
-	var edges: Array[Vector3] = [
-		cell_origin
-		#cell_origin + Vector3.UP * (cell_size * 0.45),
-		#cell_origin + Vector3.DOWN * (cell_size * 0.45),
-		#cell_origin + Vector3.LEFT * (cell_size * 0.45),
-		#cell_origin + Vector3.RIGHT * (cell_size * 0.45),
-	]
-	return edges
-		
 ## Unfinished
-#func get_direct_path_to_cell(origin: Vector3i, destination: Vector3i):
-	#var direction_f: Vector3 = Vector3(origin).direction_to(Vector3(destination))
-	#var direction := Vector3i(
-		#round(signf(direction_f.x)), sign(direction_f.y), sign(direction_f.z)
-		#)
-	#var total_cells
+#func get_edges_of_cell(cell: Vector3i) -> Array[Vector3]:
+	#var cell_origin: Vector3 = map_to_local(cell)
+	#var edges: Array[Vector3] = [
+		#cell_origin
+		##cell_origin + Vector3.UP * (cell_size * 0.45),
+		##cell_origin + Vector3.DOWN * (cell_size * 0.45),
+		##cell_origin + Vector3.LEFT * (cell_size * 0.45),
+		##cell_origin + Vector3.RIGHT * (cell_size * 0.45),
+	#]
+	#return edges
+		
 
-
-func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable):
+func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable) -> Array[Vector3i]:
 	var output: Array[Vector3i]
 	## Start from a cell
 	var to_check: Array[Vector3i] = [origin]
@@ -295,6 +329,9 @@ func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable)
 		
 		## Check that it is a valid spot
 		if not is_cell_in_board(coord):
+			continue
+		#Probably redundant
+		if PositionGrid.get_manhattan_distance(coord, origin, true, false, true) < steps + 1:
 			continue
 		if coord in output:
 			continue
@@ -312,6 +349,11 @@ func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable)
 			to_check.append(
 				adjacent
 			)
+			
+	for vector: Vector3i in output:
+		assert(output.count(vector) == 1, "Duplicate vectors!")
+		
+	return output
 
 
 func is_cell_in_board(coord: Vector3i) -> bool:
@@ -337,28 +379,12 @@ func printer(variant):
 
 func set_cells_from_array(cells:Array[Vector3i], item_id: int):#Sets all cells in the array to the chosen ID
 	for pos in cells:
-		set_cell_item_special(Vector3i(pos), item_id)
+		set_cell_item_node(Vector3i(pos), item_id)
 
 
 func align_to_grid(object:Object):
 	var gridPos:Vector3i = local_to_map(object.position)
 	object.translation = map_to_local(gridPos)
 
-func set_cell_item_special(cell: Vector3i, item_id: int):
-	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.mesh = mesh_library.get_item_mesh(item_id)
-	
-	var collision_shape := CollisionShape3D.new()
-	collision_shape.shape = mesh_library.get_item_shapes(item_id)[0]
-	
-	
-	var item := StaticBody3D.new()
-	var flags: Array[CellFlags] = data_get(cell, CellDataKeys.FLAGS, [])
-	item.collision_layer = get_flag_collisions(flags)
-	item.position = map_to_local(cell)
-	item.add_child(mesh_instance)
-	item.add_child(collision_shape)
-	
-	add_child(item)
-	
-	#print(Board.get_cells_in_line(Vector3i(-2, 0, 0), Vector3i(2, 0, 0)))
+
+

@@ -15,8 +15,6 @@ signal turn_ended
 
 signal time_passed(time:float)
 
-const UNIT_SCENE:PackedScene = preload("res://Objects/Unit/UnitNode.tscn")
-
 @export var saveName:String
 
 var components: Dictionary
@@ -36,67 +34,7 @@ func on_child_entered_tree(node: Node):
 	
 	components[comp_name] = node
 
-#func _init() -> void:
-	#add_to_group(Const.ObjectGroups.UNIT,true)
-	
 
-#func _ready() -> void:
-	#add_child(bodyNode)
-	#for ability in attributes.abilities:
-		#attributes.add_ability(ability)
-	#
-	##Set initial reference values
-	#refTurnSystemUser.turnMaxDelay = attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX)
-	#refIdentificationSystemMember.factionBelonging = attributes.factionIdentifier
-	#
-	##TEMP
-	#var abil:Ability = load("res://Resources/Abilities/AbilityResources/Heal.tres")
-	#assert(abil is Ability)
-	#attributes.add_ability(abil)
-#
-#func get_current_cell()->Vector3i:
-	#var cell:Vector3i = board.gridMap.local_to_map(position)
-	#assert(self in board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true))
-##	assert(board.gridMap.search_in_cell(cell, MovementGrid.Searches.UNIT, true).has(self))
-	#return cell
-#
-#func start_turn():
-	#attributes.set_stat(AttributesBase.StatNames.TURN_DELAY, attributes.get_stat(AttributesBase.StatNames.TURN_DELAY_MAX))
-	#attributes.set_stat(AttributesBase.StatNames.ACTIONS, attributes.get_stat(AttributesBase.StatNames.ACTIONS_MAX))
-	#attributes.set_stat(AttributesBase.StatNames.MOVES, attributes.get_stat(AttributesBase.StatNames.MOVES_MAX))
-	#assert(1==1)
-	#turn_started.emit()
-#
-#func end_turn():
-	#turn_ended.emit()
-#
-#func get_passive_effects():
-	#pass
-#
-#func on_stat_changed(statName:String, oldVal:float, newVal:float):
-	#var floatingrefNumbers:StatChangerefNumbers = StatChangerefNumbers.new(tr(statName), oldVal-newVal)
-	#add_child(floatingrefNumbers)
-##	StatChangerefNumbers.create_n_pop(self, tr(statName), oldVal-newVal)
-	#
-	#if statName == attributes.StatNames.TURN_DELAY_MAX:
-		#refTurnSystemUser.turnMaxDelay = newVal
-	#
-	#if statName == attributes.StatNames.TURN_DELAY:
-		#time_passed.emit(oldVal - newVal)
-		
-
-
-class Generator:
-
-
-	static func build_from_attributes(attrib:CharAttributes)->Unit:
-		var unit:Unit = Unit.UNIT_SCENE.instantiate()#Create an instance
-		unit.attributes = attrib#Set it's attributes
-		return unit
-
-#	static func generate_new(nickName:String,charRace:String,charClass:String,charFaction:String="DEFAULT"):
-#		var charAttribs = CharAttributes.new()
-#		return build_from_attributes(charAttribs)
 
 class Body extends Node3D:
 #	enum Limbs {HEAD,TORSO,ARM_L,ARM_R,LEG_L,LEG_R}

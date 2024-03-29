@@ -16,7 +16,8 @@ func is_cell_visible(coordinate: Vector3i) -> bool:
 	var collision: Array[Vector3i] = Board.get_cells_in_line(
 		placed_at, 
 		coordinate, 
-		Board.get_flag_collision_bit(Board.CellFlags.OPAQUE)
+		1,
+		[Board.CellFlags.OPAQUE]
 		)
 		
 	if collision.size() == 1 and collision[0] == coordinate:

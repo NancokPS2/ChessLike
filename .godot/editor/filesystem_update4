@@ -21,3 +21,11 @@ res://Scripts/Composition/Entity/LoreComponent.gd
 res://Resources/Characters/Attributes/CharacterAttributes.gd
 res://Scripts/Composition/Entity/InventoryComponent.gd
 res://Scripts/Composition/Entity/TurnComponent.gd
+res://Assets/Meshes/Characters/Human.tscn
+res://UnusedStuff2/Objects/Unit/UnitNode.gd
+res://Resources/Abilities/Abilities.gd
+res://UnusedStuff2/Objects/CombatGrid/GameBoard.gd
+res://Scenes/UI/UnitDisplays/ManagerUnitDisplay.gd
+res://Singletons/Event.gd
+res://Scripts/Composition/Entity/InputComponent.gd
+res://Scripts/Composition/Entity/StateComponent.gd

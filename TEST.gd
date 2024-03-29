@@ -15,12 +15,23 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	assert(get_world_3d() == Board.get_world_3d())
 	other.call_deferred()
+	
+	var new_entity := Entity3D.new()
+	new_entity.add_all_components()
+	add_child(new_entity)
+	
+	var move_comp: ComponentMovement = new_entity.get_component(ComponentMovement.COMPONENT_NAME)
+	move_comp.add_target_cells([Vector3i.UP + Vector3i.ZERO, Vector3i.UP + Vector3i.RIGHT, Vector3i.UP + Vector3i.LEFT*2])
+	
+	var cells: Array[Vector3i] = Board.get_cells_in_area(
+		Vector3i.ZERO, Board.AreaTypes.FLOOD, Vector3i.ZERO, 1
+		)
+	print(cells)
 
 func other():
 	await get_tree().process_frame
-	print(Board.get_cells_in_line(Vector3i(-2, 0, 0), Vector3i(2, 0, 0), 0xFFFFFFFF))
-	print(Board.get_cells_in_line(Vector3i.ZERO, Vector3i.LEFT, 0xFFFFFFFF))
-	print(Board.get_cells_in_line(Vector3i.ONE, -Vector3i.ONE, 0xFFFFFFFF))
+	print(Board.get_cells_in_line(Vector3i(-2, -1, 0), Vector3i(2, 1, 0), 100))
+
 
 #func _process(delta: float):
 	#var ray_params := PhysicsRayQueryParameters3D.create($Camera3D.global_position, $Camera3D.project_ray_normal(get_viewport().get_mouse_position()) * 1000)

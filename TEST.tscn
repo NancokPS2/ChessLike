@@ -13,7 +13,7 @@ material = SubResource("StandardMaterial3D_fno0i")
 script = ExtResource("1_87xmo")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, -0.51237, 4.63242, 6.51277)
+transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, -0.51237, 4.63242, 10.4132)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_6jevn")

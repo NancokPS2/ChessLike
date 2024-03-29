@@ -283,7 +283,7 @@ func use( targetingInfo:AbilityTargetingInfo ):
 
 	
 func _use(targetingInfo:=AbilityTargetingInfo.new()):
-	print( user.attributes.get_info(CharAttributes.InfoNames.NICK_NAME) + " tried something. But it didn't do anything.")
+	#print( user.attributes.get_info(CharAttributes.InfoNames.NICK_NAME) + " tried something. But it didn't do anything.")
 	pass
 
 #func get_unit_in_cell(cell:Vector3i)->Unit:

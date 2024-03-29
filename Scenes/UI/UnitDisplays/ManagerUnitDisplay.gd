@@ -3,9 +3,9 @@ class_name UnitDisplayManager
 
 signal unit_selected(unit:Unit)
 
-const MINI_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/MiniUnitDisplay.tscn")
-const SMALL_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/SmallUnitDisplay.tscn")
-const BIG_DISPLAY:PackedScene = preload("res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn")
+const MINI_DISPLAY:PackedScene = preload("res://Scenes/UI/UnitDisplays/MiniUnitDisplay.tscn")
+const SMALL_DISPLAY:PackedScene = preload("res://Scenes/UI/UnitDisplays/SmallUnitDisplay.tscn")
+const BIG_DISPLAY:PackedScene = preload("res://Scenes/UI/UnitDisplays/BigUnitDisplay.tscn")
 
 const NO_FACTION_FILTER:StringName = ""
 

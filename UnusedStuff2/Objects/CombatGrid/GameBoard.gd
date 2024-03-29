@@ -32,9 +32,6 @@ enum CombatStates {
 
 @export var unitInfo:UnitDisplay
 
-@export_group("Reference", "ref")
-@export var refTurnSystem:TurnSystem
-
 @export_group("Map")
 @export var currentMap:Map:
 	set(val):
