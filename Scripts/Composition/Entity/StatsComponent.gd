@@ -13,6 +13,7 @@ enum Keys {
 	DEFENSE,
 	DODGE,
 	ACCURACY,
+	TURN_DELAY,
 	}
 
 const COMPONENT_NAME: StringName = "ENTITY_STATS"
@@ -40,7 +41,7 @@ func set_stat(key: Keys, value: int):
 ## TODO: Implement stat modifications from status effects
 func get_stat(key: Keys) -> int:
 	var capability_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
-	var status_comp: ComponentRace = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
+	#var status_comp: Component = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
 	
 	var base_value: int = stat_dict.get(key, 0)
 	base_value += capability_comp.get_stat_bonus(key)
@@ -48,7 +49,8 @@ func get_stat(key: Keys) -> int:
 	
 	var modifier_value: float = 1
 	modifier_value *= capability_comp.get_stat_modifier(key)
- 
+ 	
+	return base_value * modifier_value
 	
 ## TODO: Everything below? Or just do it in ComponentStatus
 	

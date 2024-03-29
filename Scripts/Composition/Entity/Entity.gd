@@ -4,12 +4,14 @@ class_name Entity3D
 const ENTITY_GROUP: String = "ENTITY_3D_GROUP"
 const CONFIG_PATH: String = "{0}{1}CharacterData/{2}.cconfig"
 const CONFIG_SECTION_MAIN: String = "MAIN"
-const CONFIG_SECTION_COMPONENTS: String = "COMPONENTS" 
 const CONFIG_SECTION_MAIN_KEY_IDENTIFIER: String = "IDENTIFIER"
+const CONFIG_SECTION_MAIN_KEY_METADATA: String = "METADATA" 
 
 var identifier: String = "DEFAULT"
 
 var config_file_cache: ConfigFile
+
+var metadata: Dictionary
 
 var components: Dictionary
 
@@ -46,7 +48,7 @@ func add_component(comp: Node):
 	assert(comp_name is String)
 	
 	## Replace any existing component with the same COMPONENT_NAME
-	if components[comp_name] is Node:
+	if components.get(comp_name, null) is Node:
 		components[comp_name].queue_free()
 		
 	components[comp_name] = comp
@@ -59,7 +61,8 @@ func store_config_file(identifier_used: String = identifier):
 
 	## Store main data
 	config_to_save.set_value(CONFIG_SECTION_MAIN, CONFIG_SECTION_MAIN_KEY_IDENTIFIER, identifier_used)
-
+	config_to_save.set_value(CONFIG_SECTION_MAIN, CONFIG_SECTION_MAIN_KEY_METADATA, metadata)
+	
 	## Store component data
 	for comp_name: String in components:
 		var comp_node: Node = components[comp_name]
@@ -85,6 +88,7 @@ func load_config_file(identifier_used: String = identifier):
 		
 	## Store main data
 	identifier = loaded_config.get_value(CONFIG_SECTION_MAIN, CONFIG_SECTION_MAIN_KEY_IDENTIFIER)
+	metadata = loaded_config.get_value(CONFIG_SECTION_MAIN, CONFIG_SECTION_MAIN_KEY_METADATA, {})
 
 	## Store component data
 	for comp_name: String in components:

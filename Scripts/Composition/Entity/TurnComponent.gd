@@ -7,7 +7,7 @@ static var turn_component_array: Array[ComponentTurn]
 
 var delay_stack: int
 var delay_current: int
-var delay_base: int
+
 
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
@@ -25,9 +25,15 @@ func get_entity() -> Entity3D:
 func add_delay_to_stack(delay: int):
 	delay_stack += delay
 		
+		
+func get_base_delay() -> int:
+	var stat_comp: ComponentStats = get_entity().get_component(ComponentStats.COMPONENT_NAME)
+	var output: int = stat_comp.get_stat(ComponentStats.Keys.TURN_DELAY)
+	return output
+		
 	
 func get_current_turn_taker() -> ComponentTurn:
-	sort_by_delay()
+	ComponentTurn.sort_by_delay()
 	assert(turn_component_array.size() < 2 or turn_component_array.front().delay_current < turn_component_array.back().delay_current)
 	return turn_component_array.front()
 	
@@ -38,7 +44,7 @@ func end_turn():
 		push_warning("Only the current turn taker is meant to be able to end their turn!")
 		
 	#Reset to base + stack.
-	delay_current = delay_base + delay_stack
+	delay_current = get_base_delay() + delay_stack
 	
 	#Reduce the delay for everyone else by the stack
 	for turn_comp: ComponentTurn in turn_component_array:

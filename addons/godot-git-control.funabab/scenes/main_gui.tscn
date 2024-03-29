@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=12 format=3 uid="uid://bj44qfm44v7hn"]
 
-[ext_resource path="res://addons/godot-git-control.funabab/scripts/gui/main_gui.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-git-control.funabab/scenes/res/octicon_font.tres" type="DynamicFont" id=2]
-[ext_resource path="res://addons/godot-git-control.funabab/scenes/res/workspace_object_font.tres" type="DynamicFont" id=3]
+[ext_resource type="Script" path="res://addons/godot-git-control.funabab/scripts/gui/main_gui.gd" id="1"]
+[ext_resource type="FontFile" path="res://addons/godot-git-control.funabab/scenes/res/octicon_font.tres" id="2"]
+[ext_resource type="FontFile" path="res://addons/godot-git-control.funabab/scenes/res/workspace_object_font.tres" id="3"]
 
-[sub_resource type="GDScript" id=1]
-
+[sub_resource type="GDScript" id="1"]
 resource_name = "menus"
 script/source = "tool
 extends HBoxContainer
@@ -105,10 +104,8 @@ func set_all_btn_state(enable):
 	log_btn.disabled = !enable;
 	gitignore_btn.disabled = !enable;
 	pass"
-_sections_unfolded = [ "Resource" ]
 
-[sub_resource type="GDScript" id=2]
-
+[sub_resource type="GDScript" id="2"]
 resource_name = "branches_btn"
 script/source = "tool
 extends OptionButton
@@ -151,10 +148,8 @@ func update_branch_list(branches):
 	delete_branch_btn.get_popup().set_item_disabled(0, true);
 	pass
 "
-_sections_unfolded = [ "Resource" ]
 
-[sub_resource type="GDScript" id=3]
-
+[sub_resource type="GDScript" id="3"]
 resource_name = "workspace_tree"
 script/source = "
 tool
@@ -280,10 +275,8 @@ func _on_cell_selected():
 		select_item_object(item, checked);
 		root_item.set_checked(CELL_CHECKBOX, selected_objects == total_objects);
 	pass"
-_sections_unfolded = [ "Resource" ]
 
-[sub_resource type="GDScript" id=4]
-
+[sub_resource type="GDScript" id="4"]
 script/source = "tool
 extends Panel
 
@@ -326,10 +319,8 @@ func _on_action_event(what, args):
 		if is_restart:
 			print_console();
 	pass"
-_sections_unfolded = [ "Resource" ]
 
-[sub_resource type="GDScript" id=5]
-
+[sub_resource type="GDScript" id="5"]
 script/source = "tool
 extends PanelContainer
 
@@ -360,10 +351,8 @@ func clear_console():
 func console_write(msg = \"\"):
 	console.text += msg;
 	pass"
-_sections_unfolded = [ "Resource" ]
 
-[sub_resource type="Shader" id=6]
-
+[sub_resource type="Shader" id="6"]
 code = "shader_type canvas_item;
 
 uniform vec4 background_color:hint_color;
@@ -372,15 +361,10 @@ void fragment() {
 	COLOR = background_color;
 }"
 
-[sub_resource type="ShaderMaterial" id=7]
+[sub_resource type="ShaderMaterial" id="7"]
+shader = SubResource("6")
 
-render_priority = 0
-shader = SubResource( 6 )
-shader_param/background_color = Color( 0, 0, 0, 0.320431 )
-_sections_unfolded = [ "shader_param" ]
-
-[sub_resource type="GDScript" id=8]
-
+[sub_resource type="GDScript" id="8"]
 resource_name = "command_input"
 script/source = "tool
 extends LineEdit
@@ -447,17 +431,15 @@ func _on_text_entered(new_text):
 		root.git.run_cmd_custom(cmd);
 	text = \"\";
 	pass"
-_sections_unfolded = [ "Resource" ]
 
 [node name="main_gui" type="VBoxContainer" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1024.0
 margin_bottom = 600.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -465,18 +447,17 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 5
 alignment = 0
-script = ExtResource( 1 )
-_sections_unfolded = [ "Size Flags", "custom_constants" ]
+script = ExtResource("1")
+_sections_unfolded = ["Size Flags", "custom_constants"]
 
 [node name="menus" type="HBoxContainer" parent="." index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1024.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -484,36 +465,34 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 custom_constants/separation = 12
 alignment = 0
-script = SubResource( 1 )
-_sections_unfolded = [ "Mouse", "Rect", "custom_constants" ]
+script = SubResource("1")
+_sections_unfolded = ["Mouse", "Rect", "custom_constants"]
 
 [node name="branch_toolbar" type="HBoxContainer" parent="menus" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 168.0
 margin_bottom = 24.0
-rect_min_size = Vector2( 168, 24 )
-rect_pivot_offset = Vector2( 0, 0 )
+rect_min_size = Vector2(168, 24)
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
-_sections_unfolded = [ "Rect", "Size Flags", "custom_constants" ]
+_sections_unfolded = ["Rect", "Size Flags", "custom_constants"]
 
 [node name="refresh_btn" type="Button" parent="menus/branch_toolbar" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 29.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 hint_tooltip = "Refresh"
 focus_mode = 2
@@ -521,7 +500,7 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -529,10 +508,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Hint", "Rect", "custom_fonts" ]
+_sections_unfolded = ["Hint", "Rect", "custom_fonts"]
 
 [node name="branches_btn" type="OptionButton" parent="menus/branch_toolbar" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -540,8 +518,8 @@ anchor_bottom = 0.0
 margin_left = 33.0
 margin_right = 135.0
 margin_bottom = 24.0
-rect_min_size = Vector2( 102, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
+rect_min_size = Vector2(102, 0)
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -555,13 +533,12 @@ shortcut = null
 group = null
 flat = false
 align = 0
-items = [  ]
+items = []
 selected = -1
-script = SubResource( 2 )
-_sections_unfolded = [ "Rect", "Size Flags", "custom_fonts" ]
+script = SubResource("2")
+_sections_unfolded = ["Rect", "Size Flags", "custom_fonts"]
 
 [node name="delete_branch_btn" type="MenuButton" parent="menus/branch_toolbar" index="2"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -569,14 +546,14 @@ anchor_bottom = 0.0
 margin_left = 139.0
 margin_right = 168.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 hint_tooltip = "Refresh"
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 action_mode = 0
 enabled_focus_mode = 0
@@ -585,11 +562,10 @@ group = null
 text = ""
 flat = false
 align = 1
-items = [  ]
-_sections_unfolded = [ "Hint", "Rect", "custom_fonts" ]
+items = []
+_sections_unfolded = ["Hint", "Rect", "custom_fonts"]
 
 [node name="menu_bar" type="HBoxContainer" parent="menus" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -597,31 +573,30 @@ anchor_bottom = 0.0
 margin_left = 180.0
 margin_right = 1024.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 alignment = 0
-_sections_unfolded = [ "Size Flags" ]
+_sections_unfolded = ["Size Flags"]
 
 [node name="commit_btn" type="Button" parent="menus/menu_bar" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 85.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -631,7 +606,6 @@ flat = false
 align = 1
 
 [node name="diff_btn" type="Button" parent="menus/menu_bar" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -639,14 +613,14 @@ anchor_bottom = 0.0
 margin_left = 89.0
 margin_right = 174.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -656,7 +630,6 @@ flat = false
 align = 1
 
 [node name="revert_btn" type="Button" parent="menus/menu_bar" index="2"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -664,14 +637,14 @@ anchor_bottom = 0.0
 margin_left = 178.0
 margin_right = 263.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -679,10 +652,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = ["Rect"]
 
 [node name="tag_btn" type="Button" parent="menus/menu_bar" index="3"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -690,14 +662,14 @@ anchor_bottom = 0.0
 margin_left = 267.0
 margin_right = 352.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -705,10 +677,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = ["Rect"]
 
 [node name="rebase_btn" type="Button" parent="menus/menu_bar" index="4"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -716,14 +687,14 @@ anchor_bottom = 0.0
 margin_left = 356.0
 margin_right = 441.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -731,10 +702,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = ["Rect"]
 
 [node name="merge_btn" type="Button" parent="menus/menu_bar" index="5"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -742,14 +712,14 @@ anchor_bottom = 0.0
 margin_left = 445.0
 margin_right = 530.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -757,10 +727,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = ["Rect"]
 
 [node name="branch_btn" type="Button" parent="menus/menu_bar" index="6"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -768,14 +737,14 @@ anchor_bottom = 0.0
 margin_left = 534.0
 margin_right = 619.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -783,10 +752,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = ["Rect"]
 
 [node name="log_btn" type="Button" parent="menus/menu_bar" index="7"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -794,14 +762,14 @@ anchor_bottom = 0.0
 margin_left = 623.0
 margin_right = 708.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource("2")
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
@@ -809,10 +777,9 @@ group = null
 text = ""
 flat = false
 align = 1
-_sections_unfolded = [ "Rect" ]
+_sections_unfolded = ["Rect"]
 
 [node name="seperator" type="VSeparator" parent="menus/menu_bar" index="8"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -820,7 +787,7 @@ anchor_bottom = 0.0
 margin_left = 712.0
 margin_right = 716.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -828,7 +795,6 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 
 [node name="gitignore_btn" type="Button" parent="menus/menu_bar" index="9"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -836,7 +802,7 @@ anchor_bottom = 0.0
 margin_left = 720.0
 margin_right = 732.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -849,10 +815,9 @@ shortcut = null
 group = null
 flat = false
 align = 1
-_sections_unfolded = [ "Size Flags" ]
+_sections_unfolded = ["Size Flags"]
 
 [node name="settings_btn" type="Button" parent="menus/menu_bar" index="10"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -860,7 +825,7 @@ anchor_bottom = 0.0
 margin_left = 736.0
 margin_right = 748.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -873,10 +838,9 @@ shortcut = null
 group = null
 flat = false
 align = 1
-_sections_unfolded = [ "Size Flags" ]
+_sections_unfolded = ["Size Flags"]
 
 [node name="clear_output_btn" type="Button" parent="menus/menu_bar" index="11"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -884,7 +848,7 @@ anchor_bottom = 0.0
 margin_left = 752.0
 margin_right = 844.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -900,7 +864,6 @@ flat = false
 align = 1
 
 [node name="main" type="HSplitContainer" parent="." index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -908,7 +871,7 @@ anchor_bottom = 0.0
 margin_top = 29.0
 margin_right = 1024.0
 margin_bottom = 600.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -917,39 +880,37 @@ size_flags_vertical = 3
 split_offset = 0
 collapsed = false
 dragger_visibility = 0
-_sections_unfolded = [ "Rect", "Size Flags" ]
+_sections_unfolded = ["Rect", "Size Flags"]
 
 [node name="workspace" type="Panel" parent="main" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 168.0
 margin_bottom = 571.0
-rect_min_size = Vector2( 168, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
+rect_min_size = Vector2(168, 0)
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 3
-_sections_unfolded = [ "Rect", "Size Flags" ]
+_sections_unfolded = ["Rect", "Size Flags"]
 
 [node name="workspace_tree" type="Tree" parent="main/workspace" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = true
 focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/font = ExtResource( 3 )
+custom_fonts/font = ExtResource("3")
 columns = 3
 allow_reselect = false
 allow_rmb_select = false
@@ -957,11 +918,10 @@ hide_folding = false
 hide_root = true
 drop_mode_flags = 0
 select_mode = 0
-script = SubResource( 3 )
-_sections_unfolded = [ "Size Flags" ]
+script = SubResource("3")
+_sections_unfolded = ["Size Flags"]
 
 [node name="consoles" type="VSplitContainer" parent="main" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -969,8 +929,8 @@ anchor_bottom = 0.0
 margin_left = 180.0
 margin_right = 1024.0
 margin_bottom = 571.0
-rect_min_size = Vector2( 300, 0 )
-rect_pivot_offset = Vector2( 0, 0 )
+rect_min_size = Vector2(300, 0)
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -979,10 +939,9 @@ size_flags_vertical = 3
 split_offset = 0
 collapsed = false
 dragger_visibility = 0
-_sections_unfolded = [ "Rect", "Size Flags" ]
+_sections_unfolded = ["Rect", "Size Flags"]
 
 [node name="git_output" type="Panel" parent="main/consoles" index="0"]
-
 editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
@@ -990,23 +949,22 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 844.0
 margin_bottom = 90.0
-rect_min_size = Vector2( 0, 90 )
-rect_pivot_offset = Vector2( 0, 0 )
+rect_min_size = Vector2(0, 90)
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-script = SubResource( 4 )
-_sections_unfolded = [ "Rect", "Size Flags" ]
+script = SubResource("4")
+_sections_unfolded = ["Rect", "Size Flags"]
 
 [node name="output_console" type="RichTextLabel" parent="main/consoles/git_output" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = true
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -1025,10 +983,9 @@ scroll_active = true
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "BBCode", "Size Flags" ]
+_sections_unfolded = ["BBCode", "Size Flags"]
 
 [node name="command_terminal" type="PanelContainer" parent="main/consoles" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1036,17 +993,16 @@ anchor_bottom = 0.0
 margin_top = 102.0
 margin_right = 844.0
 margin_bottom = 571.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-script = SubResource( 5 )
-_sections_unfolded = [ "Rect", "Size Flags" ]
+script = SubResource("5")
+_sections_unfolded = ["Rect", "Size Flags"]
 
 [node name="container" type="VBoxContainer" parent="main/consoles/command_terminal" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1055,7 +1011,7 @@ margin_left = 7.0
 margin_top = 7.0
 margin_right = 837.0
 margin_bottom = 462.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -1063,52 +1019,49 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 0
 alignment = 0
-_sections_unfolded = [ "Rect", "Size Flags", "custom_constants" ]
+_sections_unfolded = ["Rect", "Size Flags", "custom_constants"]
 
 [node name="header" type="Panel" parent="main/consoles/command_terminal/container" index="0"]
-
-material = SubResource( 7 )
+material = SubResource("7")
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 830.0
 margin_bottom = 35.0
-rect_min_size = Vector2( 0, 35 )
-rect_pivot_offset = Vector2( 0, 0 )
+rect_min_size = Vector2(0, 35)
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-_sections_unfolded = [ "Material", "Rect", "Size Flags", "custom_styles" ]
+_sections_unfolded = ["Material", "Rect", "Size Flags", "custom_styles"]
 
 [node name="container" type="HBoxContainer" parent="main/consoles/command_terminal/container/header" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 11.0
 margin_right = -10.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 0
-_sections_unfolded = [ "Margin", "Size Flags" ]
+_sections_unfolded = ["Margin", "Size Flags"]
 
 [node name="title" type="Label" parent="main/consoles/command_terminal/container/header/container" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 750.0
 margin_bottom = 35.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
@@ -1119,10 +1072,9 @@ valign = 1
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "Margin", "Size Flags" ]
+_sections_unfolded = ["Margin", "Size Flags"]
 
 [node name="options" type="HBoxContainer" parent="main/consoles/command_terminal/container/header/container" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1130,7 +1082,7 @@ anchor_bottom = 0.0
 margin_left = 754.0
 margin_right = 809.0
 margin_bottom = 35.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -1142,13 +1094,12 @@ __meta__ = {
 }
 
 [node name="link_container" type="CenterContainer" parent="main/consoles/command_terminal/container/header/container/options" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_bottom = 35.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -1157,14 +1108,13 @@ size_flags_vertical = 1
 use_top_left = false
 
 [node name="launch_terminal_btn" type="LinkButton" parent="main/consoles/command_terminal/container/header/container/options/link_container" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 10.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -1175,10 +1125,9 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-_sections_unfolded = [ "Margin" ]
+_sections_unfolded = ["Margin"]
 
 [node name="seperator" type="VSeparator" parent="main/consoles/command_terminal/container/header/container/options" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1186,7 +1135,7 @@ anchor_bottom = 0.0
 margin_left = 4.0
 margin_right = 8.0
 margin_bottom = 35.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -1194,7 +1143,6 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 
 [node name="clear_git_terminal_btn" type="Button" parent="main/consoles/command_terminal/container/header/container/options" index="2"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1202,7 +1150,7 @@ anchor_bottom = 0.0
 margin_left = 12.0
 margin_right = 55.0
 margin_bottom = 35.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -1218,7 +1166,6 @@ flat = true
 align = 1
 
 [node name="commnad_console" type="RichTextLabel" parent="main/consoles/command_terminal/container" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1226,7 +1173,7 @@ anchor_bottom = 0.0
 margin_top = 35.0
 margin_right = 830.0
 margin_bottom = 431.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = true
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -1243,10 +1190,9 @@ scroll_active = true
 scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
-_sections_unfolded = [ "Size Flags" ]
+_sections_unfolded = ["Size Flags"]
 
 [node name="command_input" type="LineEdit" parent="main/consoles/command_terminal/container" index="2"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -1254,7 +1200,7 @@ anchor_bottom = 0.0
 margin_top = 431.0
 margin_right = 830.0
 margin_bottom = 455.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -1268,7 +1214,5 @@ placeholder_alpha = 0.6
 caret_blink = true
 caret_blink_speed = 0.65
 caret_position = 0
-script = SubResource( 8 )
-_sections_unfolded = [ "Caret", "Placeholder" ]
-
-
+script = SubResource("8")
+_sections_unfolded = ["Caret", "Placeholder"]

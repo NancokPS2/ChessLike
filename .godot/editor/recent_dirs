@@ -1,3 +1,4 @@
+res://Scripts/Composition/Entity/Resources/CapabilityComponent
 res://Singletons/Board
 res://Scripts
 res://Singletons
@@ -5,7 +6,6 @@ res://addons/ecs
 res://Resources/Characters/UniqueCharacters
 res://Resources/Maps/UniqueMaps
 res://UnusedStuff
-res://Objects/UI/UnitDisplays
 res://Resources/Maps/TileSets
 res://Resources/SaveFile
 res://Other
@@ -14,7 +14,6 @@ res://Assets/Meshes/Map
 res://Other/Shaders
 res://Assets/UI/ThemeElements
 res://Assets
-res://Objects/UI
 H:/Programs/Blender
 res://
 res://Resources/Characters/Classes

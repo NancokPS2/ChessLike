@@ -1,3 +1,4 @@
+ComponentCapabilityResource
 Map
 TerrainCell
 Ability

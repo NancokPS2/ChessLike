@@ -2,15 +2,17 @@ extends Node3D
 class_name ComponentMovement
 
 ## All movement is stopped by [Board.CellFlags.IMPASSABLE]
-enum SpeedTypes {
+enum Types {
 	WALK, #Can walk on cells that have FOOTING
+	AMPHIBIOUS, #Can walk AND swim trough LIQUID
 	FLY, #Can move and stop anywhere except for cells with DENSE
 	HOVER, #Can stand on any IMPASSABLE or DENSE cell 
 	SWIM, #Water only 
 	TELEPORT, #Teleportation distance, cannot target cells that the unit cannot stay on.
+	UNDEFINED, #Treated as an invalid value.
 	}
 	
-enum MovementTypes {
+enum Animations {
 	INTERPOLATE
 }
 
@@ -21,11 +23,8 @@ const BASE_POSITION_CHANGE_SPEED_PER_SECOND: float = 3.0
 #ComponentMovement:Vector3i
 static var board_position_dict: Dictionary
 
-var speeds: Array[float] = [0,0,0,0,0]
-
 var cell_targets: Array[Vector3i]
-var speed_current: SpeedTypes
-var movement_type_current: MovementTypes = MovementTypes.INTERPOLATE
+var movement_type_current: Animations = Animations.INTERPOLATE
 
 
 func _ready() -> void:
@@ -44,7 +43,7 @@ func _process(delta: float):
 	var target_local_position: Vector3 = Board.map_to_local(target)
 	
 	match movement_type_current:
-		MovementTypes.INTERPOLATE:
+		Animations.INTERPOLATE:
 			var new_pos: Vector3 = get_entity().position.move_toward(
 				target_local_position, delta * BASE_POSITION_CHANGE_SPEED_PER_SECOND
 				)
@@ -64,33 +63,36 @@ func set_position_in_board(cell: Vector3i):
 	board_position_dict.erase(self)
 	board_position_dict[self] = get_position_in_board()
 	Event.ENTITY_MOVED.emit(get_entity(), get_position_in_board())
-	
-	
-func set_speed(type: SpeedTypes, value: float):
-	speeds[type] = value
 
 
 func get_position_in_board() -> Vector3i:
 	return Board.local_to_map(get_entity().position)
 
 
-func get_speed(type: SpeedTypes) -> int:
-	return speeds[type]
+func get_type() -> Types:
+	var cap_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
+	var output: Types = cap_comp.get_movement_type()
+	if output == Types.UNDEFINED:
+		push_error("Undefined movement type! Something went wrong.")
+	return output
 
 
-func get_cell_movement_cost(cell: Vector3i, speed_used: SpeedTypes = speed_current) -> float:
-	var output: float = 1
-	
-	match speed_used:
-		SpeedTypes.WALK:
+func get_move_distance() -> int:
+	var stat_comp: ComponentStats = get_entity().get_component(ComponentStats.COMPONENT_NAME)
+	return stat_comp.get_stat(ComponentStats.Keys.MOVE_DISTANCE)
+
+
+func get_cell_movement_cost(cell: Vector3i, type_used: Types = get_type()) -> float:
+	match type_used:
+		Types.WALK:
 			if Board.is_flag_in_cell(cell, Board.CellFlags.UNSTABLE):
 				return 2
 				
-		SpeedTypes.FLY:
+		Types.FLY:
 			if Board.is_flag_in_cell(cell, Board.CellFlags.DENSE):
 				return 4
 				
-		SpeedTypes.HOVER:
+		Types.HOVER:
 			if Board.is_flag_in_cell(cell, Board.CellFlags.DENSE):
 				return 4
 	
@@ -98,14 +100,15 @@ func get_cell_movement_cost(cell: Vector3i, speed_used: SpeedTypes = speed_curre
 	return 1
 	
 	
-func get_pathable_cells(speed_used: SpeedTypes = speed_current) -> Array[Vector3i]:		
-	var output: Array[Vector3i] = Board.get_cells_flood_custom(get_position_in_board(), get_speed(speed_current), is_cell_pathable)
+func get_pathable_cells() -> Array[Vector3i]:
+	var output: Array[Vector3i] = Board.get_cells_flood_custom(
+		get_position_in_board(), get_move_distance(), is_cell_pathable
+		)
 		
 	return output
 
 
-
-func is_cell_pathable(cell: Vector3i, speed_used: SpeedTypes = speed_current) -> bool:
+func is_cell_pathable(cell: Vector3i, type: Types = get_type()) -> bool:
 	var flags_cell: Array[Board.CellFlags] = Board.get_cell_flags(cell)
 	var flags_down: Array[Board.CellFlags] = Board.get_cell_flags(cell + Vector3i.DOWN)
 	
@@ -122,8 +125,8 @@ func is_cell_pathable(cell: Vector3i, speed_used: SpeedTypes = speed_current) ->
 	if Board.CellFlags.IMPASSABLE in flags_cell:
 		return false
 	
-	match speed_used:
-		SpeedTypes.WALK:
+	match type:
+		Types.WALK:
 			
 			if not Board.CellFlags.FOOTING in flags_down:
 				return false
@@ -132,7 +135,7 @@ func is_cell_pathable(cell: Vector3i, speed_used: SpeedTypes = speed_current) ->
 	return true
 
 
-func is_cell_landable(cell: Vector3i, speed_used: SpeedTypes = speed_current) -> bool:
+func is_cell_landable(cell: Vector3i, type: Types = get_type()) -> bool:
 	var flags_cell: Array[Board.CellFlags] = Board.get_cell_flags(cell)
 	var flags_down: Array[Board.CellFlags] = Board.get_cell_flags(cell + Vector3i.DOWN)
 	
@@ -143,8 +146,8 @@ func is_cell_landable(cell: Vector3i, speed_used: SpeedTypes = speed_current) ->
 	if Board.CellFlags.IMPASSABLE in flags_cell:
 		return false
 	
-	match speed_used:
-		SpeedTypes.WALK:
+	match type:
+		Types.WALK:
 			
 			if not Board.CellFlags.FOOTING in flags_down:
 				return false

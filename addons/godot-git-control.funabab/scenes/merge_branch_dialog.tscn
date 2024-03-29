@@ -1,7 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://jit4lm0qqkj3"]
 
-[sub_resource type="GDScript" id=1]
-
+[sub_resource type="GDScript" id="1"]
 resource_name = "merge_branch_dialog"
 script/source = "tool
 extends \"res://addons/godot-git-control.funabab/scripts/git_dialog.gd\"
@@ -43,17 +42,15 @@ func _on_action_event(what, args):
 	pass
 
 "
-_sections_unfolded = [ "Resource" ]
 
 [node name="merge_branch_dialog" type="AcceptDialog" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 452.0
 margin_bottom = 187.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
@@ -63,11 +60,10 @@ popup_exclusive = false
 window_title = "Alert!"
 resizable = false
 dialog_hide_on_ok = true
-script = SubResource( 1 )
-_sections_unfolded = [ "Rect" ]
+script = SubResource("1")
+_sections_unfolded = ["Rect"]
 
 [node name="container" type="VBoxContainer" parent="." index="3"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
@@ -76,24 +72,23 @@ margin_left = 8.0
 margin_top = 8.0
 margin_right = -8.0
 margin_bottom = -36.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
-_sections_unfolded = [ "Margin" ]
+_sections_unfolded = ["Margin"]
 
 [node name="current_branch" type="VBoxContainer" parent="container" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 436.0
 margin_bottom = 42.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -102,14 +97,13 @@ size_flags_vertical = 1
 alignment = 0
 
 [node name="label" type="Label" parent="container/current_branch" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 436.0
 margin_bottom = 14.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
@@ -121,7 +115,6 @@ lines_skipped = 0
 max_lines_visible = -1
 
 [node name="input" type="LineEdit" parent="container/current_branch" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -129,7 +122,7 @@ anchor_bottom = 0.0
 margin_top = 18.0
 margin_right = 436.0
 margin_bottom = 42.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -145,7 +138,6 @@ caret_blink_speed = 0.65
 caret_position = 0
 
 [node name="merge_branch" type="VBoxContainer" parent="container" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -153,7 +145,7 @@ anchor_bottom = 0.0
 margin_top = 46.0
 margin_right = 436.0
 margin_bottom = 84.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -162,14 +154,13 @@ size_flags_vertical = 1
 alignment = 0
 
 [node name="label" type="Label" parent="container/merge_branch" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 436.0
 margin_bottom = 14.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 2
 mouse_default_cursor_shape = 0
@@ -181,7 +172,6 @@ lines_skipped = 0
 max_lines_visible = -1
 
 [node name="branches" type="OptionButton" parent="container/merge_branch" index="1"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -189,7 +179,7 @@ anchor_bottom = 0.0
 margin_top = 18.0
 margin_right = 436.0
 margin_bottom = 38.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -203,11 +193,10 @@ shortcut = null
 group = null
 flat = false
 align = 0
-items = [  ]
+items = []
 selected = -1
 
 [node name="no_fast_forward" type="VBoxContainer" parent="container" index="2"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -215,7 +204,7 @@ anchor_bottom = 0.0
 margin_top = 88.0
 margin_right = 436.0
 margin_bottom = 112.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 mouse_filter = 1
 mouse_default_cursor_shape = 0
@@ -224,14 +213,13 @@ size_flags_vertical = 1
 alignment = 0
 
 [node name="checkbox" type="CheckBox" parent="container/no_fast_forward" index="0"]
-
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 436.0
 margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
+rect_pivot_offset = Vector2(0, 0)
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
@@ -245,5 +233,3 @@ group = null
 text = "No Fast-Forward"
 flat = false
 align = 0
-
-

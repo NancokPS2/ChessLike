@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ComponentCapabilityResource" load_steps=2 format=3 uid="uid://biuqejuakwyuj"]
+
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd" id="1_qf63g"]
+
+[resource]
+script = ExtResource("1_qf63g")
+identifier = "NONE"
+type = 1
+ability_identifier_arr = Array[String]([])
+stat_bonuses = Array[int]([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+stat_modifiers = Array[float]([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])

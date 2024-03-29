@@ -1,5 +1,5 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://xhvpoyguwmqt"]
 
 [ext_resource type="PackedScene" uid="uid://h1jum2f6b5al" path="res://Assets/Meshes/Weapons/Dagger/Dagger.dae" id="1"]
 
-[node name="Dagger" instance=ExtResource( 1 )]
+[node name="Dagger" instance=ExtResource("1")]
