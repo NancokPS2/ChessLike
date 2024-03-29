@@ -39,11 +39,7 @@ const DIAGONAL_CELLS: Array[Vector3i] = [
 const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
 const MAX_HEIGHT: int = 40
 
-## Stores references to objects added to the GridMap
-var cell_object_dict: Dictionary
-## Stores metadata of cells
-var cell_data: Dictionary
-var cell_hovered: Vector3i
+
 
 
 ## Flags let other systems figure out how to react to each cell.
@@ -76,6 +72,11 @@ enum CellFlags {
 const DEFAULT_GROUND_FLAGS: Array[CellFlags] = [
 	CellFlags.FOOTING, CellFlags.OPAQUE, CellFlags.COVER, CellFlags.IMPASSABLE
 ]
+
+## Stores references to objects added to the GridMap
+var cell_object_dict: Dictionary
+## Stores metadata of cells
+var cell_data: Dictionary
 
 func _ready() -> void:
 	var map_to_use: Map = load(DEFAULT_MAP_PATH)
@@ -385,6 +386,3 @@ func set_cells_from_array(cells:Array[Vector3i], item_id: int):#Sets all cells i
 func align_to_grid(object:Object):
 	var gridPos:Vector3i = local_to_map(object.position)
 	object.translation = map_to_local(gridPos)
-
-
-

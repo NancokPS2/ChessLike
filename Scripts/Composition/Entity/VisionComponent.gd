@@ -12,7 +12,7 @@ func get_entity() -> Entity3D:
 	
 	
 func is_cell_visible(coordinate: Vector3i) -> bool:
-	var placed_at: Vector3i = get_entity().get_grid_location()
+	var placed_at: Vector3i = get_entity().get_position_in_board()
 	var collision: Array[Vector3i] = Board.get_cells_in_line(
 		placed_at, 
 		coordinate, 

@@ -18,13 +18,13 @@ func get_entity() -> Entity3D:
 func set_faction(faction_name: StringName):
 	own_faction = faction_name
 	
-func faction_is_friendly(faction_component: ComponentFaction) -> bool:
+func is_faction_friendly(faction_component: ComponentFaction) -> bool:
 	return own_faction in faction_component.friendly_factions
 
 	
-func faction_is_hostile(faction_component: ComponentFaction) -> bool:
+func is_faction_hostile(faction_component: ComponentFaction) -> bool:
 	return own_faction in faction_component.hostile_factions or faction_component.own_faction in hostile_factions
 
 
-func faction_is_neutral(faction_component: ComponentFaction) -> bool:
-	return not (faction_is_friendly(faction_component) or faction_is_hostile(faction_component))
+func is_faction_neutral(faction_component: ComponentFaction) -> bool:
+	return not (is_faction_friendly(faction_component) or is_faction_hostile(faction_component))
