@@ -1,5 +1,5 @@
 extends Resource
-class_name AbilityEffect
+class_name AbilityEffectTEMP
 
 #@export var abilityOverrides:Dictionary = {
 #	"targetingShape":_targeting_shape_override

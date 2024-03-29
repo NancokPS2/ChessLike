@@ -4,9 +4,21 @@
 
 [node name="Human" instance=ExtResource("1_wof0m")]
 
+[node name="Armature" parent="." index="0"]
+transform = Transform3D(0.214205, 0, 0, 0, 0.214205, 0, 0, 0, 0.214205, 0, 0, 0)
+
 [node name="Skeleton3D" parent="Armature" index="0"]
 bones/0/position = Vector3(0, -0.0367026, 0)
 bones/1/rotation = Quaternion(-0.692355, 0.150347, 0.690938, 0.143681)
 bones/2/rotation = Quaternion(-0.199368, -2.14944e-08, -4.43017e-09, 0.979925)
 bones/8/rotation = Quaternion(-0.692355, -0.150347, -0.690938, 0.143681)
 bones/9/rotation = Quaternion(-0.199368, 2.14944e-08, 4.43017e-09, 0.979925)
+
+[node name="FOOT_L" parent="Armature/Skeleton3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="LOW_LEG_L" parent="Armature/Skeleton3D" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="UPP_LEG_L" parent="Armature/Skeleton3D" index="12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

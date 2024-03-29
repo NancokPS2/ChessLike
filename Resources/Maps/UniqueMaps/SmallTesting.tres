@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Map" load_steps=26 format=3 uid="uid://d4mhflxohgn1n"]
 
-[ext_resource type="Script" path="res://Resources/Maps/CellResource.gd" id="1_hhga5"]
+[ext_resource type="Script" path="res://Resources/Maps/TerrainCell.gd" id="1_hhga5"]
 [ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="2_5xrub"]
 [ext_resource type="Resource" uid="uid://c6yyvv4hrkg2h" path="res://Resources/Characters/Factions/PLAYER.tres" id="2_lh07l"]
 [ext_resource type="Texture2D" uid="uid://b2lycop6s72kd" path="res://UnusedStuff/assets/tiles/grass.png" id="3_q1s5k"]

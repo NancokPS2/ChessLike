@@ -1,0 +1,121 @@
+[gd_scene load_steps=6 format=3 uid="uid://bef5g7mx5f3sj"]
+
+[ext_resource type="Script" path="res://Objects/Unit/UnitNode.gd" id="1_7ft5o"]
+
+[sub_resource type="Animation" id="1"]
+resource_name = "Idle"
+length = 0.1
+
+[sub_resource type="Animation" id="2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("StatusNumber:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("StatusNumber:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("StatusNumber:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-11, -30)]
+}
+
+[sub_resource type="Animation" id="3"]
+resource_name = "Took Damage"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("StatusNumber:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.95238),
+"transitions": PackedFloat32Array(0, 0),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("StatusNumber:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.00577182, 0.5, 1.52064, 2.95238),
+"transitions": PackedFloat32Array(1, 0.5, 3.03143, 1),
+"update": 0,
+"values": [Color(0.905882, 0.137255, 0.0588235, 0), Color(0.905882, 0.137255, 0.0588235, 1), Color(0.905882, 0.137255, 0.0588235, 1), Color(0.905882, 0.137255, 0.0588235, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("StatusNumber:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.00865774, 0.695219, 2.97893),
+"transitions": PackedFloat32Array(0.68302, 1, 1),
+"update": 0,
+"values": [Vector2(-11, -30), Vector2(-11, -40), Vector2(-11, -40)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gd4a4"]
+_data = {
+"Idle": SubResource("1"),
+"RESET": SubResource("2"),
+"Took Damage": SubResource("3")
+}
+
+[node name="Unit" type="Node3D" groups=["UNIT"]]
+script = ExtResource("1_7ft5o")
+
+[node name="VFX" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_gd4a4")
+}
+
+[node name="StatusNumber" type="Label" parent="."]
+visible = false
+text = "999"
+
+[node name="FloorIcon" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+hframes = 2
+vframes = 2
+
+[node name="ClassIcon" type="Sprite3D" parent="FloorIcon"]
+transform = Transform3D(0.999969, 0.0028502, 0.00727676, -0.00281973, 0.999987, -0.00419769, -0.00728862, 0.00417706, 0.999964, 0, 0, 0)
+
+[node name="NickName" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.504893, 0)
+billboard = 2
+double_sided = false
+fixed_size = true
+text = "MYNAME"
+width = 320.0

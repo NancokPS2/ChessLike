@@ -1,0 +1,210 @@
+[gd_scene load_steps=23 format=3 uid="uid://xeum2r6b38cn"]
+
+[ext_resource type="Script" path="res://Objects/CombatGrid/GameBoard.gd" id="1_pjmtp"]
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/TurnComponent.gd" id="2_4qad4"]
+[ext_resource type="Script" path="res://Objects/CombatGrid/UnitHandler.gd" id="2_geir4"]
+[ext_resource type="MeshLibrary" uid="uid://cj2ft1q0ojhsu" path="res://Assets/Meshes/Map/MeshLibs/GrassyTiles.tres" id="2_nmaf4"]
+[ext_resource type="Script" path="res://Objects/CombatGrid/AbilityHandler/AbilityHandler.gd" id="4_1l28h"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/CallQueue.gd" id="4_qcmis"]
+[ext_resource type="PackedScene" uid="uid://jtp2wbymwre0" path="res://Objects/CombatGrid/AbilityHandler/TargetableMarker.tscn" id="5_k8bha"]
+[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="6_kw6n7"]
+[ext_resource type="PackedScene" uid="uid://v4tex8ioydyg" path="res://Objects/CombatGrid/AbilityHandler/AOEMarker.tscn" id="7_ijnn5"]
+[ext_resource type="PackedScene" uid="uid://b87fywkitlex8" path="res://Objects/CombatGrid/AbilityHandler/ChosenTargetMarker.tscn" id="7_jw7vw"]
+[ext_resource type="PackedScene" uid="uid://rfogk7y8u50q" path="res://Objects/UI/UnitDisplays/BigUnitDisplay.tscn" id="7_osk8e"]
+[ext_resource type="Material" uid="uid://cod0ku6487d5t" path="res://Assets/Meshes/Map/YellowCellMaterial.tres" id="7_tta73"]
+[ext_resource type="Script" path="res://Singletons/Board/PositionGrid.gd" id="10_qv1jg"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/ToolTip.gd" id="14_28oey"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/Interface/ConfirmationPopup.gd" id="15_2l4d5"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="16_74vgu"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/StolenCamScript.gd" id="17_faqk1"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/MapScreen/MapScreen.gd" id="18_lqauf"]
+
+[sub_resource type="GDScript" id="GDScript_jqqg5"]
+script/source = "extends Node3D
+
+@export var gridMap:GridMap
+
+func move_to_cell(cell:Vector3i, gridMap:GridMap=gridMap):
+	position = get_parent().map_to_local(cell)
+	
+
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_fd05i"]
+size = Vector3(0.33, 0.33, 0.33)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k0mn6"]
+
+[sub_resource type="Environment" id="Environment_vl025"]
+background_mode = 1
+background_color = Color(0.0666667, 0.101961, 0.0196078, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 1.12
+reflected_light_source = 1
+
+[node name="Board" type="Node3D" node_paths=PackedStringArray("callQueue", "unitHandler", "abilityHandler", "unitList", "confirmationDialogue", "unitInfo", "refTurnSystem")]
+script = ExtResource("1_pjmtp")
+callQueue = NodePath("CallQueue")
+unitHandler = NodePath("UnitHandler")
+abilityHandler = NodePath("AbilityHandler")
+unitList = NodePath("UI/UnitList/UpperList")
+confirmationDialogue = NodePath("UI/ConfirmationPopup")
+unitInfo = NodePath("UI/UnitPanel")
+refTurnSystem = NodePath("TurnSystem")
+
+[node name="TurnSystem" type="Node" parent="."]
+script = ExtResource("2_4qad4")
+
+[node name="UnitHandler" type="Node" parent="." node_paths=PackedStringArray("unitDisplayManager")]
+script = ExtResource("2_geir4")
+unitDisplayManager = NodePath("../UI/UnitList/UpperList")
+
+[node name="CallQueue" type="Node" parent="."]
+script = ExtResource("4_qcmis")
+
+[node name="AbilityHandler" type="Node" parent="." node_paths=PackedStringArray("abilityButtonList")]
+script = ExtResource("4_1l28h")
+targetableMarker = ExtResource("5_k8bha")
+AOEMarker = ExtResource("7_ijnn5")
+chosenTargetMarker = ExtResource("7_jw7vw")
+abilityButtonList = NodePath("../UI/VBoxContainer/Abilities")
+
+[node name="MovementGrid" type="GridMap" parent="." groups=["COMBAT", "SETUP"]]
+mesh_library = ExtResource("2_nmaf4")
+cell_size = Vector3(0.33, 0.33, 0.33)
+data = {
+"cells": PackedInt32Array(0, 0, 0, 65535, 65535, 0, 131071, 65535, 0, 131071, 0, 0, 131071, 1, 0, 131070, 0, 0, 131070, 65535, 0, 131070, 1, 0)
+}
+script = ExtResource("10_qv1jg")
+metadata/_editor_floor_ = Vector3(0, 1, 0)
+
+[node name="CellHovered" type="Node3D" parent="MovementGrid" node_paths=PackedStringArray("gridMap")]
+transform = Transform3D(1, 0, 0, 0, 1.4, 0, 0, 0, 1, 0, 0, 0)
+script = SubResource("GDScript_jqqg5")
+gridMap = NodePath("..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MovementGrid/CellHovered"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)
+material_override = ExtResource("7_tta73")
+mesh = SubResource("BoxMesh_fd05i")
+
+[node name="Debug" type="Label" parent="."]
+anchors_preset = -1
+anchor_right = 0.305
+anchor_bottom = 0.211
+mouse_filter = 1
+text = "asd"
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="UnitList" type="ScrollContainer" parent="UI" groups=["COMBAT", "SETUP"]]
+anchors_preset = -1
+anchor_left = 0.225
+anchor_right = 1.0
+anchor_bottom = 0.2
+
+[node name="UpperList" type="HBoxContainer" parent="UI/UnitList"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("6_kw6n7")
+
+[node name="UnitPanel" parent="UI" groups=["COMBAT", "SETUP"] instance=ExtResource("7_osk8e")]
+anchors_preset = -1
+anchor_top = 0.78858
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Tooltip" type="Label" parent="UI/UnitPanel"]
+layout_mode = 0
+offset_top = -511.0
+offset_right = 29.0
+offset_bottom = -485.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_k0mn6")
+text = "ASS"
+script = ExtResource("14_28oey")
+
+[node name="ConfirmationPopup" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchor_left = 0.145
+anchor_top = 0.187
+anchor_right = 0.855
+anchor_bottom = 0.813
+offset_left = 0.120026
+offset_top = -0.0879898
+offset_right = -0.120056
+offset_bottom = 0.0879517
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_2l4d5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+anchors_preset = -1
+anchor_right = 0.2
+anchor_bottom = 0.631
+
+[node name="Abilities" type="VBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EndTurn" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "END_TURN"
+
+[node name="StartCombat" type="Button" parent="UI"]
+editor_description = "Changes the $Board state and then deletes itself."
+anchors_preset = -1
+anchor_left = 0.85
+anchor_top = 0.6
+anchor_right = 1.0
+anchor_bottom = 0.75
+text = "START_COMBAT"
+metadata/_edit_use_anchors_ = true
+
+[node name="Ability in use" type="Label" parent="UI"]
+anchors_preset = -1
+anchor_left = 0.2
+anchor_right = 0.5
+anchor_bottom = 0.035
+
+[node name="Misc" type="Node" parent="."]
+
+[node name="PivotCamera3D" type="Node3D" parent="Misc"]
+script = ExtResource("16_74vgu")
+controlActions = {
+"rotate_down": "camera_down",
+"rotate_left": "camera_left",
+"rotate_right": "camera_right",
+"rotate_up": "camera_up",
+"zoom_in": "zoom_in",
+"zoom_out": "zoom_out"
+}
+
+[node name="Camera3D" type="Camera3D" parent="Misc"]
+transform = Transform3D(1, 0, 0, 0, 0.999856, 0.016946, 0, -0.016946, 0.999856, 0, 0.114764, 3.23808)
+script = ExtResource("17_faqk1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Misc"]
+transform = Transform3D(0.965926, 1.13133e-08, -0.258819, 0.258819, -4.2222e-08, 0.965926, 0, -1, -4.37114e-08, 0, 4, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Misc"]
+environment = SubResource("Environment_vl025")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("18_lqauf")
+
+[connection signal="selected_unit" from="UnitHandler" to="UI/UnitList/UpperList" method="set_unit_selected"]
+[connection signal="unit_acting" from="UnitHandler" to="AbilityHandler" method="update_ability_list"]
+[connection signal="selected_ability_with_name" from="AbilityHandler" to="UI/Ability in use" method="set_text"]
+[connection signal="cell_clicked" from="MovementGrid" to="." method="on_cell_clicked"]
+[connection signal="cell_clicked" from="MovementGrid" to="AbilityHandler" method="on_cell_clicked"]
+[connection signal="unit_clicked" from="MovementGrid" to="UnitHandler" method="select_unit"]
+[connection signal="unit_selected" from="UI/UnitList/UpperList" to="UnitHandler" method="select_unit"]
+[connection signal="pressed" from="UI/VBoxContainer/EndTurn" to="UnitHandler" method="end_turn_attempt"]
+[connection signal="pressed" from="UI/StartCombat" to="UI/StartCombat" method="queue_free" flags=3]

@@ -1,0 +1,80 @@
+[gd_scene load_steps=7 format=3 uid="uid://cq02b4gq61ffa"]
+
+[ext_resource type="Script" path="res://Objects/UnitMenu/UnitMenu.gd" id="1_arnfn"]
+[ext_resource type="Script" path="res://Objects/UI/UnitDisplays/ManagerUnitDisplay.gd" id="1_ws15d"]
+[ext_resource type="PackedScene" uid="uid://cvijuqks5beft" path="res://Assets/Meshes/Characters/Human.tscn" id="3_yqhv4"]
+[ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="5_kt27s"]
+[ext_resource type="PackedScene" uid="uid://l6u416bklps4" path="res://Objects/UI/UnitDisplays/StatDecoratedList.tscn" id="5_xbg00"]
+[ext_resource type="Environment" uid="uid://cf7eiyb1unktc" path="res://DefaultEnviroment.tres" id="6_60ksk"]
+
+[node name="UnitMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_arnfn")
+statList = Object(VBoxContainer,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(0, 0),"layout_direction":0,"layout_mode":3,"anchors_preset":-1,"anchor_left":0.3,"anchor_top":0.25,"anchor_right":0.6,"anchor_bottom":1.0,"offset_left":0.0,"offset_top":0.0,"offset_right":0.0,"offset_bottom":0.0,"grow_horizontal":0,"grow_vertical":2,"rotation":0.0,"scale":Vector2(1, 1),"pivot_offset":Vector2(0, 0),"size_flags_horizontal":1,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"auto_translate":true,"localize_numeral_system":true,"tooltip_text":"","focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath(""),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath(""),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":0,"mouse_filter":1,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":0,"shortcut_context":null,"theme":null,"theme_type_variation":&"","alignment":0,"script":Resource("res://Scripts/SelfContained/Interface/DecoratedList.gd"),"entries":Array[StringName]([&"attributes:baseStats:healthMax", &"attributes:baseStats:strength", &"attributes:baseStats:agility", &"attributes:baseStats:mind"]),"icons":Array[Texture]([]),"entryNameOverrides":Array[String](["Max Health", "Strength", "Agility", "Mind"]),"defaultObject":null,"metadata/_edit_use_anchors_":true)
+
+unitDisplay = Object(Control,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(0, 0),"layout_direction":0,"layout_mode":3,"anchors_preset":-1,"anchor_left":0.0,"anchor_top":0.0,"anchor_right":1.0,"anchor_bottom":0.25,"offset_left":0.0,"offset_top":0.0,"offset_right":0.0,"offset_bottom":0.0,"grow_horizontal":1,"grow_vertical":1,"rotation":0.0,"scale":Vector2(1, 1),"pivot_offset":Vector2(0, 0),"size_flags_horizontal":1,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"auto_translate":true,"localize_numeral_system":true,"tooltip_text":"","focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath(""),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath(""),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":0,"mouse_filter":0,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":0,"shortcut_context":null,"theme":null,"theme_type_variation":&"","script":ExtResource("1_ws15d"),"displayUsed":"MINI_DISPLAY","metadata/_edit_use_anchors_":true)
+
+camera = Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":ExtResource("5_kt27s"),"rotationSpeed":2.0,"zoomSpeed":10.0,"maxZoom":300.0,"minZoom":0.85,"defaultRotation":Vector3(0, 0, 0),"cameraPos":Vector3(0, 0, 0.1),"cameraRot":Vector3(0, 0, 0),"fov":60.0,"controlsActive":false,"cameraActive":true,"controlActions":{
+"rotate_down": "",
+"rotate_left": "",
+"rotate_right": "",
+"rotate_up": "",
+"zoom_in": "",
+"zoom_out": ""
+})
+
+viewport = Object(SubViewport,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","disable_3d":false,"use_xr":false,"own_world_3d":false,"world_3d":null,"transparent_bg":false,"handle_input_locally":false,"snap_2d_transforms_to_pixel":false,"snap_2d_vertices_to_pixel":false,"msaa_2d":0,"msaa_3d":0,"screen_space_aa":0,"use_taa":false,"use_debanding":false,"use_occlusion_culling":false,"mesh_lod_threshold":1.0,"debug_draw":0,"use_hdr_2d":false,"scaling_3d_mode":0,"scaling_3d_scale":1.0,"texture_mipmap_bias":0.0,"fsr_sharpness":0.2,"vrs_mode":0,"vrs_texture":null,"canvas_item_default_texture_filter":1,"canvas_item_default_texture_repeat":0,"audio_listener_enable_2d":false,"audio_listener_enable_3d":false,"physics_object_picking":false,"physics_object_picking_sort":false,"gui_disable_input":false,"gui_snap_controls_to_pixels":true,"gui_embed_subwindows":false,"sdf_oversize":1,"sdf_scale":1,"positional_shadow_atlas_size":2048,"positional_shadow_atlas_16_bits":true,"positional_shadow_atlas_quad_0":2,"positional_shadow_atlas_quad_1":2,"positional_shadow_atlas_quad_2":3,"positional_shadow_atlas_quad_3":4,"canvas_cull_mask":4294967295,"size":Vector2i(460, 501),"size_2d_override":Vector2i(0, 0),"size_2d_override_stretch":false,"render_target_clear_mode":0,"render_target_update_mode":4,"script":null)
+
+
+[node name="UnitDisplayManager" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.25
+script = ExtResource("1_ws15d")
+metadata/_edit_use_anchors_ = true
+
+[node name="DecoratedList" parent="." instance=ExtResource("5_xbg00")]
+layout_mode = 1
+anchor_left = 0.3
+anchor_top = 0.25
+anchor_right = 0.6
+anchor_bottom = 1.0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 15.0
+grow_horizontal = 0
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(460, 501)
+render_target_update_mode = 4
+
+[node name="Human" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_yqhv4")]
+
+[node name="PivotCamera3D" type="Node3D" parent="SubViewportContainer/SubViewport/Human"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+script = ExtResource("5_kt27s")
+minZoom = 0.85
+defaultRotation = Vector3(0, 0, 0)
+cameraPos = Vector3(0, 0, 0.1)
+fov = 60.0
+controlsActive = false
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2.37132, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("6_60ksk")
