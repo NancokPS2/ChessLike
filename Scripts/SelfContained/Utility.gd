@@ -66,7 +66,27 @@ class VisualFuncs extends Node:
 		parent.add_child(meshInst)
 		
 		
+class LoadFuncs extends Node:
+	static func get_all_resources_in_folder(folder: String) -> Array[Resource]:
+		assert(folder.ends_with("/"))
+		var output: Array[Resource]
+	
+		if folder.begins_with("res://"):
+			for file: String in DirAccess.get_files_at(folder):
+			
+				var file_name: String = file
+				
+				## Only deal with imported resources
+				if not file_name.get_extension() == "remap":
+					continue
+				
+				file_name = file_name.trim_suffix(".remap")
+				
+				if not file_name.get_extension() == "tres":
+					continue
 		
-		
-		
-		
+				var res: Resource = load(folder + file_name)
+				if res is Resource:
+					output.append(res)
+					
+		return output

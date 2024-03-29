@@ -29,3 +29,6 @@ res://Scenes/UI/UnitDisplays/ManagerUnitDisplay.gd
 res://Singletons/Event.gd
 res://Scripts/Composition/Entity/InputComponent.gd
 res://Scripts/Composition/Entity/StateComponent.gd
+res://Scripts/Composition/Entity/CapabilityComponent.gd
+res://Scripts/SelfContained/Utility.gd
+res://Scripts/Composition/Entity/Resources/CapabilityComponentResource.gd

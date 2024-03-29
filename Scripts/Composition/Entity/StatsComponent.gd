@@ -37,9 +37,20 @@ func set_stat(key: Keys, value: int):
 	stat_dict[key] = value
  
  
+## TODO: Implement stat modifications from status effects
 func get_stat(key: Keys) -> int:
-	return stat_dict.get(key, 0)
+	var capability_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
+	var status_comp: ComponentRace = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
+	
+	var base_value: int = stat_dict.get(key, 0)
+	base_value += capability_comp.get_stat_bonus(key)
+	#base_value += status_comp
+	
+	var modifier_value: float = 1
+	modifier_value *= capability_comp.get_stat_modifier(key)
  
+	
+## TODO: Everything below? Or just do it in ComponentStatus
 	
 func add_boost(stat_to_boost: Keys, value, identifier: String = "") -> Boost:
 	var boost := Boost.new()
