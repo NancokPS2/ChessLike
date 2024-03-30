@@ -1,5 +1,3 @@
 res://TEST.tscn
-res://Scripts/Composition/Entity/DisplayComponent.gd
-res://Assets/Meshes/Characters/Human.tscn
-res://Singletons/Board/DefaultTerrainCell.tres
-res://TEST.gd
+res://Scripts/Composition/Entity/InterfaceComponent.gd
+res://Scripts/Composition/Entity/Entity.gd

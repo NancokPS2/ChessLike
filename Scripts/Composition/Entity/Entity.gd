@@ -38,6 +38,7 @@ func add_all_components():
 		ComponentTurn.new(),
 		ComponentVision.new(),
 		ComponentDisplay.new(),
+		ComponentInterface.new(),
 	]
 	for comp: Node in comps:
 		add_component(comp)
