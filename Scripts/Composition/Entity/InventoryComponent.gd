@@ -3,7 +3,6 @@ class_name ComponentInventory
 
 const COMPONENT_NAME: StringName = "ENTITY_INVENTORY"
 
-
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
 

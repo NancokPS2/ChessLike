@@ -8,7 +8,6 @@ static var turn_component_array: Array[ComponentTurn]
 var delay_stack: int
 var delay_current: int
 
-
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
 	

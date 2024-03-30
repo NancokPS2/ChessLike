@@ -23,6 +23,7 @@ const DEFAULT_MODEL: PackedScene = preload("res://Assets/Meshes/Characters/Human
 
 var body_part_dict: Dictionary
 var mesh_arr: Array[MeshInstance3D]
+var temporary_nodes: Dictionary
 
 var model_boundaries_cache: AABB
 
@@ -91,4 +92,64 @@ func get_model_boundaries() -> AABB:
 			
 	return output
 
+
+func add_temporary_node(category: String, node: Node3D, node_pos: Vector3 = Vector3.ZERO):
+	temporary_nodes[category] = temporary_nodes.get(category, []) + [node]
+	
+	node.top_level = true
+	node.global_position = node_pos
+	add_child(node)
+	
+	
+func clear_temporary_nodes(category: String):
+	for node: Node3D in temporary_nodes:
+		temporary_nodes[category].erase(node)
+		node.queue_free()
+	
+
+func get_temporary_nodes(category: String) -> Array[Node]:
+	return temporary_nodes.get(category, [])
+
+
+func add_visibility_meshes_in_cells(cells: Array[Vector3i], color: Color = Color.TRANSPARENT, texture: Texture = null):
+	const CATEGORY: String = "VISIBLE_CELLS_MESHES"
+	
+	## Delete any existing meshes
+	clear_temporary_nodes(CATEGORY)
+	
+	## If transparent, end after removing the old meshes, don't do anything else.
+	if color == Color.TRANSPARENT:
+		return
+	
+	## Create the material and mesh
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color
+	material.albedo_texture = texture
+	
+	var mesh := BoxMesh.new()
+	mesh.size = Board.cell_size * 0.2 #Vector2(Board.cell_size.x, Board.cell_size.z) / 4
+	mesh.material = material
+	
+	## Create the MultiMesh
+	var multi_mesh := MultiMesh.new()
+	multi_mesh.mesh = mesh
+	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
+	multi_mesh.instance_count = cells.size()
 		
+	## Set the positions
+	var index: int = 0
+	for cell: Vector3i in cells:
+		var offset: Vector3 = Vector3.ZERO #((Vector3.DOWN * Board.cell_size.y) / 3)
+		var instance_pos: Vector3 = Board.map_to_local(cell) + offset
+		print(instance_pos)
+		multi_mesh.set_instance_transform(index, Transform3D.IDENTITY.translated(instance_pos))
+		#multi_mesh.set_instance_color(index, color)
+		index += 1
+	
+	## Create the node and add it
+	var multi_mesh_inst := MultiMeshInstance3D.new()
+	multi_mesh_inst.multimesh = multi_mesh
+	multi_mesh_inst.top_level = true
+	add_temporary_node(CATEGORY, multi_mesh_inst)
+		
+	

@@ -17,6 +17,7 @@ enum CellDataKeys {
 	FLAGS,
 	FACTION_SPAWN_ID,
 	DISPLAYED_NAME,
+	SUB_MESH,
 }
 enum AreaTypes {FLOOD, STAR, CONE, ALL, FLOOD_2D}
 enum CellIDs {TARGETING, BLUE, YELLOW, GREEN, PINK, BROWN, SKYBLUE, GREY, RED}
@@ -38,9 +39,6 @@ const DIAGONAL_CELLS: Array[Vector3i] = [
 
 const INVALID_CELL_COORDS:Vector3i = Vector3i.ONE * -2147483648
 const MAX_HEIGHT: int = 40
-
-
-
 
 ## Flags let other systems figure out how to react to each cell.
 ## If no flags are present, it should be treated as empty air to fly trough
@@ -148,11 +146,12 @@ func set_cell_item_node(cell: Vector3i, item_id: int):
 		cell_object_dict.erase(cell)
 	
 	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = "MeshInstance3D"
 	mesh_instance.mesh = mesh_library.get_item_mesh(item_id)
 	
 	var collision_shape := CollisionShape3D.new()
+	collision_shape.name = "CollisionShape3D"
 	collision_shape.shape = mesh_library.get_item_shapes(item_id)[0]
-	
 	
 	var item := StaticBody3D.new()
 	var flags: Array[CellFlags] = data_get(cell, CellDataKeys.FLAGS, [])

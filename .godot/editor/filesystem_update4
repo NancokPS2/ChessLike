@@ -1,10 +1,5 @@
 res://TEST.tscn
-res://Scripts/Composition/Entity/MovementComponent.gd
-res://Scripts/Composition/Entity/Resources/CapabilityComponent/Race_Human.tres
-res://Scripts/Composition/Entity/Entity.gd
-res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd
-res://Scripts/Composition/Entity/CapabilityComponent.gd
-res://Scripts/Composition/Entity/Resources/CapabilityComponent/Class_None.tres
+res://Scripts/Composition/Entity/DisplayComponent.gd
 res://Assets/Meshes/Characters/Human.tscn
-res://Scripts/Composition/Entity/StatsComponent.gd
-res://Scripts/Composition/Entity/TurnComponent.gd
+res://Singletons/Board/DefaultTerrainCell.tres
+res://TEST.gd

@@ -16,6 +16,7 @@ func _ready() -> void:
 	assert(get_parent() is Entity3D)
 	Event.ENTITY_TURN_STARTED.connect(on_turn_changed.bind(true))
 	Event.ENTITY_TURN_ENDED.connect(on_turn_changed.bind(false))
+	Event.BOARD_CELL_SELECTED.connect(on_cell_selected)
 
 
 func get_entity() -> Entity3D:
