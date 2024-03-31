@@ -23,3 +23,4 @@ res://Scripts/Composition/Entity/InputComponent.gd
 res://Scripts/SelfContained/Debug/Tester.gd
 res://Resources/Abilities/PassiveEffects/PassiveEffect.gd
 res://Singletons/Board/Map.gd
+res://Singletons/Board/Map/DefaultMap.tres

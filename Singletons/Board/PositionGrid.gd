@@ -3,15 +3,6 @@ class_name PositionGrid
 #Provides methods for a game with grid based movement.
 #Not suitable for using actual tiles as they are be overwritten with most methods present here
 
-signal cell_clicked(cellPos:Vector3i)
-signal cell_clicked_empty(cellPos:Vector3i)
-signal cell_clicked_with_unit(cellPos:Vector3i)
-signal unit_clicked(unit:Unit)
-signal marked_cell_clicked(cellPos:Vector3i)
-signal cell_changed(cellPos:Vector3i)
-
-signal placed_object(cell:Vector3i, object:Object)
-
 enum CellDataKeys {
 	EXISTS,
 	FLAGS,
@@ -23,7 +14,7 @@ enum AreaTypes {FLOOD, STAR, CONE, ALL, FLOOD_2D}
 enum CellIDs {TARGETING, BLUE, YELLOW, GREEN, PINK, BROWN, SKYBLUE, GREY, RED}
 enum Searches {UNIT, OBSTACLE, ANYTHING, TAG, ALL_OBJECTS}
 
-const DEFAULT_MAP_PATH: String = "res://Singletons/Board/DefaultMap.tres"
+const DEFAULT_MAP_PATH: String = "res://Singletons/Board/Map/DefaultMap.tres"
 
 const ADJACENT_CELLS: Array[Vector3i] = [Vector3i.UP, Vector3i.DOWN, Vector3i.LEFT, Vector3i.RIGHT, Vector3i.FORWARD, Vector3i.BACK]
 const DIAGONAL_CELLS: Array[Vector3i] = [

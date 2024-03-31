@@ -1,3 +1,0 @@
-extends EquipmentWeapon
-class_name EquipmentWeaponGun
-

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="Map" load_steps=5 format=3 uid="uid://ddj2ueb5c6cho"]
+
+[ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="1_krn3u"]
+[ext_resource type="Resource" uid="uid://dffh2mmggm0vj" path="res://Singletons/Board/TerrainCell/DefaultTerrainCell.tres" id="2_kewed"]
+[ext_resource type="Texture2D" uid="uid://cqjtpqe6ri3c2" path="res://Assets/Tiles2D/MovementMark.png" id="3_l6p0x"]
+[ext_resource type="Script" path="res://Singletons/Board/Map/Map.gd" id="4_d1u1j"]
+
+[resource]
+script = ExtResource("4_d1u1j")
+identifier = "DEFAULT"
+background = ExtResource("1_krn3u")
+cell_terrain_resources = Array[Resource("res://Singletons/Board/TerrainCell/TerrainCell.gd")]([ExtResource("2_kewed")])
+cell_positions = Array[Vector4i]([Vector4i(0, 0, 0, 0), Vector4i(1, 0, 0, 0), Vector4i(-1, 0, 0, 0), Vector4i(0, 0, 1, 0), Vector4i(0, -1, 0, 0), Vector4i(2, 0, 0, 0), Vector4i(-2, 0, 0, 0), Vector4i(0, 0, 2, 0), Vector4i(2, 0, 1, 0)])
+cell_faction_spawn = Array[Vector4i]([Vector4i(0, 0, 0, 0)])
+display_name = "Default"
+internal_name = &"DEFAULT"
+description = "No description, no."
+icon = ExtResource("3_l6p0x")
+generation_mode = 0
+generation_size = Vector3i(0, 0, 0)
+generation_height = 0
+generation_seed = 0
