@@ -2,3 +2,12 @@ res://TEST.tscn
 res://Scripts/Composition/Entity/StatusComponent.gd
 res://Scripts/Composition/Entity/InterfaceComponent.gd
 res://Scripts/Composition/Entity/Entity.gd
+res://Scripts/Composition/Entity/Resources/StatusComponent/StatusComponentResource.gd
+res://Scripts/Composition/Entity/CapabilityComponent.gd
+res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd
+res://Scripts/Composition/Entity/ActionComponent.gd
+res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResource.gd
+res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResourceEffect.gd
+res://Scripts/Composition/Entity/DisplayComponent.gd
+res://Singletons/Event.gd
+res://Scripts/Composition/Entity/MovementComponent.gd

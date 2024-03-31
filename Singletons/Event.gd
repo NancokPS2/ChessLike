@@ -21,3 +21,9 @@ signal ENTITY_COMPONENT_INTERFACE_AUTO_UPDATE_ENABLED(comp: ComponentInterface)
 signal BOARD_CELL_SELECTED(cell: Vector3i)
 
 
+## Action signals
+
+signal ENTITY_COMPONENT_ACITON_TARGETED_CELL(culprit: Entity3D, target: Vector3i, action: ComponentActionResource)
+signal ENTITY_COMPONENT_ACITON_USED_ON_CELL(culprit: Entity3D, target: Vector3i, action: ComponentActionResource)
+
+

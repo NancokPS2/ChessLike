@@ -23,16 +23,6 @@ class_name ComponentCapabilityResource
 	]
 @export var stat_modifiers: Array[float] = [1,1,1,1,1,1,1,1,1,1,1,]
 
-	#HEALTH
-	#ENERGY
-	#STRENGTH
-	#AGILITY
-	#MIND
-	#SPECIAL
-	#MOVE_DISTANCE
-	#DEFENSE
-	#DODGE
-	#ACCURACY
 
 func get_stat_bonus(stat: ComponentStatus.StatKeys) -> int:
 	return stat_bonuses[stat]

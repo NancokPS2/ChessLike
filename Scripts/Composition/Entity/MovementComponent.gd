@@ -67,6 +67,11 @@ func set_position_in_board(cell: Vector3i):
 
 func get_position_in_board() -> Vector3i:
 	return Board.local_to_map(get_entity().position)
+	
+	
+func get_entity_at_position_in_board(cell: Vector3i) -> Entity3D:
+	var other_move_comp: ComponentMovement = board_position_dict.get(cell, null)
+	return other_move_comp.get_entity()
 
 
 func get_type() -> Types:

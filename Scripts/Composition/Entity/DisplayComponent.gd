@@ -16,6 +16,12 @@ enum BodyParts {
 	FOOT_L,
 	FOOT_R,
 	}
+## TODO
+enum Animations {
+	IDLE,
+	HURT,
+	WALKING,
+}
 
 const COMPONENT_NAME: StringName = "ENTITY_DISPLAY"
 
@@ -37,6 +43,15 @@ func _ready() -> void:
 
 func get_entity() -> Entity3D:
 	return get_parent()
+
+
+## TODO
+func play_animation(anim: Animations):
+	print_debug("Playing animation: " + Animations.find_key(anim))
+	
+	match anim:
+		Animations.IDLE:
+			pass
 
 
 func load_model(scene: PackedScene):

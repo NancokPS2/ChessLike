@@ -1,6 +1,6 @@
 extends Node
 class_name ComponentStatus
-## Used to store and return stats and status effects
+## Used to store and return stats and passive effects
 
 enum StatKeys {
 	HEALTH,
@@ -20,13 +20,27 @@ const MeterKeys: Dictionary = {
 	HEALTH = "HEALTH",
 	ENERGY = "ENERGY",
 }
-const COMPONENT_NAME: StringName = "ENTITY_STATS"
+
+enum PassiveActivationConditions {
+	APPLIED,# No parameters
+	TIME_PASSED,# [Turn ticks: int]
+	TURN_ENDED,# No parameters
+	SUFFERED_DAMAGE,# Minimum damage
+	TARGETED_BY_ACTION,# Flags required
+}
+
+const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Resources/StatusComponents/", "user://Data/Composition/Resources/StatusComponents/"]
+const COMPONENT_NAME: StringName = "ENTITY_STATUS"
+
+static var pasive_effect_resource_cache_dict: Dictionary
 
 var stat_dict: Dictionary
 var boost_additive_dict: Dictionary
 var boost_multiplier_dict: Dictionary
 
 var meter_dict: Dictionary
+
+var passive_effects_applied: Array
 
 
 func _init() -> void:
@@ -42,19 +56,57 @@ func get_entity() -> Entity3D:
 	return get_parent()
  
 
+static func cache_all_resources():
+	pasive_effect_resource_cache_dict.clear()
+	
+	for folder: String in RESOURCE_FOLDERS:
+		DirAccess.make_dir_recursive_absolute(folder)
+		var res_arr: Array[Resource] = Utility.LoadFuncs.get_all_resources_in_folder(folder)
+	
+		for res: Resource in res_arr:
+			if res is ComponentStatusResourcePassive:
+				pasive_effect_resource_cache_dict[res.identifier] = res
+	
+	
 func set_meter(key: String, value: int):
 	meter_dict[key] = value
 
 
 func set_stat(key: StatKeys, value: int):
 	stat_dict[key] = value
+
+
+func add_passive_applied(passive_effect: ComponentStatusResourcePassive):
+	passive_effects_applied.append(passive_effect)
+	
+	
+## Removes invalid passive effects
+func clean_passive_applied():
+	for passive: ComponentStatusResourcePassive in passive_effects_applied:
+		if not passive:
+			remove_passive_applied.call_deferred(passive)
+	
+	
+func remove_passive_applied(passive: ComponentStatusResourcePassive):
+	passive_effects_applied.erase(passive)
+	
+	
+static func get_passive_resource_by_identifier(identifier: String) -> ComponentStatusResourcePassive:
+	if pasive_effect_resource_cache_dict.is_empty():
+		ComponentStatus.cache_all_resources()
+		
+	var pasive_effect_res: ComponentStatusResourcePassive = pasive_effect_resource_cache_dict.get(identifier, null)
+	if not pasive_effect_res:
+		push_error("Could not find cached resource with identifier '{0}'.".format([identifier]))
+	
+	return pasive_effect_res.duplicate(true)
  
 
 func get_meter(key: String) -> int:
 	return meter_dict.get(key, 0)
 
  
-## TODO: Implement stat modifications from status effects
+## TODO: Implement stat modifications from passive effects
 func get_stat(key: StatKeys) -> int:
 	var capability_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
 	

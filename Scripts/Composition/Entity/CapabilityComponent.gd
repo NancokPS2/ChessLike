@@ -6,16 +6,20 @@ enum Types {
 	CLASS,
 }
 
-const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Resources/CapabilityComponent/", "user://Data/Composition/Resources/CapabilityComponent/"]
-
 const COMPONENT_NAME: StringName = "ENTITY_CAPABILITY"
 
-static var capability_resource_dict: Dictionary
+const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Resources/CapabilityComponent/", "user://Data/Composition/Resources/CapabilityComponent/"]
 
-## The limit for each type of capability, Types value = index
+static var capability_resource_cache_dict: Dictionary
+
+## The limit for each type of capability, Must have as many elements as Types
 var capability_current_limit: Array[int] = [1,2]
 
 var capability_current_res_arr: Array[String]
+		
+func _init() -> void:
+	assert(capability_current_limit.size() == Types.size(), "There should be a limit per type, size mismatch.")
+		
 		
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
@@ -23,6 +27,18 @@ func _ready() -> void:
 
 func get_entity() -> Entity3D:
 	return get_parent()
+	
+	
+static func cache_all_resources():
+	capability_resource_cache_dict.clear()
+	
+	for folder: String in RESOURCE_FOLDERS:
+		DirAccess.make_dir_recursive_absolute(folder)
+		var res_arr: Array[Resource] = Utility.LoadFuncs.get_all_resources_in_folder(folder)
+	
+		for res: Resource in res_arr:
+			if res is ComponentCapabilityResource:
+				capability_resource_cache_dict[res.identifier] = res
 	
 	
 func add_capability(identifier: String):
@@ -54,14 +70,14 @@ func clear_capabilities():
 	
 	
 static func get_capability_resource_by_identifier(identifier: String) -> ComponentCapabilityResource:
-	if capability_resource_dict.is_empty():
+	if capability_resource_cache_dict.is_empty():
 		ComponentCapability.cache_all_resources()
 		
-	var capability_res: ComponentCapabilityResource = capability_resource_dict.get(identifier, null)
+	var capability_res: ComponentCapabilityResource = capability_resource_cache_dict.get(identifier, null)
 	if not capability_res:
 		push_error("Could not find cached resource with identifier '{0}'.".format([identifier]))
 	
-	return capability_res
+	return capability_res.duplicate(true)
 
 	
 func get_current_capability_resources(type: Types) -> Array[ComponentCapabilityResource]:
@@ -97,15 +113,4 @@ func get_movement_type() -> ComponentMovement.Types:
 			return cap_res.movement_type
 	
 	return ComponentMovement.Types.UNDEFINED
-	
-static func cache_all_resources():
-	capability_resource_dict.clear()
-	
-	for folder: String in RESOURCE_FOLDERS:
-		DirAccess.make_dir_recursive_absolute(folder)
-		var res_arr: Array[Resource] = Utility.LoadFuncs.get_all_resources_in_folder(folder)
-	
-		for res: Resource in res_arr:
-			if res is ComponentCapabilityResource:
-				capability_resource_dict[res.identifier] = res
 	
