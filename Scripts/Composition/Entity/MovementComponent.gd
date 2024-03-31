@@ -161,3 +161,7 @@ func is_cell_landable(cell: Vector3i, type: Types = get_type()) -> bool:
 	return true
 
 
+func is_cell_closer_to_destination(cell: Vector3i, destination_cell: Vector3i) -> bool:
+	Board.get_manhattan_distance(cell, destination_cell)
+	return true
+

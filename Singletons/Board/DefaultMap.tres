@@ -2,13 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://b2lycop6s72kd" path="res://UnusedStuff/assets/tiles/grass.png" id="1_wdsuq"]
 [ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="1_ybp1l"]
-[ext_resource type="Resource" uid="uid://dffh2mmggm0vj" path="res://Singletons/Board/DefaultTerrainCell.tres" id="2_lmb28"]
-[ext_resource type="Script" path="res://Resources/Maps/Map.gd" id="2_yooue"]
+[ext_resource type="Resource" uid="uid://dffh2mmggm0vj" path="res://Singletons/Board/TerrainCell/DefaultTerrainCell.tres" id="2_lmb28"]
+[ext_resource type="Script" path="res://Singletons/Board/Map.gd" id="4_75blo"]
 
 [resource]
-script = ExtResource("2_yooue")
+script = ExtResource("4_75blo")
+identifier = "DEFAULT"
 background = ExtResource("1_ybp1l")
-cell_terrain_resources = Array[Resource("res://Resources/Maps/TerrainCell.gd")]([ExtResource("2_lmb28")])
+cell_terrain_resources = Array[Resource("res://Singletons/Board/TerrainCell.gd")]([ExtResource("2_lmb28")])
 cell_positions = Array[Vector4i]([Vector4i(0, 0, 0, 0), Vector4i(1, 0, 0, 0), Vector4i(-1, 0, 0, 0), Vector4i(0, 0, 1, 0), Vector4i(0, -1, 0, 0), Vector4i(2, 0, 0, 0), Vector4i(-2, 0, 0, 0), Vector4i(0, 0, 2, 0), Vector4i(2, 0, 1, 0)])
 cell_faction_spawn = Array[Vector4i]([Vector4i(0, 0, 0, 0)])
 display_name = "Default"

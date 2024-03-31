@@ -90,3 +90,26 @@ class LoadFuncs extends Node:
 					output.append(res)
 					
 		return output
+
+
+	static func get_all_resource_paths_in_folder(folder: String) -> Array[String]:
+		assert(folder.ends_with("/"))
+		var output: Array[String]
+	
+		if folder.begins_with("res://"):
+			for file: String in DirAccess.get_files_at(folder):
+			
+				var file_name: String = file
+				
+				## Only deal with imported resources
+				if not file_name.get_extension() == "remap":
+					continue
+				
+				file_name = file_name.trim_suffix(".remap")
+				
+				if not file_name.get_extension() == "tres":
+					continue
+		
+				output.append(folder + file_name)
+					
+		return output

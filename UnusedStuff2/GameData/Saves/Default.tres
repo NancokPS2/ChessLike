@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://Resources/SaveFile/SaveFileOLD.gd" id="1"]
-[ext_resource type="Resource" uid="uid://bk2x00qqtnyqg" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="2"]
+[ext_resource type="Script" path="res://UnusedStuff2/Resources/SaveFile/SaveFileOLD.gd" id="1"]
+[ext_resource type="Resource" path="res://Resources/Characters/UniqueCharacters/Misha.tres" id="2"]
 
 [resource]
 resource_name = "Default"

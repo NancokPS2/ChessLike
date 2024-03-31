@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EquipmentWeapon" load_steps=2 format=3 uid="uid://c37y3sfm08ers"]
+
+[ext_resource type="Script" path="res://UnusedStuff2/Resources/Items/Weapon.gd" id="1_e0kq2"]
+
+[resource]
+script = ExtResource("1_e0kq2")
+weaponType = 1
+twoHanded = false
+damage = 1
+weaponRange = 6
+compatibleSlots = Array[int]([1, 2])
+statBonuses = {
+"energyMax": 0,
+"healthMax": 0,
+"statAgility": 0,
+"statDefense": 0,
+"statMind": 0,
+"statSpecial": 0,
+"statStrength": 0
+}
+itemType = 0
+internalName = "pistol"
+displayName = "Pistol"
+abilityList = Array[Resource("res://Resources/Abilities/Abilities.gd")]([])
+uses = 0

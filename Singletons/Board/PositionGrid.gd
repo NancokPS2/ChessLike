@@ -48,7 +48,7 @@ const MAX_HEIGHT: int = 40
 ## Grass: FOOTING, COVER, OPAQUE, IMPASSABLE, SOFT
 ## Webs: DENSE
 ## Giant webs: DENSE, UNSTABLE, SOFT
-## Loose rock: UNSTABLE, HARD
+## Scattered pebbles: UNSTABLE, HARD
 ## Water: LIQUID, DENSE, SOFT
 ## Slime: IMPASSABLE, UNSTABLE, SOFT, FOOTING
 enum CellFlags {
@@ -76,20 +76,66 @@ var cell_object_dict: Dictionary
 ## Stores metadata of cells
 var cell_data: Dictionary
 
+## Forcefully disables inputs if false
+var input_enabled: bool = true
+## Last cell that was selected
+var cell_hovered_cache: Vector3i = INVALID_CELL_COORDS
+
 func _ready() -> void:
 	var map_to_use: Map = load(DEFAULT_MAP_PATH)
 	assert(map_to_use is Map)
 	build_from_map(map_to_use)
 
-
+			
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_released("primary_click"):
+	## The cursor moved, try to get a new cell from it
+	if event is InputEventMouseMotion:
 		var camera: Camera3D = get_viewport().get_camera_3d()
 		var ray_params := PhysicsRayQueryParameters3D.create(camera.global_position, camera.project_ray_normal(get_viewport().get_mouse_position()) * 1000)
 		var pos: Vector3 = get_world_3d().direct_space_state.intersect_ray(ray_params).get("position", Vector3(INVALID_CELL_COORDS))
+		var new_cell: Vector3i = local_to_map(pos)
 		
-		if pos != Vector3(INVALID_CELL_COORDS):
-			Event.BOARD_CELL_SELECTED.emit( local_to_map(pos) )
+		## If an impassble cell was hovered, select the one on top.
+		if is_flag_in_cell(new_cell, CellFlags.IMPASSABLE):
+			new_cell += Vector3i.UP
+		
+		## Stop if it is the same as before
+		if new_cell == cell_hovered_cache:
+			return
+		
+		## Report only if this cell is valid
+		if is_cell_in_board(new_cell):
+			cell_hovered_cache = new_cell
+			Event.BOARD_CELL_HOVERED.emit(cell_hovered_cache)
+	
+	## A click was done, the last hovered cell is "selected" with index 0
+	elif event.is_action_pressed("primary_click"):	
+		if is_cell_in_board(cell_hovered_cache):
+			Event.BOARD_CELL_SELECTED.emit( cell_hovered_cache, 0 )
+	
+	## A secondary click was done, the last hovered cell is "selected" with index 1
+	elif event.is_action_pressed("secondary_click"):
+		if is_cell_in_board(cell_hovered_cache):
+			Event.BOARD_CELL_SELECTED.emit( cell_hovered_cache, 1 )
+	
+	## If it was a "button" input, check if a new direction has been given.
+	elif event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion:	
+		var input_dir := Vector3(
+			Input.get_axis("move_left", "move_right"),
+			Input.get_axis("move_down", "move_up"),
+			Input.get_axis("move_forward", "move_back")
+		)
+		if not input_dir.is_zero_approx():
+			var new_cell: Vector3i = cell_hovered_cache + Vector3i(input_dir)
+			
+			## Stop if it is the same as before
+			if new_cell == cell_hovered_cache:
+				return
+			
+			## Report only if this cell is valid
+			if is_cell_in_board(new_cell):
+				cell_hovered_cache = new_cell
+				Event.BOARD_CELL_HOVERED.emit(cell_hovered_cache)
 
 
 func build_from_map(map: Map):
@@ -361,7 +407,8 @@ func is_cell_in_board(coord: Vector3i) -> bool:
 	
 	
 func is_flag_in_cell(cell: Vector3i, flag: CellFlags) -> bool:
-	var flags: Array[CellFlags] = data_get(cell, CellDataKeys.FLAGS, [])
+	const EMPTY_ARRAY_INT: Array[int] = []
+	var flags: Array[CellFlags] = data_get(cell, CellDataKeys.FLAGS, EMPTY_ARRAY_INT)
 	return flag in flags
 
 

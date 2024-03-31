@@ -1,6 +1,10 @@
 extends Node3D
 class_name Tester
 
+@export var enabled: bool = false:
+	set(val):
+		enabled = val
+		set_process(enabled)
 @export var raycast_point_a: Vector3
 @export var raycast_point_b: Vector3
 var last_result: String

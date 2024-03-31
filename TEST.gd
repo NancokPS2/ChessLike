@@ -34,6 +34,10 @@ func entity_test():
 	new_entity.add_all_components()
 	add_child(new_entity)
 	
+	## Input
+	var input_comp: ComponentInput = new_entity.get_component(ComponentInput.COMPONENT_NAME)
+	input_comp.set_state(ComponentInput.States.AWAITING_MOVEMENT)
+	
 	## Movement
 	var move_comp: ComponentMovement = new_entity.get_component(ComponentMovement.COMPONENT_NAME)
 	move_comp.add_target_cells([Vector3i.UP + Vector3i.ZERO, Vector3i.UP + Vector3i.RIGHT, Vector3i.UP + Vector3i.LEFT*2])
@@ -45,7 +49,9 @@ func entity_test():
 		):
 		output.append(cell + Vector3i.UP)
 	var disp_comp: ComponentDisplay = new_entity.get_component(ComponentDisplay.COMPONENT_NAME)
-	disp_comp.add_visibility_meshes_in_cells(output, Color.RED)
+	disp_comp.add_visibility_meshes_in_cells(output, disp_comp.SubMeshTypes.MOVE_PATHABLE)
+	disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
+	disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
 
 #func _process(delta: float):
 	#var ray_params := PhysicsRayQueryParameters3D.create($Camera3D.global_position, $Camera3D.project_ray_normal(get_viewport().get_mouse_position()) * 1000)

@@ -11,3 +11,15 @@ res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResour
 res://Scripts/Composition/Entity/DisplayComponent.gd
 res://Singletons/Event.gd
 res://Scripts/Composition/Entity/MovementComponent.gd
+res://Singletons/Board/PositionGrid.gd
+res://TEST.gd
+res://Assets/Meshes/Characters/Human.tscn
+res://Resources/Maps/Map.gd
+res://Singletons/Global.gd
+res://Scripts/SelfContained/Utility.gd
+res://Singletons/Board/DefaultTerrainCell.tres
+res://Singletons/Board/DefaultMap.tres
+res://Scripts/Composition/Entity/InputComponent.gd
+res://Scripts/SelfContained/Debug/Tester.gd
+res://Resources/Abilities/PassiveEffects/PassiveEffect.gd
+res://Singletons/Board/Map.gd

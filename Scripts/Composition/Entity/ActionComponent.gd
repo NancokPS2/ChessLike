@@ -11,21 +11,43 @@ enum ActionFlags {
 	HOSTILE, #Affects reactions
 	FRIENDLY, #Affects reactions
 }
-## Defines what kind of cells can be selected to use the action on. By default any cell within range is valid
+## Used both to define targetable and hittable cells. By default any cell within range is valid
 enum TargetingFlags {
 	NEED_ENTITY, # The cell cannot be selected if it does not have a valid entity. Recommended for single target actions.
 	NEED_VISION, # The action cannot go trough walls. Use Vision component.
+	IGNORE_COVER, # Will not be stopped by COVER flags
 }
 ## What entities are affected.
 enum EntityHitFlags {
 	SELF,
-	FRIENDLY,
 	HOSTILE,
+	FRIENDLY,
 }
 ## The shape to use.
 enum TargetingShape {
-	FLOOD
+	SINGLE,
+	FLOOD,
 }
+## Action flag examples:
+########################
+## Fire projectile
+## ActionFlags: HURTS, HOSTILE
+## TargetingFlags: NEED_VISION
+## EntityHitFlags: HOSTILE, FRIENDLY
+## TargetingShape: SINGLE
+########################
+## Steal health
+## ActionFlags: HURTS, HOSTILE
+## TargetingFlags: NEED_ENTITY
+## EntityHitFlags: HOSTILE, FRIENDLY
+## TargetingShape: SINGLE
+########################
+## Area heal
+## ActionFlags: FRIENDLY
+## TargetingFlags: IGNORE_COVER
+## EntityHitFlags: SELF, HOSTILE, FRIENDLY
+## TargetingShape: FLOOD
+########################
 
 const COMPONENT_NAME: StringName = "ENTITY_ACTION"
 
@@ -76,27 +98,46 @@ func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 		Event.ENTITY_COMPONENT_ACITON_USED_ON_ENTITY.emit()
 
 
-## TODO
+## The cells that can be chosen as the target location for the action TODO
 func get_targetable_cells_for_action(action: ComponentActionResource) -> Array[Vector3i]:
-	Board
-	return [Vector3i.ZERO]
-
-
-## TODO
-func get_hit_cells_by_action() -> Array[Vector3i]:
+	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
+	var origin: Vector3i = move_comp.get_position_in_board()
+	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(origin, action.shape_targeting_size, is_cell_valid_for_action.bind(action, false))
 	
-	return [Vector3i.ZERO]
+	return cells_targetable
 
 
-func is_cell_targetable_by_action(cell: Vector3i, action: ComponentActionResource) -> bool:
-	## The cell must have an entity if true
-	if TargetingFlags.NEED_ENTITY in action.flags_targeting:
+## Which cells will be hit based on the target position TODO
+func get_hit_cells_by_action(target_position: Vector3i, action: ComponentActionResource) -> Array[Vector3i]:
+	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
+	var origin: Vector3i = move_comp.get_position_in_board()
+	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(origin, action.shape_targeting_size, is_cell_valid_for_action.bind(action, true))
+	
+	return cells_targetable
+
+
+## Includes both hit and targetable flags from action based on [use_hit_flags].
+func is_cell_valid_for_action(cell: Vector3i, action: ComponentActionResource, use_hit_flags: bool) -> bool:
+	## Select which kind of flags to use
+	var flags_used: Array[TargetingFlags] = []
+	if use_hit_flags:
+		flags_used = action.flags_hit
+	else:
+		flags_used = action.flags_targeting
+	
+	## Unless it ignores cover, check for it
+	if not TargetingFlags.IGNORE_COVER in flags_used:
+		if Board.is_flag_in_cell(cell, Board.CellFlags.COVER):
+			return false
+		
+	## The cell must have an entity to be selectable
+	if TargetingFlags.NEED_ENTITY in flags_used:
 		var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
 		if move_comp.get_entity_at_position_in_board(cell) == null:
 			return false
-			
-	## The cell must be visible if true
-	if TargetingFlags.NEED_VISION:
+		
+	## The cell must be visible to be selectable
+	if TargetingFlags.NEED_VISION in flags_used:
 		var vision_comp: ComponentVision = get_entity().get_component(ComponentVision.COMPONENT_NAME)
 		if not vision_comp.is_cell_visible(cell):
 			return false
@@ -104,6 +145,7 @@ func is_cell_targetable_by_action(cell: Vector3i, action: ComponentActionResourc
 	return true
 
 
+## Returns if the given entity can be affected by the action
 func is_entity_hit_by_action(entity: Entity3D, action: ComponentActionResource) -> bool:
 	if action.flags_entity_hit.is_empty():
 		return false

@@ -1,8 +1,11 @@
 extends Node3D
 class_name Entity3D
 
+signal component_changed(component_name: String)
+
 const ENTITY_GROUP: String = "ENTITY_3D_GROUP"
-const CONFIG_PATH: String = "{0}{1}CharacterData/{2}.cconfig"
+const CONFIG_PATH_RES: String = "res://Scripts/Resources/Entity/{0}.cconfig"
+const CONFIG_PATH_USER: String = Global.FolderPaths.USER + "CharacterData/{0}.cconfig"
 const CONFIG_SECTION_MAIN: String = "MAIN"
 const CONFIG_SECTION_MAIN_KEY_IDENTIFIER: String = "IDENTIFIER"
 const CONFIG_SECTION_MAIN_KEY_METADATA: String = "METADATA" 
@@ -43,19 +46,27 @@ func add_all_components():
 		ComponentAction.new(),
 	]
 	for comp: Node in comps:
-		add_component(comp)
+		add_child(comp)
 
 ## Components are not meant to be removed. Create a new instance if you need one with removed components.
 func add_component(comp: Node):
 	var comp_name: String = comp.get("COMPONENT_NAME")
 	assert(comp_name is String)
 	
+	components[comp_name] = comp
+	comp.name = comp_name
+	
+	## This is already a component, stop here.
+	if comp.get_parent() == self and components[comp_name] == comp:
+		return
+	
 	## Replace any existing component with the same COMPONENT_NAME
 	if components.get(comp_name, null) is Node:
 		components[comp_name].queue_free()
 		
-	components[comp_name] = comp
 	add_child(comp)
+	
+	component_changed.emit(comp_name)
 
 
 ## TODO: Add PERSISTENT_PROPERTIES to components
@@ -112,9 +123,9 @@ func get_config_file_path(identifier_used: String = identifier, res_dir: bool = 
 	var output: String = ""
 	
 	if res_dir:
-		output = CONFIG_PATH.format(["res://", "", identifier_used])
+		output = CONFIG_PATH_RES.format([identifier_used])
 	else:
-		output = CONFIG_PATH.format(["user://", Global.profile_current_id + "/", identifier_used])
+		output = CONFIG_PATH_USER.format([identifier_used])
 	
 	return output
 
@@ -151,6 +162,5 @@ func on_child_entered_tree(node: Node):
 	if not comp_name is String:
 		return
 	
-	components[comp_name] = node
-	node.name = comp_name
+	add_component(node)
 

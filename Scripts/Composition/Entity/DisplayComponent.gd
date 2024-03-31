@@ -22,6 +22,13 @@ enum Animations {
 	HURT,
 	WALKING,
 }
+enum SubMeshTypes {
+	CELL_HOVERED_VALID,
+	CELL_HOVERED_INVALID,
+	MOVE_PATHABLE,
+	ACTION_TARGET,
+	ACTION_HIT,
+}
 
 const COMPONENT_NAME: StringName = "ENTITY_DISPLAY"
 
@@ -117,7 +124,7 @@ func add_temporary_node(category: String, node: Node3D, node_pos: Vector3 = Vect
 	
 	
 func clear_temporary_nodes(category: String):
-	for node: Node3D in temporary_nodes:
+	for node: Node3D in temporary_nodes.get(category, []):
 		temporary_nodes[category].erase(node)
 		node.queue_free()
 	
@@ -126,23 +133,60 @@ func get_temporary_nodes(category: String) -> Array[Node]:
 	return temporary_nodes.get(category, [])
 
 
-func add_visibility_meshes_in_cells(cells: Array[Vector3i], color: Color = Color.TRANSPARENT, texture: Texture = null):
+func add_visibility_meshes_in_cells(cells: Array[Vector3i], type: SubMeshTypes, modulation: Color = Color.WHITE, texture: Texture = null):
 	const CATEGORY: String = "VISIBLE_CELLS_MESHES"
+	var used_category: String = CATEGORY+"_"+str(type)
+	var color_used: Color = Color.WHITE
+	var texture_used: Texture = texture
 	
 	## Delete any existing meshes
-	clear_temporary_nodes(CATEGORY)
+	clear_temporary_nodes(used_category)
 	
 	## If transparent, end after removing the old meshes, don't do anything else.
-	if color == Color.TRANSPARENT:
+	if modulation == Color.TRANSPARENT:
 		return
 	
-	## Create the material and mesh
 	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	material.albedo_texture = texture
 	
-	var mesh := BoxMesh.new()
-	mesh.size = Board.cell_size * 0.2 #Vector2(Board.cell_size.x, Board.cell_size.z) / 4
+	var mesh: Mesh
+	
+	## Create the material and mesh
+	match type:
+		SubMeshTypes.MOVE_PATHABLE:
+			mesh = BoxMesh.new()
+			mesh.size = Board.cell_size * 0.2
+			color_used = Color.YELLOW
+			
+		SubMeshTypes.ACTION_TARGET:
+			mesh = SphereMesh.new()
+			mesh.radius = Board.cell_size.length() * 0.2
+			color_used = Color.ORANGE_RED
+			
+		SubMeshTypes.ACTION_HIT:
+			mesh = CylinderMesh.new()
+			mesh.height = Board.cell_size.length() * 0.2
+			mesh.top_radius = 0
+			mesh.bottom_radius = Board.cell_size.length() * 0.2
+			color_used = Color.RED
+			
+		SubMeshTypes.CELL_HOVERED_INVALID:
+			mesh = CylinderMesh.new()
+			mesh.height = Board.cell_size.length() * 0.2
+			mesh.top_radius = Board.cell_size.length() * 0.2
+			mesh.bottom_radius = 0
+			color_used = Color.DIM_GRAY
+		
+		SubMeshTypes.CELL_HOVERED_VALID:
+			mesh = CylinderMesh.new()
+			mesh.height = Board.cell_size.length() * 0.2
+			mesh.top_radius = Board.cell_size.length() * 0.2
+			mesh.bottom_radius = 0
+			color_used = Color.CYAN
+		_:
+			push_error("Invalid SubMeshTypes!")
+	
+	material.albedo_color = color_used * modulation
+	material.albedo_texture = texture_used
 	mesh.material = material
 	
 	## Create the MultiMesh
@@ -156,15 +200,14 @@ func add_visibility_meshes_in_cells(cells: Array[Vector3i], color: Color = Color
 	for cell: Vector3i in cells:
 		var offset: Vector3 = Vector3.ZERO #((Vector3.DOWN * Board.cell_size.y) / 3)
 		var instance_pos: Vector3 = Board.map_to_local(cell) + offset
-		print(instance_pos)
 		multi_mesh.set_instance_transform(index, Transform3D.IDENTITY.translated(instance_pos))
-		#multi_mesh.set_instance_color(index, color)
+		#multi_mesh.set_instance_color(index, modulation)
 		index += 1
 	
 	## Create the node and add it
 	var multi_mesh_inst := MultiMeshInstance3D.new()
 	multi_mesh_inst.multimesh = multi_mesh
 	multi_mesh_inst.top_level = true
-	add_temporary_node(CATEGORY, multi_mesh_inst)
+	add_temporary_node(used_category, multi_mesh_inst)
 		
 	
