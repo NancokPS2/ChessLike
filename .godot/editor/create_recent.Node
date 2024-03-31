@@ -1,3 +1,4 @@
+Sprite2D
 Label
 MeshInstance3D
 PivotCamera3D
@@ -11,5 +12,3 @@ TurnSystemUser
 Button
 VBoxContainer
 ControlPopup
-Sprite2D
-Control

@@ -181,21 +181,31 @@ func set_cell_item_node(cell: Vector3i, item_id: int):
 			existing_item.queue_free()
 			
 		cell_object_dict.erase(cell)
+		
+	var mesh_instance: MeshInstance3D
+	var mesh: Mesh = mesh_library.get_item_mesh(item_id)
+	if mesh:
+		mesh_instance = MeshInstance3D.new()
+		mesh_instance.name = "MeshInstance3D"
+		mesh_instance.mesh = mesh_library.get_item_mesh(item_id)
 	
-	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.name = "MeshInstance3D"
-	mesh_instance.mesh = mesh_library.get_item_mesh(item_id)
-	
-	var collision_shape := CollisionShape3D.new()
-	collision_shape.name = "CollisionShape3D"
-	collision_shape.shape = mesh_library.get_item_shapes(item_id)[0]
+	var collision_shape: CollisionShape3D
+	var shape: Shape3D = mesh_library.get_item_shapes(item_id).front()
+	if shape:
+		collision_shape = CollisionShape3D.new()
+		collision_shape.name = "CollisionShape3D"
+		collision_shape.shape = mesh_library.get_item_shapes(item_id).front()
 	
 	var item := StaticBody3D.new()
 	var flags: Array[CellFlags] = data_get(cell, CellDataKeys.FLAGS, [])
 	item.collision_layer = get_flag_collisions(flags)
 	item.position = map_to_local(cell)
-	item.add_child(mesh_instance)
-	item.add_child(collision_shape)
+	
+	if mesh_instance:
+		item.add_child(mesh_instance)
+	
+	if collision_shape:
+		item.add_child(collision_shape)
 	
 	add_child(item)
 	
@@ -205,6 +215,10 @@ func set_cell_item_node(cell: Vector3i, item_id: int):
 		existing_item.queue_free()
 		
 	cell_object_dict[cell] = item
+
+
+func clear_cell_item_node():
+	pass
 
 
 func get_cell_item_node(cell: Vector3i) -> Node:
@@ -404,15 +418,11 @@ func is_flag_in_cell(cell: Vector3i, flag: CellFlags) -> bool:
 
 
 static func get_manhattan_distance(posA:Vector3i, posB:Vector3i, inc_x: bool = true, inc_y: bool = true, inc_z: bool = true)->int:
-	var manhattanDistance:int = 0
-	if inc_x: manhattanDistance += abs(posA.x - posB.x) 
-	if inc_y: manhattanDistance += abs(posA.y - posB.y) 
-	if inc_z: manhattanDistance += abs(posA.z - posB.z)
-	return manhattanDistance
-
-
-func printer(variant):
-	print(variant)
+	var manhattan_distance:int = 0
+	if inc_x: manhattan_distance += abs(posA.x - posB.x) 
+	if inc_y: manhattan_distance += abs(posA.y - posB.y) 
+	if inc_z: manhattan_distance += abs(posA.z - posB.z)
+	return manhattan_distance
 
 
 func set_cells_from_array(cells:Array[Vector3i], item_id: int):#Sets all cells in the array to the chosen ID

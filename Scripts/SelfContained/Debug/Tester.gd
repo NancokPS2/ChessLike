@@ -14,7 +14,7 @@ var debug_mesh_instance := MeshInstance3D.new()
 func _ready() -> void:
 	var debug_mesh := SphereMesh.new()
 	debug_mesh_instance.mesh = debug_mesh
-
+	enabled = enabled
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="TerrainCell" load_steps=3 format=3 uid="uid://dffh2mmggm0vj"]
 
-[ext_resource type="Script" path="res://Singletons/Board/TerrainCell/TerrainCell.gd" id="1_awkvb"]
+[ext_resource type="Script" path="res://Singletons/Board/TerrainCell/TerrainCell.gd" id="1_1s465"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_8fsq2"]
 size = Vector3(1.5, 1.5, 1.5)
 
 [resource]
-script = ExtResource("1_awkvb")
+script = ExtResource("1_1s465")
 display_name = "Ground"
 flags = Array[int]([0, 3, 2])
 mesh = SubResource("BoxMesh_8fsq2")

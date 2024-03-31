@@ -15,18 +15,26 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	assert(get_world_3d() == Board.get_world_3d())
 	
-	board_test.call_deferred()
 	entity_test()
 	
+	map_tests()
+	
+	board_test()
 
 func board_test():
 	await get_tree().process_frame
 	var cells: Array[Vector3i] = Board.get_cells_in_area(
 		Vector3i.ZERO, Board.AreaTypes.FLOOD, Vector3i.ZERO, 1
 		)
+	Board.build_from_map(load("user://MapExport.tres"))
 	print(cells)
 	
 	print(Board.get_cells_in_line(Vector3i(-2, -1, 0), Vector3i(2, 1, 0), 100))
+
+func map_tests():
+	var new_map: Map = load("res://Singletons/Board/Map/GenerationTest.tres")
+	new_map.generate()
+	ResourceSaver.save(new_map, "user://MapExport.tres")
 
 
 func entity_test():

@@ -4,10 +4,10 @@ class_name Map
 const USER_FOLDER: String = Global.FolderPaths.USER + "Maps/"
 const RES_FOLDER: String = "res://Singletons/Board/Map/"
 
-enum GenerationMode {
-	None,
-	Surface,
-	Caves,
+enum GenerationModes {
+	NONE,
+	SURFACE,
+	CAVES,
 }
 
 @export var identifier: String
@@ -20,16 +20,17 @@ enum GenerationMode {
 
 @export_category("Meta")
 @export var display_name: String  
-@export var internal_name: StringName
 @export var description: String
 @export var icon: Texture = preload("res://Assets/Tiles2D/MovementMark.png")
 
 @export_category("Auto Generation")
-@export var generation_mode: GenerationMode
+@export var generation_mode: GenerationModes = GenerationModes.NONE
 @export var generation_size: Vector3i
-@export var generation_height: int
-@export var generation_seed: int
-@export var generation_noise: FastNoiseLite
+@export_range(0, 1, 0.01) var generation_terrain_height_percentage: float
+@export var generation_noise_override: FastNoiseLite
+@export var generation_noise_type: FastNoiseLite.NoiseType
+@export_range(0.1, 1, 0.02) var generation_noise_frequency: float
+@export var generation_noise_seed: int
 
 static var identifier_to_map_cache_dict: Dictionary
 
@@ -37,15 +38,15 @@ var mesh_library_cache: MeshLibrary
 
 func update_mesh_library():
 	var mesh_lib := MeshLibrary.new()
+	assert(cell_terrain_resources.size() > 1)
+	var index: int = 0
 	for cell: TerrainCell in cell_terrain_resources:
-		var index: int = 0
 		
 		mesh_lib.create_item( index )
 		mesh_lib.set_item_name(index, cell.display_name)
 		
 		if not cell.mesh:
-			var auto_mesh := BoxMesh.new()
-			auto_mesh.size = Board.cell_size
+			var auto_mesh := ImmediateMesh.new()
 			mesh_lib.set_item_mesh(index, auto_mesh)
 		else:
 			mesh_lib.set_item_mesh(index, cell.mesh)
@@ -60,6 +61,52 @@ func update_mesh_library():
 		index += 1
 		
 	mesh_library_cache = mesh_lib
+
+
+func generate():
+	if generation_mode == GenerationModes.NONE:
+		return
+	
+	## Try to use the override, otherwise create a new noise
+	var used_gen_noise: FastNoiseLite = generation_noise_override
+	if not used_gen_noise: 
+		used_gen_noise = FastNoiseLite.new()
+		used_gen_noise.frequency = generation_noise_frequency
+		used_gen_noise.noise_type = generation_noise_type
+		used_gen_noise.seed = generation_noise_seed
+		
+	## Get terrain for standing on
+	var footing_terrain: Array[int]
+	for index: int in cell_terrain_resources.size():
+		var terrain_res: TerrainCell = cell_terrain_resources[index]
+		if Board.CellFlags.FOOTING in terrain_res.flags:
+			footing_terrain.append(index)
+			
+	## Make the last cell empty air
+	var air_terrain_index: int
+
+	var air_terrain := TerrainCell.new()
+	air_terrain.display_name = "Air"
+	air_terrain_index = cell_terrain_resources.size()
+	cell_terrain_resources.append(air_terrain)
+		
+	match generation_mode:
+		GenerationModes.SURFACE:
+			var max_height: int = generation_size.y * generation_terrain_height_percentage
+			for x: int in generation_size.x:
+				
+				for z: int in generation_size.z:
+					var noise_value: float = used_gen_noise.get_noise_2d(x,z)
+					assert(noise_value <= 1)
+					var top_y: int = max_height * noise_value
+					
+					for y: int in generation_size.y:
+						
+						if y <= top_y or y == 0:
+							cell_positions.append(Vector4i(x, y, z, footing_terrain[0]))
+						else:
+							cell_positions.append(Vector4i(x, y, z, air_terrain_index))
+	pass
 
 
 static func cache_all_map_paths():

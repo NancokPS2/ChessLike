@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://b0pg2mr7smdvo"]
+[gd_scene load_steps=7 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/Debug/Tester.gd" id="2_5iw2b"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="2_p3fbg"]
+[ext_resource type="Texture2D" uid="uid://cx8w63ctgkcu3" path="res://TESTING/new_noise_texture_2d.tres" id="4_nfi2x"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fno0i"]
 albedo_color = Color(0, 0.447059, 0.482353, 1)
@@ -33,6 +34,7 @@ transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, 
 mesh = SubResource("BoxMesh_6jevn")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.922444, 0.386131, 0, -0.386131, 0.922444, 0, 0, 0, 1, 0, 12.0321, 0)
 
 [node name="Tester" type="Node3D" parent="."]
 script = ExtResource("2_5iw2b")
@@ -41,3 +43,7 @@ raycast_point_a = Vector3(5.6, 0.4, 3.95)
 [node name="Label" type="Label" parent="." groups=["UI_HEALTH_NUMBER"]]
 offset_right = 213.0
 offset_bottom = 91.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("4_nfi2x")
