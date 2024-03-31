@@ -78,8 +78,8 @@ func get_type() -> Types:
 
 
 func get_move_distance() -> int:
-	var stat_comp: ComponentStats = get_entity().get_component(ComponentStats.COMPONENT_NAME)
-	return stat_comp.get_stat(ComponentStats.Keys.MOVE_DISTANCE)
+	var stat_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
+	return stat_comp.get_stat(ComponentStatus.StatKeys.MOVE_DISTANCE)
 
 
 func get_cell_movement_cost(cell: Vector3i, type_used: Types = get_type()) -> float:

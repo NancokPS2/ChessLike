@@ -26,8 +26,8 @@ func add_delay_to_stack(delay: int):
 		
 		
 func get_base_delay() -> int:
-	var stat_comp: ComponentStats = get_entity().get_component(ComponentStats.COMPONENT_NAME)
-	var output: int = stat_comp.get_stat(ComponentStats.Keys.TURN_DELAY)
+	var stat_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
+	var output: int = stat_comp.get_stat(ComponentStatus.StatKeys.TURN_DELAY_BASE)
 	return output
 		
 	

@@ -1,3 +1,4 @@
 res://TEST.tscn
+res://Scripts/Composition/Entity/StatusComponent.gd
 res://Scripts/Composition/Entity/InterfaceComponent.gd
 res://Scripts/Composition/Entity/Entity.gd

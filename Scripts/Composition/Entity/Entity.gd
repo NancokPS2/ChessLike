@@ -34,16 +34,17 @@ func add_all_components():
 		ComponentInventory.new(),
 		ComponentLore.new(),
 		ComponentMovement.new(),
-		ComponentStats.new(),
+		ComponentStatus.new(),
 		ComponentTurn.new(),
 		ComponentVision.new(),
 		ComponentDisplay.new(),
+		ComponentCapability.new(),
 		ComponentInterface.new(),
 	]
 	for comp: Node in comps:
 		add_component(comp)
 
-
+## Components are not meant to be removed. Create a new instance if you need one with removed components.
 func add_component(comp: Node):
 	var comp_name: String = comp.get("COMPONENT_NAME")
 	assert(comp_name is String)
@@ -56,6 +57,7 @@ func add_component(comp: Node):
 	add_child(comp)
 
 
+## TODO: Add PERSISTENT_PROPERTIES to components
 func store_config_file(identifier_used: String = identifier):
 	## Create a new ConfigFile
 	var config_to_save = ConfigFile.new()

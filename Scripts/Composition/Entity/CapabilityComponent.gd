@@ -75,7 +75,7 @@ func get_current_capability_resources(type: Types) -> Array[ComponentCapabilityR
 	return output
 
 	
-func get_stat_bonus(stat: ComponentStats.Keys) -> int:
+func get_stat_bonus(stat: ComponentStatus.StatKeys) -> int:
 	var output: int = 0
 	for res_ident: String in capability_current_res_arr:
 		var res: ComponentCapabilityResource = ComponentCapability.get_capability_resource_by_identifier(res_ident)
@@ -83,7 +83,7 @@ func get_stat_bonus(stat: ComponentStats.Keys) -> int:
 	return output
 	
 
-func get_stat_modifier(stat: ComponentStats.Keys) -> float:
+func get_stat_modifier(stat: ComponentStatus.StatKeys) -> float:
 	var output: int = 1
 	for res_ident: String in capability_current_res_arr:
 		var res: ComponentCapabilityResource = ComponentCapability.get_capability_resource_by_identifier(res_ident)

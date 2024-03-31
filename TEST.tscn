@@ -37,3 +37,7 @@ mesh = SubResource("BoxMesh_6jevn")
 [node name="Tester" type="Node3D" parent="."]
 script = ExtResource("2_5iw2b")
 raycast_point_a = Vector3(5.6, 0.4, 3.95)
+
+[node name="Label" type="Label" parent="." groups=["UI_HEALTH_NUMBER"]]
+offset_right = 213.0
+offset_bottom = 91.0

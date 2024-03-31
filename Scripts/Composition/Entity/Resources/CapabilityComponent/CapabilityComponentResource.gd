@@ -19,7 +19,7 @@ class_name ComponentCapabilityResource
 	0,#DEFENSE
 	0,#DODGE
 	100,#ACCURACY
-	100,#TURN_DELAY
+	100,#TURN_DELAY_BASE
 	]
 @export var stat_modifiers: Array[float] = [1,1,1,1,1,1,1,1,1,1,1,]
 
@@ -34,9 +34,9 @@ class_name ComponentCapabilityResource
 	#DODGE
 	#ACCURACY
 
-func get_stat_bonus(stat: ComponentStats.Keys) -> int:
+func get_stat_bonus(stat: ComponentStatus.StatKeys) -> int:
 	return stat_bonuses[stat]
 	
 	
-func get_stat_modifier(stat: ComponentStats.Keys) -> float:
+func get_stat_modifier(stat: ComponentStatus.StatKeys) -> float:
 	return stat_modifiers[stat]

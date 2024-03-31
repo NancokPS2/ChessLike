@@ -97,8 +97,8 @@ func add_temporary_node(category: String, node: Node3D, node_pos: Vector3 = Vect
 	temporary_nodes[category] = temporary_nodes.get(category, []) + [node]
 	
 	node.top_level = true
-	node.global_position = node_pos
 	add_child(node)
+	node.global_position = node_pos
 	
 	
 func clear_temporary_nodes(category: String):
