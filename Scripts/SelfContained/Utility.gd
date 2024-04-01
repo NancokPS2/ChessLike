@@ -68,10 +68,10 @@ class VisualFuncs extends Node:
 		
 class LoadFuncs extends Node:
 	static func get_all_resources_in_folder(folder: String) -> Array[Resource]:
-		assert(folder.ends_with("/"))
+		assert( not folder.ends_with("/") )
 		var output: Array[Resource]
 	
-		if folder.begins_with("res://"):
+		if folder.begins_with("res://") and not OS.has_feature("editor"):
 			for file: String in DirAccess.get_files_at(folder):
 			
 				var file_name: String = file
@@ -85,7 +85,18 @@ class LoadFuncs extends Node:
 				if not file_name.get_extension() == "tres":
 					continue
 		
-				var res: Resource = load(folder + file_name)
+				var res: Resource = load(folder + "/" + file_name)
+				if res is Resource:
+					output.append(res)
+		else:
+			for file: String in DirAccess.get_files_at(folder):
+				var file_name: String = file
+				
+				if not file_name.get_extension() == "tres":
+					continue
+					
+				var res: Resource = load(folder + "/" + file_name)
+					
 				if res is Resource:
 					output.append(res)
 					
@@ -93,7 +104,7 @@ class LoadFuncs extends Node:
 
 
 	static func get_all_resource_paths_in_folder(folder: String) -> Array[String]:
-		assert(folder.ends_with("/"))
+		assert( not folder.ends_with("/") )
 		var output: Array[String]
 	
 		if folder.begins_with("res://"):
@@ -110,6 +121,15 @@ class LoadFuncs extends Node:
 				if not file_name.get_extension() == "tres":
 					continue
 		
-				output.append(folder + file_name)
+				output.append(folder + "/" + file_name)
+				
+		else:
+			for file: String in DirAccess.get_files_at(folder):
+				var file_name: String = file
+				
+				if not file_name.get_extension() == "tres":
+					continue
+				
+				output.append(folder + "/" + file_name)
 					
 		return output

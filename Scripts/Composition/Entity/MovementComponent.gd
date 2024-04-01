@@ -59,10 +59,15 @@ func add_target_cells(cells: Array[Vector3i]):
 
 
 func set_position_in_board(cell: Vector3i):
+	var original_cell: Vector3i = get_position_in_board()
+	
 	get_entity().position = Board.map_to_local(cell)
-	board_position_dict.erase(self)
-	board_position_dict[self] = get_position_in_board()
-	Event.ENTITY_MOVED.emit(get_entity(), get_position_in_board())
+	board_position_dict.erase(cell)
+	board_position_dict[cell] = self
+	
+	assert(cell == get_position_in_board())
+	
+	Event.ENTITY_MOVED.emit(get_entity(), original_cell, cell)
 
 
 func get_position_in_board() -> Vector3i:
@@ -71,7 +76,10 @@ func get_position_in_board() -> Vector3i:
 	
 func get_entity_at_position_in_board(cell: Vector3i) -> Entity3D:
 	var other_move_comp: ComponentMovement = board_position_dict.get(cell, null)
-	return other_move_comp.get_entity()
+	if not other_move_comp:
+		return null
+	else:
+		return other_move_comp.get_entity()
 
 
 func get_type() -> Types:

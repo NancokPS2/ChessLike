@@ -1,9 +1,31 @@
-[gd_scene load_steps=7 format=3 uid="uid://b0pg2mr7smdvo"]
+[gd_scene load_steps=9 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/Debug/Tester.gd" id="2_5iw2b"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="2_p3fbg"]
-[ext_resource type="Texture2D" uid="uid://cx8w63ctgkcu3" path="res://TESTING/new_noise_texture_2d.tres" id="4_nfi2x"]
+[ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="3_ej6py"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_00kxq"]
+texture = ExtResource("3_ej6py")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_i1r0i"]
+sources/0 = SubResource("TileSetAtlasSource_00kxq")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fno0i"]
 albedo_color = Color(0, 0.447059, 0.482353, 1)
@@ -27,6 +49,11 @@ controlActions = {
 "zoom_out": "zoom_out"
 }
 
+[node name="TileMap" type="TileMap" parent="PivotCamera3D"]
+tile_set = SubResource("TileSet_i1r0i")
+format = 2
+layer_0/tile_data = PackedInt32Array(1114139, 0, 0, 1179675, 0, 1, 1114140, 65536, 0, 1179676, 65536, 1, 1114141, 0, 0, 1179677, 0, 1, 1114142, 65536, 0, 1179678, 65536, 1, 1245213, 0, 0, 1310749, 0, 1, 1245214, 65536, 0, 1310750, 65536, 1, 1245215, 0, 0, 1310751, 0, 1, 1245216, 65536, 0, 1310752, 65536, 1, 1376287, 0, 0, 1441823, 0, 1, 1376288, 65536, 0, 1441824, 65536, 1, 983066, 0, 0, 1048602, 0, 1, 983067, 0, 0, 1048603, 0, 1, 1376285, 0, 0, 1441821, 0, 1, 1376286, 65536, 0, 1441822, 65536, 1, 1376283, 0, 0, 1441819, 0, 1, 1376284, 65536, 0, 1441820, 65536, 1, 1376281, 0, 0, 1441817, 0, 1, 1376282, 65536, 0, 1441818, 65536, 1, 1245209, 0, 0, 1310745, 0, 1, 1245210, 65536, 0, 1310746, 65536, 1, 1114137, 0, 0, 1179673, 0, 1, 1114138, 65536, 0, 1179674, 65536, 1, 983068, 65536, 0, 1048604, 65536, 1, 983069, 0, 0, 1048605, 0, 1, 983070, 65536, 0, 1048606, 65536, 1)
+
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, -0.51237, 4.63242, 10.4132)
 
@@ -43,7 +70,3 @@ raycast_point_a = Vector3(5.6, 0.4, 3.95)
 [node name="Label" type="Label" parent="." groups=["UI_HEALTH_NUMBER"]]
 offset_right = 213.0
 offset_bottom = 91.0
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-texture = ExtResource("4_nfi2x")

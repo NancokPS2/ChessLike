@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ComponentActionResource" load_steps=3 format=3 uid="uid://c5cbku60vadpv"]
+
+[ext_resource type="Resource" uid="uid://bjyqodgvvu6kf" path="res://Scripts/Composition/Entity/Resources/ActionComponent/Effects/HealEffect.tres" id="1_pmsah"]
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResource.gd" id="2_m3kyw"]
+
+[resource]
+script = ExtResource("2_m3kyw")
+identifier = "HEAL"
+effects = Array[Resource("res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResourceEffect.gd")]([ExtResource("1_pmsah")])
+flags_action = Array[int]([2])
+flags_targeting = Array[int]([0])
+flags_hit = Array[int]([0])
+flags_entity_hit = Array[int]([2, 0])
+shape_targeting = 0
+shape_targeting_size = 0
+shape_hit = 0
+shape_hit_size = 0

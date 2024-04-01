@@ -66,10 +66,19 @@ static func cache_all_resources():
 		for res: Resource in res_arr:
 			if res is ComponentStatusResourcePassive:
 				pasive_effect_resource_cache_dict[res.identifier] = res
-	
+
+
+func change_meter(key: String, value: int):
+	var current: int = get_meter(key)
+	current += value
+	set_meter(key, current)
+
 	
 func set_meter(key: String, value: int):
+	var current: int = get_meter(key)
 	meter_dict[key] = value
+	
+	Event.ENTITY_COMPONENT_STATUS_METER_CHANGED.emit(self, key, current, value)
 
 
 func set_stat(key: StatKeys, value: int):
@@ -108,6 +117,9 @@ func get_meter(key: String) -> int:
  
 ## TODO: Implement stat modifications from passive effects
 func get_stat(key: StatKeys) -> int:
+	if key == -1:
+		return 0
+		
 	var capability_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
 	
 	var base_value: int = stat_dict.get(key, 0)

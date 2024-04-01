@@ -20,6 +20,10 @@ Global="*res://Singletons/Global.gd"
 Event="*res://Singletons/Event.gd"
 Board="*res://Singletons/Board/PositionGrid.gd"
 
+[display]
+
+window/vsync/vsync_mode=2
+
 [dotnet]
 
 project/assembly_name="ChessLike"

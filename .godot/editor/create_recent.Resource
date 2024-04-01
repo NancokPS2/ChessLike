@@ -1,3 +1,5 @@
+ComponentActionResourceEffect
+ComponentActionResource
 Map
 TerrainCell
 FastNoiseLite

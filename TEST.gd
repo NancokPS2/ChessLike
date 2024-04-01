@@ -48,7 +48,7 @@ func entity_test():
 	
 	## Movement
 	var move_comp: ComponentMovement = new_entity.get_component(ComponentMovement.COMPONENT_NAME)
-	move_comp.add_target_cells([Vector3i.UP + Vector3i.ZERO, Vector3i.UP + Vector3i.RIGHT, Vector3i.UP + Vector3i.LEFT*2])
+	#move_comp.add_target_cells([Vector3i.UP + Vector3i.ZERO, Vector3i.UP + Vector3i.RIGHT, Vector3i.UP + Vector3i.LEFT*2])
 	
 	## Display
 	var output: Array[Vector3i]
@@ -60,6 +60,16 @@ func entity_test():
 	disp_comp.add_visibility_meshes_in_cells(output, disp_comp.SubMeshTypes.MOVE_PATHABLE)
 	disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
 	disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
+	
+	## Action
+	var pos_in_board: Vector3i = move_comp.get_position_in_board()
+	move_comp.set_position_in_board(move_comp.get_position_in_board())
+	var action_comp: ComponentAction = new_entity.get_component(ComponentAction.COMPONENT_NAME)
+	var heal_resource: ComponentActionResource = ComponentAction.get_action_resource_by_identifier("HEAL")
+	action_comp.use_action(heal_resource, [move_comp.get_position_in_board()])
+	print("A")
+
+	
 
 #func _process(delta: float):
 	#var ray_params := PhysicsRayQueryParameters3D.create($Camera3D.global_position, $Camera3D.project_ray_normal(get_viewport().get_mouse_position()) * 1000)

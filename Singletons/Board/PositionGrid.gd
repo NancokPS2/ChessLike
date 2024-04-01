@@ -82,6 +82,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	## The cursor moved, try to get a new cell from it
 	if event is InputEventMouseMotion:
 		var camera: Camera3D = get_viewport().get_camera_3d()
+		if not camera:
+			return
 		var ray_params := PhysicsRayQueryParameters3D.create(camera.global_position, camera.project_ray_normal(get_viewport().get_mouse_position()) * 1000)
 		var pos: Vector3 = get_world_3d().direct_space_state.intersect_ray(ray_params).get("position", Vector3(INVALID_CELL_COORDS))
 		var new_cell: Vector3i = local_to_map(pos)
