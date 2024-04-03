@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1712008544
+::res://::1712145992
 DefaultEnviroment.tres::Environment::5190104091342360664::1711574987::0::1::::<><>::
 icon.png::CompressedTexture2D::901346440923877254::1657319076::1677002256::1::::<><>::
 Lore.txt::TextFile::-1::1687887852::0::1::::<><>::
@@ -7,7 +7,7 @@ ModelImportWithMetadata.gd::GDScript::-1::1670794979::0::1::::<>RefCounted<>::
 omnisharp.json::JSON::-1::1676997822::0::1::::<><>::
 README.md::TextFile::-1::1671481696::0::1::::<><>::
 TEST.gd::GDScript::-1::1712008544::0::1::::<>Node3D<>::
-TEST.tscn::PackedScene::4172520617367178532::1712008544::0::1::::<><>::res://TEST.gd<>res://Scripts/SelfContained/Debug/Tester.gd<>res://Scripts/SelfContained/PivotCamera3D.gd<>uid://m3vbrc8tmtak::::res://icon.png
+TEST.tscn::PackedScene::4172520617367178532::1712145992::0::1::::<><>::res://TEST.gd<>res://Scripts/SelfContained/Debug/Tester.gd<>res://Scripts/SelfContained/PivotCamera3D.gd<>uid://m3vbrc8tmtak::::res://icon.png
 TestSaveFile.tres::Resource/Resource::-1::1711901714::0::1::::<><>::res://UnusedStuff2/Resources/SaveFile/SaveFile.gd
 TODO.txt::TextFile::-1::1693162534::0::1::::<><>::
 ::res://addons/::1711901330
@@ -330,14 +330,14 @@ UnitDisplay.gd::GDScript::-1::1691689139::0::1::::UnitDisplay<>Panel<>::
 AbilitySystem.gd::GDScript::-1::1696859540::0::1::::AbilitySystem<>Node<>::
 EffectResourceAbilitySystem.gd::GDScript::-1::1711573486::0::1::::AbilityEffectTEMP<>Resource<>::
 UsableAbilitySystem.gd::GDScript::-1::1696859190::0::1::::AbilitySystemUsable<>Node<>::
-::res://Scripts/Composition/Entity/::1712008507
-ActionComponent.gd::GDScript::-1::1712007785::0::1::::ComponentAction<>Node3D<>::
+::res://Scripts/Composition/Entity/::1712145992
+ActionComponent.gd::GDScript::-1::1712145992::0::1::::ComponentAction<>Node3D<>::
 CapabilityComponent.gd::GDScript::-1::1711847543::0::1::::ComponentCapability<>Node<>::
 DisplayComponent.gd::GDScript::-1::1711901575::0::1::::ComponentDisplay<>Node3D<>::
 Entity.gd::GDScript::-1::1711896343::0::1::::Entity3D<>Node3D<>::
 FactionComponent.gd::GDScript::-1::1711680269::0::1::::ComponentFaction<>Node<>::
 InputComponent.gd::GDScript::-1::1711902509::0::1::::ComponentInput<>Node<>::
-InterfaceComponent.gd::GDScript::-1::1711843692::0::1::::ComponentInterface<>Node2D<>::
+InterfaceComponent.gd::GDScript::-1::1712145976::0::1::::ComponentInterface<>Node2D<>::
 InventoryComponent.gd::GDScript::-1::1711776013::0::1::::ComponentInventory<>Node<>::
 LoreComponent.gd::GDScript::-1::1711586182::0::1::::ComponentLore<>Node<>::
 MovementComponent.gd::GDScript::-1::1712008507::0::1::::ComponentMovement<>Node3D<>::

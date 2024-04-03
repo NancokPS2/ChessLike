@@ -126,24 +126,35 @@ func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 			## Each effect should assert that the parameters are present and correctly set
 				
 				EffectTypes.METER_CHANGE:
+					## Confirm if the entity is valid or necessary
 					if not entity_here:
 						push_warning("This effect cannot execute because it requires an entity and this cell doesn't have any.")
 						continue
-						
+					
+					if not is_entity_hit_by_action(entity_here, action):
+						continue
+					
+					## Confirm that the parameters are the correct type
 					assert(
 						effect.parameters[0] is String and
 						effect.parameters[1] is int and 
 						effect.parameters[2] is int and 
-						effect.parameters[3] is ComponentStatus.StatKeys
+						effect.parameters[3] is Array[ComponentStatus.StatKeys]
 					)
 					var meter_key: String = effect.parameters[0]
 					var amount_sign: int = signi(effect.parameters[1])
 					var base_amount: int = effect.parameters[2]
-					var stat_key: ComponentStatus.StatKeys = effect.parameters[3]
+					var stat_keys: Array[ComponentStatus.StatKeys] = effect.parameters[3]
 					
-					var stat_bonus: int = status_comp.get_stat(stat_key)
+					## Get stat bonus
+					var stat_bonus: int
+					for key: ComponentStatus.StatKeys in stat_keys:
+						stat_bonus += status_comp.get_stat(key)
+					
+					## Get the status component of the target
 					var status_comp_target: ComponentStatus = entity_here.get_component(ComponentStatus.COMPONENT_NAME)
 					
+					## Apply the effect
 					status_comp_target.change_meter(ComponentStatus.MeterKeys.HEALTH, absi(base_amount + stat_bonus) * amount_sign)
 	
 	print_debug(
@@ -169,26 +180,6 @@ func get_hit_cells_by_action(target_position: Vector3i, action: ComponentActionR
 	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(origin, action.shape_targeting_size, is_cell_valid_for_action.bind(action, true))
 	
 	return cells_targetable
-
-
-## Get every parameter stored in the effect as a Dictionary. 
-## Params : Variant
-func get_parameter_dict_for_effect(effect: ComponentActionResourceEffect) -> Dictionary:
-	var output: Dictionary = {}
-	var parameter_keys_expected: Array[Params] = ParamsForTypesDict[effect.type]
-	
-	## Ensure it has enough parameters
-	if not effect.parameters.size() == parameter_keys_expected.size():
-		push_error("Not enough parameters on this effect. Expected: " + str(parameter_keys_expected))	
-		return {}
-		
-	var index: int = 0
-	for param_key: Params in parameter_keys_expected:
-
-		output[param_key] = effect.parameters[index]
-		
-		index += 1
-	return output
 	
 	
 ## Includes both hit and targetable flags from action based on [use_hit_flags].
