@@ -1,3 +1,4 @@
+Node2D
 TileMap
 Sprite2D
 Label
@@ -12,4 +13,3 @@ Camera3D
 TurnSystemUser
 Button
 VBoxContainer
-ControlPopup

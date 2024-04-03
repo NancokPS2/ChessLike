@@ -56,7 +56,7 @@ func add_component(comp: Node):
 	components[comp_name] = comp
 	comp.name = comp_name
 	
-	## This is already a component, stop here.
+	## This component was already added, stop here.
 	if comp.get_parent() == self and components[comp_name] == comp:
 		return
 	
@@ -89,7 +89,11 @@ func store_config_file(identifier_used: String = identifier):
 			config_to_save.set_value(comp_name, property, comp_node.get(property))
 		
 	## Save the file
-	config_to_save.save( get_config_file_path(identifier_used, false) )
+	var save_path: String = get_config_file_path(identifier_used, false)
+	DirAccess.make_dir_recursive_absolute(save_path.get_base_dir())
+	var error: Error = config_to_save.save( save_path )
+	if not error == OK:
+		push_error(error_string(error))
 	
 	## Replace the cached version
 	config_file_cache = config_to_save
@@ -101,11 +105,11 @@ func load_config_file(identifier_used: String = identifier):
 		push_error("Could not load config file.")
 		return
 		
-	## Store main data
+	## Load the identifier and misc stuff
 	identifier = loaded_config.get_value(CONFIG_SECTION_MAIN, CONFIG_SECTION_MAIN_KEY_IDENTIFIER)
 	metadata = loaded_config.get_value(CONFIG_SECTION_MAIN, CONFIG_SECTION_MAIN_KEY_METADATA, {})
 
-	## Store component data
+	## Get and set component data
 	for comp_name: String in components:
 		var comp_node: Node = components[comp_name]
 		
@@ -136,13 +140,13 @@ func get_config_file(identifier_used: String = identifier) -> ConfigFile:
 	
 	## Try to load from user://
 	var user_path: String = get_config_file_path(identifier_used, false)
-	error = config.open(user_path)
+	error = config.load(user_path)
 	if error == OK:
 		return config
 	
 	## Try to load from res:// if it could not be loaded fom user://
 	var res_path: String = get_config_file_path(identifier_used, true)
-	error = config.open(res_path)
+	error = config.load(res_path)
 	if error == OK:
 		return config
 	

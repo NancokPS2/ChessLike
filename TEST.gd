@@ -61,6 +61,13 @@ func entity_test():
 	disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
 	disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
 	
+	## Lore
+	var lore_comp: ComponentLore = new_entity.get_component(ComponentLore.COMPONENT_NAME)
+	lore_comp.set_data(ComponentLore.Keys.NAME, "Marcelo")
+	
+	## Entity saving and loading
+	new_entity.load_config_file("Marcelo")
+	
 	## Action
 	var pos_in_board: Vector3i = move_comp.get_position_in_board()
 	move_comp.set_position_in_board(move_comp.get_position_in_board())

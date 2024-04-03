@@ -1,3 +1,10 @@
 res://TEST.tscn
 res://Scripts/Composition/Entity/ActionComponent.gd
 res://Scripts/Composition/Entity/InterfaceComponent.gd
+res://Scripts/Composition/Entity/OLDTurnComponent.gd
+res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.tscn
+res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
+res://Assets/Meshes/Characters/Human.tscn
+res://Scripts/Composition/Entity/LoreComponent.gd
+res://TEST.gd
+res://Scripts/Composition/Entity/Entity.gd
