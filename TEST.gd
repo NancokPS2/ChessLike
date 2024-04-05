@@ -66,7 +66,12 @@ func entity_test():
 	lore_comp.set_data(ComponentLore.Keys.NAME, "Marcelo")
 	
 	## Entity saving and loading
+	new_entity.store_config_file("Marcelo")
 	new_entity.load_config_file("Marcelo")
+	
+	## Interface
+	var inter_comp: ComponentInterface = new_entity.get_component(ComponentInterface.COMPONENT_NAME)
+	inter_comp.set_entity_on_interface_node(new_entity, $ComponentInterfaceScene)
 	
 	## Action
 	var pos_in_board: Vector3i = move_comp.get_position_in_board()

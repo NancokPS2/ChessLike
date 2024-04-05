@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://b0pg2mr7smdvo"]
+[gd_scene load_steps=10 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/Debug/Tester.gd" id="2_5iw2b"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="2_p3fbg"]
 [ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="3_ej6py"]
+[ext_resource type="PackedScene" uid="uid://dthpy7ut245f6" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.tscn" id="5_fpojg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_00kxq"]
 texture = ExtResource("3_ej6py")
@@ -70,3 +71,5 @@ raycast_point_a = Vector3(5.6, 0.4, 3.95)
 [node name="Label" type="Label" parent="." groups=["UI_HEALTH_NUMBER"]]
 offset_right = 213.0
 offset_bottom = 91.0
+
+[node name="ComponentInterfaceScene" parent="." instance=ExtResource("5_fpojg")]
