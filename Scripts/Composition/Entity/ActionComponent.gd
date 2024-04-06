@@ -25,8 +25,6 @@ enum Params {
 	TIME_DURATION, # int: Used to define how long an effect may last
 	CELL_FLAGS, # Array[Board.CellFlags]: Which flags of a cell to affect
 	BOOLEAN, # bool: A simply true or false
-	
-	
 }
 const ParamsForTypesDict: Dictionary = {
 	EffectTypes.CUSTOM : [],
@@ -43,6 +41,15 @@ enum ActionFlags {
 	HOSTILE, #Affects reactions
 	FRIENDLY, #Affects reactions
 	METER_MIN_ONE, #If it affects meters, the meters affected cannot go below 1
+	NO_INITIAL_ACTIVATION, #This won't activate on use, instead, it will activate when its repetition condition triggers
+}
+## When the condition is fulfilled, the action will perform its effect again.
+enum RepetitionConditions {
+	TIME_PASSED,# Turn ticks: int
+	TURN_ENDED,# No parameters
+	SUFFERED_DAMAGE,# Minimum damage: int
+	TARGETED_BY_ACTION,# Flags required: Array[ComponentAction.ActionFlags]
+	ACTION_USED,# Flags required: Array[ComponentAction.ActionFlags]
 }
 ## Used both to define targetable and hittable cells. By default any cell within range is valid
 enum TargetingFlags {
@@ -87,6 +94,9 @@ const COMPONENT_NAME: StringName = "ENTITY_ACTION"
 const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Entity/Resources/ActionComponent", "user://Data/Composition/Resources/ActionComponent"]
 
 static var action_resource_cache_dict: Dictionary
+
+## Stores temporary data like turns passed of actions that are repeating
+var action_repeating_meta_dict: Dictionary
 
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
@@ -250,6 +260,24 @@ func is_entity_hit_by_action(entity: Entity3D, action: ComponentActionResource) 
 			return false
 	
 	return true
+
+
+func repeat_actions(condition_triggered: RepetitionConditions):
+	## Check which fulfill the condition.
+	for action: ComponentActionResource in action_repeating_meta_dict.keys():
+		
+		## Skip those that do not trigger under this condition
+		if not condition_triggered in action.repetition_conditions:
+			continue
+		
+		## Make a second check for conditions that need arguments
+		match condition_triggered:
+			RepetitionConditions.TIME_PASSED:
+				var time_required
+			_:
+				pass
+		
+		
 
 
 static func get_action_resource_by_identifier(identifier: String) -> ComponentActionResource:

@@ -10,6 +10,10 @@ class_name ComponentActionResource
 @export var flags_hit: Array[ComponentAction.TargetingFlags]
 @export var flags_entity_hit: Array[ComponentAction.EntityHitFlags]
 
+@export var repetition_conditions: Array[ComponentAction.ActionFlags]
+@export var repetition_arguments: Array
+@export var reptition_count: int
+
 @export var shape_targeting: ComponentAction.TargetingShape
 @export var shape_targeting_size: int = 1
 @export var shape_hit: ComponentAction.TargetingShape

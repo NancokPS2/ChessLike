@@ -1,5 +1,6 @@
 extends Node
 class_name ComponentPassive
+## TODO: Maybe merge with ComponentAction
 
 enum ActivationConditions {
 	APPLIED,# No parameters
