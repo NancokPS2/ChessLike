@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1712405445
+::res://::1712405542
 DefaultEnviroment.tres::Environment::5190104091342360664::1711574987::0::1::::<><>::
 icon.png::CompressedTexture2D::901346440923877254::1657319076::1677002256::1::::<><>::
 Lore.txt::TextFile::-1::1687887852::0::1::::<><>::
@@ -7,7 +7,7 @@ ModelImportWithMetadata.gd::GDScript::-1::1670794979::0::1::::<>RefCounted<>::
 omnisharp.json::JSON::-1::1676997822::0::1::::<><>::
 README.md::TextFile::-1::1671481696::0::1::::<><>::
 TEST.gd::GDScript::-1::1712362899::0::1::::<>Node3D<>::
-TEST.tscn::PackedScene::4172520617367178532::1712405445::0::1::::<><>::res://TEST.gd<>res://Scripts/SelfContained/Debug/Tester.gd<>res://Scripts/SelfContained/PivotCamera3D.gd<>uid://m3vbrc8tmtak::::res://icon.png<>uid://dthpy7ut245f6::::res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.tscn
+TEST.tscn::PackedScene::4172520617367178532::1712405542::0::1::::<><>::res://TEST.gd<>res://Scripts/SelfContained/Debug/Tester.gd<>res://Scripts/SelfContained/PivotCamera3D.gd<>uid://m3vbrc8tmtak::::res://icon.png<>uid://dthpy7ut245f6::::res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.tscn
 TestSaveFile.tres::Resource/Resource::-1::1711901714::0::1::::<><>::res://UnusedStuff2/Resources/SaveFile/SaveFile.gd
 TODO.txt::TextFile::-1::1693162534::0::1::::<><>::
 ::res://addons/::1711901330
@@ -330,8 +330,8 @@ UnitDisplay.gd::GDScript::-1::1691689139::0::1::::UnitDisplay<>Panel<>::
 AbilitySystem.gd::GDScript::-1::1696859540::0::1::::AbilitySystem<>Node<>::
 EffectResourceAbilitySystem.gd::GDScript::-1::1711573486::0::1::::AbilityEffectTEMP<>Resource<>::
 UsableAbilitySystem.gd::GDScript::-1::1696859190::0::1::::AbilitySystemUsable<>Node<>::
-::res://Scripts/Composition/Entity/::1712405445
-ActionComponent.gd::GDScript::-1::1712405445::0::1::::ComponentAction<>Node3D<>::
+::res://Scripts/Composition/Entity/::1712405542
+ActionComponent.gd::GDScript::-1::1712405542::0::1::::ComponentAction<>Node3D<>::
 CapabilityComponent.gd::GDScript::-1::1711847543::0::1::::ComponentCapability<>Node<>::
 DisplayComponent.gd::GDScript::-1::1711901575::0::1::::ComponentDisplay<>Node3D<>::
 Entity.gd::GDScript::-1::1712362948::0::1::::Entity3D<>Node3D<>::
@@ -359,7 +359,8 @@ CapabilityComponentResource.gd::GDScript::-1::1711845523::0::1::::ComponentCapab
 Class_None.tres::Resource/Resource::2990198106558934753::1711747967::0::1::::<><>::res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd
 Race_Human.tres::Resource/Resource::7141648382368365021::1711749554::0::1::::<><>::res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd
 ::res://Scripts/Composition/Entity/Resources/Entity/::1711896295
-::res://Scripts/Composition/Entity/Resources/InterfaceComponent/::1712359224
+::res://Scripts/Composition/Entity/Resources/InterfaceComponent/::1712405621
+CompactInterface.tscn::PackedScene::-1::1712405611::0::1::::<><>::
 ComponentInterfaceScene.gd::GDScript::-1::1712359224::0::1::::ComponentInterfaceScene<>Node2D<>::
 ComponentInterfaceScene.tscn::PackedScene::8508256050969373113::1712278553::0::1::::<><>::res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
 ::res://Scripts/Composition/Entity/Resources/PassiveComponent/::1712363521
