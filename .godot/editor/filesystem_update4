@@ -2,3 +2,16 @@ res://TEST.tscn
 res://Scripts/Composition/Entity/InterfaceComponent.gd
 res://TEST.gd
 res://Assets/Meshes/Characters/Human.tscn
+res://Scripts/Composition/Entity/MovementComponent.gd
+res://Scripts/Composition/Entity/Resources/StatusComponent/StatusComponentResource.gd
+res://Singletons/Event.gd
+res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
+res://Scripts/Composition/Entity/StatusComponent.gd
+res://Scripts/Composition/Entity/PassiveComponent.gd
+res://Scripts/Composition/Entity/Resources/PassiveComponent/PassiveComponentResource.gd
+res://Scripts/Composition/Entity/tackComponent.gd
+res://Scripts/Composition/Entity/TurnComponent.gd
+res://Scripts/Composition/Entity/StackComponent.gd
+res://Scripts/Composition/Entity/ActionComponent.gd
+res://Scripts/Composition/Entity/Entity.gd
+res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResource.gd

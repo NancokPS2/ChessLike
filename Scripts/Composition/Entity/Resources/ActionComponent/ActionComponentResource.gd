@@ -6,10 +6,8 @@ class_name ComponentActionResource
 @export var effects: Array[ComponentActionResourceEffect]
 
 @export var flags_action: Array[ComponentAction.ActionFlags]
-
 @export var flags_targeting: Array[ComponentAction.TargetingFlags]
 @export var flags_hit: Array[ComponentAction.TargetingFlags]
-
 @export var flags_entity_hit: Array[ComponentAction.EntityHitFlags]
 
 @export var shape_targeting: ComponentAction.TargetingShape

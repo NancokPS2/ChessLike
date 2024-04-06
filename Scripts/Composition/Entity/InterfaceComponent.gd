@@ -5,13 +5,6 @@ class_name ComponentInterface
 ## Do not add to the group any nodes that are meant to display a different entity at the same time
 ## Only ONE node may be set to autoupdate at a time, setting one will unset the rest.
 
-enum NodeTypes {
-	HEALTH_MAX,
-	HEALTH_CURRENT,
-	ENERGY_MAX,
-	ENERGY_CURRENT,
-}
-
 const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Entity/Resources/InterfaceComponent/"]
 
 const COMPONENT_NAME: StringName = "ENTITY_INTERFACE"
@@ -21,8 +14,10 @@ const UPDATE_RATE: float = 1 / 3 ## 3 times per second
 static var interface_scene_dict: Dictionary
 
 ## TODO: The scenes already take care of updating their data from the provided entity, just handle the call timings from here
-func set_entity_on_interface_node(entity: Entity3D, interface_node: ComponentInterfaceScene):
+func set_entity_on_interface_node(entity: Entity3D, interface_node: ComponentInterfaceScene, auto_update: bool = true):
 	interface_node.update_interface(entity)
+	if auto_update:
+		interface_node.set_auto_update_target(entity)
 
 
 static func get_packed_scene_by_identifier(identifier: String) -> PackedScene:

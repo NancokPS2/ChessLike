@@ -44,6 +44,8 @@ func add_all_components():
 		ComponentCapability.new(),
 		ComponentInterface.new(),
 		ComponentAction.new(),
+		ComponentStack.new(),
+		ComponentPassive.new(),
 	]
 	for comp: Node in comps:
 		add_child(comp)

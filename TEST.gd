@@ -78,7 +78,7 @@ func entity_test():
 	move_comp.set_position_in_board(move_comp.get_position_in_board())
 	var action_comp: ComponentAction = new_entity.get_component(ComponentAction.COMPONENT_NAME)
 	var heal_resource: ComponentActionResource = ComponentAction.get_action_resource_by_identifier("HEAL")
-	action_comp.use_action(heal_resource, [move_comp.get_position_in_board()])
+	action_comp.add_action_to_stack(heal_resource, [move_comp.get_position_in_board()])
 	print("A")
 
 	

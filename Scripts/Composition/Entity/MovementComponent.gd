@@ -67,14 +67,14 @@ func set_position_in_board(cell: Vector3i):
 	
 	assert(cell == get_position_in_board())
 	
-	Event.ENTITY_MOVED.emit(get_entity(), original_cell, cell)
+	Event.ENTITY_COMPONENT_MOVEMENT_MOVED.emit(get_entity(), original_cell, cell)
 
 
 func get_position_in_board() -> Vector3i:
 	return Board.local_to_map(get_entity().position)
 	
 	
-func get_entity_at_position_in_board(cell: Vector3i) -> Entity3D:
+static func get_entity_at_position_in_board(cell: Vector3i) -> Entity3D:
 	var other_move_comp: ComponentMovement = board_position_dict.get(cell, null)
 	if not other_move_comp:
 		return null
@@ -169,6 +169,7 @@ func is_cell_landable(cell: Vector3i, type: Types = get_type()) -> bool:
 	return true
 
 
+#TODO
 func is_cell_closer_to_destination(cell: Vector3i, destination_cell: Vector3i) -> bool:
 	Board.get_manhattan_distance(cell, destination_cell)
 	return true

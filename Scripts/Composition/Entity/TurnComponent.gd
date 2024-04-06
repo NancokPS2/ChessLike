@@ -5,6 +5,7 @@ const COMPONENT_NAME: StringName = "ENTITY_TURN"
 
 static var turn_component_array: Array[ComponentTurn]
 
+var time_scale: float = 1
 var delay_stack: int
 var delay_current: int
 
@@ -42,22 +43,17 @@ func end_turn():
 	if not get_current_turn_taker() == self:
 		push_warning("Only the current turn taker is meant to be able to end their turn!")
 		
+	#Reduce the delay for everyone else by the stack
+	ComponentTurn.advance_time(delay_stack)
+		
 	#Reset to base + stack.
 	delay_current = get_base_delay() + delay_stack
 	
-	#Reduce the delay for everyone else by the stack
-	for turn_comp: ComponentTurn in turn_component_array:
-		
-		if turn_comp == self:
-			continue
-			
-		delay_current -= delay_stack
 	
 	delay_stack = 0
 	
 	Event.ENTITY_TURN_ENDED.emit( get_entity() )
 	Event.ENTITY_TURN_STARTED.emit( get_current_turn_taker().get_entity() )
-	
 
 
 static func sort_by_delay():
@@ -65,8 +61,12 @@ static func sort_by_delay():
 		return a.delay_current < b.delay_current 
 		)
 	
-func advance_time(time: int):
-	delay_current -= time
+	
+static func advance_time(time: int):
+	for time_comp: ComponentTurn in turn_component_array:
+		time_comp.delay_current -= time * time_comp.time_scale
+		
+	Event.ENTITY_TURN_TIME_PASSED.emit(time)
 
 
 

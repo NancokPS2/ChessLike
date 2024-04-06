@@ -12,6 +12,7 @@ enum EffectTypes {
 	CELL_FLAG_CHANGE, # CELL: Changes the flag of a cell, adding it or removing it
 	STAT_BONUS_ADD, # ENT: Adds a bonus to the stats of the target
 	STAT_MODIFIER_ADD, # ENT: Adds a modifier to the stats of the target
+	ADD_PASSIVE, # ENT: Adds a passive to the target
 }
 enum Params {
 	DIRECTION, # Vector3i: Defaults to the direction from the entity to the targeted cell
@@ -25,6 +26,7 @@ enum Params {
 	CELL_FLAGS, # Array[Board.CellFlags]: Which flags of a cell to affect
 	BOOLEAN, # bool: A simply true or false
 	
+	
 }
 const ParamsForTypesDict: Dictionary = {
 	EffectTypes.CUSTOM : [],
@@ -33,6 +35,7 @@ const ParamsForTypesDict: Dictionary = {
 	EffectTypes.METER_CHANGE_USE_TARGET_STAT : [Params.METER_NAME, Params.AMOUNT_SIGN, Params.AMOUNT, Params.STAT_KEYS_TARGET],
 	EffectTypes.LAUNCH_ENTITY : [Params.DIRECTION],
 	EffectTypes.CELL_FLAG_CHANGE : [Params.CELL_FLAGS, Params.BOOLEAN, Params.TIME_DURATION],
+	EffectTypes.ADD_PASSIVE : []
 }
 ## Affects how others react to this action
 enum ActionFlags { 
@@ -105,6 +108,15 @@ static func cache_all_resources():
 				action_resource_cache_dict[res.identifier] = res
 
 
+func add_action_to_stack(action: ComponentActionResource, target_cells: Array[Vector3i]):
+	var stack_comp: ComponentStack = get_entity().get_component(ComponentStack.COMPONENT_NAME)
+	var stack_obj := ComponentStack.StackObject.new()
+	stack_obj.set_function(use_action.bind(action, target_cells))
+	stack_obj.set_metadata("action", action)
+	stack_obj.set_metadata("target_cells", target_cells)
+	ComponentStack.add_to_stack(stack_obj)
+
+
 ## TODO
 func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 	var action_meta: Dictionary
@@ -162,6 +174,10 @@ func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 		.format([action.identifier, str(target_cells)])
 		)
 	Event.ENTITY_COMPONENT_ACTION_USED_ON_CELL.emit(get_entity(), target_cells, action)
+
+
+func get_action_duration() -> float:
+	return 1.5
 
 
 ## The cells that can be chosen as the target location for the action TODO

@@ -12,10 +12,26 @@ class_name ComponentInterfaceScene
 
 var active_nodes: Array[StringName]
 
+var auto_update_entity: Entity3D
+
+var timer_reference: Timer
+
 func _ready() -> void:
 	update_active_nodes()
 
 
+func set_auto_update_target(entity: Entity3D):
+	auto_update_entity = entity
+	if auto_update_entity:
+		timer_reference = Timer.new()
+		timer_reference.timeout.connect(update_interface)
+		add_child(timer_reference)
+		timer_reference.start(ComponentInterface.UPDATE_RATE)
+	else:
+		if timer_reference:
+			timer_reference.queue_free()
+		
+		
 ## Creates an array with paths to specific properties, the ones which actually have something
 func update_active_nodes():
 	active_nodes.clear()
@@ -24,7 +40,13 @@ func update_active_nodes():
 			active_nodes.append(prop_name)
 	
 	
-func update_interface(entity: Entity3D):
+func update_interface(entity: Entity3D = auto_update_entity):
+	if not entity:
+		## Disable auto updates if the target is null
+		if auto_update_entity == null:
+			set_auto_update_target(null)
+		return
+	
 	var status_comp: ComponentStatus = entity.get_component(ComponentStatus.COMPONENT_NAME)
 	var lore_comp: ComponentLore = entity.get_component(ComponentLore.COMPONENT_NAME)
 	for node_prop: StringName in active_nodes:
