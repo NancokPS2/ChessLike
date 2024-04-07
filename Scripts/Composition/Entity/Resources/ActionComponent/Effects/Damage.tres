@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ComponentActionResourceEffect" load_steps=2 format=3 uid="uid://bbahddb8ruyph"]
+
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResourceEffect.gd" id="1_ebll2"]
+
+[resource]
+script = ExtResource("1_ebll2")
+type = 1
+parameters = ["HEALTH", -1, 15, []]

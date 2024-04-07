@@ -15,3 +15,9 @@ func step_entity(cell: Vector3i):
 
 func finish(all_cells: Array[Vector3i]):
 	pass
+
+func _to_string() -> String:
+	return (
+		"Type: {0} | Parameters: {1}"
+		.format([str(ComponentAction.EffectTypes.find_key(type)), str(parameters)])
+		)

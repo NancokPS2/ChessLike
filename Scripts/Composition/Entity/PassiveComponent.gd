@@ -1,7 +1,8 @@
 extends Node
 class_name ComponentPassive
 ## TODO: Maybe merge with ComponentAction
-
+enum Effects {
+}
 enum ActivationConditions {
 	APPLIED,# No parameters
 	TIME_PASSED,# Turn ticks: int

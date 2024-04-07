@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_85ilj")
 type = 1
-parameters = ["HEALTH", 1, 10, -1]
+parameters = ["HEALTH", 1, 10, []]

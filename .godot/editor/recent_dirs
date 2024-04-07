@@ -1,5 +1,5 @@
-res://Scripts/Composition/Entity/Resources/ActionComponent/Effects
 res://Scripts/Composition/Entity/Resources/ActionComponent
+res://Scripts/Composition/Entity/Resources/ActionComponent/Effects
 res://Singletons/Board/Map
 res://Singletons/Board/TerrainCell
 res://TESTING

@@ -12,7 +12,7 @@ enum EffectTypes {
 	CELL_FLAG_CHANGE, # CELL: Changes the flag of a cell, adding it or removing it
 	STAT_BONUS_ADD, # ENT: Adds a bonus to the stats of the target
 	STAT_MODIFIER_ADD, # ENT: Adds a modifier to the stats of the target
-	ADD_PASSIVE, # ENT: Adds a passive to the target
+	ADD_REPEATING, # ENT: Adds a repeating action to the target, useful for adding damage over times.
 }
 enum Params {
 	DIRECTION, # Vector3i: Defaults to the direction from the entity to the targeted cell
@@ -25,6 +25,7 @@ enum Params {
 	TIME_DURATION, # int: Used to define how long an effect may last
 	CELL_FLAGS, # Array[Board.CellFlags]: Which flags of a cell to affect
 	BOOLEAN, # bool: A simply true or false
+	ACTION, # ComponentActionResource: A resource to apply on the target
 }
 const ParamsForTypesDict: Dictionary = {
 	EffectTypes.CUSTOM : [],
@@ -33,7 +34,9 @@ const ParamsForTypesDict: Dictionary = {
 	EffectTypes.METER_CHANGE_USE_TARGET_STAT : [Params.METER_NAME, Params.AMOUNT_SIGN, Params.AMOUNT, Params.STAT_KEYS_TARGET],
 	EffectTypes.LAUNCH_ENTITY : [Params.DIRECTION],
 	EffectTypes.CELL_FLAG_CHANGE : [Params.CELL_FLAGS, Params.BOOLEAN, Params.TIME_DURATION],
-	EffectTypes.ADD_PASSIVE : []
+	EffectTypes.STAT_BONUS_ADD : [Params.METER_NAME, Params.AMOUNT, Params.TIME_DURATION],
+	EffectTypes.STAT_MODIFIER_ADD : [Params.METER_NAME, Params.AMOUNT_F, Params.TIME_DURATION],
+	EffectTypes.ADD_REPEATING : [Params.ACTION, Params.AMOUNT]
 }
 ## Affects how others react to this action
 enum ActionFlags { 
@@ -41,7 +44,10 @@ enum ActionFlags {
 	HOSTILE, #Affects reactions
 	FRIENDLY, #Affects reactions
 	METER_MIN_ONE, #If it affects meters, the meters affected cannot go below 1
-	NO_INITIAL_ACTIVATION, #This won't activate on use, instead, it will activate when its repetition condition triggers
+}
+enum RepetitionActionFlags {
+	NO_INITIAL_ACTIVATION, #This won't activate on use, instead, it will activate when its repetition condition triggers, if it has no repetitions set, it is set to 1
+	TRACK_ENTITIES, #Any entities deemed valid at the time of activation will keep being targeted on each repetition by targeting their cells	
 }
 ## When the condition is fulfilled, the action will perform its effect again.
 enum RepetitionConditions {
@@ -51,6 +57,10 @@ enum RepetitionConditions {
 	TARGETED_BY_ACTION,# Flags required: Array[ComponentAction.ActionFlags]
 	ACTION_USED,# Flags required: Array[ComponentAction.ActionFlags]
 }
+enum RepetitionMetaKeys {
+	REPEATS_LEFT, # int
+	TRACKED_ENTITIES, # Array[Entity3D]
+}
 ## Used both to define targetable and hittable cells. By default any cell within range is valid
 enum TargetingFlags {
 	NEED_ENTITY, # The cell cannot be selected if it does not have a valid entity. Recommended for single target actions.
@@ -59,7 +69,7 @@ enum TargetingFlags {
 }
 ## What entities are affected.
 enum EntityHitFlags {
-	SELF,
+	SELF, # Important for DoT effects as they usually target self
 	HOSTILE,
 	FRIENDLY,
 }
@@ -118,6 +128,106 @@ static func cache_all_resources():
 				action_resource_cache_dict[res.identifier] = res
 
 
+
+
+
+func add_repeating_action_to_array(action: ComponentActionResource):
+	if action.repetition_count < 1:
+		push_warning("Cannot add this action, it has no repetition count.")
+		return 
+		
+	action_repeating_meta_dict[action] = {RepetitionMetaKeys.REPEATS_LEFT : action.repetition_count}
+
+
+func remove_repeating_action_from_array(action: ComponentActionResource):
+	var success: bool = action_repeating_meta_dict.erase(action)
+	if not success:
+		push_warning("Could not find this action in the repeating array.")
+
+## Whenever a repetition condition is triggered, check if any of the repeating actions would be triggered
+func parse_repeating_actions(condition_triggered: RepetitionConditions, arguments: Array = []):
+	## Check every action.
+	for action: ComponentActionResource in action_repeating_meta_dict.keys():
+		
+		## Skip those that do not trigger under this condition
+		if not condition_triggered in action.repetition_conditions:
+			continue
+		
+		## Make a second check for conditions that need arguments
+		var valid: bool = true
+		match condition_triggered:
+			RepetitionConditions.TIME_PASSED:
+				assert(arguments[0] is int)
+				var time_required: int = action.repetition_arguments[0]
+			
+			RepetitionConditions.SUFFERED_DAMAGE:
+				assert(arguments[0] is int)
+				var damage_required: int = action.repetition_arguments[0]
+				if arguments[0] < damage_required:
+					valid = false
+				
+			RepetitionConditions.TARGETED_BY_ACTION:
+				assert(arguments[0] is Array[ActionFlags])
+				var flags_required: Array[ActionFlags] = action.repetition_arguments[0]
+				for flag: ActionFlags in flags_required:
+					if not arguments[0].has(flag):
+						valid = false
+						break
+				
+			RepetitionConditions.ACTION_USED:
+				assert(arguments[0] is Array[ActionFlags])
+				var flags_required: Array[ActionFlags] = action.repetition_arguments[0]
+				for flag: ActionFlags in flags_required:
+					if not arguments[0].has(flag):
+						valid = false
+						break
+			_:
+				## If the condition does not require parameters, pass
+				pass
+			
+		if not valid:
+			continue
+		
+		## Get the target cells
+		var target_cells: Array[Vector3i]
+		
+		## If it is set to track entities, target their current cells
+		if RepetitionActionFlags.TRACK_ENTITIES in action.repetition_flags:
+			var entities_tracked: Array[Entity3D] = get_repeating_action_meta(action, RepetitionMetaKeys.TRACKED_ENTITIES, [])
+			for entity: Entity3D in entities_tracked:
+				var other_move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
+				target_cells.append(other_move_comp.get_position_in_board())
+		
+		## If still empty, target the cell that the user is standing on
+		if target_cells.is_empty():
+			var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
+			target_cells = [move_comp.get_position_in_board()]
+		
+		## Set the action to execute
+		add_action_to_stack(action, target_cells)
+		
+		## Update repeats left
+		var repeats_left: int = get_repeating_action_meta(action, RepetitionMetaKeys.REPEATS_LEFT, 0)
+		repeats_left -= 1
+		set_repeating_action_meta(action, RepetitionMetaKeys.REPEATS_LEFT, repeats_left)
+		
+		## If below 1, remove it.
+		if repeats_left < 1:
+			remove_repeating_action_from_array(action)
+
+
+func set_repeating_action_meta(action: ComponentActionResource, key: RepetitionMetaKeys, value):
+	if not action_repeating_meta_dict.has(action):
+		push_warning("Cannot set meta for action, it is not present as repeating in this component")
+	assert(action_repeating_meta_dict.get(action, null) is Dictionary)
+	
+	action_repeating_meta_dict[action][key] = value
+	
+	
+func get_repeating_action_meta(action: ComponentActionResource, key: RepetitionMetaKeys, default = null) -> Variant:
+	return action_repeating_meta_dict.get(action, {}).get(key, default)
+
+
 func add_action_to_stack(action: ComponentActionResource, target_cells: Array[Vector3i]):
 	var stack_comp: ComponentStack = get_entity().get_component(ComponentStack.COMPONENT_NAME)
 	var stack_obj := ComponentStack.StackObject.new()
@@ -131,6 +241,10 @@ func add_action_to_stack(action: ComponentActionResource, target_cells: Array[Ve
 func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 	var action_meta: Dictionary
 	
+	## If it must repeat, set it now.
+	if action.repetition_count > 0:
+		add_repeating_action_to_array(action)
+	
 	## Get components
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
 	var status_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
@@ -140,6 +254,14 @@ func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 	## Select the cell to execute the effects on
 	for cell: Vector3i in target_cells:	
 		var entity_here: Entity3D = move_comp.get_entity_at_position_in_board(cell)
+		
+		## If it must wait until the repetition to do anything, end now after getting the target.
+		if RepetitionActionFlags.NO_INITIAL_ACTIVATION in action.flags_action:
+			if entity_here:
+				var tracked_entities: Array[Entity3D] = get_repeating_action_meta(action, RepetitionMetaKeys.TRACKED_ENTITIES, [])
+				tracked_entities.append(entity_here)
+				set_repeating_action_meta(action, RepetitionMetaKeys.TRACKED_ENTITIES, tracked_entities)
+			continue
 		
 		## Execute the effect
 		for effect: ComponentActionResourceEffect in action.effects:
@@ -262,24 +384,6 @@ func is_entity_hit_by_action(entity: Entity3D, action: ComponentActionResource) 
 	return true
 
 
-func repeat_actions(condition_triggered: RepetitionConditions):
-	## Check which fulfill the condition.
-	for action: ComponentActionResource in action_repeating_meta_dict.keys():
-		
-		## Skip those that do not trigger under this condition
-		if not condition_triggered in action.repetition_conditions:
-			continue
-		
-		## Make a second check for conditions that need arguments
-		match condition_triggered:
-			RepetitionConditions.TIME_PASSED:
-				var time_required
-			_:
-				pass
-		
-		
-
-
 static func get_action_resource_by_identifier(identifier: String) -> ComponentActionResource:
 	if action_resource_cache_dict.is_empty():
 		ComponentAction.cache_all_resources()
@@ -291,3 +395,5 @@ static func get_action_resource_by_identifier(identifier: String) -> ComponentAc
 		push_error("Could not find cached resource with identifier '{0}'.".format([identifier]))
 	
 	return capability_res.duplicate(true)
+
+

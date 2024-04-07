@@ -62,6 +62,8 @@ func execute_stack():
 	for obj: StackObject in call_stack_arr:
 		obj.function.call()
 		await get_tree().create_timer(obj.delay).timeout
+		
+	call_stack_arr.clear()
 
 
 class StackObject extends RefCounted:

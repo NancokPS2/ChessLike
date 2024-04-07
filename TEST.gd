@@ -74,14 +74,25 @@ func entity_test():
 	inter_comp.set_entity_on_interface_node(new_entity, $ComponentInterfaceScene)
 	
 	## Action
+	#TODO: Properly test repetition actions
+	var action_comp: ComponentAction = new_entity.get_component(ComponentAction.COMPONENT_NAME)
+	var stack_comp: ComponentStack = new_entity.get_component(ComponentStack.COMPONENT_NAME)
 	var pos_in_board: Vector3i = move_comp.get_position_in_board()
 	move_comp.set_position_in_board(move_comp.get_position_in_board())
-	var action_comp: ComponentAction = new_entity.get_component(ComponentAction.COMPONENT_NAME)
 	var heal_resource: ComponentActionResource = ComponentAction.get_action_resource_by_identifier("HEAL")
+	var dot_resource: ComponentActionResource = ComponentAction.get_action_resource_by_identifier("DOT")
 	action_comp.add_action_to_stack(heal_resource, [move_comp.get_position_in_board()])
+	action_comp.add_action_to_stack(dot_resource, [move_comp.get_position_in_board()])
+	action_comp.parse_repeating_actions(ComponentAction.RepetitionConditions.TURN_ENDED)
+	
+	print(stack_comp.call_stack_arr)
+	stack_comp.execute_stack()
 	print("A")
 
-	
+	## Turn
+	var turn_comp: ComponentTurn = new_entity.get_component(ComponentTurn.COMPONENT_NAME)
+	turn_comp.end_turn()
+	stack_comp.execute_stack()
 
 #func _process(delta: float):
 	#var ray_params := PhysicsRayQueryParameters3D.create($Camera3D.global_position, $Camera3D.project_ray_normal(get_viewport().get_mouse_position()) * 1000)
