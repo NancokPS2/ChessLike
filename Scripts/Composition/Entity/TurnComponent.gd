@@ -32,10 +32,10 @@ func get_base_delay() -> int:
 	return output
 		
 	
-func get_current_turn_taker() -> ComponentTurn:
+static func get_current_turn_taker() -> ComponentTurn:
 	ComponentTurn.sort_by_delay()
-	assert(turn_component_array.size() < 2 or turn_component_array.front().delay_current < turn_component_array.back().delay_current)
-	return turn_component_array.front()
+	assert(ComponentTurn.turn_component_array.size() < 2 or ComponentTurn.turn_component_array.front().delay_current < turn_component_array.back().delay_current)
+	return ComponentTurn.turn_component_array.front()
 	
 		
 func end_turn():

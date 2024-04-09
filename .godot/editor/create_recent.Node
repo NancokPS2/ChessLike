@@ -1,3 +1,5 @@
+HBoxContainer
+ScrollContainer
 Node2D
 TileMap
 Sprite2D
@@ -11,5 +13,3 @@ DirectionalLight3D
 WorldEnvironment
 Camera3D
 TurnSystemUser
-Button
-VBoxContainer

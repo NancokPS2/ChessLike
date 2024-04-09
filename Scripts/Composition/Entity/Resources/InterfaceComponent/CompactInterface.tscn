@@ -1,20 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://ur17y6aqntt1"]
+[gd_scene load_steps=3 format=3 uid="uid://ur17y6aqntt1"]
 
 [ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd" id="1_nnsti"]
 
-[node name="ComponentInterfaceScene" type="Node2D" node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvo3s"]
+
+[node name="ComponentInterfaceScene" type="Node2D" node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text", "node_turn_cont")]
 script = ExtResource("1_nnsti")
 identifier = "COMPACT"
 node_health_bar = NodePath("CanvasLayer/Control/VBoxContainer/Health")
 node_energy_bar = NodePath("CanvasLayer/Control/VBoxContainer/Energy")
 node_name_text = NodePath("CanvasLayer/Control/VBoxContainer/Name")
+node_turn_cont = NodePath("CanvasLayer/ScrollContainer/HBoxContainer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Control" type="ScrollContainer" parent="CanvasLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -25,6 +28,7 @@ size_flags_vertical = 3
 
 [node name="Name" type="Label" parent="CanvasLayer/Control/VBoxContainer"]
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_wvo3s")
 text = "Character"
 
 [node name="Health" type="ProgressBar" parent="CanvasLayer/Control/VBoxContainer"]
@@ -33,3 +37,17 @@ size_flags_vertical = 1
 
 [node name="Energy" type="ProgressBar" parent="CanvasLayer/Control/VBoxContainer"]
 layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
