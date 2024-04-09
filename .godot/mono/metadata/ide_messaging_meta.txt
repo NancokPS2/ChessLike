@@ -1,2 +1,0 @@
-﻿52625
-H:/Programs/Godot 3.5/Godot_v4.2.1-stable_mono_win64.exe

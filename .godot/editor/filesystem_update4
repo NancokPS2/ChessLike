@@ -5,3 +5,4 @@ res://Scripts/Composition/Entity/TurnComponent.gd
 res://Assets/Meshes/Characters/Human.tscn
 res://Assets/UI/ProWindows.tres
 res://Assets/MainTheme.tres
+res://Scripts/Composition/Entity/InterfaceComponent.gd
