@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1712663272
+::res://::1712778671
 DefaultEnviroment.tres::Environment::5190104091342360664::1711574987::0::1::::<><>::
 icon.png::CompressedTexture2D::901346440923877254::1657319076::1677002256::1::::<><>::
 Lore.txt::TextFile::-1::1687887852::0::1::::<><>::
@@ -138,7 +138,7 @@ task.tscn::PackedScene::5508831843714498441::1711744382::0::1::::<><>::res://add
 Locale.csv::::-1::1657319080::1676997822::1::::<><>::
 Locale.en.translation::OptimizedTranslation::4130768966193307502::1676997822::0::1::::<><>::
 Locale.es.translation::OptimizedTranslation::5531880091234641961::1676997822::0::1::::<><>::
-MainTheme.tres::Theme::3436007899935120251::1712690752::0::1::::<><>::uid://dd5ivrvqgo8ox::::res://Assets/UI/SideUIBackground2.png<>uid://cwb461srw6sau::::res://Assets/UI/GenericUIBackground2.png<>uid://bskeod7cpbu4v::::res://Assets/UI/ButtonUI.png<>uid://8nx6lt8e35fw::::res://Assets/UI/ButtonUIPressed.png<>uid://c3fy3j0oyfv4u::::res://Assets/UI/ProWindows.tres
+MainTheme.tres::Theme::7484069311421439275::1712779931::0::1::::<><>::uid://c3fy3j0oyfv4u::::res://Assets/UI/ProWindows.tres<>uid://crlwpqky42vcw::::res://Assets/Themes/BlueBackgroundTextured.tres<>uid://8nx6lt8e35fw::::res://Assets/UI/ButtonUIPressed.png
 ::res://Assets/Items/::1710556003
 ::res://Assets/Meshes/::1710556005
 ::res://Assets/Meshes/Armor/::1711744400
@@ -325,7 +325,7 @@ SmallUnitDisplay.tscn::PackedScene::5756533068632041242::1711744387::0::1::::<><
 StatDecoratedList.tscn::PackedScene::837340531828070293::1711744387::0::1::::<><>::res://Scripts/SelfContained/Interface/DecoratedList.gd
 UnitDisplay.gd::GDScript::-1::1691689139::0::1::::UnitDisplay<>Panel<>::
 ::res://Scripts/::1711836743
-::res://Scripts/Composition/::1712006530
+::res://Scripts/Composition/::1712691689
 ::res://Scripts/Composition/AbilitySystem/::1711573486
 AbilitySystem.gd::GDScript::-1::1696859540::0::1::::AbilitySystem<>Node<>::
 EffectResourceAbilitySystem.gd::GDScript::-1::1711573486::0::1::::AbilityEffectTEMP<>Resource<>::
@@ -337,7 +337,7 @@ DisplayComponent.gd::GDScript::-1::1711901575::0::1::::ComponentDisplay<>Node3D<
 Entity.gd::GDScript::-1::1712362948::0::1::::Entity3D<>Node3D<>::
 FactionComponent.gd::GDScript::-1::1711680269::0::1::::ComponentFaction<>Node<>::
 InputComponent.gd::GDScript::-1::1711902509::0::1::::ComponentInput<>Node<>::
-InterfaceComponent.gd::GDScript::-1::1712690684::0::1::::ComponentInterfaceScene<>Node2D<>::
+InterfaceComponent.gd::GDScript::-1::1712691759::0::1::::ComponentInterface<>Node2D<>::
 InventoryComponent.gd::GDScript::-1::1711776013::0::1::::ComponentInventory<>Node<>::
 LoreComponent.gd::GDScript::-1::1712180893::0::1::::ComponentLore<>Node<>::
 MovementComponent.gd::GDScript::-1::1712364426::0::1::::ComponentMovement<>Node3D<>::
@@ -361,14 +361,12 @@ CapabilityComponentResource.gd::GDScript::-1::1711845523::0::1::::ComponentCapab
 Class_None.tres::Resource/Resource::2990198106558934753::1711747967::0::1::::<><>::res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd
 Race_Human.tres::Resource/Resource::7141648382368365021::1711749554::0::1::::<><>::res://Scripts/Composition/Entity/Resources/CapabilityComponent/CapabilityComponentResource.gd
 ::res://Scripts/Composition/Entity/Resources/Entity/::1711896295
-::res://Scripts/Composition/Entity/Resources/InterfaceComponent/::1712690813
-CombatInterface.tscn::PackedScene::-1::1712690748::0::1::::<><>::
-CompactInterface.tscn::PackedScene::1440508390267803924::1712690684::0::1::::<><>::res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
-ComponentInterfaceScene.gd::GDScript::-1::1712663272::0::1::::ComponentInterfaceScene<>Node2D<>::
+::res://Scripts/Composition/Entity/Resources/InterfaceComponent/::1712779594
+CombatInterface.tscn::PackedScene::1440508390267803924::1712779594::0::1::::<><>::res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd<>uid://devlr7rlv5v8v::::res://Assets/MainTheme.tres
+CompactInterface.tscn::PackedScene::1440508390267803924::1712778742::0::1::::<><>::res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
+ComponentInterfaceScene.gd::GDScript::-1::1712778743::0::1::::ComponentInterfaceScene<>Node2D<>::
 ::res://Scripts/Composition/Entity/Resources/PassiveComponent/::1712363521
 PassiveComponentResource.gd::GDScript::-1::1712363521::0::1::::ComponentPassiveResource<>Resource<>::
-::res://Scripts/Composition/Resources/::1712006530
-::res://Scripts/Composition/Resources/ActionComponent/::1712006530
 ::res://Scripts/SelfContained/::1712007688
 ActionRemapper.gd::GDScript::-1::1682605767::0::1::::<>Node<>::
 AudioController.gd::GDScript::-1::1681429182::0::1::::AudioController<>AudioStreamPlayer<>::

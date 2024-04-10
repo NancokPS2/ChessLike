@@ -1,3 +1,4 @@
+res://Assets
 res://Scripts/Composition/Entity/Resources/ActionComponent
 res://Scripts/Composition/Entity/Resources/ActionComponent/Effects
 res://Singletons/Board/Map
@@ -13,6 +14,5 @@ res://Assets/Meshes/Map/MeshLibs
 res://Assets/Meshes/Map
 res://Other/Shaders
 res://Assets/UI/ThemeElements
-res://Assets
 H:/Programs/Blender
 res://
