@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd" id="1_mwha3"]
 [ext_resource type="Theme" uid="uid://devlr7rlv5v8v" path="res://Assets/MainTheme.tres" id="2_h0cg8"]
 
-
 [node name="ComponentInterfaceScene" type="Node2D" node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text", "node_turn_cont", "node_call_stack_list")]
 script = ExtResource("1_mwha3")
 identifier = "COMBAT_FULL"

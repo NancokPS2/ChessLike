@@ -1,7 +1,6 @@
 [gd_resource type="Theme" load_steps=16 format=3 uid="uid://devlr7rlv5v8v"]
 
 [ext_resource type="FontFile" uid="uid://c3fy3j0oyfv4u" path="res://Assets/UI/ProWindows.tres" id="1_4jib0"]
-[ext_resource type="StyleBox" uid="uid://crlwpqky42vcw" path="res://Assets/Themes/BlueBackgroundTextured.tres" id="2_8epce"]
 [ext_resource type="Texture2D" uid="uid://8nx6lt8e35fw" path="res://Assets/UI/ButtonUIPressed.png" id="3_imfod"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66tty"]
@@ -66,6 +65,8 @@ corner_radius_top_right = 42
 corner_radius_bottom_right = 8
 expand_margin_top = 10.0
 expand_margin_right = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r8pe4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxgjf"]
 bg_color = Color(1, 1, 1, 1)
@@ -133,7 +134,7 @@ LabelUnderlined/styles/normal = SubResource("StyleBoxEmpty_85ahs")
 PanelQuickStatus/base_type = &"Panel"
 PanelQuickStatus/styles/panel = SubResource("StyleBoxFlat_j5rqi")
 PanelQuickTextured/base_type = &"Panel"
-PanelQuickTextured/styles/panel = ExtResource("2_8epce")
+PanelQuickTextured/styles/panel = SubResource("StyleBoxTexture_r8pe4")
 ProgressBar/font_sizes/font_size = 12
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_dxgjf")
 ProgressBarEnergy/base_type = &"ProgressBar"

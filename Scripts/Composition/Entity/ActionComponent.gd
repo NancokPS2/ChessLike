@@ -48,11 +48,12 @@ enum ActionFlags {
 enum RepetitionActionFlags {
 	NO_INITIAL_ACTIVATION, #This won't activate on use, instead, it will activate when its repetition condition triggers, if it has no repetitions set, it is set to 1
 	TRACK_ENTITIES, #Any entities deemed valid at the time of activation will keep being targeted on each repetition by targeting their cells	
+	TARGET_CULPRIT,
 }
 ## When the condition is fulfilled, the action will perform its effect again.
 enum RepetitionConditions {
 	TIME_PASSED,# Turn ticks: int
-	TURN_ENDED,# No parameters
+	TURN_ENDED,# Turn Component: ComponentTurn
 	SUFFERED_DAMAGE,# Minimum damage: int
 	TARGETED_BY_ACTION,# Flags required: Array[ComponentAction.ActionFlags]
 	ACTION_USED,# Flags required: Array[ComponentAction.ActionFlags]
@@ -114,6 +115,8 @@ func _ready() -> void:
 
 func get_entity() -> Entity3D:
 	return get_parent()
+	
+	Event.ENTITY_COMPONENT_ACTION_QUEUED.connect(on_action_queued)
 
 
 static func cache_all_resources():
@@ -128,8 +131,17 @@ static func cache_all_resources():
 				action_resource_cache_dict[res.identifier] = res
 
 
-
-
+func create_log_for_action_and_effect(action: ComponentActionResource, effect: ComponentActionResourceEffect) -> ComponentActionEffectLog:
+	var new_log := ComponentActionEffectLog.new()
+	new_log.entity_source = get_entity()
+	new_log.action = action
+	new_log.effect = effect
+	var index: int = 0
+	for parameter_key: Params in Params:
+		new_log.set_effect_parameter(parameter_key, effect.parameters[index])
+		index += 1
+		
+	return new_log
 
 func add_repeating_action_to_array(action: ComponentActionResource):
 	if action.repetition_count < 1:
@@ -143,6 +155,7 @@ func remove_repeating_action_from_array(action: ComponentActionResource):
 	var success: bool = action_repeating_meta_dict.erase(action)
 	if not success:
 		push_warning("Could not find this action in the repeating array.")
+
 
 ## Whenever a repetition condition is triggered, check if any of the repeating actions would be triggered
 func parse_repeating_actions(condition_triggered: RepetitionConditions, arguments: Array = []):
@@ -235,6 +248,11 @@ func add_action_to_stack(action: ComponentActionResource, target_cells: Array[Ve
 	stack_obj.set_metadata("action", action)
 	stack_obj.set_metadata("target_cells", target_cells)
 	ComponentStack.add_to_stack(stack_obj)
+	Event.ENTITY_COMPONENT_ACTION_QUEUED.emit(get_entity(), target_cells,action)
+
+
+func insert_action_in_stack_before():
+	pass
 
 
 ## TODO
@@ -248,8 +266,6 @@ func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 	## Get components
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
 	var status_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
-	
-	Event.ENTITY_COMPONENT_ACTION_TARGETED_CELL.emit(get_entity(), target_cells, action)
 	
 	## Select the cell to execute the effects on
 	for cell: Vector3i in target_cells:	
@@ -305,7 +321,6 @@ func use_action(action: ComponentActionResource, target_cells: Array[Vector3i]):
 		"Used action {0} in cells {1}."
 		.format([action.identifier, str(target_cells)])
 		)
-	Event.ENTITY_COMPONENT_ACTION_USED_ON_CELL.emit(get_entity(), target_cells, action)
 
 
 func get_action_duration() -> float:
@@ -397,3 +412,11 @@ static func get_action_resource_by_identifier(identifier: String) -> ComponentAc
 	return capability_res.duplicate(true)
 
 
+func on_action_queued(culprit: Entity3D, cells: Array[Vector3i], action: ComponentActionResource):
+	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
+	var own_cell: Vector3i = move_comp.get_position_in_board()
+	
+	if own_cell in cells:
+		parse_repeating_actions(RepetitionConditions.TARGETED_BY_ACTION, action.flags_action)
+	else:
+		parse_repeating_actions(RepetitionConditions.ACTION_USED, action.flags_action)

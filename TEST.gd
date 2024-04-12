@@ -71,11 +71,14 @@ func entity_test():
 	
 	## Interface
 	var inter_comp: ComponentInterface = new_entity.get_component(ComponentInterface.COMPONENT_NAME)
-	inter_comp.set_entity_on_interface_node(new_entity, $ComponentInterfaceScene)
+	var inter_node: ComponentInterfaceScene = $ComponentInterfaceScene
+	assert(inter_node is ComponentInterfaceScene)
+	inter_comp.set_entity_on_interface_node(new_entity, inter_node)
 	
 	## Action
 	#TODO: Properly test repetition actions
 	var action_comp: ComponentAction = new_entity.get_component(ComponentAction.COMPONENT_NAME)
+	
 	var stack_comp: ComponentStack = new_entity.get_component(ComponentStack.COMPONENT_NAME)
 	var pos_in_board: Vector3i = move_comp.get_position_in_board()
 	move_comp.set_position_in_board(move_comp.get_position_in_board())
@@ -84,6 +87,9 @@ func entity_test():
 	action_comp.add_action_to_stack(heal_resource, [move_comp.get_position_in_board()])
 	action_comp.add_action_to_stack(dot_resource, [move_comp.get_position_in_board()])
 	action_comp.parse_repeating_actions(ComponentAction.RepetitionConditions.TURN_ENDED)
+	
+	var new_log: ComponentActionEffectLog = action_comp.create_log_for_action_and_effect(heal_resource, heal_resource.effects[0])
+	print(new_log)
 	
 	print(stack_comp.call_stack_arr)
 	stack_comp.execute_stack()

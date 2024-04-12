@@ -1,5 +1,8 @@
-res://Scripts/Composition/Entity/Resources/InterfaceComponent/CompactInterface.tscn
-res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
 res://Scripts/Composition/Entity/Resources/InterfaceComponent/CombatInterface.tscn
 res://Assets/UI/ProWindows.tres
 res://Assets/MainTheme.tres
+res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
+res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentLog.gd
+res://Scripts/Composition/Entity/ActionComponent.gd
+res://TEST.tscn
+res://TEST.gd
