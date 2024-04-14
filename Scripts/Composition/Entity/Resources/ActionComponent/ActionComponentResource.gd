@@ -1,9 +1,12 @@
 extends Resource
 class_name ComponentActionResource
 
-@export var identifier: String 
 
+
+@export var identifier: String 
 @export var effects: Array[ComponentActionResourceEffect]
+
+@export var turn_cost_type: ComponentAction.ActionCostType
 
 @export var flags_action: Array[ComponentAction.ActionFlags]
 @export var flags_targeting: Array[ComponentAction.TargetingFlags]
@@ -20,6 +23,8 @@ class_name ComponentActionResource
 @export var shape_targeting_size: int = 1
 @export var shape_hit: ComponentAction.TargetingShape
 @export var shape_hit_size: int = 1
+
+
 
 func _to_string() -> String:
 	return (

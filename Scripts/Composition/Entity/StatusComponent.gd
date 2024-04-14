@@ -14,6 +14,7 @@ enum StatKeys {
 	DODGE,
 	ACCURACY,
 	TURN_DELAY_BASE,
+	ACTION_POINTS,
 	}
 	
 const MeterKeys: Dictionary = {

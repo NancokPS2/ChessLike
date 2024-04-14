@@ -26,10 +26,14 @@ const Colors := {
 
 @export var node_stat_list: VBoxContainer
 
+@export var node_action_list: ItemList
+
 @export var node_turn_cont: HBoxContainer
 @export var node_call_stack_list: ItemList
 
 var active_nodes: Array[StringName]
+
+var enable_autoupdate_dict: Dictionary
 
 var auto_update_entity: Entity3D
 
@@ -49,6 +53,10 @@ func set_auto_update_target(entity: Entity3D):
 	else:
 		if timer_reference:
 			timer_reference.queue_free()
+		
+		
+func set_autoupdate_for_node(prop_name: StringName, enable: bool):
+	enable_autoupdate_dict[prop_name] = enable
 		
 		
 ## Creates an array with paths to specific properties, the ones which actually have something
@@ -76,6 +84,9 @@ func update_interface(entity: Entity3D = auto_update_entity):
 	var status_comp: ComponentStatus = entity.get_component(ComponentStatus.COMPONENT_NAME)
 	var lore_comp: ComponentLore = entity.get_component(ComponentLore.COMPONENT_NAME)
 	for node_prop: StringName in active_nodes:
+		
+		if not enable_autoupdate_dict.get(node_prop, true):
+			continue
 		
 		var node: CanvasItem = get(node_prop)
 		
@@ -157,6 +168,16 @@ func update_interface(entity: Entity3D = auto_update_entity):
 				for stack_obj: ComponentStack.StackObject in ComponentStack.call_stack_arr:
 					node.add_item(str(stack_obj.function))
 					index += 1
+			
+			&"node_action_list":
+				const ENTITY_ID_KEY: StringName = &"ENTITY_ID"
+				const ACTION_LIST_KEY: StringName = &"ACTION_LIST"
+				node.set_meta(ENTITY_ID_KEY, entity.get_instance_id())
+				
+				var action_comp: ComponentAction = entity.get_component(ComponentAction.COMPONENT_NAME)
+				var actions_available: Array[ComponentActionResource] = action_comp.get_actions_available(ComponentAction.ActionCategories.ALL)
+				#TODO
+				
 			
 			&"node_stat_list":
 				for child: Node in node.get_children():

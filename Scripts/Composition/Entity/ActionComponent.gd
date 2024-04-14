@@ -1,9 +1,16 @@
 extends Node3D
 class_name ComponentAction
 
-## ENT: Affects entities
-## CELL: Affects cells
+enum ActionCategories {
+	UNKNOWN, ALL, MAIN, MOVEMENT, ITEM
+}
 
+enum ActionCostType {
+	SINGLE, #A single action point
+	FULL, #All available action points
+	BONUS, #Bonus action, one per turn
+	BOTH, #SINGLE and BONUS
+}
 
 ## Affects how others react to this action
 enum ActionFlags { 
@@ -74,11 +81,20 @@ static var action_resource_cache_dict: Dictionary
 
 static var action_log_queue_arr: Array[ComponentActionEffectLog]
 
+var action_available_arr: Array[ComponentActionResource]
+
+var action_source_dict: Dictionary
+
 ## Stores temporary data like turns passed of actions that are repeating
 var action_repeating_arr: Array[ComponentActionEffectLog]
 
+var points_left: int = 1
+var points_bonus_left: int = 1
+
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
+	
+	update_actions_available(ActionCategories.ALL)
 
 
 func get_entity() -> Entity3D:
@@ -119,6 +135,7 @@ func repeating_action_add(action_log: ComponentActionEffectLog):
 		return 
 		
 	action_repeating_arr.append(action_log)
+	action_log.repeating = true
 
 
 func repeating_action_remove(action_log: ComponentActionEffectLog):
@@ -129,6 +146,8 @@ func repeating_action_remove(action_log: ComponentActionEffectLog):
 func repeating_action_parse_all(condition_triggered: RepetitionConditions, arguments: Array = []):
 	## Check every action.
 	for action_log: ComponentActionEffectLog in action_repeating_arr:
+		assert(action_log.repeating)
+		assert(action_log.repetitions_left > 0)
 		var action: ComponentActionResource = action_log.action
 		var effect: ComponentActionResourceEffect = action_log.effect
 		
@@ -264,6 +283,38 @@ func action_log_execute(action_log: ComponentActionEffectLog):
 func get_action_duration() -> float:
 	return 1.5
 
+func update_actions_available(category: ActionCategories):
+	action_available_arr.clear()
+	
+	var capa_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
+	for capa_resource: ComponentCapabilityResource in capa_comp.get_current_capability_resources(-1):
+		for action_ident: StringName in capa_resource.action_identifier_arr:
+			var action_res: ComponentActionResource = get_action_resource_by_identifier(action_ident)
+			if action_res:
+				action_available_arr.append(action_res)
+				action_source_dict[action_res] = ActionCategories.MAIN
+	
+	
+func get_actions_available(category: ActionCategories) -> Array[ComponentActionResource]:
+	var output: Array[ComponentActionResource]
+	
+	for action: ComponentActionResource in action_available_arr:
+		var action_category: ActionCategories = get_action_category(action)
+		if action_category == category or action_category == ActionCategories.ALL:
+			output.append(action)
+			
+	return action_available_arr
+
+
+func get_action_category(action_res: ComponentActionResource) -> ActionCategories:
+	assert(action_res in action_available_arr, "This action is not from this component.")
+	var category: ActionCategories = action_source_dict.get(action_res, ActionCategories.UNKNOWN)
+	
+	if category == ActionCategories.ALL:
+		push_error("Invalid category ALL.")
+		
+	return category
+
 
 ## The cells that can be chosen as the target location for the action TODO
 func get_targetable_cells_for_action(action: ComponentActionResource) -> Array[Vector3i]:
@@ -386,10 +437,16 @@ func on_turn_time_passed(time: float):
 func on_turn_started(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
 		repeating_action_parse_all(RepetitionConditions.SELF_TURN_STARTED)
+		
+		var stat_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
+		points_left = stat_comp.get_stat(ComponentStatus.StatKeys.ACTION_POINTS)
+		points_bonus_left = 1
 
 
 ## Does not require passing arguments, it is a given that the component is from self
 func on_turn_ended(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
 		repeating_action_parse_all(RepetitionConditions.SELF_TURN_ENDED)
+		points_left = 0
+		points_bonus_left = 0
 

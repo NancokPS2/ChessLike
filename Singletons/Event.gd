@@ -35,3 +35,4 @@ signal ENTITY_ACTION_QUEUED_LOG(log_queued: ComponentActionEffectLog)
 
 ## Stack
 signal ENTITY_STACK_ADDED(stack_object: ComponentStack.StackObject)
+signal ENTITY_STACK_EXECUTING(stack_arr: Array[ComponentStack.StackObject])

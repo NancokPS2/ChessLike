@@ -7,7 +7,7 @@ class_name ComponentCapabilityResource
 
 @export_category("Contents")
 @export var movement_type: ComponentMovement.Types = ComponentMovement.Types.UNDEFINED
-@export var ability_identifier_arr: Array[String]
+@export var action_identifier_arr: Array[StringName]
 @export var stat_bonuses: Array[int] = [
 	100,#HEALTH
 	100,#ENERGY

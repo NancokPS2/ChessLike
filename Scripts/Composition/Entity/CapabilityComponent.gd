@@ -80,12 +80,12 @@ static func get_capability_resource_by_identifier(identifier: String) -> Compone
 	return capability_res.duplicate(true)
 
 	
-func get_current_capability_resources(type: Types) -> Array[ComponentCapabilityResource]:
+func get_current_capability_resources(type: Types = -1) -> Array[ComponentCapabilityResource]:
 	var output: Array[ComponentCapabilityResource] = []
 	
 	for res_ident: String in capability_current_res_arr:
 		var res: ComponentCapabilityResource = ComponentCapability.get_capability_resource_by_identifier(res_ident)
-		if res.type == type:
+		if type == -1 or res.type == type:
 			output.append(res)
 	
 	return output

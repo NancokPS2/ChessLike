@@ -60,6 +60,7 @@ static func get_object_index(stack_obj: StackObject) -> int:
 	return output
 
 func execute_stack():
+	Event.ENTITY_STACK_EXECUTING.emit(call_stack_arr)
 	for obj: StackObject in call_stack_arr:
 		obj.function.call()
 		await get_tree().create_timer(obj.delay).timeout
