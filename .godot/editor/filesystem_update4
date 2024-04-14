@@ -1,8 +1,12 @@
-res://Scripts/Composition/Entity/Resources/InterfaceComponent/CombatInterface.tscn
+res://Assets/Meshes/Characters/Human.tscn
 res://Assets/UI/ProWindows.tres
 res://Assets/MainTheme.tres
-res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd
-res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentLog.gd
-res://Scripts/Composition/Entity/ActionComponent.gd
 res://TEST.tscn
-res://TEST.gd
+res://Scripts/Composition/Entity/Resources/InterfaceComponent/CompactInterface.tscn
+res://Scenes/UI/CombatMenu.tscn
+res://Scripts/Composition/Entity/Resources/InterfaceComponent/CombatInterface.tscn
+res://Scripts/Composition/Entity/ActionComponent.gd
+res://Scripts/Composition/Entity/StackComponent.gd
+res://Singletons/Event.gd
+res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResource.gd
+res://Scripts/Composition/Entity/Entity.gd

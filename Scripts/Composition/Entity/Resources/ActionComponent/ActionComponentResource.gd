@@ -14,6 +14,7 @@ class_name ComponentActionResource
 @export var repetition_arguments: Array
 @export var repetition_flags: Array[ComponentAction.RepetitionActionFlags]
 @export var repetition_count: int
+@export var repetition_consumption_conditions: Array[ComponentAction.RepetitionConditions]
 
 @export var shape_targeting: ComponentAction.TargetingShape
 @export var shape_targeting_size: int = 1

@@ -31,43 +31,23 @@
 				"9aed25f8-1d33-4f78-83a4-681d21305af8",
 				"82b6fb9c-a506-4298-9050-942fa082ebee",
 				"495b31d5-5503-4699-aa1c-547b19a86797",
-				"ca6df8ea-ce34-4461-a01b-42bf740a04fe",
-				"05473ce8-a1d9-4875-9a75-3fdf228c9eda",
-				"2c1016ad-794c-47bf-b110-f1692e9089d0",
 				"88468731-34f4-404d-a4f5-8e22a5575797",
-				"6e676e76-8542-4f11-a1df-0e4db48b4dd9",
 				"4014a556-8df9-4619-a6dc-6e42ab40349d",
-				"0df395d1-0698-4a7a-9cde-b341dbcb8012",
-				"227b4313-8713-4727-aaf3-add0d1591e04"
+				"d883b5a5-7a0d-4a74-9d7e-5e75bf702450",
+				"766f5060-ae66-481d-a619-5fe2e7328064"
 			]
 		},
 		{
 			"uuid": "1a8817bd-b633-40fb-a1ab-ef22e6807416",
 			"title": "Doing",
-			"tasks": []
+			"tasks": [
+				"e3e79738-1c1f-4e38-856c-c5463e9584fb"
+			]
 		},
 		{
 			"uuid": "767a0377-3fec-4095-b12d-5f3b2dd01950",
 			"title": "Done",
-			"tasks": [
-				"f175b1c7-c8b4-4f19-bf6d-33fb7b4c7729",
-				"1a53a9ca-d8c6-4076-97dc-f431875f8117",
-				"b1e70aec-7ac0-4a60-9a58-871987e6fc09",
-				"c749ac75-0609-4f0b-8789-b316af3c669c",
-				"b9beecf1-6984-41c3-910f-348403fd44f7",
-				"7c0db9ce-7f95-445c-a6c6-81b03ca0150e",
-				"79ffafe9-5d0b-4c69-8bc7-dd9c4f3b3f00",
-				"1f174209-2aa6-425f-b084-d4c95da56ecb",
-				"b8d09236-4cf5-421f-a103-daf8f1dddb3a",
-				"c6bf7401-54c8-4990-bab0-9d1f9048488d",
-				"4b53434b-0a3a-4085-a7a4-3f1db61552a0",
-				"7e45f576-bc71-4127-b138-d1f3d1ae5bd4",
-				"d403289c-a153-4f5e-80c1-788e24abac6e",
-				"fe080d80-d6d4-4f8c-9474-a7cfd9e5135a",
-				"201ff29c-b973-4ac5-b83f-326a4e0e96f3",
-				"67a6fda2-f267-41ac-8393-ac3fd53509eb",
-				"4e0f340a-98f2-47ae-9cd7-95b143e71614"
-			]
+			"tasks": []
 		}
 	],
 	"tasks": [
@@ -86,27 +66,6 @@
 			"steps": []
 		},
 		{
-			"uuid": "79ffafe9-5d0b-4c69-8bc7-dd9c4f3b3f00",
-			"title": "Finish use_ability() on RPGCharacter Class",
-			"description": "Progress is stuck at UI",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "c6bf7401-54c8-4990-bab0-9d1f9048488d",
-			"title": "$UI/ActionsMenu.ButtonAction class needs a way to pass it's ability",
-			"description": "When pressed it should switch $Main to targeting_mode and activate the stored Ability and use it on whatever is the target.",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "f175b1c7-c8b4-4f19-bf6d-33fb7b4c7729",
-			"title": "Unit Movement seems to move an orphaned node",
-			"description": "",
-			"category": "a2f6d5df-62a5-433a-9e47-49b092047a51",
-			"steps": []
-		},
-		{
 			"uuid": "9aed25f8-1d33-4f78-83a4-681d21305af8",
 			"title": "Ability Parameters",
 			"description": ">CHOOSE_WEAPON(\"weaponUsed\"): Let's the player choose a weapon from the Control element",
@@ -121,23 +80,9 @@
 			"steps": []
 		},
 		{
-			"uuid": "b1e70aec-7ac0-4a60-9a58-871987e6fc09",
-			"title": "equip_item is not working",
-			"description": "",
-			"category": "a2f6d5df-62a5-433a-9e47-49b092047a51",
-			"steps": []
-		},
-		{
 			"uuid": "495b31d5-5503-4699-aa1c-547b19a86797",
 			"title": "Create map objects which can be targeted",
-			"description": "Objects could go in the UNITs layer",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "1a53a9ca-d8c6-4076-97dc-f431875f8117",
-			"title": "Get the combat scene to load the current save file",
-			"description": "Main.gd:12",
+			"description": "Entity3D that has less components than a character",
 			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
 			"steps": []
 		},
@@ -149,111 +94,6 @@
 			"steps": []
 		},
 		{
-			"uuid": "7e45f576-bc71-4127-b138-d1f3d1ae5bd4",
-			"title": "unhandled_input is not firing",
-			"description": "An visible=0 part of the UI was in the way",
-			"category": "a2f6d5df-62a5-433a-9e47-49b092047a51",
-			"steps": []
-		},
-		{
-			"uuid": "b9beecf1-6984-41c3-910f-348403fd44f7",
-			"title": "$ActingMenu should deactivate buttons that cannot be used",
-			"description": "Buttons already change states which are handled by $Main, however they should not be usable in some cases, like when the Unit is out of moves",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "d403289c-a153-4f5e-80c1-788e24abac6e",
-			"title": "Finish unit load system. Must keep a prepped node of each unit ready to add to scene.",
-			"description": "Units from the map are kept in CVars.participantsHolder, players in CVars.playerUnitHolder\nSpawned units go in $Grid/MapObjs",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "67a6fda2-f267-41ac-8393-ac3fd53509eb",
-			"title": "Finish SaveFiles, they must store the resources of player units.",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "fe080d80-d6d4-4f8c-9474-a7cfd9e5135a",
-			"title": "Finish Start button in UI scene",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "201ff29c-b973-4ac5-b83f-326a4e0e96f3",
-			"title": "Item class unequip() is unfinished",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "c749ac75-0609-4f0b-8789-b316af3c669c",
-			"title": "Make movement a method of the Unit class",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "ca6df8ea-ce34-4461-a01b-42bf740a04fe",
-			"title": "$UnitTemplate should be able to hold a weapon in it's person",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "b8d09236-4cf5-421f-a103-daf8f1dddb3a",
-			"title": "Refactor GridData to use Vectors as Dictionary keys",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "4e0f340a-98f2-47ae-9cd7-95b143e71614",
-			"title": "$UI/Controller needs a rework",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "4b53434b-0a3a-4085-a7a4-3f1db61552a0",
-			"title": "$StatusHint needs more signal connections",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "05473ce8-a1d9-4875-9a75-3fdf228c9eda",
-			"title": "Models should have small models inside that mark offsets and the like",
-			"description": "",
-			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
-			"steps": []
-		},
-		{
-			"uuid": "7c0db9ce-7f95-445c-a6c6-81b03ca0150e",
-			"title": "Equipment may be being attached duplicated",
-			"description": "",
-			"category": "a2f6d5df-62a5-433a-9e47-49b092047a51",
-			"steps": []
-		},
-		{
-			"uuid": "2c1016ad-794c-47bf-b110-f1692e9089d0",
-			"title": "Debugger complains about not being capable of getting the origin of the node when attaching stuff",
-			"description": "$Unit can't attach anything to limbs ",
-			"category": "657d813d-e833-4f84-b34f-30d55ebb5614",
-			"steps": []
-		},
-		{
-			"uuid": "1f174209-2aa6-425f-b084-d4c95da56ecb",
-			"title": "TurnManager.gd:15 Ref.unitsInBattle is null at this point",
-			"description": "It is now handled by the state machine and it's signals, ensuring it all works at the right moment",
-			"category": "a2f6d5df-62a5-433a-9e47-49b092047a51",
-			"steps": []
-		},
-		{
 			"uuid": "88468731-34f4-404d-a4f5-8e22a5575797",
 			"title": "Characters should have 1 forced class",
 			"description": "",
@@ -261,30 +101,64 @@
 			"steps": []
 		},
 		{
-			"uuid": "6e676e76-8542-4f11-a1df-0e4db48b4dd9",
-			"title": "TargetingMesh in ability targeting mode spawns incorrectly",
-			"description": "",
-			"category": "657d813d-e833-4f84-b34f-30d55ebb5614",
-			"steps": []
-		},
-		{
 			"uuid": "4014a556-8df9-4619-a6dc-6e42ab40349d",
 			"title": "Need a way of visualizing AoE before using an AoE ability",
-			"description": "In progress, it currently seems to cause flickering and nothing else happens",
+			"description": "Based on ComponentInput's state",
 			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
 			"steps": []
 		},
 		{
-			"uuid": "0df395d1-0698-4a7a-9cde-b341dbcb8012",
-			"title": "$StartButton does not resize properly for full screen",
-			"description": "",
-			"category": "657d813d-e833-4f84-b34f-30d55ebb5614",
-			"steps": []
+			"uuid": "d883b5a5-7a0d-4a74-9d7e-5e75bf702450",
+			"title": "ComponentAction",
+			"description": "\t\t- ComponentInput selects the action menu on ComponentInterface\n\t\t- ComponentInput selects a specific action\n\t\t- ComponentInput gets all valid cells and displays them with ComponentDisplay \n \n\t\t- ComponentDisplay uses ComponentAction.get_targetable_cells_for_action() to display valid positions for targeting\n\t\t- ComponentInput enters State.AWAITING_TARGET\n\t\t\t- In this state, the hovered cell displays the AoE after 0.5 seconds of inactivity (if any) using ComponentAction.get_hit_cells_by_action()\n \n\t\t- ComponentInput creates an action log per effect and prepares its execution (with ComponentAction.execute_action_log) on the stack component\n\t\t- ComponentAction causes a corresponding Event to be emitted\n\t\t- ComponentAction.parse_repeating_actions receives the Event and attempts to queue valid actions at the beggining of the stack (before the triggering ",
+			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
+			"steps": [
+				{
+					"details": "Create functionality on ComponentInput to select and target abilities",
+					"done": false
+				},
+				{
+					"details": "ComponentAction must send the logs to ComponentStack",
+					"done": false
+				},
+				{
+					"details": "The stack needs to be called",
+					"done": false
+				}
+			]
 		},
 		{
-			"uuid": "227b4313-8713-4727-aaf3-add0d1591e04",
-			"title": "Need a button to go back",
+			"uuid": "766f5060-ae66-481d-a619-5fe2e7328064",
+			"title": "Using an action",
 			"description": "",
+			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
+			"steps": [
+				{
+					"details": "Select the action in the interface",
+					"done": false
+				},
+				{
+					"details": "Choose where to target it (can be multiple locations)",
+					"done": false
+				},
+				{
+					"details": "Draw the AoE for each targeted cell and an extra modulation for each hit entity",
+					"done": false
+				},
+				{
+					"details": "Once everything has been selected, create a log for each effect, anounce their queuing",
+					"done": true
+				},
+				{
+					"details": "Defer the execution of the logs (in the ComponentStack) to give time to the \"repeating\" actions to trigger",
+					"done": false
+				}
+			]
+		},
+		{
+			"uuid": "e3e79738-1c1f-4e38-856c-c5463e9584fb",
+			"title": "ComponentInterface",
+			"description": "ComponentInterface must make actions available to the ComponentInput. These are spread in categories:\n- Main: spread in the first layer of menus, as in, not in a sub-menu. Used for movement actions and other context sensitive ones.\n- Item: actions provided by items in the inventory.\n- Abilities: actions provided by a Capability\n- Common: shared among all other entity types, all humanoids should have the same here, for example. Like talking.",
 			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
 			"steps": []
 		}

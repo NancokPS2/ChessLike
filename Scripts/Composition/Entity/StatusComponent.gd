@@ -45,7 +45,7 @@ func set_meter(key: String, value: int):
 	var current: int = get_meter(key)
 	meter_dict[key] = value
 	
-	Event.ENTITY_COMPONENT_STATUS_METER_CHANGED.emit(self, key, current, value)
+	Event.ENTITY_STATUS_METER_CHANGED.emit(self, key, current, value)
 
 
 func set_stat(key: StatKeys, value: int):

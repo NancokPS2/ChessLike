@@ -21,7 +21,7 @@ static func create_stack_object(function: Callable, identifier: String = "", pri
 	
 static func add_to_stack(stack_obj: StackObject):
 	call_stack_arr.append(stack_obj)
-	Event.ENTITY_COMPONENT_STACK_ADDED.emit(stack_obj)
+	Event.ENTITY_STACK_ADDED.emit(stack_obj)
 
 	
 static func add_to_stack_at_index(stack_obj: StackObject, index: int):
@@ -30,6 +30,7 @@ static func add_to_stack_at_index(stack_obj: StackObject, index: int):
 		return
 		
 	call_stack_arr.insert(index, stack_obj)
+	Event.ENTITY_STACK_ADDED.emit(stack_obj)
 
 
 static func sort_by_priority():

@@ -67,7 +67,7 @@ func set_position_in_board(cell: Vector3i):
 	
 	assert(cell == get_position_in_board())
 	
-	Event.ENTITY_COMPONENT_MOVEMENT_MOVED.emit(get_entity(), original_cell, cell)
+	Event.ENTITY_MOVEMENT_MOVED.emit(get_entity(), original_cell, cell)
 
 
 func get_position_in_board() -> Vector3i:

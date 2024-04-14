@@ -18,23 +18,20 @@ signal ENTITY_TURN_TIME_PASSED(time: float)
 
 
 ## Movement
-signal ENTITY_COMPONENT_MOVEMENT_MOVED(entity: Entity3D, old_cell: Vector3i, cell: Vector3i)
+signal ENTITY_MOVEMENT_MOVED(entity: Entity3D, old_cell: Vector3i, cell: Vector3i)
 
 
 ## Interface
-signal ENTITY_COMPONENT_INTERFACE_AUTO_UPDATE_ENABLED(comp: ComponentInterface)
+signal ENTITY_INTERFACE_AUTO_UPDATE_ENABLED(comp: ComponentInterface)
 
 
 ## Status
-signal ENTITY_COMPONENT_STATUS_METER_CHANGED(comp: ComponentStatus, meter: String, old_value: int, new_value: int)
-signal ENTITY_COMPONENT_STATUS_PASSIVE_ADDED(comp: ComponentStatus, passive: ComponentPassiveResource)
-signal ENTITY_COMPONENT_STATUS_PASSIVE_REMOVED(comp: ComponentStatus, passive: ComponentPassiveResource)
+signal ENTITY_STATUS_METER_CHANGED(comp: ComponentStatus, meter: String, old_value: int, new_value: int)
 
 
 ## Action
-signal ENTITY_COMPONENT_ACTION_TARGETED_CELL(culprit: Entity3D, cells: Array[Vector3i], action: ComponentActionResource)
-signal ENTITY_COMPONENT_ACTION_USED_ON_CELL(culprit: Entity3D, cells: Array[Vector3i], action: ComponentActionResource)
+signal ENTITY_ACTION_QUEUED_LOG(log_queued: ComponentActionEffectLog)
 
 
 ## Stack
-signal ENTITY_COMPONENT_STACK_ADDED(stack_object: ComponentStack.StackObject)
+signal ENTITY_STACK_ADDED(stack_object: ComponentStack.StackObject)
