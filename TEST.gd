@@ -44,7 +44,7 @@ func entity_test():
 	
 	## Input
 	var input_comp: ComponentInput = new_entity.get_component(ComponentInput.COMPONENT_NAME)
-	input_comp.set_state(ComponentInput.States.AWAITING_MOVEMENT)
+	input_comp.set_state(ComponentInput.States.STANDBY)
 	
 	## Movement
 	var move_comp: ComponentMovement = new_entity.get_component(ComponentMovement.COMPONENT_NAME)
@@ -60,6 +60,11 @@ func entity_test():
 	disp_comp.add_visibility_meshes_in_cells(output, disp_comp.SubMeshTypes.MOVE_PATHABLE)
 	disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
 	disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
+	
+	# Capability
+	var capa_comp: ComponentCapability = new_entity.get_component(ComponentCapability.COMPONENT_NAME)
+	var capa_res: ComponentCapabilityResource = ComponentCapability.get_capability_resource_by_identifier("HUMAN")
+	capa_comp.add_capability("HUMAN")
 	
 	## Lore
 	var lore_comp: ComponentLore = new_entity.get_component(ComponentLore.COMPONENT_NAME)
@@ -79,6 +84,8 @@ func entity_test():
 	#TODO: Properly test repetition actions
 	var action_comp: ComponentAction = new_entity.get_component(ComponentAction.COMPONENT_NAME)
 	var stack_comp: ComponentStack = new_entity.get_component(ComponentStack.COMPONENT_NAME)
+	action_comp.update_actions_available()
+	print_debug(action_comp.get_actions_available(ComponentAction.ActionCategories.ALL))
 	
 	var pos_in_board: Vector3i = move_comp.get_position_in_board()
 	

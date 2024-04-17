@@ -20,8 +20,10 @@ class_name ComponentCapabilityResource
 	0,#DODGE
 	100,#ACCURACY
 	100,#TURN_DELAY_BASE
+	1,#ACTION_POINTS
+	1,#MOVE_POINTS
 	]
-@export var stat_modifiers: Array[float] = [1,1,1,1,1,1,1,1,1,1,1,]
+@export var stat_modifiers: Array[float] = [1,1,1,1,1,1,1,1,1,1,1,1,1]
 
 
 func get_stat_bonus(stat: ComponentStatus.StatKeys) -> int:

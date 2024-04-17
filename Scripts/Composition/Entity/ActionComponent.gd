@@ -6,10 +6,9 @@ enum ActionCategories {
 }
 
 enum ActionCostType {
-	SINGLE, #A single action point
-	FULL, #All available action points
+	SINGLE, #Action point
 	BONUS, #Bonus action, one per turn
-	BOTH, #SINGLE and BONUS
+	MOVEMENT, #Movement point
 }
 
 ## Affects how others react to this action
@@ -89,18 +88,20 @@ var action_source_dict: Dictionary
 var action_repeating_arr: Array[ComponentActionEffectLog]
 
 var points_left: int = 1
+var points_move_left: int = 1
 var points_bonus_left: int = 1
 
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
 	
-	update_actions_available(ActionCategories.ALL)
+	update_actions_available()
+	print(get_actions_available(ActionCategories.ALL))
 
 
 func get_entity() -> Entity3D:
 	return get_parent()
 	
-	Event.ENTITY_ACTION_QUEUED_LOG.connect(on_action_log_queued)
+	Event.ENTITY_ACTION_QUEUED_LOGS.connect(on_action_logs_queued)
 	Event.ENTITY_TURN_TIME_PASSED.connect(on_turn_time_passed)
 	Event.ENTITY_TURN_STARTED.connect(on_turn_started)
 	Event.ENTITY_TURN_ENDED.connect(on_turn_ended)
@@ -116,6 +117,8 @@ static func cache_all_resources():
 		for res: Resource in res_arr:
 			if res is ComponentActionResource:
 				action_resource_cache_dict[res.identifier] = res
+				
+	print(action_resource_cache_dict)
 
 
 func create_log_for_action_and_effect(action: ComponentActionResource, effect: ComponentActionResourceEffect) -> ComponentActionEffectLog:
@@ -206,7 +209,7 @@ func repeating_action_parse_all(condition_triggered: RepetitionConditions, argum
 			target_cells = [move_comp.get_position_in_board()]
 		
 		## Set the action to execute
-		action_log_add_to_queue(action_log)
+		action_logs_add_to_queue([action_log])
 		
 		## Update repeats left
 		action_log.repetitions_left -= 1
@@ -216,27 +219,30 @@ func repeating_action_parse_all(condition_triggered: RepetitionConditions, argum
 			repeating_action_remove(action_log)
 
 
-static func action_log_add_to_queue(action_log: ComponentActionEffectLog, index: int = -1):
+static func action_logs_add_to_queue(action_logs: Array[ComponentActionEffectLog], index: int = -1):
 	if index < 0:
 		index = action_log_queue_arr.size()
-	action_log_queue_arr.insert(index, action_log)
-	Event.ENTITY_ACTION_QUEUED_LOG.emit(action_log)
+	
+	for log: ComponentActionEffectLog in action_logs:
+		action_log_queue_arr.insert(index, log)
+		index += 1
+		
+	Event.ENTITY_ACTION_QUEUED_LOGS.emit(action_logs, index)
 
 
-static func action_log_insert_in_queue(new_log: ComponentActionEffectLog, before_log: ComponentActionEffectLog):
+static func action_logs_insert_in_queue(new_log: ComponentActionEffectLog, before_log: ComponentActionEffectLog):
 	var before_index: int = action_log_queue_arr.find(before_log)
 	if before_index == -1:
 		push_error("Could not find this log in the stack.")
 		return
-	ComponentAction.action_log_add_to_queue(new_log, before_index)
+	ComponentAction.action_logs_add_to_queue([new_log], before_index)
 
 
-static func action_log_send_queue_to_stack_component():
+func action_logs_send_queue_to_stack_component():
 	var stack_obj_list: Array[ComponentStack.StackObject]
 	for log: ComponentActionEffectLog in action_log_queue_arr:
 		var stack_obj := ComponentStack.create_stack_object(
 			action_log_execute.bind(log),
-			str(log.action.get_instance_id()),
 			0,
 			
 		)
@@ -283,12 +289,13 @@ func action_log_execute(action_log: ComponentActionEffectLog):
 func get_action_duration() -> float:
 	return 1.5
 
-func update_actions_available(category: ActionCategories):
+func update_actions_available():
 	action_available_arr.clear()
 	
 	var capa_comp: ComponentCapability = get_entity().get_component(ComponentCapability.COMPONENT_NAME)
-	for capa_resource: ComponentCapabilityResource in capa_comp.get_current_capability_resources(-1):
+	for capa_resource: ComponentCapabilityResource in capa_comp.get_current_capability_resources(ComponentCapability.Types.ALL):
 		for action_ident: StringName in capa_resource.action_identifier_arr:
+			assert(action_ident != "")
 			var action_res: ComponentActionResource = get_action_resource_by_identifier(action_ident)
 			if action_res:
 				action_available_arr.append(action_res)
@@ -416,17 +423,17 @@ static func get_action_resource_by_identifier(identifier: String) -> ComponentAc
 	return capability_res.duplicate(true)
 
 
-func on_action_log_queued(log: ComponentActionEffectLog):
+func on_action_logs_queued(action_logs: Array[ComponentActionEffectLog]):
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
 	var own_cell: Vector3i = move_comp.get_position_in_board()
-	
-	if own_cell in log.targeted_cells:
-		repeating_action_parse_all(RepetitionConditions.CELL_TARGETED_BY_ACTION, log.action.flags_action)
-	
-	if get_entity() in log.targeted_entities:
-		repeating_action_parse_all(RepetitionConditions.TARGETED_BY_ACTION, log.action.flags_action)
-	
-	repeating_action_parse_all(RepetitionConditions.ACTION_USED, log.action.flags_action)
+	for log: ComponentActionEffectLog in action_logs:
+		if own_cell in log.targeted_cells:
+			repeating_action_parse_all(RepetitionConditions.CELL_TARGETED_BY_ACTION, log.action.flags_action)
+		
+		if get_entity() in log.targeted_entities:
+			repeating_action_parse_all(RepetitionConditions.TARGETED_BY_ACTION, log.action.flags_action)
+		
+		repeating_action_parse_all(RepetitionConditions.ACTION_USED, log.action.flags_action)
 
 
 func on_turn_time_passed(time: float):
@@ -440,6 +447,7 @@ func on_turn_started(comp: ComponentTurn):
 		
 		var stat_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
 		points_left = stat_comp.get_stat(ComponentStatus.StatKeys.ACTION_POINTS)
+		points_move_left = stat_comp.get_stat(ComponentStatus.StatKeys.MOVE_POINTS)
 		points_bonus_left = 1
 
 
@@ -448,5 +456,6 @@ func on_turn_ended(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
 		repeating_action_parse_all(RepetitionConditions.SELF_TURN_ENDED)
 		points_left = 0
+		points_move_left = 0
 		points_bonus_left = 0
 

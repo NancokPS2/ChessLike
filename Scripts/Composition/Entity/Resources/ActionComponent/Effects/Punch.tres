@@ -6,9 +6,9 @@
 script = ExtResource("1_io1se")
 meter_affected = "HEALTH"
 base_amount = 0
-stat_bonuses = Array[int]([])
-stat_bonuses_sign = 1
-stat_bonuses_multiplier = 1.0
+stat_bonuses = Array[int]([2])
+stat_bonuses_sign = -1
+stat_bonuses_multiplier = 0.5
 other_stat_bonuses = Array[int]([])
 other_stat_bonuses_sign = 1
 other_stat_bonuses_multiplier = 1.0

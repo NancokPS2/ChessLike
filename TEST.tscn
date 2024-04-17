@@ -72,4 +72,8 @@ raycast_point_a = Vector3(5.6, 0.4, 3.95)
 offset_right = 213.0
 offset_bottom = 91.0
 
-[node name="ComponentInterfaceScene" parent="." instance=ExtResource("5_lu1lm")]
+[node name="ComponentInterfaceScene" parent="." node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text", "node_turn_cont") instance=ExtResource("5_lu1lm")]
+node_health_bar = NodePath("CanvasLayer/Control/VBoxContainer/Health")
+node_energy_bar = NodePath("CanvasLayer/Control/VBoxContainer/Energy")
+node_name_text = NodePath("CanvasLayer/Control/VBoxContainer/Name")
+node_turn_cont = NodePath("CanvasLayer/ScrollContainer/HBoxContainer")

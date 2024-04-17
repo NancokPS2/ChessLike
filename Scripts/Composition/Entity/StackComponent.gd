@@ -13,9 +13,9 @@ func get_entity() -> Entity3D:
 	return get_parent()
 
 	
-static func create_stack_object(function: Callable, identifier: String = "", priority: int = 0, delay: float = 0) -> StackObject:
+static func create_stack_object(function: Callable, priority: int = 0, delay: float = 0) -> StackObject:
 	var new_obj := StackObject.new()
-	new_obj.set_function(function).set_identifier(identifier).set_priority(priority).set_delay(delay)
+	new_obj.set_function(function).set_priority(priority).set_delay(delay)
 	return new_obj
 	
 	

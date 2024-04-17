@@ -39,8 +39,7 @@ var auto_update_entity: Entity3D
 
 var timer_reference: Timer
 
-func _ready() -> void:
-	update_active_nodes()
+var entity_cache: Entity3D
 
 
 func set_auto_update_target(entity: Entity3D):
@@ -60,7 +59,7 @@ func set_autoupdate_for_node(prop_name: StringName, enable: bool):
 		
 		
 ## Creates an array with paths to specific properties, the ones which actually have something
-func update_active_nodes():
+func update_active_nodes(entity: Entity3D):
 	active_nodes.clear()
 	for prop_name: StringName in get_all_node_property_names():
 		var node_found: Node = get(prop_name)
@@ -73,6 +72,10 @@ func update_active_nodes():
 		match prop_name:
 			&"node_turn_cont":
 				node_found.theme
+			
+			&"node_action_list":
+				if not node_found.item_activated.is_connected(on_action_button_selected.bind(node_found)):
+					node_found.item_activated.connect(on_action_button_selected.bind(node_found, entity))
 	
 func update_interface(entity: Entity3D = auto_update_entity):
 	if not entity:
@@ -80,6 +83,10 @@ func update_interface(entity: Entity3D = auto_update_entity):
 		if auto_update_entity == null:
 			set_auto_update_target(null)
 		return
+	
+	if entity_cache != entity:
+		update_active_nodes(entity)
+		entity_cache = entity
 	
 	var status_comp: ComponentStatus = entity.get_component(ComponentStatus.COMPONENT_NAME)
 	var lore_comp: ComponentLore = entity.get_component(ComponentLore.COMPONENT_NAME)
@@ -170,15 +177,25 @@ func update_interface(entity: Entity3D = auto_update_entity):
 					index += 1
 			
 			&"node_action_list":
-				const ENTITY_ID_KEY: StringName = &"ENTITY_ID"
-				const ACTION_LIST_KEY: StringName = &"ACTION_LIST"
-				node.set_meta(ENTITY_ID_KEY, entity.get_instance_id())
+				#const MAIN_LIST: StringName = &"ACTION_LIST_MAIN"
+				#const MOVE_LIST: StringName = &"ACTION_LIST_MOVEMENT"
+				#const ITEM_LIST: StringName = &"ACTION_LIST_ITEM"
+				#node.set_meta(ENTITY_ID_KEY, entity.get_instance_id())
+				
+				#var actions_available_main: Array[ComponentActionResource] = action_comp.get_actions_available(ComponentAction.ActionCategories.MAIN)
+				#var actions_available_movement: Array[ComponentActionResource] = action_comp.get_actions_available(ComponentAction.ActionCategories.MOVEMENT)
+				#var actions_available_item: Array[ComponentActionResource] = action_comp.get_actions_available(ComponentAction.ActionCategories.ITEM)
 				
 				var action_comp: ComponentAction = entity.get_component(ComponentAction.COMPONENT_NAME)
-				var actions_available: Array[ComponentActionResource] = action_comp.get_actions_available(ComponentAction.ActionCategories.ALL)
-				#TODO
+				var actions_available: Array[ComponentActionResource] = action_comp.get_actions_available(ComponentAction.ActionCategories.ALL)				
 				
-			
+				node.clear()
+				var index: int = 0
+				for action: ComponentActionResource in actions_available:
+					node.add_item(action.identifier)
+					node.set_item_metadata(index, action)
+					index += 1
+								
 			&"node_stat_list":
 				for child: Node in node.get_children():
 					child.queue_free()
@@ -189,7 +206,6 @@ func update_interface(entity: Entity3D = auto_update_entity):
 					var label := Label.new()
 					label.text = "{0}: {1}".format([stat_string, str(value)])
 				
-			
 			&"node_turn_delay_text":
 				var turn_comp: ComponentTurn = entity.get_component(ComponentTurn.COMPONENT_NAME)
 				var curr_delay: int = turn_comp.delay_current
@@ -204,3 +220,13 @@ func get_all_node_property_names() -> Array[StringName]:
 			output.append(prop_dict.name)
 	
 	return output
+
+
+func on_action_button_selected(index: int, item_list: ItemList, entity: Entity3D):
+	var inter_comp: ComponentInterface = entity.get_component(ComponentInterface.COMPONENT_NAME)
+	var action_res: ComponentActionResource = item_list.get_item_metadata(index)
+	
+	if not action_res:
+		return
+	
+	Event.ENTITY_INTERFACE_ACTION_SELECTED.emit(inter_comp, action_res)

@@ -22,7 +22,7 @@ signal ENTITY_MOVEMENT_MOVED(entity: Entity3D, old_cell: Vector3i, cell: Vector3
 
 
 ## Interface
-signal ENTITY_INTERFACE_AUTO_UPDATE_ENABLED(comp: ComponentInterface)
+signal ENTITY_INTERFACE_ACTION_SELECTED(comp: ComponentInterface, action: ComponentActionResource)
 
 
 ## Status
@@ -30,7 +30,7 @@ signal ENTITY_STATUS_METER_CHANGED(comp: ComponentStatus, meter: String, old_val
 
 
 ## Action
-signal ENTITY_ACTION_QUEUED_LOG(log_queued: ComponentActionEffectLog)
+signal ENTITY_ACTION_QUEUED_LOGS(logs_queued: Array[ComponentActionEffectLog], index: int)
 
 
 ## Stack

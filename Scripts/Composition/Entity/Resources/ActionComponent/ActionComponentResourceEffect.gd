@@ -42,7 +42,7 @@ const ParamsForTypesDict: Dictionary = {
 var action_log_cache: ComponentActionEffectLog
 
 func start(action_log: ComponentActionEffectLog):
-	assert(action_log_cache)
+	assert(not action_log_cache)
 	action_log_cache = action_log
 	
 	_start(action_log)

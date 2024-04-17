@@ -4,16 +4,17 @@ class_name ComponentCapability
 enum Types {
 	RACE,
 	CLASS,
+	ALL,
 }
 
 const COMPONENT_NAME: StringName = "ENTITY_CAPABILITY"
 
-const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Resources/CapabilityComponent/", "user://Data/Composition/Resources/CapabilityComponent/"]
+const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Entity/Resources/CapabilityComponent", "user://Data/Composition/Resources/CapabilityComponent"]
 
 static var capability_resource_cache_dict: Dictionary
 
 ## The limit for each type of capability, Must have as many elements as Types
-var capability_current_limit: Array[int] = [1,2]
+var capability_current_limit: Array[int] = [1,2,99]
 
 var capability_current_res_arr: Array[String]
 		
@@ -43,8 +44,11 @@ static func cache_all_resources():
 	
 func add_capability(identifier: String):
 	var capability_to_add: ComponentCapabilityResource = ComponentCapability.get_capability_resource_by_identifier(identifier)
+	
 	if not capability_to_add:
 		return
+		
+	assert(capability_to_add.type != Types.ALL)
 		
 	var current_same_type: Array[ComponentCapabilityResource] = get_current_capability_resources(capability_to_add.type)
 	
@@ -80,12 +84,12 @@ static func get_capability_resource_by_identifier(identifier: String) -> Compone
 	return capability_res.duplicate(true)
 
 	
-func get_current_capability_resources(type: Types = -1) -> Array[ComponentCapabilityResource]:
+func get_current_capability_resources(type: Types = Types.ALL) -> Array[ComponentCapabilityResource]:
 	var output: Array[ComponentCapabilityResource] = []
 	
 	for res_ident: String in capability_current_res_arr:
 		var res: ComponentCapabilityResource = ComponentCapability.get_capability_resource_by_identifier(res_ident)
-		if type == -1 or res.type == type:
+		if type == Types.ALL or res.type == type:
 			output.append(res)
 	
 	return output

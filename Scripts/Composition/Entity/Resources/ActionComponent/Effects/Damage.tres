@@ -4,5 +4,4 @@
 
 [resource]
 script = ExtResource("1_ebll2")
-type = 1
-parameters = ["HEALTH", -1, 15, []]
+identifier = ""

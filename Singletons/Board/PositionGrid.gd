@@ -104,12 +104,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	## A click was done, the last hovered cell is "selected" with index 0
 	elif event.is_action_pressed("primary_click"):	
 		if is_cell_in_board(cell_hovered_cache):
-			Event.BOARD_CELL_SELECTED.emit( cell_hovered_cache, 0 )
+			Event.BOARD_CELL_SELECTED.emit( cell_hovered_cache, MOUSE_BUTTON_LEFT )
 	
 	## A secondary click was done, the last hovered cell is "selected" with index 1
 	elif event.is_action_pressed("secondary_click"):
 		if is_cell_in_board(cell_hovered_cache):
-			Event.BOARD_CELL_SELECTED.emit( cell_hovered_cache, 1 )
+			Event.BOARD_CELL_SELECTED.emit( cell_hovered_cache, MOUSE_BUTTON_RIGHT )
 	
 	## If it was a "button" input, check if a new direction has been given.
 	elif event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion:	
@@ -320,14 +320,14 @@ func get_cells_in_line(origin: Vector3i, destination: Vector3i, penetration: int
 	var mesh_1 := MeshInstance3D.new()
 	mesh_1.mesh = BoxMesh.new()
 	mesh_1.mesh.size = Vector3.ONE * 0.1
-	mesh_1.global_position = origin_local
 	add_child(mesh_1)
+	mesh_1.global_position = origin_local
 	
 	var mesh_2 := MeshInstance3D.new()
 	mesh_2.mesh = BoxMesh.new()
 	mesh_2.mesh.size = Vector3.ONE * 0.1
-	mesh_2.global_position = target_locals[0]
 	add_child(mesh_2)
+	mesh_2.global_position = target_locals[0]
 	
 	for target: Vector3 in target_locals:
 		var ray_params := PhysicsRayQueryParameters3D.create(origin_local, target)
