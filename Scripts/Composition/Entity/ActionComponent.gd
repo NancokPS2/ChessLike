@@ -280,6 +280,8 @@ func action_log_execute(action_log: ComponentActionEffectLog):
 	for entity: Entity3D in targeted_entities:
 		effect.affect_entity(entity)
 	
+	effect.finish()
+	
 	print_debug(
 		"Used action {0} in cells {1}."
 		.format([action.identifier, str(targeted_cells)])

@@ -34,7 +34,10 @@
 				"88468731-34f4-404d-a4f5-8e22a5575797",
 				"4014a556-8df9-4619-a6dc-6e42ab40349d",
 				"d883b5a5-7a0d-4a74-9d7e-5e75bf702450",
-				"766f5060-ae66-481d-a619-5fe2e7328064"
+				"766f5060-ae66-481d-a619-5fe2e7328064",
+				"1bcc1040-a7c5-4eaa-915f-c689b8ce7e5a",
+				"ebbabdca-f874-4631-961f-c595e1164380",
+				"517f2566-2417-46b9-9eff-bc28dbfb9e35"
 			]
 		},
 		{
@@ -159,6 +162,44 @@
 			"uuid": "e3e79738-1c1f-4e38-856c-c5463e9584fb",
 			"title": "ComponentInterface",
 			"description": "ComponentInterface must make actions available to the ComponentInput. These are spread in categories:\n- Main: spread in the first layer of menus, as in, not in a sub-menu. Used for movement actions and other context sensitive ones.\n- Item: actions provided by items in the inventory.\n- Abilities: actions provided by a Capability\n- Common: shared among all other entity types, all humanoids should have the same here, for example. Like talking.",
+			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
+			"steps": [
+				{
+					"details": "Populate the skill menu automatically",
+					"done": true
+				},
+				{
+					"details": "Allow selecting skills from the interface menu",
+					"done": true
+				},
+				{
+					"details": "Receive \"action queued\" signals on the input component",
+					"done": true
+				},
+				{
+					"details": "Add more UI feedback",
+					"done": false
+				}
+			]
+		},
+		{
+			"uuid": "1bcc1040-a7c5-4eaa-915f-c689b8ce7e5a",
+			"title": "Entity flags",
+			"description": "Stored in the Entity3D itself",
+			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
+			"steps": []
+		},
+		{
+			"uuid": "ebbabdca-f874-4631-961f-c595e1164380",
+			"title": "Dedicated \"flags\" class",
+			"description": "For facilitating the implementation of modding in new flags.\nTakes an enum as initializer",
+			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
+			"steps": []
+		},
+		{
+			"uuid": "517f2566-2417-46b9-9eff-bc28dbfb9e35",
+			"title": "Add re-usable special fx",
+			"description": "",
 			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
 			"steps": []
 		}

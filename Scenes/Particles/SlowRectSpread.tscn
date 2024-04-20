@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://uu5gco8revh6"]
+
+[ext_resource type="Script" path="res://Scenes/Particles/ParticlesAroundRect.gd" id="1_k6yhk"]
+
+[node name="CPUParticles2D2" type="CPUParticles2D"]
+emission_shape = 5
+emission_points = PackedVector2Array()
+emission_normals = PackedVector2Array(-0.5, -0.5, 0.5, -0.5, 1, 1, -0.5, 0.5)
+emission_colors = PackedColorArray()
+spread = 30.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 7.7
+initial_velocity_max = 15.0
+damping_min = 3.0
+damping_max = 3.0
+script = ExtResource("1_k6yhk")

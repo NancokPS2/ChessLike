@@ -72,9 +72,10 @@ func _affect_entity(_entity: Entity3D):
 	pass
 
 
-func finish(action_log: ComponentActionEffectLog):
+func finish():
 	action_log_cache = null
 
-func _finish(_action_log: ComponentActionEffectLog):
+
+func _finish():
 	pass
 

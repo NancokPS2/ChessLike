@@ -1,6 +1,12 @@
 extends Node3D
 class_name Entity3D
 
+enum Flags {
+	INHERT, #Cannot move, act or take turns. Useful for obstacles.
+	SUMMON, #Does not count as a unit for evaluating how many combatants a faction has remaining.	
+	CRITICAL, #The unit is weakened, usually because of 50% health.
+}
+
 signal component_changed(component_name: String)
 
 const ENTITY_GROUP: String = "ENTITY_3D_GROUP"
@@ -18,6 +24,8 @@ var metadata: Dictionary
 
 var components: Dictionary
 
+var flags: Dictionary
+
 func _init():
 	child_entered_tree.connect(on_child_entered_tree)
 
@@ -28,6 +36,14 @@ func _enter_tree() -> void:
 
 func get_all_in_tree(tree: SceneTree) -> Array[Entity3D]:
 	return tree.get_nodes_in_group(ENTITY_GROUP) as Array[Entity3D]
+
+
+func flag_set(flag: Flags, enable: bool):
+	flags[flag] = enable
+
+	
+func flag_get(flag: Flags) -> bool:
+	return flags.get(flag, false)
 
 
 func add_all_components():
