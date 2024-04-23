@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3yvtgmp77ed"
-path="res://.godot/imported/BaseLeft.png-c8a75e3b6cfd0d10235fb02ddc104da2.ctex"
+path="res://.godot/imported/BaseLeft.png-91c4d4846f72ca44620e74a1e7c9b815.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Units/classIcons/BaseLeft.png"
-dest_files=["res://.godot/imported/BaseLeft.png-c8a75e3b6cfd0d10235fb02ddc104da2.ctex"]
+source_file="res://Assets/Entity/classIcons/BaseLeft.png"
+dest_files=["res://.godot/imported/BaseLeft.png-91c4d4846f72ca44620e74a1e7c9b815.ctex"]
 
 [params]
 

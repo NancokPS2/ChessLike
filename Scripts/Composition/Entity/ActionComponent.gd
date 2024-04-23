@@ -337,8 +337,7 @@ func get_targetable_cells_for_action(action: ComponentActionResource) -> Array[V
 ## Which cells will be hit based on the target position TODO
 func get_hit_cells_by_action(target_position: Vector3i, action: ComponentActionResource) -> Array[Vector3i]:
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
-	var origin: Vector3i = move_comp.get_position_in_board()
-	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(origin, action.shape_targeting_size, is_cell_valid_for_action.bind(action, true))
+	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(target_position, action.shape_targeting_size, is_cell_valid_for_action.bind(action, true))
 	
 	return cells_targetable
 	
@@ -347,7 +346,7 @@ func get_entities_hit_by_action_at_cells(action: ComponentActionResource, target
 	var output: Array[Entity3D] = []
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
 	for cell: Vector3i in target_cells:
-		var entity: Entity3D = move_comp.get_entity_at_pos(cell)
+		var entity: Entity3D = move_comp.get_entity_at_position_in_board(cell)
 		if not entity:
 			continue
 		

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://30me61ldvqma"
-path="res://.godot/imported/physician.png-3e0abf1b9ec65dff590641ddca0b73bf.ctex"
+path="res://.godot/imported/physician.png-2fe4f5fe7959670c886a76daee1fd9a4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Units/classIcons/physician.png"
-dest_files=["res://.godot/imported/physician.png-3e0abf1b9ec65dff590641ddca0b73bf.ctex"]
+source_file="res://Assets/Entity/classIcons/physician.png"
+dest_files=["res://.godot/imported/physician.png-2fe4f5fe7959670c886a76daee1fd9a4.ctex"]
 
 [params]
 

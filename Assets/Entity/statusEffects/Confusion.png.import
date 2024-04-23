@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ipaqqgfvru3w"
-path="res://.godot/imported/Confusion.png-3510b30078772b4ea2a25ca169ee3818.ctex"
+path="res://.godot/imported/Confusion.png-d0cecb4232f731c06b65b1afdb779d04.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Units/statusEffects/Confusion.png"
-dest_files=["res://.godot/imported/Confusion.png-3510b30078772b4ea2a25ca169ee3818.ctex"]
+source_file="res://Assets/Entity/statusEffects/Confusion.png"
+dest_files=["res://.godot/imported/Confusion.png-d0cecb4232f731c06b65b1afdb779d04.ctex"]
 
 [params]
 

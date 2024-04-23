@@ -374,35 +374,39 @@ func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable)
 	## Start from a cell
 	var to_check: Array[Vector3i] = [origin]
 	
-	var curr_step: int = 0
-	
 	#While there are cells to check
-	while not to_check.is_empty() and curr_step < steps: 
+	while not to_check.is_empty(): 
 		var coord: Vector3i = to_check.pop_back()
+		
+		#if coord == Vector3i(2,1,0):
+			#breakpoint
 		
 		## Check that it is a valid spot
 		if not is_cell_in_board(coord):
 			continue
 		#Probably redundant
-		if PositionGrid.get_manhattan_distance(coord, origin, true, false, true) < steps + 1:
+		if PositionGrid.get_manhattan_distance(coord, origin, true, true, true) > steps + 1:
 			continue
 		if coord in output:
 			continue
 		if not filter_call.call(coord):
 			continue
 		
+		#assert(coord >= Vector3i.ZERO)
+		
 		output.append(coord)
 		
 		## For every adjacent coord 
 		for adjacent: Vector3i in ADJACENT_CELLS:
-		
-			if adjacent in output:
+			var adj: Vector3i = adjacent + coord
+			if adj in output:
 				continue
 		
 			to_check.append(
-				adjacent
+				adj
 			)
-			
+		
+		
 	for vector: Vector3i in output:
 		assert(output.count(vector) == 1, "Duplicate vectors!")
 		
@@ -410,7 +414,9 @@ func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable)
 
 
 func is_cell_in_board(coord: Vector3i) -> bool:
-	return data_get(coord, CellDataKeys.EXISTS, false)
+	var cell_exists: bool = data_get(coord, CellDataKeys.EXISTS, false)
+	#assert(cell_exists)
+	return cell_exists
 	
 	
 func is_flag_in_cell(cell: Vector3i, flag: CellFlags) -> bool:

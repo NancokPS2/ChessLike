@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ComponentActionResource" load_steps=3 format=3 uid="uid://pvny583qf6hb"]
+
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResource.gd" id="1_5cl4e"]
+[ext_resource type="Resource" uid="uid://df207vymk2vu6" path="res://Scripts/Composition/Entity/Resources/ActionComponent/Effects/MagicAttack.tres" id="1_hd8k8"]
+
+[resource]
+script = ExtResource("1_5cl4e")
+identifier = "EXPLOSION"
+effects = Array[Resource("res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResourceEffect.gd")]([ExtResource("1_hd8k8")])
+turn_cost_type = 0
+flags_action = Array[int]([0, 1])
+flags_targeting = Array[int]([])
+flags_hit = Array[int]([2])
+flags_entity_hit = Array[int]([1, 0, 2])
+repetition_conditions = Array[int]([])
+repetition_arguments = []
+repetition_flags = Array[int]([])
+repetition_count = 0
+repetition_consumption_conditions = Array[int]([])
+shape_targeting = 0
+shape_targeting_size = 1
+shape_hit = 1
+shape_hit_size = 4

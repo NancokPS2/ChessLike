@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://df207vymk2vu6"]
+
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/ActionComponent/Effects/Scripts/ChangeMeterEffect.gd" id="1_gqlva"]
+
+[resource]
+script = ExtResource("1_gqlva")
+meter_affected = "HEALTH"
+base_amount = 0
+stat_bonuses = Array[int]([4])
+stat_bonuses_sign = -1
+stat_bonuses_multiplier = 0.5
+other_stat_bonuses = Array[int]([])
+other_stat_bonuses_sign = 1
+other_stat_bonuses_multiplier = 1.0
+identifier = ""

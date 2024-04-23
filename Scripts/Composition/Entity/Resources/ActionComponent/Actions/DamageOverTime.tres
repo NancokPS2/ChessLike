@@ -7,6 +7,7 @@
 script = ExtResource("1_3tnod")
 identifier = "DOT"
 effects = Array[Resource("res://Scripts/Composition/Entity/Resources/ActionComponent/ActionComponentResourceEffect.gd")]([ExtResource("1_tprj2")])
+turn_cost_type = 0
 flags_action = Array[int]([1])
 flags_targeting = Array[int]([0])
 flags_hit = Array[int]([0])
@@ -15,6 +16,7 @@ repetition_conditions = Array[int]([1])
 repetition_arguments = []
 repetition_flags = Array[int]([])
 repetition_count = 0
+repetition_consumption_conditions = Array[int]([])
 shape_targeting = 0
 shape_targeting_size = 1
 shape_hit = 0

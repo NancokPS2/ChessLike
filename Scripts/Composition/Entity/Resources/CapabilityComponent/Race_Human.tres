@@ -7,6 +7,6 @@ script = ExtResource("1_t5vef")
 identifier = "HUMAN"
 type = 0
 movement_type = 1
-action_identifier_arr = Array[StringName]([&"HEAL"])
+action_identifier_arr = Array[StringName]([&"HEAL", &"EXPLOSION"])
 stat_bonuses = Array[int]([100, 100, 100, 100, 100, 0, 5, 0, 0, 100, 100])
 stat_modifiers = Array[float]([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])

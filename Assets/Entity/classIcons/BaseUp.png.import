@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://deet64wiikenw"
-path="res://.godot/imported/BaseUp.png-7dc0416df0845a7690ff2e8798d48c86.ctex"
+path="res://.godot/imported/BaseUp.png-ff395c58259417e2311c7df66a3c81c5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Units/classIcons/BaseUp.png"
-dest_files=["res://.godot/imported/BaseUp.png-7dc0416df0845a7690ff2e8798d48c86.ctex"]
+source_file="res://Assets/Entity/classIcons/BaseUp.png"
+dest_files=["res://.godot/imported/BaseUp.png-ff395c58259417e2311c7df66a3c81c5.ctex"]
 
 [params]
 

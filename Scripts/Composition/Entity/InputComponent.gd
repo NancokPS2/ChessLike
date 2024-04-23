@@ -70,15 +70,17 @@ func on_turn_changed(entity: Entity3D, started: bool) -> void:
 
 func on_cell_hovered(cell: Vector3i):
 	var disp_comp: ComponentDisplay = get_entity().get_component(ComponentDisplay.COMPONENT_NAME)
+	#print_debug("Hovered " + str(cell))
 	
 	match get_state():
 		States.AWAITING_ACTION_TARGET:
 			var action_comp: ComponentAction = get_entity().get_component(ComponentAction.COMPONENT_NAME)
 			var action_selected: ComponentActionResource = metadata.get(MetaKeys.SELECTED_ACTION, null)
 			var hittable_cells: Array[Vector3i] = action_comp.get_hit_cells_by_action(cell, action_selected)
+			print_debug(hittable_cells)
 			
-			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.CELL_HOVERED_VALID)
-			disp_comp.add_visibility_meshes_in_cells(hittable_cells, ComponentDisplay.SubMeshTypes.ACTION_TARGET)
+			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.ACTION_TARGET)
+			disp_comp.add_visibility_meshes_in_cells(hittable_cells, ComponentDisplay.SubMeshTypes.ACTION_HIT)
 			
 		_:
 			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.CELL_HOVERED_INVALID)

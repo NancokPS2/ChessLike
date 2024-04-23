@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bo27c18tby2o6"
-path="res://.godot/imported/BaseRight.png-d4e519db3de16f1756a72581700ceff3.ctex"
+path="res://.godot/imported/BaseRight.png-e7707770f21a84afe900f598930b3be6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Units/classIcons/BaseRight.png"
-dest_files=["res://.godot/imported/BaseRight.png-d4e519db3de16f1756a72581700ceff3.ctex"]
+source_file="res://Assets/Entity/classIcons/BaseRight.png"
+dest_files=["res://.godot/imported/BaseRight.png-e7707770f21a84afe900f598930b3be6.ctex"]
 
 [params]
 
