@@ -25,7 +25,7 @@ enum RepetitionActionFlags {
 	TARGET_CULPRIT,
 }
 ## When the condition is fulfilled, the action will perform its effect again.
-enum RepetitionConditions {
+enum PassiveConditions {
 	TIME_PASSED,# Turn ticks: int
 	SELF_TURN_STARTED,# Turn Component: ComponentTurn
 	SELF_TURN_ENDED,# Turn Component: ComponentTurn
@@ -146,7 +146,7 @@ func repeating_action_remove(action_log: ComponentActionEffectLog):
 
 
 ## Whenever a repetition condition is triggered, check if any of the repeating actions would be triggered
-func repeating_action_parse_all(condition_triggered: RepetitionConditions, arguments: Array = []):
+func repeating_action_parse_all(condition_triggered: PassiveConditions, arguments: Array = []):
 	## Check every action.
 	for action_log: ComponentActionEffectLog in action_repeating_arr:
 		assert(action_log.repeating)
@@ -161,17 +161,17 @@ func repeating_action_parse_all(condition_triggered: RepetitionConditions, argum
 		## Make a second check for conditions that need arguments
 		var valid: bool = true
 		match condition_triggered:
-			RepetitionConditions.TIME_PASSED:
+			PassiveConditions.TIME_PASSED:
 				assert(arguments[0] is int)
 				var time_required: int = action.repetition_arguments[0]
 			
-			RepetitionConditions.SUFFERED_DAMAGE:
+			PassiveConditions.SUFFERED_DAMAGE:
 				assert(arguments[0] is int)
 				var damage_required: int = action.repetition_arguments[0]
 				if arguments[0] < damage_required:
 					valid = false
 				
-			RepetitionConditions.TARGETED_BY_ACTION:
+			PassiveConditions.TARGETED_BY_ACTION:
 				assert(arguments[0] is Array[ActionFlags])
 				var flags_required: Array[ActionFlags] = action.repetition_arguments[0]
 				for flag: ActionFlags in flags_required:
@@ -179,7 +179,7 @@ func repeating_action_parse_all(condition_triggered: RepetitionConditions, argum
 						valid = false
 						break
 				
-			RepetitionConditions.ACTION_USED:
+			PassiveConditions.ACTION_USED:
 				assert(arguments[0] is Array[ActionFlags])
 				var flags_required: Array[ActionFlags] = action.repetition_arguments[0]
 				for flag: ActionFlags in flags_required:
@@ -429,22 +429,22 @@ func on_action_logs_queued(action_logs: Array[ComponentActionEffectLog]):
 	var own_cell: Vector3i = move_comp.get_position_in_board()
 	for log: ComponentActionEffectLog in action_logs:
 		if own_cell in log.targeted_cells:
-			repeating_action_parse_all(RepetitionConditions.CELL_TARGETED_BY_ACTION, log.action.flags_action)
+			repeating_action_parse_all(PassiveConditions.CELL_TARGETED_BY_ACTION, log.action.flags_action)
 		
 		if get_entity() in log.targeted_entities:
-			repeating_action_parse_all(RepetitionConditions.TARGETED_BY_ACTION, log.action.flags_action)
+			repeating_action_parse_all(PassiveConditions.TARGETED_BY_ACTION, log.action.flags_action)
 		
-		repeating_action_parse_all(RepetitionConditions.ACTION_USED, log.action.flags_action)
+		repeating_action_parse_all(PassiveConditions.ACTION_USED, log.action.flags_action)
 
 
 func on_turn_time_passed(time: float):
-	repeating_action_parse_all(RepetitionConditions.TIME_PASSED, [time])
+	repeating_action_parse_all(PassiveConditions.TIME_PASSED, [time])
 
 	
 ## Does not require passing arguments, it is a given that the component is from self
 func on_turn_started(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
-		repeating_action_parse_all(RepetitionConditions.SELF_TURN_STARTED)
+		repeating_action_parse_all(PassiveConditions.SELF_TURN_STARTED)
 		
 		var stat_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
 		points_left = stat_comp.get_stat(ComponentStatus.StatKeys.ACTION_POINTS)
@@ -455,8 +455,23 @@ func on_turn_started(comp: ComponentTurn):
 ## Does not require passing arguments, it is a given that the component is from self
 func on_turn_ended(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
-		repeating_action_parse_all(RepetitionConditions.SELF_TURN_ENDED)
+		repeating_action_parse_all(PassiveConditions.SELF_TURN_ENDED)
 		points_left = 0
 		points_move_left = 0
 		points_bonus_left = 0
 
+class PassiveInstance extends RefCounted:
+	var activations_left: int
+	var conditions: Array[PassiveConditions]
+	var action_res: ComponentActionResource
+	var source_comp: ComponentAction
+	
+	func get_log()->ComponentActionEffectLog:
+		var action_log := ComponentActionEffectLog.new()
+		action_log.entity_source = source_comp.get_entity()
+		action_log.component_source = source_comp
+		return action_log
+	
+	
+	
+	
