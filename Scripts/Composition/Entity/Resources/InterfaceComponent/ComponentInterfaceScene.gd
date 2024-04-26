@@ -31,6 +31,8 @@ const Colors := {
 @export var node_turn_cont: HBoxContainer
 @export var node_call_stack_list: ItemList
 
+@export var node_status_overlay: Node2D
+
 var active_nodes: Array[StringName]
 
 var enable_autoupdate_dict: Dictionary

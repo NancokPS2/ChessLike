@@ -3,12 +3,13 @@
 [ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd" id="1_mwha3"]
 [ext_resource type="Theme" uid="uid://devlr7rlv5v8v" path="res://Assets/MainTheme.tres" id="2_h0cg8"]
 
-[node name="ComponentInterfaceScene" type="Node2D" node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text", "node_action_list", "node_turn_cont")]
+[node name="ComponentInterfaceScene" type="Node2D" node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text", "node_turn_delay_text", "node_action_list", "node_turn_cont")]
 script = ExtResource("1_mwha3")
 identifier = "COMBAT_FULL"
 node_health_bar = NodePath("CanvasLayer/QuickStatus/VBoxContainer/Health")
 node_energy_bar = NodePath("CanvasLayer/QuickStatus/VBoxContainer/Energy")
 node_name_text = NodePath("CanvasLayer/QuickStatus/VBoxContainer/Name")
+node_turn_delay_text = NodePath("CanvasLayer/QuickStatus/VBoxContainer/HSplitContainer/TurnDelay")
 node_action_list = NodePath("CanvasLayer/ItemList")
 node_turn_cont = NodePath("CanvasLayer/TurnList/HBoxContainer")
 

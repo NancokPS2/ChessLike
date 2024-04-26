@@ -40,6 +40,7 @@ func map_tests():
 func entity_test():
 	var new_entity := Entity3D.new()
 	new_entity.add_all_components()
+	new_entity.position = Board.map_to_local(Vector3i.UP)
 	add_child(new_entity)
 	
 	## Input

@@ -19,7 +19,7 @@ enum ActionFlags {
 	METER_MIN_ONE, #If it affects meters, the meters affected cannot go below 1
 	TRACK_ENTITIES, #Skips the update of entities hit of the log when using it, keeps targeting the original entities regardless of their new positions
 }
-enum RepetitionActionFlags {
+enum PassiveFlags {
 	NO_INITIAL_ACTIVATION, #This won't activate on use, instead, it will activate when its repetition condition triggers, if it has no repetitions set, throw an error
 	TRACK_ENTITIES, #Any entities deemed valid at the time of activation will keep being targeted on each repetition by targeting their cells	
 	TARGET_CULPRIT,
@@ -78,14 +78,14 @@ const RESOURCE_FOLDERS: Array[String] = ["res://Scripts/Composition/Entity/Resou
 
 static var action_resource_cache_dict: Dictionary
 
-static var action_log_queue_arr: Array[ComponentActionEffectLog]
+static var action_log_queue_arr: Array[ComponentActionLog]
 
 var action_available_arr: Array[ComponentActionResource]
 
 var action_source_dict: Dictionary
 
 ## Stores temporary data like turns passed of actions that are repeating
-var action_repeating_arr: Array[ComponentActionEffectLog]
+var action_repeating_arr: Array[ComponentActionLog]
 
 var points_left: int = 1
 var points_move_left: int = 1
@@ -121,41 +121,41 @@ static func cache_all_resources():
 	print(action_resource_cache_dict)
 
 
-func create_log_for_action_and_effect(action: ComponentActionResource, effect: ComponentActionResourceEffect) -> ComponentActionEffectLog:
-	var new_log := ComponentActionEffectLog.new()
+func create_log_for_action(action: ComponentActionResource) -> ComponentActionLog:
+	var new_log := ComponentActionLog.new()
 	new_log.entity_source = get_entity()
 	new_log.component_source = self
 	new_log.action = action
-	new_log.effect = effect
-	assert(effect in action.effects)
 		
 	return new_log
 
 
-func repeating_action_add(action_log: ComponentActionEffectLog):
-	if action_log.repetition_count < 1:
-		push_warning("Cannot add this action, it has no repetition count.")
+## Adds an action log without triggering it, then awaits for it to activate on its own
+func passive_action_add(action_log: ComponentActionLog):
+	if action_log.passive_duration == 0:
+		push_error("Cannot add this action as a passive, it has no duration.")
 		return 
-		
+	if action_log.passive_condition_arguments.is_empty():
+		push_error("There are no arguments for this passive's condition. It was not properly setup for being a passive.")
+		return
+	
+	## The passive will be automatically triggered while in this array
 	action_repeating_arr.append(action_log)
-	action_log.repeating = true
 
 
-func repeating_action_remove(action_log: ComponentActionEffectLog):
+func passive_action_remove(action_log: ComponentActionLog):
 	action_repeating_arr.erase(action_log)
 
 
 ## Whenever a repetition condition is triggered, check if any of the repeating actions would be triggered
-func repeating_action_parse_all(condition_triggered: PassiveConditions, arguments: Array = []):
+func passive_action_parse_all(condition_triggered: PassiveConditions, arguments: Array = []):
 	## Check every action.
-	for action_log: ComponentActionEffectLog in action_repeating_arr:
-		assert(action_log.repeating)
+	for action_log: ComponentActionLog in action_repeating_arr:
 		assert(action_log.repetitions_left > 0)
 		var action: ComponentActionResource = action_log.action
-		var effect: ComponentActionResourceEffect = action_log.effect
 		
 		## Skip those that do not trigger under this condition
-		if not condition_triggered in action.repetition_conditions:
+		if not condition_triggered in action.passive_conditions:
 			continue
 		
 		## Make a second check for conditions that need arguments
@@ -163,17 +163,17 @@ func repeating_action_parse_all(condition_triggered: PassiveConditions, argument
 		match condition_triggered:
 			PassiveConditions.TIME_PASSED:
 				assert(arguments[0] is int)
-				var time_required: int = action.repetition_arguments[0]
+				var time_required: int = action.passive_condition_arguments[0]
 			
 			PassiveConditions.SUFFERED_DAMAGE:
 				assert(arguments[0] is int)
-				var damage_required: int = action.repetition_arguments[0]
+				var damage_required: int = action.passive_condition_arguments[0]
 				if arguments[0] < damage_required:
 					valid = false
 				
 			PassiveConditions.TARGETED_BY_ACTION:
 				assert(arguments[0] is Array[ActionFlags])
-				var flags_required: Array[ActionFlags] = action.repetition_arguments[0]
+				var flags_required: Array[ActionFlags] = action.passive_condition_arguments[0]
 				for flag: ActionFlags in flags_required:
 					if not arguments[0].has(flag):
 						valid = false
@@ -181,7 +181,7 @@ func repeating_action_parse_all(condition_triggered: PassiveConditions, argument
 				
 			PassiveConditions.ACTION_USED:
 				assert(arguments[0] is Array[ActionFlags])
-				var flags_required: Array[ActionFlags] = action.repetition_arguments[0]
+				var flags_required: Array[ActionFlags] = action.passive_condition_arguments[0]
 				for flag: ActionFlags in flags_required:
 					if not arguments[0].has(flag):
 						valid = false
@@ -193,44 +193,30 @@ func repeating_action_parse_all(condition_triggered: PassiveConditions, argument
 		if not valid:
 			continue
 		
-		## Get the target cells
-		var target_cells: Array[Vector3i]
-		
-		## If it is set to track entities, target their current cells
-		#if RepetitionActionFlags.TRACK_ENTITIES in action.repetition_flags:
-			#var entities_tracked: Array[Entity3D] = get_repeating_action_meta(action, RepetitionMetaKeys.TRACKED_ENTITIES, [])
-			#for entity: Entity3D in entities_tracked:
-				#var other_move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
-				#target_cells.append(other_move_comp.get_position_in_board())
-		
-		## If still empty, target the cell that the user is standing on
-		if target_cells.is_empty():
-			var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
-			target_cells = [move_comp.get_position_in_board()]
-		
 		## Set the action to execute
 		action_logs_add_to_queue([action_log])
 		
 		## Update repeats left
-		action_log.repetitions_left -= 1
+		if action_log.passive_duration != -1:
+			action_log.repetitions_left -= 1
 		
 		## If below 1, remove it.
 		if action_log.repetitions_left < 1:
-			repeating_action_remove(action_log)
+			passive_action_remove(action_log)
 
 
-static func action_logs_add_to_queue(action_logs: Array[ComponentActionEffectLog], index: int = -1):
+static func action_logs_add_to_queue(action_logs: Array[ComponentActionLog], index: int = -1):
 	if index < 0:
 		index = action_log_queue_arr.size()
 	
-	for log: ComponentActionEffectLog in action_logs:
+	for log: ComponentActionLog in action_logs:
 		action_log_queue_arr.insert(index, log)
 		index += 1
 		
 	Event.ENTITY_ACTION_QUEUED_LOGS.emit(action_logs, index)
 
 
-static func action_logs_insert_in_queue(new_log: ComponentActionEffectLog, before_log: ComponentActionEffectLog):
+static func action_logs_insert_in_queue(new_log: ComponentActionLog, before_log: ComponentActionLog):
 	var before_index: int = action_log_queue_arr.find(before_log)
 	if before_index == -1:
 		push_error("Could not find this log in the stack.")
@@ -240,7 +226,7 @@ static func action_logs_insert_in_queue(new_log: ComponentActionEffectLog, befor
 
 func action_logs_send_queue_to_stack_component():
 	var stack_obj_list: Array[ComponentStack.StackObject]
-	for log: ComponentActionEffectLog in action_log_queue_arr:
+	for log: ComponentActionLog in action_log_queue_arr:
 		var stack_obj := ComponentStack.create_stack_object(
 			action_log_execute.bind(log),
 			0,
@@ -252,12 +238,11 @@ func action_logs_send_queue_to_stack_component():
 
 
 ## TODO
-func action_log_execute(action_log: ComponentActionEffectLog):
+func action_log_execute(action_log: ComponentActionLog):
 	var action_meta: Dictionary
 	
 	##Shortcut to log's data
 	var action: ComponentActionResource = action_log.action
-	var effect: ComponentActionResourceEffect = action_log.effect
 	var targeted_cells: Array[Vector3i] = action_log.targeted_cells
 	var targeted_entities: Array[Entity3D] = action_log.targeted_entities
 	
@@ -269,18 +254,16 @@ func action_log_execute(action_log: ComponentActionEffectLog):
 	if not ActionFlags.TRACK_ENTITIES in action.flags_action:
 		action_log.targeted_entities = get_entities_hit_by_action_at_cells(action, targeted_cells)
 		
-	## Execute the effect
-	assert(effect == action_log.effect, "This effect is not from this action.")
-	
-	effect.start(action_log)
+	## Execute the effect	
+	action.start(action_log)
 	
 	for cell: Vector3i in targeted_cells:
-		effect.affect_cell(cell)
+		action.affect_cell(cell)
 		
 	for entity: Entity3D in targeted_entities:
-		effect.affect_entity(entity)
+		action.affect_entity(entity)
 	
-	effect.finish()
+	action.finish()
 	
 	print_debug(
 		"Used action {0} in cells {1}."
@@ -424,27 +407,27 @@ static func get_action_resource_by_identifier(identifier: String) -> ComponentAc
 	return capability_res.duplicate(true)
 
 
-func on_action_logs_queued(action_logs: Array[ComponentActionEffectLog]):
+func on_action_logs_queued(action_logs: Array[ComponentActionLog]):
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
 	var own_cell: Vector3i = move_comp.get_position_in_board()
-	for log: ComponentActionEffectLog in action_logs:
+	for log: ComponentActionLog in action_logs:
 		if own_cell in log.targeted_cells:
-			repeating_action_parse_all(PassiveConditions.CELL_TARGETED_BY_ACTION, log.action.flags_action)
+			passive_action_parse_all(PassiveConditions.CELL_TARGETED_BY_ACTION, log.action.flags_action)
 		
 		if get_entity() in log.targeted_entities:
-			repeating_action_parse_all(PassiveConditions.TARGETED_BY_ACTION, log.action.flags_action)
+			passive_action_parse_all(PassiveConditions.TARGETED_BY_ACTION, log.action.flags_action)
 		
-		repeating_action_parse_all(PassiveConditions.ACTION_USED, log.action.flags_action)
+		passive_action_parse_all(PassiveConditions.ACTION_USED, log.action.flags_action)
 
 
 func on_turn_time_passed(time: float):
-	repeating_action_parse_all(PassiveConditions.TIME_PASSED, [time])
+	passive_action_parse_all(PassiveConditions.TIME_PASSED, [time])
 
 	
 ## Does not require passing arguments, it is a given that the component is from self
 func on_turn_started(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
-		repeating_action_parse_all(PassiveConditions.SELF_TURN_STARTED)
+		passive_action_parse_all(PassiveConditions.SELF_TURN_STARTED)
 		
 		var stat_comp: ComponentStatus = get_entity().get_component(ComponentStatus.COMPONENT_NAME)
 		points_left = stat_comp.get_stat(ComponentStatus.StatKeys.ACTION_POINTS)
@@ -455,7 +438,7 @@ func on_turn_started(comp: ComponentTurn):
 ## Does not require passing arguments, it is a given that the component is from self
 func on_turn_ended(comp: ComponentTurn):
 	if get_entity().get_component(ComponentTurn.COMPONENT_NAME) == comp:
-		repeating_action_parse_all(PassiveConditions.SELF_TURN_ENDED)
+		passive_action_parse_all(PassiveConditions.SELF_TURN_ENDED)
 		points_left = 0
 		points_move_left = 0
 		points_bonus_left = 0
@@ -466,8 +449,8 @@ class PassiveInstance extends RefCounted:
 	var action_res: ComponentActionResource
 	var source_comp: ComponentAction
 	
-	func get_log()->ComponentActionEffectLog:
-		var action_log := ComponentActionEffectLog.new()
+	func get_log()->ComponentActionLog:
+		var action_log := ComponentActionLog.new()
 		action_log.entity_source = source_comp.get_entity()
 		action_log.component_source = source_comp
 		return action_log

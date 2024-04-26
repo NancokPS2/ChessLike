@@ -111,19 +111,16 @@ func on_cell_selected(cell: Vector3i, button_index: int):
 			var hit_cells: Array[Vector3i] = action_comp.get_hit_cells_by_action(cell, action_selected)
 			var hit_entities: Array[Entity3D] = action_comp.get_entities_hit_by_action_at_cells(action_selected, hit_cells)
 			
-			var logs: Array[ComponentActionEffectLog]
-			for effect: ComponentActionResourceEffect in action_selected.effects:							
-				var action_log: ComponentActionEffectLog = action_comp.create_log_for_action_and_effect(action_selected, effect)
-				action_log.targeted_cells = hit_cells
-				action_log.targeted_entities = hit_entities
-				assert(action_log.is_valid())
-				logs.append(action_log)
+			var logs: Array[ComponentActionLog]
+			var action_log: ComponentActionLog = action_comp.create_log_for_action(action_selected)
+			action_log.targeted_cells = hit_cells
+			action_log.targeted_entities = hit_entities
+			assert(action_log.is_valid())
+			logs.append(action_log)
 			action_comp.action_logs_add_to_queue(logs)
 				
 			action_comp.action_logs_send_queue_to_stack_component()
 			stack_comp.execute_stack.call_deferred()
-			#var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
-			#move_comp.add_target_cells([cell])
 			
 
 func on_action_selected(comp: ComponentInterface, action: ComponentActionResource):

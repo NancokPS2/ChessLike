@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://by7ddpum53pgq"]
+
+[ext_resource type="Resource" uid="uid://bmmgrtftk2gc6" path="res://Scripts/Composition/Entity/Resources/ActionComponent/Actions/DamageOverTime.tres" id="1_qh0j4"]
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/ActionComponent/Actions/Scripts/ApplyPassive.gd" id="2_arw4i"]
+
+[resource]
+script = ExtResource("2_arw4i")
+passive_action = ExtResource("1_qh0j4")
+identifier = "APPLY_DOT"
+turn_cost_type = 0
+flags_action = Array[int]([1])
+flags_targeting = Array[int]([])
+flags_hit = Array[int]([])
+flags_entity_hit = Array[int]([1])
+passive_conditions = Array[int]([])
+passive_condition_arguments = []
+passive_flags = Array[int]([])
+passive_duration = 0
+shape_targeting = 0
+shape_targeting_size = 1
+shape_hit = 0
+shape_hit_size = 1
