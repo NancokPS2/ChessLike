@@ -52,10 +52,10 @@ class_name ComponentActionResource
 ]
 
 @export_group("Passive", "passive")
+@export_range(-1,99,1) var passive_duration: int = 0
 @export var passive_conditions: Array[ComponentAction.PassiveConditions]
 @export var passive_condition_arguments: Array
 @export var passive_flags: Array[ComponentAction.PassiveFlags]
-@export_range(-1,99,1) var passive_duration: int = 0
 
 @export_group("Shape", "shape")
 @export var shape_targeting: ComponentAction.TargetingShape

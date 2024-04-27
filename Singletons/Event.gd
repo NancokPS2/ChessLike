@@ -4,6 +4,10 @@ extends Node
 signal BOARD_CELL_SELECTED(cell: Vector3i, button_index: int)
 signal BOARD_CELL_HOVERED(cell: Vector3i)
 
+## Input
+
+signal ENTITY_INPUT_BACK(entity: Entity3D)
+
 
 ## Entity
 
@@ -30,7 +34,7 @@ signal ENTITY_STATUS_METER_CHANGED(comp: ComponentStatus, meter: String, old_val
 
 
 ## Action
-signal ENTITY_ACTION_QUEUED_LOGS(logs_queued: Array[ComponentActionEffectLog], index: int)
+signal ENTITY_ACTION_QUEUED_LOGS(logs_queued: Array[ComponentActionLog], index: int)
 
 
 ## Stack

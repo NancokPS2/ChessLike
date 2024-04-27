@@ -266,8 +266,8 @@ func action_log_execute(action_log: ComponentActionLog):
 	action.finish()
 	
 	print_debug(
-		"Used action {0} in cells {1}."
-		.format([action.identifier, str(targeted_cells)])
+		"Used action {0} in cells {1} with targets {2}."
+		.format([action.identifier, str(targeted_cells), str(targeted_entities)])
 		)
 
 
@@ -310,17 +310,31 @@ func get_action_category(action_res: ComponentActionResource) -> ActionCategorie
 
 ## The cells that can be chosen as the target location for the action TODO
 func get_targetable_cells_for_action(action: ComponentActionResource) -> Array[Vector3i]:
+	var cells_targetable: Array[Vector3i]
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
-	var origin: Vector3i = move_comp.get_position_in_board()
-	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(origin, action.shape_targeting_size, is_cell_valid_for_action.bind(action, false))
+	
+	match action.shape_targeting:
+		ComponentAction.TargetingShape.SINGLE:
+			cells_targetable = [move_comp.get_position_in_board()]
+			
+		ComponentAction.TargetingShape.FLOOD:
+			var origin: Vector3i = move_comp.get_position_in_board()
+			cells_targetable = Board.get_cells_flood_custom(origin, action.shape_targeting_size, is_cell_valid_for_action.bind(action, false))
 	
 	return cells_targetable
 
 
 ## Which cells will be hit based on the target position TODO
 func get_hit_cells_by_action(target_position: Vector3i, action: ComponentActionResource) -> Array[Vector3i]:
+	var cells_targetable: Array[Vector3i]
 	var move_comp: ComponentMovement = get_entity().get_component(ComponentMovement.COMPONENT_NAME)
-	var cells_targetable: Array[Vector3i] = Board.get_cells_flood_custom(target_position, action.shape_targeting_size, is_cell_valid_for_action.bind(action, true))
+	
+	match action.shape_targeting:
+		ComponentAction.TargetingShape.SINGLE:
+			cells_targetable = [target_position]
+			
+		ComponentAction.TargetingShape.FLOOD:
+			cells_targetable = Board.get_cells_flood_custom(target_position, action.shape_targeting_size, is_cell_valid_for_action.bind(action, true))
 	
 	return cells_targetable
 	
@@ -339,6 +353,7 @@ func get_entities_hit_by_action_at_cells(action: ComponentActionResource, target
 		output.append(entity)
 	
 	return output
+	
 	
 ## Includes both hit and targetable flags from action based on [use_hit_flags].
 func is_cell_valid_for_action(cell: Vector3i, action: ComponentActionResource, use_hit_flags: bool) -> bool:
@@ -381,17 +396,17 @@ func is_entity_hit_by_action(entity: Entity3D, action: ComponentActionResource) 
 	
 	if EntityHitFlags.SELF in action.flags_entity_hit:
 		if entity == get_entity():
-			return false
+			return true
 	
 	if EntityHitFlags.HOSTILE in action.flags_entity_hit:
-		if not fact_comp.is_faction_hostile(other_fact_comp):
-			return false
+		if fact_comp.is_faction_hostile(other_fact_comp):
+			return true
 	
 	if EntityHitFlags.FRIENDLY in action.flags_entity_hit:
-		if not fact_comp.is_faction_friendly(other_fact_comp):
-			return false
+		if fact_comp.is_faction_friendly(other_fact_comp):
+			return true
 	
-	return true
+	return false
 
 
 static func get_action_resource_by_identifier(identifier: String) -> ComponentActionResource:

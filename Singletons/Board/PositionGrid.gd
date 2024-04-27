@@ -385,7 +385,7 @@ func get_cells_flood_custom(origin: Vector3i, steps: int, filter_call: Callable)
 		if not is_cell_in_board(coord):
 			continue
 		#Probably redundant
-		if PositionGrid.get_manhattan_distance(coord, origin, true, true, true) > steps + 1:
+		if PositionGrid.get_manhattan_distance(coord, origin, true, true, true) > steps:
 			continue
 		if coord in output:
 			continue

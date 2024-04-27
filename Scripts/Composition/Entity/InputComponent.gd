@@ -16,7 +16,7 @@ var input_comp_arr: Array[ComponentInput]
 
 var state_current: States
 
-var metadata: Dictionary
+var state_metadata: Dictionary
 
 func _ready() -> void:
 	assert(get_parent() is Entity3D)
@@ -28,10 +28,16 @@ func _ready() -> void:
 	Event.BOARD_CELL_SELECTED.connect(on_cell_selected)
 	Event.BOARD_CELL_HOVERED.connect(on_cell_hovered)
 	Event.ENTITY_INTERFACE_ACTION_SELECTED.connect(on_action_selected)
+	Event.ENTITY_INPUT_BACK.connect(on_input_back)
 
 
 func get_entity() -> Entity3D:
 	return get_parent()
+
+
+func _unhandled_input(event: InputEvent):
+	if event.is_action_pressed("cancel"):
+		Event.ENTITY_INPUT_BACK.emit(self)
 
 
 func set_state(state: States):
@@ -40,7 +46,7 @@ func set_state(state: States):
 	if not is_node_ready():
 		await ready
 	
-	metadata.clear()
+	state_metadata.clear()
 	
 	if state == States.BLOCKED:
 		set_process_unhandled_input(false)
@@ -70,19 +76,19 @@ func on_turn_changed(entity: Entity3D, started: bool) -> void:
 
 func on_cell_hovered(cell: Vector3i):
 	var disp_comp: ComponentDisplay = get_entity().get_component(ComponentDisplay.COMPONENT_NAME)
-	#print_debug("Hovered " + str(cell))
 	
 	match get_state():
 		States.AWAITING_ACTION_TARGET:
 			var action_comp: ComponentAction = get_entity().get_component(ComponentAction.COMPONENT_NAME)
-			var action_selected: ComponentActionResource = metadata.get(MetaKeys.SELECTED_ACTION, null)
+			var action_selected: ComponentActionResource = state_metadata.get(MetaKeys.SELECTED_ACTION, null)
 			var hittable_cells: Array[Vector3i] = action_comp.get_hit_cells_by_action(cell, action_selected)
-			print_debug(hittable_cells)
 			
 			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.ACTION_TARGET)
 			disp_comp.add_visibility_meshes_in_cells(hittable_cells, ComponentDisplay.SubMeshTypes.ACTION_HIT)
 			
 		_:
+			disp_comp.add_visibility_meshes_in_cells([], ComponentDisplay.SubMeshTypes.ACTION_TARGET)
+			disp_comp.add_visibility_meshes_in_cells([], ComponentDisplay.SubMeshTypes.ACTION_HIT)
 			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.CELL_HOVERED_INVALID)
 	
 	
@@ -94,13 +100,13 @@ func on_cell_selected(cell: Vector3i, button_index: int):
 				return
 			
 			#If this is the first time the cell is selected, stop here and mark it
-			var last_cell: Vector3i = metadata.get(MetaKeys.LAST_SELECTED_CELL, Board.INVALID_CELL_COORDS)
+			var last_cell: Vector3i = state_metadata.get(MetaKeys.LAST_SELECTED_CELL, Board.INVALID_CELL_COORDS)
 			if last_cell != cell:
-				metadata[MetaKeys.LAST_SELECTED_CELL] = cell
+				state_metadata[MetaKeys.LAST_SELECTED_CELL] = cell
 				return
 			
 			#An action must be selected
-			var action_selected: ComponentActionResource = metadata.get(MetaKeys.SELECTED_ACTION, null)
+			var action_selected: ComponentActionResource = state_metadata.get(MetaKeys.SELECTED_ACTION, null)
 			if not action_selected:
 				push_warning("No action selected yet")
 				return
@@ -131,4 +137,16 @@ func on_action_selected(comp: ComponentInterface, action: ComponentActionResourc
 	match get_state():
 		States.STANDBY:
 			set_state(States.AWAITING_ACTION_TARGET)
-			metadata[MetaKeys.SELECTED_ACTION] = action
+			state_metadata[MetaKeys.SELECTED_ACTION] = action
+		States.AWAITING_ACTION_TARGET:
+			set_state(States.STANDBY)
+
+
+func on_input_back(component: ComponentInput):
+	if not component == self:
+		return
+		
+	match get_state():
+		States.AWAITING_ACTION_TARGET:
+			set_state(States.STANDBY)
+			print_debug("Canceled action target selection")

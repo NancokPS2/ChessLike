@@ -71,6 +71,9 @@ func update_active_nodes(entity: Entity3D):
 			
 		active_nodes.append(prop_name)
 		
+		#TODO: this probably should not be ALWAYS true
+		set_autoupdate_for_node(prop_name, true)
+		
 		match prop_name:
 			&"node_turn_cont":
 				node_found.theme
@@ -111,8 +114,8 @@ func update_interface(entity: Entity3D = auto_update_entity):
 				node.max_value = status_comp.get_stat(ComponentStatus.StatKeys.HEALTH)
 				
 			&"node_energy_bar":
-				node.value = status_comp.get_meter(ComponentStatus.MeterKeys.HEALTH)
-				node.max_value = status_comp.get_stat(ComponentStatus.StatKeys.HEALTH)
+				node.value = status_comp.get_meter(ComponentStatus.MeterKeys.ENERGY)
+				node.max_value = status_comp.get_stat(ComponentStatus.StatKeys.ENERGY)
 			
 			## Stat text
 			&"node_health_text":
