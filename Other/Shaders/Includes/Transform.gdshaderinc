@@ -40,6 +40,10 @@ vec3 scaled_3d(vec3 vertex, float scale){
 	return vertex * scale;
 }
 
+vec3 deformed_3d(vec3 vertex, vec3 deform_pivot, vec3 deform_vector){
+	return vertex += deform_vector * distance(vertex, deform_pivot);
+}
+
 vec3 skewed_3d(vec3 vertex, vec3 skew_direction, float intensity){
 	return vertex += (skew_direction * distance(vertex.y, 1.0) * intensity);
 }
