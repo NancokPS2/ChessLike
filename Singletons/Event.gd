@@ -1,6 +1,7 @@
 extends Node
 
 ## Board
+
 signal BOARD_CELL_SELECTED(cell: Vector3i, button_index: int)
 signal BOARD_CELL_HOVERED(cell: Vector3i)
 

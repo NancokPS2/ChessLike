@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://b0pg2mr7smdvo"]
+[gd_scene load_steps=9 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/Debug/Tester.gd" id="2_5iw2b"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="2_p3fbg"]
 [ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="3_ej6py"]
-[ext_resource type="PackedScene" uid="uid://ur17y6aqntt1" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/CompactInterface.tscn" id="5_lu1lm"]
+[ext_resource type="SphereMesh" uid="uid://dlaysl71xiycv" path="res://Scripts/Composition/Entity/Resources/DisplayComponent/CellAoEMark2.tres" id="4_gtvcd"]
+[ext_resource type="PackedScene" uid="uid://ur17y6aqntt1" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/CombatInterface.tscn" id="5_lu1lm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_00kxq"]
 texture = ExtResource("3_ej6py")
@@ -27,12 +28,6 @@ texture = ExtResource("3_ej6py")
 
 [sub_resource type="TileSet" id="TileSet_i1r0i"]
 sources/0 = SubResource("TileSetAtlasSource_00kxq")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fno0i"]
-albedo_color = Color(0, 0.447059, 0.482353, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_6jevn"]
-material = SubResource("StandardMaterial3D_fno0i")
 
 [node name="Control" type="Node3D"]
 script = ExtResource("1_87xmo")
@@ -59,7 +54,7 @@ layer_0/tile_data = PackedInt32Array(1114139, 0, 0, 1179675, 0, 1, 1114140, 6553
 transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, -0.51237, 4.63242, 10.4132)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_6jevn")
+mesh = ExtResource("4_gtvcd")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.49561, -0.437523, -0.750296, -0.661809, 0.749673, 4.23215e-08, 0.562476, 0.496552, -0.661102, 0, 12.0321, 0)
@@ -72,8 +67,6 @@ raycast_point_a = Vector3(5.6, 0.4, 3.95)
 offset_right = 213.0
 offset_bottom = 91.0
 
-[node name="ComponentInterfaceScene" parent="." node_paths=PackedStringArray("node_health_bar", "node_energy_bar", "node_name_text", "node_turn_cont") instance=ExtResource("5_lu1lm")]
-node_health_bar = NodePath("CanvasLayer/Control/VBoxContainer/Health")
-node_energy_bar = NodePath("CanvasLayer/Control/VBoxContainer/Energy")
-node_name_text = NodePath("CanvasLayer/Control/VBoxContainer/Name")
-node_turn_cont = NodePath("CanvasLayer/ScrollContainer/HBoxContainer")
+[node name="ComponentInterfaceScene" parent="." node_paths=PackedStringArray("node_turn_delay_text", "node_action_list") instance=ExtResource("5_lu1lm")]
+node_turn_delay_text = NodePath("CanvasLayer/QuickStatus/VBoxContainer/HSplitContainer/TurnDelay")
+node_action_list = NodePath("CanvasLayer/ItemList")

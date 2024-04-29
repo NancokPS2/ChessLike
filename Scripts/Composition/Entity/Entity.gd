@@ -185,3 +185,6 @@ func on_child_entered_tree(node: Node):
 	
 	add_component(node)
 
+
+func _to_string():
+	return "Entity3D#{0} ({1})".format([get_instance_id(), identifier])

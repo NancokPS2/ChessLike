@@ -52,15 +52,15 @@ func entity_test():
 	#move_comp.add_target_cells([Vector3i.UP + Vector3i.ZERO, Vector3i.UP + Vector3i.RIGHT, Vector3i.UP + Vector3i.LEFT*2])
 	
 	## Display
-	var output: Array[Vector3i]
-	for cell: Vector3i in Board.get_cells_in_area(
-		Vector3i.ZERO, Board.AreaTypes.FLOOD, Vector3i.ZERO, 1
-		):
-		output.append(cell + Vector3i.UP)
-	var disp_comp: ComponentDisplay = new_entity.get_component(ComponentDisplay.COMPONENT_NAME)
-	disp_comp.add_visibility_meshes_in_cells(output, disp_comp.SubMeshTypes.MOVE_PATHABLE)
-	disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
-	disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
+	#var output: Array[Vector3i]
+	#for cell: Vector3i in Board.get_cells_in_area(
+		#Vector3i.ZERO, Board.AreaTypes.FLOOD, Vector3i.ZERO, 1
+		#):
+		#output.append(cell + Vector3i.UP)
+	#var disp_comp: ComponentDisplay = new_entity.get_component(ComponentDisplay.COMPONENT_NAME)
+	#disp_comp.add_visibility_meshes_in_cells(output, disp_comp.SubMeshTypes.MOVE_PATHABLE)
+	#disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
+	#disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
 	
 	# Capability
 	var capa_comp: ComponentCapability = new_entity.get_component(ComponentCapability.COMPONENT_NAME)

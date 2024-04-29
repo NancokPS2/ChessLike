@@ -57,7 +57,6 @@ func set_state(state: States):
 			if input_comp == self:
 				continue
 			input_comp.set_state(States.BLOCKED)
-				
 		
 		
 func get_state() -> States:
@@ -133,13 +132,21 @@ func on_action_selected(comp: ComponentInterface, action: ComponentActionResourc
 	if not comp == get_entity().get_component(ComponentInterface.COMPONENT_NAME):
 		return
 	print_debug("Action activated")
-		
+	
 	match get_state():
 		States.STANDBY:
 			set_state(States.AWAITING_ACTION_TARGET)
 			state_metadata[MetaKeys.SELECTED_ACTION] = action
+			
+			var disp_comp: ComponentDisplay = get_entity().get_component(ComponentDisplay.COMPONENT_NAME)
+			var action_comp: ComponentAction = get_entity().get_component(ComponentAction.COMPONENT_NAME)
+			var targetable_cells: Array[Vector3i] = action_comp.get_targetable_cells_for_action(action)
+			
+			disp_comp.add_visibility_meshes_in_cells(targetable_cells, ComponentDisplay.SubMeshTypes.MOVE_PATHABLE)
+			
 		States.AWAITING_ACTION_TARGET:
 			set_state(States.STANDBY)
+			
 
 
 func on_input_back(component: ComponentInput):
