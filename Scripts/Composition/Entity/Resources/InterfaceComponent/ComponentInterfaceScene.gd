@@ -44,6 +44,10 @@ var timer_reference: Timer
 var entity_cache: Entity3D
 
 
+func _ready() -> void:
+	add_to_group(ComponentInterface.INTERFACE_SCENE_GROUP)
+
+
 func set_auto_update_target(entity: Entity3D):
 	auto_update_entity = entity
 	if auto_update_entity:

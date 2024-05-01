@@ -8,6 +8,8 @@ signal BOARD_CELL_HOVERED(cell: Vector3i)
 ## Input
 
 signal ENTITY_INPUT_BACK(entity: Entity3D)
+signal ENTITY_INPUT_STATE_ENTERED(entity: Entity3D, state: ComponentInput.States)
+signal ENTITY_INPUT_STATE_EXITED(entity: Entity3D, state: ComponentInput.States)
 
 
 ## Entity

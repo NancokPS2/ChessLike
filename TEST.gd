@@ -20,6 +20,8 @@ func _ready() -> void:
 	map_tests()
 	
 	board_test()
+	
+	world_test()
 
 func board_test():
 	await get_tree().process_frame
@@ -53,14 +55,8 @@ func entity_test():
 	
 	## Display
 	#var output: Array[Vector3i]
-	#for cell: Vector3i in Board.get_cells_in_area(
-		#Vector3i.ZERO, Board.AreaTypes.FLOOD, Vector3i.ZERO, 1
-		#):
-		#output.append(cell + Vector3i.UP)
-	#var disp_comp: ComponentDisplay = new_entity.get_component(ComponentDisplay.COMPONENT_NAME)
-	#disp_comp.add_visibility_meshes_in_cells(output, disp_comp.SubMeshTypes.MOVE_PATHABLE)
-	#disp_comp.add_visibility_meshes_in_cells([Vector3i(2,1,0)], disp_comp.SubMeshTypes.ACTION_TARGET)
-	#disp_comp.add_visibility_meshes_in_cells([Vector3i(3,1,0)], disp_comp.SubMeshTypes.ACTION_HIT)
+	
+
 	
 	# Capability
 	var capa_comp: ComponentCapability = new_entity.get_component(ComponentCapability.COMPONENT_NAME)
@@ -77,9 +73,6 @@ func entity_test():
 	
 	## Interface
 	var inter_comp: ComponentInterface = new_entity.get_component(ComponentInterface.COMPONENT_NAME)
-	var inter_node: ComponentInterfaceScene = $ComponentInterfaceScene
-	assert(inter_node is ComponentInterfaceScene)
-	inter_comp.set_entity_on_interface_node(new_entity, inter_node)
 	
 	## Action
 	#TODO: Properly test repetition actions
@@ -104,3 +97,16 @@ func entity_test():
 #func _process(delta: float):
 	#var ray_params := PhysicsRayQueryParameters3D.create($Camera3D.global_position, $Camera3D.project_ray_normal(get_viewport().get_mouse_position()) * 1000)
 	#print(get_world_3d().direct_space_state.intersect_ray(ray_params).get("position", "NONE"))
+
+func world_test():
+	var new_world := WorldNode3D.new()
+	add_child(new_world)
+	new_world.add_all_components()
+	
+	#Day cycle
+	var day_comp: WorldCompDayCycle = new_world.get_component(WorldCompDayCycle.COMPONENT_NAME)
+	var tween: Tween = day_comp.create_tween()	
+	tween.set_loops(0)
+	tween.tween_method(day_comp.set_time, 0, day_comp.DAY_LENGTH, 10)
+	tween.tween_callback(day_comp.set_time.bind(0))
+	tween.play()

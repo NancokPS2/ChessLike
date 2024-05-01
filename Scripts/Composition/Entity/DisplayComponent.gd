@@ -26,8 +26,18 @@ enum SubMeshTypes {
 	CELL_HOVERED_VALID,
 	CELL_HOVERED_INVALID,
 	MOVE_PATHABLE,
-	ACTION_TARGET,
-	ACTION_HIT,
+	ACTION_TARGETABLE,
+	ACTION_AOE,
+}
+enum SubMeshEffectTypes {
+	RESET,
+	PULSE_COLOR,
+}
+
+const SubMeshResources: Dictionary = {
+	SubMeshTypes.ACTION_AOE : preload("res://Scripts/Composition/Entity/Resources/DisplayComponent/CellAoEMark.tres"),
+	SubMeshTypes.ACTION_TARGETABLE : preload("res://Scripts/Composition/Entity/Resources/DisplayComponent/CellTargetable.tres"),
+	
 }
 
 const COMPONENT_NAME: StringName = "ENTITY_DISPLAY"
@@ -37,6 +47,8 @@ const DEFAULT_MODEL: PackedScene = preload("res://Assets/Meshes/Characters/Human
 var body_part_dict: Dictionary
 var mesh_arr: Array[MeshInstance3D]
 var temporary_nodes: Dictionary
+var temporary_nodes_material_cache: Dictionary
+var temporary_nodes_tween_cache: Dictionary
 
 var model_boundaries_cache: AABB
 
@@ -129,7 +141,7 @@ func clear_temporary_nodes(category: String):
 		node.queue_free()
 	
 
-func get_temporary_nodes(category: String) -> Array[Node]:
+func get_temporary_nodes(category: String) -> Array[Node3D]:
 	return temporary_nodes.get(category, [])
 
 
@@ -146,8 +158,6 @@ func add_visibility_meshes_in_cells(cells: Array[Vector3i], type: SubMeshTypes, 
 	if modulation == Color.TRANSPARENT:
 		return
 	
-	var material := StandardMaterial3D.new()
-	
 	var mesh: Mesh
 	
 	## Create the material and mesh
@@ -157,17 +167,19 @@ func add_visibility_meshes_in_cells(cells: Array[Vector3i], type: SubMeshTypes, 
 			mesh.size = Board.cell_size * 0.2
 			color_used = Color.YELLOW
 			
-		SubMeshTypes.ACTION_TARGET:
-			mesh = SphereMesh.new()
-			mesh.radius = Board.cell_size.length() * 0.2
-			color_used = Color.ORANGE_RED
+		SubMeshTypes.ACTION_TARGETABLE:
+			#mesh = SphereMesh.new()
+			#mesh.radius = Board.cell_size.length() * 0.2
+			#color_used = Color.ORANGE_RED
+			mesh = SubMeshResources[SubMeshTypes.ACTION_TARGETABLE]
 			
-		SubMeshTypes.ACTION_HIT:
-			mesh = CylinderMesh.new()
-			mesh.height = Board.cell_size.length() * 0.2
-			mesh.top_radius = 0
-			mesh.bottom_radius = Board.cell_size.length() * 0.2
-			color_used = Color.RED
+		SubMeshTypes.ACTION_AOE:
+			#mesh = CylinderMesh.new()
+			#mesh.height = Board.cell_size.length() * 0.2
+			#mesh.top_radius = 0
+			#mesh.bottom_radius = Board.cell_size.length() * 0.2
+			#color_used = Color.RED
+			mesh = SubMeshResources[SubMeshTypes.ACTION_AOE]
 			
 		SubMeshTypes.CELL_HOVERED_INVALID:
 			mesh = CylinderMesh.new()
@@ -185,10 +197,21 @@ func add_visibility_meshes_in_cells(cells: Array[Vector3i], type: SubMeshTypes, 
 		_:
 			push_error("Invalid SubMeshTypes!")
 	
-	material.albedo_color = color_used * modulation
-	material.albedo_texture = texture_used
-	mesh.material = material
+	## Only set a new material if the mesh doesn't have one already.
+	if mesh.material == null:
+		var material := StandardMaterial3D.new()
+		material.albedo_texture = texture_used
+		
+		if color_used == Color.WHITE:
+			material.albedo_color *= modulation
+		else:
+			material.albedo_color = color_used * modulation
+			
+		mesh.material = material
 	
+	## Store a reference to the material
+	temporary_nodes_material_cache[type] = mesh.material
+			
 	## Create the MultiMesh
 	var multi_mesh := MultiMesh.new()
 	multi_mesh.mesh = mesh
@@ -210,4 +233,29 @@ func add_visibility_meshes_in_cells(cells: Array[Vector3i], type: SubMeshTypes, 
 	multi_mesh_inst.top_level = true
 	add_temporary_node(used_category, multi_mesh_inst)
 		
+
+func set_visibility_mesh_effect(type: SubMeshTypes, effect: SubMeshEffectTypes):
+	var existing: Tween = temporary_nodes_tween_cache.get(type, null)
+	if existing:
+		existing.stop()
+		existing.kill()
+
+	var tween: Tween = create_tween()
+	temporary_nodes_tween_cache[type] = tween
 	
+	var material: BaseMaterial3D = temporary_nodes_material_cache.get(type, null)
+	
+	if not material:
+		push_error("There is no cache of this material.")
+		return
+		
+	match effect:
+		SubMeshEffectTypes.PULSE_COLOR:
+			tween.set_loops(0)
+			var base_albedo: Color = material.albedo_color * 0.5
+			var desired_albedo: Color = base_albedo * 1.5
+			tween.tween_property(material, "albedo_color", base_albedo, 0.5)
+			tween.tween_property(material, "albedo_color", desired_albedo, 0.5)
+			tween.play()
+			
+		

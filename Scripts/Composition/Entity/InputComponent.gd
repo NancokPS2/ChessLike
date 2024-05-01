@@ -25,11 +25,15 @@ func _ready() -> void:
 	
 	Event.ENTITY_TURN_STARTED.connect(on_turn_changed.bind(true))
 	Event.ENTITY_TURN_ENDED.connect(on_turn_changed.bind(false))
+	
 	Event.BOARD_CELL_SELECTED.connect(on_cell_selected)
 	Event.BOARD_CELL_HOVERED.connect(on_cell_hovered)
+	
 	Event.ENTITY_INTERFACE_ACTION_SELECTED.connect(on_action_selected)
+	
 	Event.ENTITY_INPUT_BACK.connect(on_input_back)
-
+	Event.ENTITY_INPUT_STATE_ENTERED.connect(on_state_entered)
+	Event.ENTITY_INPUT_STATE_EXITED.connect(on_state_exited)
 
 func get_entity() -> Entity3D:
 	return get_parent()
@@ -41,6 +45,7 @@ func _unhandled_input(event: InputEvent):
 
 
 func set_state(state: States):
+	var state_to_exit: States = state_current
 	state_current = state
 	
 	if not is_node_ready():
@@ -48,6 +53,7 @@ func set_state(state: States):
 	
 	state_metadata.clear()
 	
+	#Handle the blocked state first
 	if state == States.BLOCKED:
 		set_process_unhandled_input(false)
 	else: 
@@ -57,7 +63,17 @@ func set_state(state: States):
 			if input_comp == self:
 				continue
 			input_comp.set_state(States.BLOCKED)
+	
+	match state_to_exit:
+		States.AWAITING_ACTION_TARGET:
+			var disp_comp: ComponentDisplay = get_entity().get_component(ComponentDisplay.COMPONENT_NAME)
+			disp_comp.add_visibility_meshes_in_cells([], ComponentDisplay.SubMeshTypes.ACTION_TARGETABLE)
+			disp_comp.add_visibility_meshes_in_cells([], ComponentDisplay.SubMeshTypes.ACTION_AOE)
+			
 		
+	Event.ENTITY_INPUT_STATE_EXITED.emit(get_entity(), state_to_exit)
+	
+	Event.ENTITY_INPUT_STATE_ENTERED.emit(get_entity(), state_current)
 		
 func get_state() -> States:
 	return state_current
@@ -82,16 +98,16 @@ func on_cell_hovered(cell: Vector3i):
 			var action_selected: ComponentActionResource = state_metadata.get(MetaKeys.SELECTED_ACTION, null)
 			var hittable_cells: Array[Vector3i] = action_comp.get_hit_cells_by_action(cell, action_selected)
 			
-			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.ACTION_TARGET)
-			disp_comp.add_visibility_meshes_in_cells(hittable_cells, ComponentDisplay.SubMeshTypes.ACTION_HIT)
+			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.CELL_HOVERED_VALID)
+			disp_comp.add_visibility_meshes_in_cells(hittable_cells, ComponentDisplay.SubMeshTypes.ACTION_AOE)
 			
 		_:
-			disp_comp.add_visibility_meshes_in_cells([], ComponentDisplay.SubMeshTypes.ACTION_TARGET)
-			disp_comp.add_visibility_meshes_in_cells([], ComponentDisplay.SubMeshTypes.ACTION_HIT)
 			disp_comp.add_visibility_meshes_in_cells([cell], ComponentDisplay.SubMeshTypes.CELL_HOVERED_INVALID)
 	
 	
 func on_cell_selected(cell: Vector3i, button_index: int):
+	var disp_comp: ComponentDisplay = get_entity().get_component(ComponentDisplay.COMPONENT_NAME)
+	
 	match get_state():
 		States.AWAITING_ACTION_TARGET:
 			#Must be a primary click
@@ -102,6 +118,7 @@ func on_cell_selected(cell: Vector3i, button_index: int):
 			var last_cell: Vector3i = state_metadata.get(MetaKeys.LAST_SELECTED_CELL, Board.INVALID_CELL_COORDS)
 			if last_cell != cell:
 				state_metadata[MetaKeys.LAST_SELECTED_CELL] = cell
+				disp_comp.set_visibility_mesh_effect(disp_comp.SubMeshTypes.CELL_HOVERED_VALID, disp_comp.SubMeshEffectTypes.PULSE_COLOR)
 				return
 			
 			#An action must be selected
@@ -131,7 +148,7 @@ func on_cell_selected(cell: Vector3i, button_index: int):
 func on_action_selected(comp: ComponentInterface, action: ComponentActionResource):
 	if not comp == get_entity().get_component(ComponentInterface.COMPONENT_NAME):
 		return
-	print_debug("Action activated")
+	print_debug("Action activated " + action.identifier)
 	
 	match get_state():
 		States.STANDBY:
@@ -142,10 +159,8 @@ func on_action_selected(comp: ComponentInterface, action: ComponentActionResourc
 			var action_comp: ComponentAction = get_entity().get_component(ComponentAction.COMPONENT_NAME)
 			var targetable_cells: Array[Vector3i] = action_comp.get_targetable_cells_for_action(action)
 			
-			disp_comp.add_visibility_meshes_in_cells(targetable_cells, ComponentDisplay.SubMeshTypes.MOVE_PATHABLE)
+			disp_comp.add_visibility_meshes_in_cells(targetable_cells, ComponentDisplay.SubMeshTypes.ACTION_TARGETABLE)
 			
-		States.AWAITING_ACTION_TARGET:
-			set_state(States.STANDBY)
 			
 
 
@@ -157,3 +172,11 @@ func on_input_back(component: ComponentInput):
 		States.AWAITING_ACTION_TARGET:
 			set_state(States.STANDBY)
 			print_debug("Canceled action target selection")
+
+func on_state_entered(entity: Entity3D, state: States):
+	pass
+	
+	
+	
+func on_state_exited(entity: Entity3D, state: States):
+	pass
