@@ -37,7 +37,8 @@
 				"766f5060-ae66-481d-a619-5fe2e7328064",
 				"1bcc1040-a7c5-4eaa-915f-c689b8ce7e5a",
 				"ebbabdca-f874-4631-961f-c595e1164380",
-				"517f2566-2417-46b9-9eff-bc28dbfb9e35"
+				"517f2566-2417-46b9-9eff-bc28dbfb9e35",
+				"af13f111-deea-464c-80fe-d284ab5ea24b"
 			]
 		},
 		{
@@ -201,6 +202,13 @@
 			"title": "Add re-usable special fx",
 			"description": "",
 			"category": "0e2bbeed-b579-4011-96c3-c63f584d49bf",
+			"steps": []
+		},
+		{
+			"uuid": "af13f111-deea-464c-80fe-d284ab5ea24b",
+			"title": "AoE markers cannot appear on the same cell as \"Targetable\" markers",
+			"description": "",
+			"category": "657d813d-e833-4f84-b34f-30d55ebb5614",
 			"steps": []
 		}
 	],

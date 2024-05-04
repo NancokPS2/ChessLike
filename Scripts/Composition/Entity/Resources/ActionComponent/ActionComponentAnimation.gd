@@ -14,11 +14,11 @@ func _start():
 	pass
 
 
-func run():
-	_run()
+func run(delta: float):
+	_run(delta)
 	
 	
-func _run():
+func _run(delta: float):
 	pass
 	
 	

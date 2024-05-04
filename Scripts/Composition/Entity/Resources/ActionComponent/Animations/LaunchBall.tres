@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://d0jf3jo24j303"]
+
+[ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/ActionComponent/Animations/Scripts/LaunchProjectile.gd" id="1_70sob"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cx44u"]
+radius = 0.25
+height = 0.5
+radial_segments = 6
+rings = 3
+
+[resource]
+script = ExtResource("1_70sob")
+projectile_mesh = SubResource("SphereMesh_cx44u")
+move_speed = 10.0
+aim_mode = 1

@@ -63,11 +63,20 @@ class_name ComponentActionResource
 @export var shape_hit: ComponentAction.TargetingShape
 @export var shape_hit_size: int = 1
 
+@export_group("Graphical", "graphic")
+@export var graphic_animation: ComponentActionResourceAnim
+@export var graphic_max_anim_duration: float = 1.0
+
 var action_log_cache: ComponentActionLog
 
 func start(action_log: ComponentActionLog):
 	assert(not action_log_cache)
 	action_log_cache = action_log
+	
+	if graphic_animation:
+		var tree: SceneTree = action_log.entity_source.get_tree()
+		graphic_animation.start(action_log)
+		tree.create_timer(graphic_max_anim_duration).timeout.connect(graphic_animation.finish)
 	
 	_start(action_log)
 
