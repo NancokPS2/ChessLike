@@ -2,7 +2,7 @@ extends Node3D
 class_name WorldNode3D
 
 enum Flags {
-	SCARY, #Cannot move, act or take turns. Useful for obstacles.
+	SCARY, #Units shake!.
 }
 
 signal component_changed(component_name: String)
@@ -37,7 +37,8 @@ func flag_get(flag: Flags) -> bool:
 
 func add_all_components():
 	var comps: Array[Node] = [
-		WorldCompDayCycle.new()
+		WorldCompSky.new(),
+		WorldCompTime.new(),
 	]
 	for comp: Node in comps:
 		add_child(comp)
