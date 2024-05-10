@@ -1,0 +1,2 @@
+Github: https://github.com/NancokPS2/ChessLike.git
+Gitlab: git@gitlab.com:NancokPS2/ChessLikeFork.git
