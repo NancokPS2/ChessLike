@@ -1,10 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b0pg2mr7smdvo"]
+[gd_scene load_steps=11 format=3 uid="uid://b0pg2mr7smdvo"]
 
 [ext_resource type="Script" path="res://TEST.gd" id="1_87xmo"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/Debug/Tester.gd" id="2_5iw2b"]
 [ext_resource type="Script" path="res://Scripts/SelfContained/PivotCamera3D.gd" id="2_p3fbg"]
 [ext_resource type="Texture2D" uid="uid://m3vbrc8tmtak" path="res://icon.png" id="3_ej6py"]
-[ext_resource type="BoxMesh" uid="uid://cbhyelb4ln60f" path="res://Scripts/Composition/Entity/Resources/DisplayComponent/CellTargetable.tres" id="4_l78nw"]
 [ext_resource type="Script" path="res://Scripts/Composition/Entity/Resources/InterfaceComponent/ComponentInterfaceScene.gd" id="6_6isp1"]
 [ext_resource type="Theme" uid="uid://devlr7rlv5v8v" path="res://Assets/MainTheme.tres" id="7_hm6mo"]
 
@@ -29,6 +28,14 @@ texture = ExtResource("3_ej6py")
 
 [sub_resource type="TileSet" id="TileSet_i1r0i"]
 sources/0 = SubResource("TileSetAtlasSource_00kxq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ne60n"]
+transparency = 1
+depth_draw_mode = 1
+albedo_color = Color(0.180392, 0.631373, 1, 0.25098)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pqn7o"]
+material = SubResource("StandardMaterial3D_ne60n")
 
 [node name="Control" type="Node3D"]
 script = ExtResource("1_87xmo")
@@ -56,15 +63,15 @@ transform = Transform3D(1, 0, 0, 0, 0.919589, 0.392883, 0, -0.392883, 0.919589, 
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 cast_shadow = 0
-mesh = ExtResource("4_l78nw")
+mesh = SubResource("BoxMesh_pqn7o")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-mesh = ExtResource("4_l78nw")
+mesh = SubResource("BoxMesh_pqn7o")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
-mesh = ExtResource("4_l78nw")
+mesh = SubResource("BoxMesh_pqn7o")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.900764, 0.0137601, 0.434092, 0.367137, 0.558095, 0.744138, -0.232025, 0.829663, -0.507764, 0, 12.0321, 0)

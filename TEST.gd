@@ -104,9 +104,10 @@ func world_test():
 	new_world.add_all_components()
 	
 	#Day cycle
-	var day_comp: WorldCompDayCycle = new_world.get_component(WorldCompDayCycle.COMPONENT_NAME)
-	var tween: Tween = day_comp.create_tween()	
+	var time_comp: WorldCompTime = new_world.get_component(WorldCompTime.COMPONENT_NAME)
+	var tween: Tween = time_comp.create_tween()	
 	tween.set_loops(0)
-	tween.tween_method(day_comp.set_time, 0, day_comp.DAY_LENGTH, 10)
-	tween.tween_callback(day_comp.set_time.bind(0))
+	tween.tween_method(time_comp.set_time, 0, time_comp.Lengths.DAY, 10)
+	tween.tween_callback(time_comp.set_time.bind(0))
 	tween.play()
+
