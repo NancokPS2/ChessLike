@@ -10,7 +10,7 @@ enum DaySections {
 
 const COMPONENT_NAME: StringName = "WORLD_TIME"
 
-const PERSISTENT_PROPERTIES: Array[String] = ["time_passed"]
+const PERSISTENT_PROPERTIES: Array[String] = ["time"]
 
 const Lengths: Dictionary = {
 	MINUTE = 1 as float,
@@ -22,7 +22,7 @@ const Lengths: Dictionary = {
 	YEAR = 60 * 24 * 20 * 8 as float,
 }
 
-var time_passed: float
+var time: float
 
 const SUNRISE_TIME: float = Lengths.HOUR * 6
 
@@ -34,8 +34,12 @@ func get_world() -> WorldNode3D:
 	return get_parent()
 
 
+func set_time(new_time: float):
+	time = new_time
+
+
 func get_time_frame(delimiter: float) -> float:
-	var framed: float = fmod(time_passed, delimiter)
+	var framed: float = fmod(time, delimiter)
 	return framed
 	
 

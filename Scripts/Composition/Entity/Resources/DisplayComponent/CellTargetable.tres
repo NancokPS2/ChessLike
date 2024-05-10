@@ -1,9 +1,11 @@
-[gd_resource type="BoxMesh" load_steps=2 format=3 uid="uid://cbhyelb4ln60f"]
+[gd_resource type="CylinderMesh" load_steps=2 format=3 uid="uid://m8wa6mtrdmo"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ne60n"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l3etj"]
 transparency = 1
-depth_draw_mode = 1
-albedo_color = Color(0.180392, 0.631373, 1, 0.25098)
+albedo_color = Color(0.309804, 0.52549, 1, 0.713726)
 
 [resource]
-material = SubResource("StandardMaterial3D_ne60n")
+material = SubResource("StandardMaterial3D_l3etj")
+height = 0.25
+radial_segments = 8
+rings = 1
